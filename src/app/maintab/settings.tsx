@@ -4,7 +4,7 @@ import GenericScreen from "@/components/GenericScreen";
 import IconSymbol from "@/components/icon-components/IconView";
 import { SupportedIconNames } from "@/components/icon-components/utils";
 import globalStyles, { fontSize, spacing } from "@/config/styles";
-import useAuth from "@/src/contexts/AuthContext";
+import useAuth from "@/contexts/AuthContext";
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import Constants from "expo-constants";

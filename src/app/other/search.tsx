@@ -1,13 +1,13 @@
 import { GroupsApi, LimitedGroup, LimitedUserSearch, LimitedWorld, UsersApi, WorldsApi } from "@/api/vrchat";
 import GenericScreen from "@/components/GenericScreen";
+import CardViewGroup from "@/components/item-CardView/CardViewGroup";
 import CardViewUser from "@/components/item-CardView/CardViewUser";
 import CardViewWorld from "@/components/item-CardView/CardViewWorld";
 import SearchBox from "@/components/SearchBox";
-import CardViewGroup from "@/components@/src/config/stylesCardViewGroup";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";@/src/api/vrchat
-import { routeToGroup, routeToUser, routeToWorld } from "@/src/lib/route";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";

@@ -1,4 +1,4 @@
-import globalStyles, { radius, spacing } from "@/src/config/styles";
+import globalStyles, { radius, spacing } from "@/config/styles";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { Modal, StyleSheet, View } from "react-native";

@@ -1,6 +1,6 @@
 // タブ切り替え時等に毎回取得しないように保存しておくContext
 
-import { CurrentUser } from "@/src/api/vrchat";
+import { CurrentUser } from "@/api/vrchat";
 import { AxiosResponse } from "axios";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import useAuth from "./AuthContext";

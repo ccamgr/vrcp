@@ -1,8 +1,8 @@
-import GenericScreen from "@/components/G@/src/api/vrchat";
+import GenericScreen from "@/components/GenericScreen";
 import globalStyles from "@/config/styles";
 import texts from "@/config/texts";
-import useAuth from "@/src/contexts/AuthContext";
-import useVRChat from "@/src/contexts/VRChatContext";
+import useAuth from "@/contexts/AuthContext";
+import useVRChat from "@/contexts/VRChatContext";
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "expo-router/build/global-state/routing";

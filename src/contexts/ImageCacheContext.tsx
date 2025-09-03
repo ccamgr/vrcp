@@ -1,7 +1,7 @@
 
 
 // VRCのAPIを使うためのContext
-import { omitObject } from "@/src/lib/objectUtils";
+import { omitObject } from "@/lib/objectUtils";
 import * as FileSystem from 'expo-file-system';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { Image } from "react-native";

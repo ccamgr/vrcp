@@ -1,4 +1,4 @@
-import { omitObject } from@/src/config/stylesectUtils";
+import { omitObject } from "@/lib/objectUtils";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import IconSymbol from "../icon-components/IconView";

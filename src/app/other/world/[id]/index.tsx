@@ -1,7 +1,7 @@
 import { World } from "@/api/vrchat";
 import GenericScreen from "@/components/GenericScreen";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import SelectGroupButton from "@/components/SelectGroupBu@/src/config/styles
+import SelectGroupButton from "@/components/SelectGroupButton";
 import PlatformChips from "@/components/chip-badge/PlatformChips";
 import TagChips from "@/components/chip-badge/TagChips";
 import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
@@ -9,9 +9,9 @@ import CardViewWorldDetail from "@/components/item-CardView/detail/CardViewWorld
 import ListViewInstance, { MinInstance } from "@/components/item-ListView/ListViewInstance";
 import { fontSize, radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { formatToDateTime } from "@/src/lib/date";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";@/src/api/vrchat
-import { getAuthorTags, getWorldPlatform, parseInstanceId } from "@/src/lib/vrchatUtils";
+import { formatToDateTime } from "@/lib/date";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { getAuthorTags, getWorldPlatform, parseInstanceId } from "@/lib/vrchatUtils";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useState } from "react";

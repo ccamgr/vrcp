@@ -1,6 +1,6 @@
+import { Avatar } from "@/api/vrchat";
 import ReleaseStatusChip from "@/components/chip-badge/ReleaseStatusChip";
-import { Avatar } from "@/src/api/vrchat";
-import { fontSize, spacing } from "@/src/config/styles";
+import { fontSize, spacing } from "@/config/styles";
 import { Text } from "@react-navigation/elements";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";

@@ -1,4 +1,4 @@
-import { GroupLike } from "@/src/lib/vrchatUtils";
+import { GroupLike } from "@/lib/vrchatUtils";
 import { StyleSheet } from "react-native";
 import BaseCardView from "./BaseCardView";
 

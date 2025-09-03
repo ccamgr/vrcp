@@ -1,5 +1,5 @@
 // VRCのAPIを使うためのContext
-import { AuthenticationApi, AvatarsApi, Configuration, FavoritesApi, FriendsApi, GroupsApi, InstancesApi, InviteApi, UsersApi, WorldsApi } from "@/src/api/vrchat";
+import { AuthenticationApi, AvatarsApi, Configuration, FavoritesApi, FriendsApi, GroupsApi, InstancesApi, InviteApi, UsersApi, WorldsApi } from "@/api/vrchat";
 import Constants from "expo-constants";
 import { createContext, ReactNode, useContext, useState } from "react";
 

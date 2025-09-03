@@ -1,14 +1,14 @@
 import { Avatar } from "@/api/vrchat";
 import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
 import GenericScreen from "@/components/GenericScreen";
-import CardViewAvatarDetail from "@/components/item-CardV@/src/config/stylesViewAvatarDetail";
+import CardViewAvatarDetail from "@/components/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
+import { extractErrMsg } from "@/lib/extractErrMsg";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useState } from "react";@/src/api/vrchat
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 

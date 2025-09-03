@@ -1,8 +1,8 @@
-import { Instance } from "@/api/v@/src/config/styles
+import { Instance } from "@/api/vrchat";
 import { spacing } from "@/config/styles";
-import { getInstanceType } from "@/src/lib/vrchatUtils";
+import { getInstanceType } from "@/lib/vrchatUtils";
 import { StyleSheet, View } from "react-native";
-import RegionBadge from ".@/src/api/vrchat/RegionBadge";
+import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
 
 

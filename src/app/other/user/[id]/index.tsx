@@ -1,16 +1,16 @@
 import { User } from "@/api/vrchat";
 import LinkChip from "@/components/chip-badge/LinkChip";
 import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
-import GenericScreen from "@/components/GenericScreen";@/src/config/styles
+import GenericScreen from "@/components/GenericScreen";
 import CardViewUserDetail from "@/components/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { fontSize, radius, spacing } from "@/config/styles";
 import { CachedImage } from "@/contexts/ImageCacheContext";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
-import { getInstanceType, parseLocationString } from "@/src/lib/vrchatUtils";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { getInstanceType, parseLocationString } from "@/lib/vrchatUtils";
 import { useTheme } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router/build/@/src/api/vrchat
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 

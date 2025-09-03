@@ -1,14 +1,14 @@
 import { Avatar, FavoriteGroup, User, World } from "@/api/vrchat";
-import GenericScreen from@/src/config/stylesGenericScreen";
+import GenericScreen from "@/components/GenericScreen";
 import CardViewAvatar from "@/components/item-CardView/CardViewAvatar";
 import CardViewUser from "@/components/item-CardView/CardViewUser";
 import CardViewWorld from "@/components/item-CardView/CardViewWorld";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import SelectGroupButton from "@/components/SelectGroupButton";
-import { spacing } from "@/config/styles";@/src/api/vrchat
+import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
-import { routeToAvatar, routeToUser, routeToWorld } from "@/src/lib/route";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { routeToAvatar, routeToUser, routeToWorld } from "@/lib/route";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";

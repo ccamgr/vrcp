@@ -1,6 +1,6 @@
+import { radius, spacing } from "@/config/styles";
 import { CachedImage } from "@/contexts/ImageCacheContext";
-import { radius, spacing } from "@/src/config/styles";
-import { getInstanceType, getStatusColor, parseInstanceId, parseLocationString, UserLike } from "@/src/lib/vrchatUtils";
+import { getInstanceType, getStatusColor, parseInstanceId, parseLocationString, UserLike } from "@/lib/vrchatUtils";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";

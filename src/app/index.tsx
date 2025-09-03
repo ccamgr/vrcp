@@ -4,7 +4,7 @@ import IconSymbol from "@/components/icon-components/IconView";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import globalStyles, { spacing } from "@/config/styles";
 import texts from "@/config/texts";
-import useAuth from "@/src/contexts/AuthContext";
+import useAuth from "@/contexts/AuthContext";
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "expo-router/build/global-state/routing";

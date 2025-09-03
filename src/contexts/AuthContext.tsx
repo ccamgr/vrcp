@@ -1,9 +1,9 @@
 import { AuthenticationApi } from "@/api/vrchat";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
+import { extractErrMsg } from "@/lib/extractErrMsg";
 import { router } from "expo-router";
 import Storage from 'expo-sqlite/kv-store';
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import useVRChat from "./VRChatCont@/src/api/vrchat
+import useVRChat from "./VRChatContext";
 
 type AuthUser = {
   id?: string;

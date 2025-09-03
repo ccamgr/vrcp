@@ -2,17 +2,16 @@ import { LimitedUserFriend, User, UserState } from "@/api/vrchat";
 import GenericScreen from "@/components/GenericScreen";
 import ListViewUser from "@/components/item-ListView/ListViewUser";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import SelectGroupButton @/src/config/stylesnts/SelectGroupButton";
+import SelectGroupButton from "@/components/SelectGroupButton";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
-import { routeToUser } from "@/src/lib/route";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { routeToUser } from "@/lib/route";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
-@/src/api/vrchat
 export default function Friends() {
   const vrc = useVRChat();
   const theme = useTheme();

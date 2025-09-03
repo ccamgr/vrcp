@@ -1,5 +1,5 @@
 // VRCのAPIを使うためのContext
-import { User, World } from "@/src/api/vrchat";
+import { User, World } from "@/api/vrchat";
 import { createContext, ReactNode, useContext, useRef } from "react";
 
 

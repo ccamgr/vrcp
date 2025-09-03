@@ -1,8 +1,8 @@
-import { Avatar } from "@/src/api/vrchat";
+import { Avatar } from "@/api/vrchat";
 import { spacing } from "@/config/styles";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import ReleaseStatusChip @/src/config/stylesadge/ReleaseStatusChip";
+import ReleaseStatusChip from "../chip-badge/ReleaseStatusChip";
 import BaseCardView from "./BaseCardView";
 
 interface Props {

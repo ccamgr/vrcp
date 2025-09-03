@@ -1,4 +1,4 @@
-import { Avatar, CurrentUser, Group, GroupAccessType, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, World } from "@/src/api/vrchat";
+import { Avatar, CurrentUser, Group, GroupAccessType, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, World } from "@/api/vrchat";
 export type UserLike = LimitedUserSearch | LimitedUserFriend | LimitedUserInstance | User | CurrentUser
 export type WorldLike = LimitedWorld | World
 export type GroupLike = LimitedGroup | Group

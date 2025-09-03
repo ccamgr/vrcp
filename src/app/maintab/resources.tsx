@@ -1,17 +1,16 @@
 import { Avatar, LimitedWorld } from "@/api/vrchat";
-import LoadingIndicator from "@/compone@/src/config/stylescator";
 import GenericScreen from "@/components/GenericScreen";
 import CardViewAvatar from "@/components/item-CardView/CardViewAvatar";
 import CardViewWorld from "@/components/item-CardView/CardViewWorld";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
-import { routeToAvatar, routeToWorld } from "@/src/lib/route";
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { routeToAvatar, routeToWorld } from "@/lib/route";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-@/src/api/vrchat
 // user's avatar, world, and other uploaded resources
 export default function Resources() {
   const vrc = useVRChat();

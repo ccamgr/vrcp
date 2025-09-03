@@ -1,7 +1,7 @@
 import { fontSize, spacing } from "@/config/styles";
-import { getWorldPlatform, WorldLike } from "@/src/lib/vrchatUtils";
+import { getWorldPlatform, WorldLike } from "@/lib/vrchatUtils";
 import { Text } from "@react-navigation/elements";
-import { useTheme } from "@react-navigation@/src/config/styles
+import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import PlatformChips from "../chip-badge/PlatformChips";

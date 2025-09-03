@@ -1,6 +1,6 @@
 import { spacing } from "@/config/styles";
-import { omitObject } from "@/src/lib/objectUtils";
-import { useTheme } from @/src/config/stylesion/native";
+import { omitObject } from "@/lib/objectUtils";
+import { useTheme } from "@react-navigation/native";
 import { useCallback, useRef } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import IconButton from "./icon-components/IconButton";

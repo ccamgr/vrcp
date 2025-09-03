@@ -1,5 +1,5 @@
-import { radius, spacing } from "@/config/s@/src/config/styles
-import { omitObject } from "@/src/lib/objectUtils";
+import { radius, spacing } from "@/config/styles";
+import { omitObject } from "@/lib/objectUtils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";

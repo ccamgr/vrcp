@@ -1,13 +1,13 @@
 import { CurrentUser } from "@/api/vrchat";
-import GenericScreen from "@/comp@/src/config/stylescreen";
 import LinkChip from "@/components/chip-badge/LinkChip";
 import DetailItemContainer from "@/components/detailpage-components/DetailItemContainer";
+import GenericScreen from "@/components/GenericScreen";
 import CardViewUserDetail from "@/components/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { radius, spacing } from "@/config/styles";
 import useVRChat from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/src/lib/extractErrMsg";
-import { useTheme } from "@react-navigation/native";@/src/api/vrchat
+import { extractErrMsg } from "@/lib/extractErrMsg";
+import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 

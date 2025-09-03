@@ -1,7 +1,7 @@
 import { darkTheme, lightTheme } from "@/config/theme";
-import { AuthProvider } from "@/src/contexts/AuthContext";
-import { ImageCacheProvider } from "@/src/contexts/ImageCacheContext";
-import { VRChatProvider } from "@/src/contexts/VRChatContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ImageCacheProvider } from "@/contexts/ImageCacheContext";
+import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
