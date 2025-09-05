@@ -1,6 +1,5 @@
 import GenericModal from "@/components/layout/GenericModal";
 import GenericScreen from "@/components/layout/GenericScreen";
-import IconSymbol from "@/components/view/icon-components/IconView";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { spacing } from "@/config/styles";
 import texts from "@/config/texts";
@@ -9,7 +8,7 @@ import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "expo-router/build/global-state/routing";
 import { useRef, useState } from "react";
-import { Alert, KeyboardAvoidingView, Linking, Text, TextInput, View } from "react-native";
+import { Alert, Image, KeyboardAvoidingView, Linking, Text, TextInput, View } from "react-native";
 
 
 // login screen
@@ -100,7 +99,22 @@ export default function Login() {
       <GenericScreen>
         { (isLoadingLogin || isLoadingVerify) && <LoadingIndicator absolute/> }
         <View style={globalStyles.containerCentered}>
-          <IconSymbol name="logo-dev" size={128} color={theme.colors.text} />
+          
+          <View style={{
+            width: "100%", 
+            aspectRatio: 1.3,
+            padding: spacing.large,
+            marginBottom: spacing.large,
+            alignItems: 'center',
+            justifyContent: 'center',
+            // borderColor: 'blue', borderWidth: 1, borderStyle: 'solid'
+          }}>
+            <Image 
+              source={require('@/assets/images/logo.png')} 
+              style={{aspectRatio: 1, resizeMode: 'center' }} 
+            />
+          </View>
+
           <Text style={[globalStyles.text,{color: theme.colors.text}]}>{texts.welcome}</Text>
           <View style={globalStyles.containerVertical}>
             <TextInput

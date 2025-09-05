@@ -6,6 +6,7 @@ import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { spacing } from "@/config/styles";
+import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { routeToAvatar, routeToUser, routeToWorld } from "@/lib/route";
@@ -17,41 +18,16 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 export default function Favorites() {
   const vrc = useVRChat();
   const theme = useTheme();
-  const [isLoadingGroup, setIsLoadingGroup] = useState<boolean>(false);
-  const [favoriteGroups, setFavoriteGroups] = useState<{
-    worlds: FavoriteGroup[]
-    friends: FavoriteGroup[]
-    avatars: FavoriteGroup[]
-  }>({
-    worlds: [],
-    friends: [],
-    avatars: []
-  });
+  const { favoriteGroups } = useData();
   const NumPerReq = 20; // Number of items to fetch per request
 
   const MaterialTab = createMaterialTopTabNavigator();
 
-  const fetchFavoriteGroups = async () => {
-    try{
-      setIsLoadingGroup(true);
-      const res = await vrc.favoritesApi.getFavoriteGroups();
-      if (res.data) {
-        setFavoriteGroups({
-          worlds: res.data.filter((group) => group.type === "world").sort((a,b) => a.name.localeCompare(b.name)),
-          friends: res.data.filter((group) => group.type === "friend").sort((a,b) => a.name.localeCompare(b.name)),
-          avatars: res.data.filter((group) => group.type === "avatar").sort((a,b) => a.name.localeCompare(b.name)),
-        });
-      }
-      setIsLoadingGroup(false);
-    } catch (e) {
-      console.error("Error fetching favorite groups:", extractErrMsg(e));
-      setIsLoadingGroup(false);
-    }
+  const favoriteGroupsMap = {
+    worlds: favoriteGroups.data.filter((group) => group.type === "world").sort((a, b) => a.name.localeCompare(b.name)),
+    friends: favoriteGroups.data.filter((group) => group.type === "friend").sort((a, b) => a.name.localeCompare(b.name)),
+    avatars: favoriteGroups.data.filter((group) => group.type === "avatar").sort((a, b) => a.name.localeCompare(b.name)),
   };
-
-  useEffect(()=>{
-    fetchFavoriteGroups();
-  },[])
 
   const WorldsTab = () => {
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(null);
@@ -84,8 +60,8 @@ export default function Favorites() {
     };
 
     useEffect(()=>{
-      setSelectedGroup(favoriteGroups.worlds[0] || null);
-    },[favoriteGroups.worlds])
+      setSelectedGroup(favoriteGroupsMap.worlds[0] || null);
+    },[favoriteGroupsMap.worlds])
 
     useEffect(()=>{
       setWorlds(_ => []);
@@ -98,7 +74,7 @@ export default function Favorites() {
       <View style={{ flex: 1 }}>
         <SelectGroupButton
           style={styles.selectGroupButton}
-          data={favoriteGroups.worlds}
+          data={favoriteGroupsMap.worlds}
           value={selectedGroup}
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}
@@ -150,8 +126,8 @@ export default function Favorites() {
     };
 
     useEffect(()=>{
-      setSelectedGroup(favoriteGroups.friends[0] || null);
-    },[favoriteGroups.friends])
+      setSelectedGroup(favoriteGroupsMap.friends[0] || null);
+    },[favoriteGroupsMap.friends])
 
     useEffect(()=>{
       setFriends(_ => []); // Reset friends when group changes
@@ -164,7 +140,7 @@ export default function Favorites() {
       <View style={{ flex: 1 }}>
         <SelectGroupButton
           style={styles.selectGroupButton}
-          data={favoriteGroups.friends}
+          data={favoriteGroupsMap.friends}
           value={selectedGroup}
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}
@@ -216,8 +192,8 @@ export default function Favorites() {
     };
 
     useEffect(()=>{
-      setSelectedGroup(favoriteGroups.avatars[0] || null);
-    },[favoriteGroups.avatars])
+      setSelectedGroup(favoriteGroupsMap.avatars[0] || null);
+    },[favoriteGroupsMap.avatars])
 
     useEffect(()=>{
       setAvatars(_ => []); // Reset avatars when group changes
@@ -230,7 +206,7 @@ export default function Favorites() {
       <View style={{ flex: 1 }}>
         <SelectGroupButton
           style={styles.selectGroupButton}
-          data={favoriteGroups.avatars}
+          data={favoriteGroupsMap.avatars}
           value={selectedGroup}
           onChange={setSelectedGroup}
           nameExtractor={(item) => item.displayName.length > 0 ? item.displayName : undefined}

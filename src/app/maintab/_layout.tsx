@@ -1,13 +1,12 @@
 import { HapticTab } from '@/components/layout/HapticTab';
 import IconButton from '@/components/view/icon-components/IconButton';
-import IconSymbol from '@/components/view/icon-components/IconView';
 import SearchBox from '@/components/view/SearchBox';
 import { spacing } from '@/config/styles';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { push } from 'expo-router/build/global-state/routing';
 import React from 'react';
-import { Platform, useColorScheme, View } from 'react-native';
+import { Image, Platform, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default function TabLayout() {
@@ -32,9 +31,12 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
-          headerTitle: () => (
+          headerTitle: (props) => (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: spacing.small }}>
-              <IconSymbol name="logo-dev" />
+              <Image 
+                source={require('@/assets/images/logo.png')} 
+                style={{ height: "80%", aspectRatio: 1, resizeMode: 'cover' }} 
+              />
             </View>
           ),
           headerRight: () => (

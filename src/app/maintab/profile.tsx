@@ -1,56 +1,44 @@
-import { CurrentUser } from "@/api/vrchat";
 import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/screen/detail/DetailItemContainer";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { radius, spacing } from "@/config/styles";
+import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/lib/extractErrMsg";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-
+import React from "react";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Profile() {
   const vrc = useVRChat();
   const theme = useTheme();  
-  const [currentUser, setCurrentUser] = useState<CurrentUser>();
-
-  const fetchProfile = async () => {
-    try {
-      const res = await vrc.authenticationApi.getCurrentUser(); 
-      if (res.data) setCurrentUser(res.data);
-    } catch (error) {
-      console.error("Error fetching user profile:", extractErrMsg(error));
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
+  const { currentUser } = useData();
 
   return (
     <GenericScreen>
-      { currentUser ? (
+      { currentUser.data ? (
         <View>
           <CardViewUserDetail
-            user={currentUser}
+            user={currentUser.data}
             style={[styles.cardView]} 
           />
           
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={currentUser.isLoading} onRefresh={currentUser.fetch} />
+            }
+          >
 
             <DetailItemContainer title="Bio">
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>{currentUser.bio}</Text>
+                <Text style={{color: theme.colors.text}}>{currentUser.data.bio}</Text>
               </View>
             </DetailItemContainer>
 
             <DetailItemContainer title="Links">
               <View style={styles.detailItemContent}>
-                {currentUser.bioLinks.map((link, index) => (
+                {currentUser.data.bioLinks.map((link, index) => (
                   <LinkChip key={index} url={link} />
                 ))}
               </View>
@@ -58,12 +46,12 @@ export default function Profile() {
 
             <DetailItemContainer title="Joined date">
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>{currentUser.date_joined}</Text>
+                <Text style={{color: theme.colors.text}}>{currentUser.data.date_joined}</Text>
               </View>
             </DetailItemContainer>
 
             <View style={{padding: spacing.large, marginTop: spacing.large }}>
-              <Text style={{color: theme.colors.text}}>{JSON.stringify(currentUser, null, 2)}</Text>
+              <Text style={{color: theme.colors.subText}}>{JSON.stringify(currentUser.data, null, 2)}</Text>
             </View>
           </ScrollView>
         
