@@ -10,8 +10,12 @@ help:   # show this list
 run:  # run the application
 	@npx expo start
 
-.PHONY : gen-vrcapi
+.PHONY : gen-d-ts
+gen-d-ts:  # generate missing d.ts files for not typed modules
+	@rm -rf ./src/types/*
+# 	@npx tsc --emitDeclarationOnly --declaration --outDir ./src/types --esModuleInterop --allowSyntheticDefaultImports --resolveJsonModule --lib es6,dom --module commonjs --target es6 --skipLibCheck --forceConsistentCasingInFileNames --noImplicitAny true
 
+.PHONY : gen-vrcapi
 gen-vrcapi:  # generate the vrcapi types
 	@rm -rf ./src/vrchat/api/* ./src/vrchat/openapi.yaml
 	@curl -L https://vrchat.community/openapi.yaml -o ./src/vrchat/openapi.yaml

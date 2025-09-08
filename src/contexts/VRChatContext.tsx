@@ -2,15 +2,16 @@
 import { AuthenticationApi, AvatarsApi, Configuration, FavoritesApi, FriendsApi, GroupsApi, InstancesApi, InviteApi, UsersApi, WorldsApi } from "@/vrchat/api";
 import { PipelineMessage } from "@/vrchat/pipline/type";
 import Constants from "expo-constants";
-import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
-import WebSocket from 'ws';
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 
 
-const BASE_PIPELINE_URL = "wss://pipeline.vrchat.cloud/";
+type Socket = string; // or other WebSocket implementation
+
+const BASE_PIPELINE_URL = "wss://pipeline.vrchat.cloud";
 const BASE_API_URL = "https://api.vrchat.cloud/api/1";
 
 interface Pipeline {
-  ws: WebSocket | null;
+  socket: Socket | null;
   lastMessage: PipelineMessage<any> | null;
   sendMessage?: (msg: object) => void; // not implemented for vrcapi
 }
@@ -46,15 +47,14 @@ const useVRChat = () => {
 
 const VRChatProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
   // setting up VRChat client with application details 
-  const name = Constants.expoConfig?.name || "vrcmm";
+  const name = Constants.expoConfig?.slug + Constants.expoConfig?.extra?.vrcmm?.buildProfile;
   const version = Constants.expoConfig?.version || "0.0.0-dev";
   const contact = Constants.expoConfig?.extra?.vrcmm?.contact || "dev@ktrn.dev";
   const [config, setConfig] = useState<Configuration>();
-  const ws = useRef<WebSocket | null>(null); // websocket
+  const socketRef = useRef<Socket | null>(null);
   const authTokenRef = useRef<string | null>(null); // authToken for pipeline
-  const [shouldReconnect, setShouldReconnect] = useState(true); // auto reconnect flag ≒ piplene on/off
-  const [reconnectCount, setReconnectCount] = useState(0);
   const [lastJsonMessage, setLastJsonMessage] = useState<PipelineMessage<any> | null>(null);
+  const MAX_RECONNECT_ATTEMPTS = 10;
 
   const configureAPI = (user: { username?: string; password?: string }) => {
     const newConfig = new Configuration({
@@ -72,82 +72,20 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
   // Pipeline(Websocket)  https://vrchat.community/websocket
   const configurePipeline = (authToken: string) => {
     authTokenRef.current = authToken;
-    setReconnectCount(0);
-    setShouldReconnect(true);
-    createWebSocket()
+    createSocket();
+    console.log("Configure VRChatContext with authToken:", authTokenRef.current);
   }
 
-
-  const createWebSocket = () => {
-    const url = BASE_PIPELINE_URL + "?authToken=" + authTokenRef.current;
-    const userAgent = `${name}/${version} ${contact}`;
-    if (ws.current)  ws.current.close();
-    ws.current = new WebSocket(url, {
-      headers: {
-        "User-Agent": userAgent
-      }
-    });
-    ws.current.onopen = () => {
-      console.log("Pipeline connected");
-    }
-    ws.current.onclose = (e) => {
-      console.log("Pipeline disconnected", e.code, e.reason);
-    }
-    ws.current.onerror = (e) => {
-      console.error("Pipeline error", e.message);
-    }
-    ws.current.onmessage = (e) => {
-      try {
-        const rawMsg = JSON.parse(e.data.toString());
-        const msg : PipelineMessage = {
-          type: rawMsg.type || "unknown",
-          content: rawMsg.content || {},
-        };
-        setLastJsonMessage(msg);
-      } catch (err) {
-        console.error("Failed to parse pipeline message", err);
-      }
-    }
-    setTimeout(() => {
-      if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
-        console.warn("Pipeline connection timeout");
-        ws.current.close();
-        ws.current = null;
-      }
-    }, 5000); // 5秒でタイムアウト
+  const createSocket = () => {
+    if (socketRef.current) return ;
+    socketRef.current = "dummy"
   }
-
-  const closeWebSocket = () => {
-    if (ws.current) {
-      ws.current.close();
-      ws.current = null;
-    }
-    setShouldReconnect(false);
-    setReconnectCount(0);
-  }
-
-  // on timeout, try to reconnect 
-  useEffect(() => { 
-    if (!ws.current && shouldReconnect) {
-      // try to reconnect
-      setTimeout(() => {
-        setReconnectCount(c => c + 1);
-      }, Math.min(1000 * (2 ** reconnectCount), 30000)); // exponential backoff, max 30s
-    }
-  }, [ws.current]);
-  // when reconnectCount changes, try to reconnect
-  useEffect(() => {
-    if (reconnectCount > 0 && shouldReconnect) {
-      console.log(`Reconnecting to pipeline... (attempt ${reconnectCount})`);
-      if (authTokenRef.current) createWebSocket();
-    }
-  }, [reconnectCount]);
 
   const unConfigure = () => {
     console.log("Unconfigure VRChatContext");
     setConfig(undefined);
     authTokenRef.current = null;
-    closeWebSocket();
+    if (socketRef.current) socketRef.current = null;
   }
 
   return (
@@ -168,7 +106,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
       inviteApi: new InviteApi(config),
       // pipeline
       pipeline: {
-        ws: ws.current,
+        socket: socketRef.current,
         lastMessage: lastJsonMessage,
         sendMessage: undefined, // not implemented for vrcapi
       }
