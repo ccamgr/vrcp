@@ -10,16 +10,18 @@ help:   # show this list
 run:  # run the application
 	@npx expo start
 
-.PHONY : gen-d-ts
-gen-d-ts:  # generate missing d.ts files for not typed modules
-	@rm -rf ./src/types/*
-# 	@npx tsc --emitDeclarationOnly --declaration --outDir ./src/types --esModuleInterop --allowSyntheticDefaultImports --resolveJsonModule --lib es6,dom --module commonjs --target es6 --skipLibCheck --forceConsistentCasingInFileNames --noImplicitAny true
 
 .PHONY : gen-vrcapi
 gen-vrcapi:  # generate the vrcapi types
 	@rm -rf ./src/vrchat/api/* ./src/vrchat/openapi.yaml
 	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/vrchat/openapi.yaml
 	@npx @openapitools/openapi-generator-cli generate -i ./src/vrchat/openapi.yaml -g typescript-axios -o ./src/vrchat/api/
+
+gen-plugins: # generate the expo plugins
+	@cd modules/native-websocket && npx expo-module build plugin
+
+prebuild: # pre build tasks
+	@npx expo prebuild
 
 .PHONY : build-dev build-pre submit
 build-dev:  # build the application for development-client

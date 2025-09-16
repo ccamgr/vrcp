@@ -1,12 +1,12 @@
 import { registerWebModule, NativeModule } from 'expo';
 
-import { ChangeEventPayload } from './NativeWebSocket.types';
+import { ChangeEventPayload } from './NativeWebsocket.types';
 
-type NativeWebSocketModuleEvents = {
+type NativeWebsocketModuleEvents = {
   onChange: (params: ChangeEventPayload) => void;
 }
 
-class NativeWebSocketModule extends NativeModule<NativeWebSocketModuleEvents> {
+class NativeWebsocketModule extends NativeModule<NativeWebsocketModuleEvents> {
   PI = Math.PI;
   async setValueAsync(value: string): Promise<void> {
     this.emit('onChange', { value });
@@ -16,4 +16,4 @@ class NativeWebSocketModule extends NativeModule<NativeWebSocketModuleEvents> {
   }
 };
 
-export default registerWebModule(NativeWebSocketModule, 'NativeWebSocketModule');
+export default registerWebModule(NativeWebsocketModule, 'NativeWebsocketModule');

@@ -1,6 +1,6 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import globalStyles from "@/config/styles";
-import NativeWebSocketModule from "@modules/expo-native-ws";
+import NativeWebsocketModule from "@modules/native-websocket/src/NativeWebsocketModule";
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
@@ -51,7 +51,7 @@ export default function Home() {
   // test Native Module
   const [nmHello, setNmHello] = useState<string>("");
   useEffect(() => {
-    setNmHello(NativeWebSocketModule.hello());
+    setNmHello(NativeWebsocketModule.hello());
   },[]);
 
 

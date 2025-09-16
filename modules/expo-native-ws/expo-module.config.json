@@ -1,9 +1,0 @@
-{
-  "platforms": ["apple", "android", "web"],
-  "apple": {
-    "modules": ["NativeWebSocketModule"]
-  },
-  "android": {
-    "modules": ["expo.modules.nativews.NativeWebSocketModule"]
-  }
-}
