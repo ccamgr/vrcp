@@ -15,8 +15,6 @@ web-build/
 expo-env.d.ts
 
 
-# module
-modules/**/build/
 
 # Native
 /android

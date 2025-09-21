@@ -51,7 +51,6 @@ export default ({ config }: ConfigContext) => ({
       },
       edgeToEdgeEnabled: true,
       package: appIdentifier[profile],
-      apiKey: "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", // dummy, will be replaced by build plugin
     },
     web: {
       bundler: "metro",
