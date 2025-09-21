@@ -9,7 +9,7 @@ VRChat API Client App
 #### run development
 - run `make gen-vrcapi` to generate vrcapi-client-code
 - run `make gen-plugins` to configure custom native module plugins
-- if you develop native-code, run `make prebuild` to generate native codes
+- run `make prebuild` to generate native codes
 - run `make build-dev` to build dev-app apk 
 - install dev-app to your device from built apk
 - run `make run` to start dev-server
