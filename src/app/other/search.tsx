@@ -7,7 +7,7 @@ import { spacing } from "@/config/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
-import { GroupsApi, LimitedGroup, LimitedUserSearch, LimitedWorld, UsersApi, WorldsApi } from "@/vrchat/api";
+import { GroupsApi, LimitedGroup, LimitedUserSearch, LimitedWorld, SortOption, UsersApi, WorldsApi } from "@/vrchat/api";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
@@ -19,7 +19,7 @@ export default function Search() {
   const theme = useTheme();
   const initialParams = useLocalSearchParams<{ query: string }>()
   const [query, setQuery] = useState(initialParams.query || "");
-  const NumPerReq = 50; // Number of items to fetch per request
+  const limit = 50; // Number of items to fetch per request
 
   const MaterialTab = createMaterialTopTabNavigator();
 
@@ -33,9 +33,9 @@ export default function Search() {
     const offset = useRef(0);
     const fetchWorlds = async () => {
       try {
-        const res = await new WorldsApi(vrc.config).searchWorlds(undefined, "favorites", undefined, undefined, NumPerReq, undefined, offset.current, query);
+        const res = await new WorldsApi(vrc.config).searchWorlds(undefined, SortOption.Magic, undefined, undefined, limit, undefined, offset.current, query);
         setWorlds(prev => [...prev, ...res.data]);
-        offset.current += NumPerReq;
+        offset.current += limit;
       } catch (error) {
         console.error("Error searching worlds:", extractErrMsg(error));
       }
@@ -66,9 +66,9 @@ export default function Search() {
     const offset = useRef(0);
     const fetchUsers = async () => {
       try {
-        const res = await new UsersApi(vrc.config).searchUsers(query, undefined, NumPerReq, offset.current);
+        const res = await new UsersApi(vrc.config).searchUsers(query, undefined, limit, offset.current);
         setUsers(prev => [...prev, ...res.data]);
-        offset.current += NumPerReq;
+        offset.current += limit;
       } catch (error) {
         console.error("Error searching users:", extractErrMsg(error));
       }
@@ -100,9 +100,9 @@ export default function Search() {
 
     const fetchGroups = async () => {
       try {
-        const res = await new GroupsApi(vrc.config).searchGroups(query, offset.current, NumPerReq);
+        const res = await new GroupsApi(vrc.config).searchGroups(query, offset.current, limit);
         setGroups(prev => [...prev, ...res.data]);
-        offset.current += NumPerReq
+        offset.current += limit
       } catch (error) {
         console.error("Error searching groups:", extractErrMsg(error));
       }

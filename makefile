@@ -21,7 +21,7 @@ gen-plugins: # generate the expo plugins
 	@cd modules/native-websocket && npx expo-module build plugin
 
 prebuild: # pre build tasks
-	@npx expo prebuild
+	@npx expo prebuild --clean
 
 .PHONY : build-dev build-pre submit
 build-dev:  # build the application for development-client

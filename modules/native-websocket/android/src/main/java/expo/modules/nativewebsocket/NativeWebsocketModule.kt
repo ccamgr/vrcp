@@ -1,7 +1,10 @@
 package expo.modules.nativewebsocket
 
+import expo.modules.nativewebsocket.ws.PipelineSocket
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+
+
 
 class NativeWebsocketModule : Module() {
   // Each module class must implement the definition function. The definition consists of components
@@ -23,7 +26,7 @@ class NativeWebsocketModule : Module() {
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("hello") {
-      "Hello world! 👋"
+      "Hello world! 👋" 
     }
 
     // Defines a JavaScript function that always returns a Promise and whose native code

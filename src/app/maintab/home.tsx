@@ -4,7 +4,7 @@ import NativeWebsocketModule from "@modules/native-websocket/src/NativeWebsocket
 import { Button } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
-import { FlatList, Text, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 
 const TODO_TEXT = `
 [ToDo]  
@@ -65,29 +65,47 @@ export default function Home() {
         {nmHello}
       </Text>
 
-      <View style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 16}}>
-        <TextInput 
-          ref={inputRef}
-          style={{borderWidth: 1, borderColor: theme.colors.border, borderRadius: 4, padding: 8, flex: 1}} placeholder="Type a message..."
-          onSubmitEditing={(e) => {
-            sendMessage(e.nativeEvent.text);
-            inputRef.current?.clear();
-          }}
-        />
-        <Button onPress={() => {
-          setReconnectTrigger((prev) => prev + 1);
-        }} > Reconnect </Button>
+
+
+      {/* Native WebSocket Test */}
+      <View style={styles.tmpContainer}>
+
       </View>
-      <FlatList
-        data={msgs}
-        renderItem={({ item }) => (
-          <Text style={[globalStyles.text, {color: item.mode === "send" ? theme.colors.primary : item.mode === "recv" ? theme.colors.notification : theme.colors.subText, marginBottom: 4}]}>
-            [{item.mode}] {item.data}
-          </Text>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      
+      {/* Standard WebSocket Test */}
+      <View style={styles.tmpContainer}>
+        <View style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+          <TextInput 
+            ref={inputRef}
+            style={{borderWidth: 1, borderColor: theme.colors.border, borderRadius: 4, padding: 8, flex: 1}} placeholder="Type a message..."
+            onSubmitEditing={(e) => {
+              sendMessage(e.nativeEvent.text);
+              inputRef.current?.clear();
+            }}
+          />
+          <Button onPress={() => {
+            setReconnectTrigger((prev) => prev + 1);
+          }} > Reconnect </Button>
+        </View>
+        <FlatList
+          data={msgs}
+          renderItem={({ item }) => (
+            <Text style={[globalStyles.text, {color: item.mode === "send" ? theme.colors.primary : item.mode === "recv" ? theme.colors.notification : theme.colors.text, marginBottom: 4}]}>
+              [{item.mode}] {item.data}
+            </Text>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
     </GenericScreen>
   );
 }
 
+const styles = StyleSheet.create({
+  tmpContainer: {
+    borderWidth: 1,
+    borderColor: "red",
+    borderStyle: "dashed",
+    height: "30%",
+  }
+}); 

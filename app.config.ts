@@ -51,6 +51,7 @@ export default ({ config }: ConfigContext) => ({
       },
       edgeToEdgeEnabled: true,
       package: appIdentifier[profile],
+      apiKey: "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", // dummy, will be replaced by build plugin
     },
     web: {
       bundler: "metro",
@@ -58,6 +59,7 @@ export default ({ config }: ConfigContext) => ({
       favicon: "./src/assets/images/favicon.png"
     },
     plugins: [
+      "./modules/native-websocket/app.plugin.js", // local plugin
       "expo-router",
       "expo-secure-store",
       "expo-sqlite",
