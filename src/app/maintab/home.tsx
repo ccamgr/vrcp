@@ -19,6 +19,7 @@ export default function Home() {
   const theme = useTheme();
   const vrc = useVRChat();
 
+  const msgListRef = useRef<FlatList<any>>(null);
   const [msgs, setMsgs] = useState<{
     mode: "send" | "recv" | "info",
     data: string
@@ -27,8 +28,14 @@ export default function Home() {
   useEffect(() => {
     if (!vrc.pipeline?.lastMessage) return ;
     const msg = vrc.pipeline.lastMessage;
-    const ctt = JSON.stringify(msg.content, null, 2);
-    setMsgs((prev) => [...prev, {mode: "recv", data: `[${msg.type}] ${ctt}`}]);
+    const ctt = msg.content ? (
+      Object(msg.content)?.["user"]?.["displayName"] 
+      ?? Object(msg.content)?.["displayName"]
+      ?? Object(msg.content)?.["name"] 
+      ?? Object(msg.content)?.["userId"] 
+      ?? "<no content>"
+    ) : "<no content>";
+    setMsgs((prev) => [{mode: "recv", data: `[${msg.type}] ${ctt}`}, ...prev ]);
   }, [vrc.pipeline?.lastMessage])
 
   return (
@@ -39,17 +46,19 @@ export default function Home() {
       </Text>
       
       {/* Standard WebSocket Test */}
-      <View >
-        <View style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+      <View style={{height: "70%", borderStyle: "solid", borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 8, marginTop: 8}}>
+        <View style={{display: "flex", flexDirection: "row-reverse",  flexWrap: "wrap", gap: 8, paddingVertical: 8}}>
           <Button onPress={() => {
             setMsgs([]);
           }} > Clear </Button>
         </View>
         <FlatList
+          ref={msgListRef}
+          onContentSizeChange={() => msgListRef.current?.scrollToOffset({offset: 0, animated: true})}
           data={msgs}
           renderItem={({ item }) => (
-            <Text style={[globalStyles.text, {color: item.mode === "send" ? theme.colors.primary : item.mode === "recv" ? theme.colors.notification : theme.colors.text, marginBottom: 4}]}>
-              [{item.mode}] {item.data}
+            <Text style={[globalStyles.text, {color:  item.mode === "recv" ? theme.colors.primary : theme.colors.text, marginBottom: 4}]}>
+              {item.data}
             </Text>
           )}
           keyExtractor={(item, index) => index.toString()}
