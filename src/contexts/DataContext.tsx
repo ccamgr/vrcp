@@ -2,6 +2,7 @@ import { CurrentUser, FavoriteGroup } from '@/vrchat/api';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { useVRChat } from './VRChatContext';
+import { PipelineType } from '@/vrchat/pipline/type';
 
 
 
@@ -79,7 +80,11 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({children}) => {
   useEffect(() => {
     const msg = vrc.pipeline?.lastMessage;
     if (!msg) return ;
-    console.log("Pipeline message:", msg.type);
+    if (PipelineType.includes(msg.type as any)) {
+      console.log("Pipeline message:", msg.type);
+    } else {
+      console.log("Pipeline unknown message:", msg.type);
+    }
   }, [vrc.pipeline?.lastMessage]);
 
   return (

@@ -9,7 +9,7 @@ const BASE_API_URL = "https://api.vrchat.cloud/api/1";
 
 interface Pipeline {
   client: WebSocket | null;
-  lastMessage: PipelineMessage<any> | null;
+  lastMessage: PipelineMessage | null;
   sendMessage?: (msg: object) => void; // not implemented for vrcapi
 }
 

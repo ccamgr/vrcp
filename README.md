@@ -7,7 +7,6 @@ VRChat API Client App
 
 
 #### run development
-- run `make gen-vrcapi` to generate vrcapi-client-code
 - run `make gen-plugins` to configure custom native module plugins
 - run `make prebuild` to generate native codes
 - run `make build-dev` to build dev-app apk 
@@ -22,3 +21,7 @@ VRChat API Client App
 - run `make build-submit` to build prod-app aab and submit to store
 - publish from store page  
 
+
+### when vrcapi updated
+- run `make gen-vrcapi` to generate vrcapi-client-code
+- run `make gen-vrcpipe` to generate vrcapi-pipeline-type-code
