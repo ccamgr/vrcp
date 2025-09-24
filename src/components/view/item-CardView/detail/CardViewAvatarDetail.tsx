@@ -16,7 +16,12 @@ interface Props {
 const extractImageUrl = (data: Avatar) => data.thumbnailImageUrl;
 const extractTitle = (data: Avatar) => data.name;
 
-const CardViewAvatarDetail = ({ avatar, onPress, onLongPress, ...rest }: Props) => {
+const CardViewAvatarDetail = ({
+  avatar,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   const [mgn, setMgn] = useState<number>(0);
   const onLayout = (event: LayoutChangeEvent) => {
     setMgn(event.nativeEvent.layout.width);
@@ -30,8 +35,10 @@ const CardViewAvatarDetail = ({ avatar, onPress, onLongPress, ...rest }: Props) 
       title={extractTitle}
       OverlapComponents={
         <>
-          <View style={[styles.authorContainer, {marginRight: mgn}]}>
-            <Text numberOfLines={1}>by  <Text style={styles.author}>{avatar.authorName}</Text></Text>
+          <View style={[styles.authorContainer, { marginRight: mgn }]}>
+            <Text numberOfLines={1}>
+              by <Text style={styles.author}>{avatar.authorName}</Text>
+            </Text>
           </View>
           <View style={styles.chipContainer} onLayout={onLayout}>
             <ReleaseStatusChip data={avatar} />
@@ -56,14 +63,13 @@ const styles = StyleSheet.create({
     left: 0,
 
     // borderColor: "red", borderStyle: "solid", borderWidth: 1,
-
   },
   author: {
     fontSize: fontSize.medium,
     textDecorationLine: "underline",
   },
   chipContainer: {
-    position: "absolute",    
+    position: "absolute",
     margin: spacing.small,
     bottom: 0,
     right: 0,

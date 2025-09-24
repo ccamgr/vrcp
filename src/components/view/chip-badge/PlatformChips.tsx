@@ -13,8 +13,13 @@ const PlatformChips = ({ size, platforms, ...rest }: Props) => {
   const theme = useTheme();
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
-      {platforms.map(platform => (
-        <IconSymbol key={platform} size={size || 32} name={getIconNamebyPlatform(platform)} style={{color: getIconColorbyPlatform(platform)}} />
+      {platforms.map((platform) => (
+        <IconSymbol
+          key={platform}
+          size={size || 32}
+          name={getIconNamebyPlatform(platform)}
+          style={{ color: getIconColorbyPlatform(platform) }}
+        />
       ))}
     </View>
   );
@@ -32,7 +37,6 @@ const getIconNamebyPlatform = (platform: string): SupportedIconNames => {
       return "question-mark";
   }
 };
-
 
 const getIconColorbyPlatform = (platform: string) => {
   switch (platform) {
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
-  }
+  },
 });
 
 export default PlatformChips;

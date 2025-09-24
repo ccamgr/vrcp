@@ -14,22 +14,35 @@ interface SearchBoxProps {
   [key: string]: any;
 }
 
-const SearchBox = ({ onSubmit, onChangeText, changeTextTimeout = 500, placeholder, defaultValue, ...rest }: SearchBoxProps) => {
+const SearchBox = ({
+  onSubmit,
+  onChangeText,
+  changeTextTimeout = 500,
+  placeholder,
+  defaultValue,
+  ...rest
+}: SearchBoxProps) => {
   const theme = useTheme();
   const ref = useRef<TextInput>(null);
   const queryRef = useRef<string>("");
   const timeoutRef = useRef<number | null>(null);
-  const handleChangeText = useCallback((text: string) => {
-    queryRef.current = text;
-    if (onChangeText) {
-      if (changeTextTimeout > 0) {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => onChangeText(text), changeTextTimeout);
-      } else {
-        onChangeText(text);
+  const handleChangeText = useCallback(
+    (text: string) => {
+      queryRef.current = text;
+      if (onChangeText) {
+        if (changeTextTimeout > 0) {
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          timeoutRef.current = setTimeout(
+            () => onChangeText(text),
+            changeTextTimeout
+          );
+        } else {
+          onChangeText(text);
+        }
       }
-    }
-  }, [changeTextTimeout, onChangeText]);
+    },
+    [changeTextTimeout, onChangeText]
+  );
 
   const handleSubmit = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -45,13 +58,13 @@ const SearchBox = ({ onSubmit, onChangeText, changeTextTimeout = 500, placeholde
         onChangeText={handleChangeText}
         defaultValue={defaultValue}
         placeholderTextColor={theme.colors.subText}
-        style={[styles.input, {color: theme.colors.text}]}
+        style={[styles.input, { color: theme.colors.text }]}
         onSubmitEditing={handleSubmit}
       />
       <IconButton
         style={{ position: "absolute", right: 10, top: 8 }}
         onPress={handleSubmit}
-        name='search'
+        name="search"
         color={theme.colors.subText}
         size={26}
       />
@@ -61,17 +74,15 @@ const SearchBox = ({ onSubmit, onChangeText, changeTextTimeout = 500, placeholde
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    borderStyle: 'solid',
-    width: '100%',
+    borderStyle: "solid",
+    width: "100%",
   },
   input: {
-    width: '88%',
+    width: "88%",
     padding: spacing.medium,
-    
-  }
+  },
 });
-
 
 export default SearchBox;

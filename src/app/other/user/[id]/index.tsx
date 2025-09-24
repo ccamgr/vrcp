@@ -14,12 +14,11 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-
 export default function UserDetail() {
-  const { id } = useLocalSearchParams<{id: string}>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
-  const theme = useTheme();  
+  const theme = useTheme();
   const [user, setUser] = useState<User>();
   const [locationInfo, setLocationInfo] = useState<{
     image: string | undefined;
@@ -39,7 +38,9 @@ export default function UserDetail() {
 
   const fetchLocationInfo = async () => {
     if (!user?.location) return;
-    const {isOffline, isPrivate, parsedLocation } = parseLocationString(user?.location);
+    const { isOffline, isPrivate, parsedLocation } = parseLocationString(
+      user?.location
+    );
     if (isOffline) {
       setLocationInfo({
         image: undefined,
@@ -57,8 +58,8 @@ export default function UserDetail() {
     } else if (parsedLocation?.worldId && parsedLocation?.instanceId) {
       try {
         const res = await vrc.instancesApi.getInstance({
-          worldId: parsedLocation.worldId, 
-          instanceId: parsedLocation.instanceId
+          worldId: parsedLocation.worldId,
+          instanceId: parsedLocation.instanceId,
         });
         if (res.data) {
           setLocationInfo({
@@ -89,38 +90,53 @@ export default function UserDetail() {
     fetchLocationInfo();
   }, [user?.location]);
 
-
-  const handleEditNote = () => {}
-
+  const handleEditNote = () => {};
 
   return (
     <GenericScreen>
-      { user ? (
+      {user ? (
         <View style={{ flex: 1 }}>
-          <CardViewUserDetail
-            user={user}
-            style={[styles.cardView]} 
-          />
+          <CardViewUserDetail user={user} style={[styles.cardView]} />
           <ScrollView>
             <DetailItemContainer title="Location">
-              {!locationInfo && <LoadingIndicator size={30}/>}
-              { locationInfo?.image && <CachedImage style={styles.detailItemImage} src={locationInfo?.image ?? ""} />}
+              {!locationInfo && <LoadingIndicator size={30} />}
+              {locationInfo?.image && (
+                <CachedImage
+                  style={styles.detailItemImage}
+                  src={locationInfo?.image ?? ""}
+                />
+              )}
               <View style={styles.detailItemContent}>
-                { locationInfo?.baseInfo && <Text numberOfLines={1} style={{color: theme.colors.text}}>{locationInfo?.baseInfo}</Text>}
-                { locationInfo?.instType && <Text numberOfLines={1} style={{color: theme.colors.text}}>{locationInfo?.instType}</Text>}
-                { locationInfo?.capacity && <Text numberOfLines={1} style={{color: theme.colors.text}}>{locationInfo?.capacity}</Text>}
+                {locationInfo?.baseInfo && (
+                  <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                    {locationInfo?.baseInfo}
+                  </Text>
+                )}
+                {locationInfo?.instType && (
+                  <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                    {locationInfo?.instType}
+                  </Text>
+                )}
+                {locationInfo?.capacity && (
+                  <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                    {locationInfo?.capacity}
+                  </Text>
+                )}
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title="Note" iconButtonConfig={{name: "edit", onPress: handleEditNote}}>
+            <DetailItemContainer
+              title="Note"
+              iconButtonConfig={{ name: "edit", onPress: handleEditNote }}
+            >
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>{user.note}</Text>
+                <Text style={{ color: theme.colors.text }}>{user.note}</Text>
               </View>
             </DetailItemContainer>
 
             <DetailItemContainer title="Bio">
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>{user.bio}</Text>
+                <Text style={{ color: theme.colors.text }}>{user.bio}</Text>
               </View>
             </DetailItemContainer>
 
@@ -131,15 +147,18 @@ export default function UserDetail() {
                 ))}
               </View>
             </DetailItemContainer>
-            
+
             <DetailItemContainer title="Joined date">
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>{user.date_joined}</Text>
+                <Text style={{ color: theme.colors.text }}>
+                  {user.date_joined}
+                </Text>
               </View>
             </DetailItemContainer>
 
-            <Text style={{color:"gray"}}>{JSON.stringify(user, null, 2)}</Text>
-            
+            <Text style={{ color: "gray" }}>
+              {JSON.stringify(user, null, 2)}
+            </Text>
           </ScrollView>
         </View>
       ) : (
@@ -168,7 +187,6 @@ const styles = StyleSheet.create({
     width: "20%",
     aspectRatio: 1,
   },
-
 
   detailItemContent: {
     flex: 1,

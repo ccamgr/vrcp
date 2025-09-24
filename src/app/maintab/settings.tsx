@@ -10,7 +10,6 @@ import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-
 interface SettingItem {
   icon: SupportedIconNames;
   title: string;
@@ -31,19 +30,23 @@ export default function Settings() {
         icon: "info",
         title: "Info",
         description: "View information about this app",
-        onPress: () => {console.log("Info pressed")}
+        onPress: () => {
+          console.log("Info pressed");
+        },
       },
       {
         icon: "imagesearch-roller",
         title: "UI",
         description: "Manage your UI settings",
-        onPress: () => {}
+        onPress: () => {},
       },
       {
         icon: "view-list",
         title: "Database",
         description: "Manage your database",
-        onPress: () => {setOpenDatabase(true)}
+        onPress: () => {
+          setOpenDatabase(true);
+        },
       },
     ],
     other: [
@@ -51,13 +54,13 @@ export default function Settings() {
         icon: "help",
         title: "Help",
         description: "Get help and support",
-        onPress: () => {}
+        onPress: () => {},
       },
       {
         icon: "bug",
         title: "developper",
         description: "Manage development features",
-        onPress: () => setOpenDevelopper(true)
+        onPress: () => setOpenDevelopper(true),
       },
     ],
     logout: [
@@ -65,22 +68,39 @@ export default function Settings() {
         icon: "logout",
         title: "Logout",
         description: "Log out from this app",
-        onPress: () => setOpenLogout(true)
-      }
-    ]
-  }
+        onPress: () => setOpenLogout(true),
+      },
+    ],
+  };
 
   return (
     <GenericScreen>
       {Object.entries(settingContents).map(([category, items]) => (
         <View key={category} style={styles.categoryContainer}>
-          <Text style={[globalStyles.header, {color: theme.colors.text}]}>{category}</Text>
+          <Text style={[globalStyles.header, { color: theme.colors.text }]}>
+            {category}
+          </Text>
           {items.map((item, index) => (
-            <TouchableOpacity key={index} style={[styles.listItemContainer, {borderBottomColor: theme.colors.border}]} onPress={item.onPress}>
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.listItemContainer,
+                { borderBottomColor: theme.colors.border },
+              ]}
+              onPress={item.onPress}
+            >
               <IconSymbol name={item.icon} size={fontSize.large * 1.5} />
               <View style={styles.listItemLabel}>
-                <Text style={[globalStyles.subheader, {color: theme.colors.text}]}>{item.title}</Text>
-                <Text style={[globalStyles.text, {color: theme.colors.subText}]}>{item.description}</Text>
+                <Text
+                  style={[globalStyles.subheader, { color: theme.colors.text }]}
+                >
+                  {item.title}
+                </Text>
+                <Text
+                  style={[globalStyles.text, { color: theme.colors.subText }]}
+                >
+                  {item.description}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -89,7 +109,7 @@ export default function Settings() {
 
       {/* logout */}
       <GenericDialog
-        open={openLogout} 
+        open={openLogout}
         message="Are you sure you want to log out?"
         onConfirm={() => {
           auth.logout();
@@ -100,15 +120,13 @@ export default function Settings() {
         confirmTitle="Logout"
         cancelTitle="Cancel"
       />
-  
+
       <DevelopperModal open={openDevelopper} setOpen={setOpenDevelopper} />
 
       <DatabaseModal open={openDatabase} setOpen={setOpenDatabase} />
-    
     </GenericScreen>
   );
 }
-
 
 const styles = StyleSheet.create({
   categoryContainer: {
@@ -122,9 +140,9 @@ const styles = StyleSheet.create({
     padding: spacing.medium,
 
     borderWidth: 1,
-    borderStyle: "solid"
+    borderStyle: "solid",
   },
   listItemLabel: {
     marginLeft: spacing.medium,
   },
-})
+});

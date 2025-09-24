@@ -19,21 +19,40 @@ interface Props<T> {
   TitleStyle?: any;
 }
 
-const BaseCardView = <T,>({ data, onPress, onLongPress, imageUrl, title, OverlapComponents, ...rest }: Props<T>) => {
+const BaseCardView = <T,>({
+  data,
+  onPress,
+  onLongPress,
+  imageUrl,
+  title,
+  OverlapComponents,
+  ...rest
+}: Props<T>) => {
   const theme = useTheme();
-  const resolvedImageUrl = typeof imageUrl === "function" ? imageUrl(data) : imageUrl;
+  const resolvedImageUrl =
+    typeof imageUrl === "function" ? imageUrl(data) : imageUrl;
   const resolvedTitle = typeof title === "function" ? title(data) : title;
   return (
-    <View style={[styles.root, rest.style]} {...omitObject(rest, "style", "ImageStyle", "FooterStyle", "TitleStyle")}>
-    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.base, { backgroundColor: theme.colors.card }]} >
-      <CachedImage src={resolvedImageUrl} style={[styles.image, rest.ImageStyle]} />
-      <View style={[styles.footer, rest.FooterStyle]}>
-        <Text style={[styles.title, rest.TitleStyle]} numberOfLines={1}>{resolvedTitle}</Text>
-      </View>
-      <View style={styles.overlap}>
-        {OverlapComponents}  
-      </View>
-    </TouchableOpacity>
+    <View
+      style={[styles.root, rest.style]}
+      {...omitObject(rest, "style", "ImageStyle", "FooterStyle", "TitleStyle")}
+    >
+      <TouchableOpacity
+        onPress={onPress}
+        onLongPress={onLongPress}
+        style={[styles.base, { backgroundColor: theme.colors.card }]}
+      >
+        <CachedImage
+          src={resolvedImageUrl}
+          style={[styles.image, rest.ImageStyle]}
+        />
+        <View style={[styles.footer, rest.FooterStyle]}>
+          <Text style={[styles.title, rest.TitleStyle]} numberOfLines={1}>
+            {resolvedTitle}
+          </Text>
+        </View>
+        <View style={styles.overlap}>{OverlapComponents}</View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -42,7 +61,7 @@ const styles = StyleSheet.create({
   root: {
     padding: spacing.small,
   },
-  base: { 
+  base: {
     overflow: "hidden",
     width: "100%",
     height: "auto",

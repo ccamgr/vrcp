@@ -6,7 +6,7 @@ import IconButton from "../../view/icon-components/IconButton";
 import { SupportedIconNames } from "../../view/icon-components/utils";
 
 interface Props {
-  title: string ;
+  title: string;
   children?: React.ReactNode;
   iconButtonConfig?: {
     name?: SupportedIconNames;
@@ -14,27 +14,29 @@ interface Props {
   };
 }
 
-const DetailItemContainer = ({title, children, iconButtonConfig}: Props) => {
+const DetailItemContainer = ({ title, children, iconButtonConfig }: Props) => {
   const theme = useTheme();
   return (
     <View style={styles.container}>
       <View style={styles.onBorderLine}>
-        <Text style={[styles.title, {backgroundColor: theme.colors.background}]}>{title}</Text>
+        <Text
+          style={[styles.title, { backgroundColor: theme.colors.background }]}
+        >
+          {title}
+        </Text>
         {iconButtonConfig && (
           <IconButton
-            style={[styles.icon, {backgroundColor: theme.colors.background}]}
+            style={[styles.icon, { backgroundColor: theme.colors.background }]}
             name={iconButtonConfig.name ?? "edit"}
             size={fontSize.medium}
             onPress={iconButtonConfig.onPress}
           />
         )}
       </View>
-      <View style={styles.children}>
-        {children}
-      </View>
+      <View style={styles.children}>{children}</View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -(fontSize.medium / 1.5) }],
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   title: {
     transform: [{ translateX: -1 }],
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     // borderStyle:"dotted", borderColor:"blue",borderWidth:1
-  }
+  },
 });
 
 export default DetailItemContainer;

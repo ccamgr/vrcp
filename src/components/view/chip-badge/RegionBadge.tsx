@@ -18,7 +18,6 @@ const RegionBadge = ({ region, ...rest }: Props) => {
       {...omitObject(rest, "style")}
     />
   );
-}
-
+};
 
 export default RegionBadge;

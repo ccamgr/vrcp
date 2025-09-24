@@ -38,7 +38,11 @@ const CardViewWorld = ({ world, onPress, onLongPress, ...rest }: Props) => {
             <Text style={[styles.occupants, { color: theme.colors.subText }]}>
               {world.occupants}
             </Text>
-            <IconSymbol name="people" size={fontSize.small * 1.1} color={theme.colors.subText} />
+            <IconSymbol
+              name="people"
+              size={fontSize.small * 1.1}
+              color={theme.colors.subText}
+            />
           </View>
           <View style={styles.platformContainer}>
             <PlatformChips size={24} platforms={getWorldPlatform(world)} />

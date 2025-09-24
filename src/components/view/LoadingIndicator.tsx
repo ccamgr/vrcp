@@ -9,12 +9,20 @@ interface Props {
   absolute?: boolean;
 }
 
-const LoadingIndicator = ({size, notext = false, absolute = false}: Props) => {
+const LoadingIndicator = ({
+  size,
+  notext = false,
+  absolute = false,
+}: Props) => {
   const theme = useTheme();
   return (
-    <View style={[styles.container, absolute ? {position: "absolute"} : {}]}>
+    <View style={[styles.container, absolute ? { position: "absolute" } : {}]}>
       <ActivityIndicator size={size || 90} color={theme.colors.border} />
-      {!notext && <Text style={[styles.text, {color: theme.colors.subText}]} >Loading...</Text>}
+      {!notext && (
+        <Text style={[styles.text, { color: theme.colors.subText }]}>
+          Loading...
+        </Text>
+      )}
     </View>
   );
 };

@@ -7,7 +7,15 @@ import { spacing } from "@/config/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
-import { GroupsApi, LimitedGroup, LimitedUserSearch, LimitedWorld, SortOption, UsersApi, WorldsApi } from "@/vrchat/api";
+import {
+  GroupsApi,
+  LimitedGroup,
+  LimitedUserSearch,
+  LimitedWorld,
+  SortOption,
+  UsersApi,
+  WorldsApi,
+} from "@/vrchat/api";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
@@ -17,7 +25,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 export default function Search() {
   const vrc = useVRChat();
   const theme = useTheme();
-  const initialParams = useLocalSearchParams<{ query: string }>()
+  const initialParams = useLocalSearchParams<{ query: string }>();
   const [query, setQuery] = useState(initialParams.query || "");
   const limit = 50; // Number of items to fetch per request
 
@@ -33,32 +41,41 @@ export default function Search() {
     const offset = useRef(0);
     const fetchWorlds = async () => {
       try {
-        const res = await new WorldsApi(vrc.config).searchWorlds({sort: SortOption.Magic, n: limit, offset: offset.current, search: query});
-        setWorlds(prev => [...prev, ...res.data]);
+        const res = await new WorldsApi(vrc.config).searchWorlds({
+          sort: SortOption.Magic,
+          n: limit,
+          offset: offset.current,
+          search: query,
+        });
+        setWorlds((prev) => [...prev, ...res.data]);
         offset.current += limit;
       } catch (error) {
         console.error("Error searching worlds:", extractErrMsg(error));
       }
     };
-    useEffect(()=>{
-      if(query.length === 0) return;
+    useEffect(() => {
+      if (query.length === 0) return;
       offset.current = 0;
       fetchWorlds();
-    },[query])
-    
+    }, [query]);
+
     return (
       <FlatList
         data={worlds}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => 
-          <CardViewWorld world={item} style={styles.cardView} onPress={() => routeToWorld(item.id)} />
-        }
+        renderItem={({ item }) => (
+          <CardViewWorld
+            world={item}
+            style={styles.cardView}
+            onPress={() => routeToWorld(item.id)}
+          />
+        )}
         numColumns={2}
         onEndReached={fetchWorlds}
         onEndReachedThreshold={0.3}
       />
     );
-  }
+  };
 
   // User Tab
   const ResultUsersTab = () => {
@@ -66,32 +83,40 @@ export default function Search() {
     const offset = useRef(0);
     const fetchUsers = async () => {
       try {
-        const res = await new UsersApi(vrc.config).searchUsers({n: limit, offset: offset.current, search: query});
-        setUsers(prev => [...prev, ...res.data]);
+        const res = await new UsersApi(vrc.config).searchUsers({
+          n: limit,
+          offset: offset.current,
+          search: query,
+        });
+        setUsers((prev) => [...prev, ...res.data]);
         offset.current += limit;
       } catch (error) {
         console.error("Error searching users:", extractErrMsg(error));
       }
     };
-    useEffect(()=>{
-      if(query.length === 0) return;
+    useEffect(() => {
+      if (query.length === 0) return;
       offset.current = 0;
       fetchUsers();
-    },[query])
+    }, [query]);
 
     return (
       <FlatList
         data={users}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => 
-          <CardViewUser user={item} style={styles.cardView} onPress={() => routeToUser(item.id)} />
-        }
+        renderItem={({ item }) => (
+          <CardViewUser
+            user={item}
+            style={styles.cardView}
+            onPress={() => routeToUser(item.id)}
+          />
+        )}
         numColumns={2}
         onEndReached={fetchUsers}
         onEndReachedThreshold={0.3}
       />
     );
-  }
+  };
 
   // Groups Tab
   const ResultGroupsTab = () => {
@@ -100,32 +125,40 @@ export default function Search() {
 
     const fetchGroups = async () => {
       try {
-        const res = await new GroupsApi(vrc.config).searchGroups({n: limit, offset: offset.current, query: query});
-        setGroups(prev => [...prev, ...res.data]);
-        offset.current += limit
+        const res = await new GroupsApi(vrc.config).searchGroups({
+          n: limit,
+          offset: offset.current,
+          query: query,
+        });
+        setGroups((prev) => [...prev, ...res.data]);
+        offset.current += limit;
       } catch (error) {
         console.error("Error searching groups:", extractErrMsg(error));
       }
     };
-    useEffect(()=>{
-      if(query.length === 0) return;
+    useEffect(() => {
+      if (query.length === 0) return;
       offset.current = 0;
       fetchGroups();
-    },[query])
+    }, [query]);
 
     return (
       <FlatList
         data={groups}
         keyExtractor={(item) => item.id ?? ""}
-        renderItem={({ item }) => 
-          <CardViewGroup group={item} style={styles.cardView} onPress={() => routeToGroup(item.id ?? "")} />
-        }
+        renderItem={({ item }) => (
+          <CardViewGroup
+            group={item}
+            style={styles.cardView}
+            onPress={() => routeToGroup(item.id ?? "")}
+          />
+        )}
         numColumns={2}
         onEndReached={fetchGroups}
         onEndReachedThreshold={0.3}
       />
     );
-  }
+  };
 
   return (
     <GenericScreen>

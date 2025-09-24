@@ -20,118 +20,136 @@ export default function Friends() {
 
   // separate loading with online,active and offline friends
 
-
-  const FavoriteFriendsTab = () => { 
+  const FavoriteFriendsTab = () => {
     const { friends, favorites, favoriteGroups } = useData();
     const [isLoading, setIsLoading] = useState(false);
     const refresh = () => {
       setIsLoading(true);
-      friends.fetch()
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-    }
+      friends
+        .fetch()
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    };
 
     const favoriteFriends = useMemo(() => {
-      const friFavs = favorites.data.filter(ff => ff.type === "friend");
-      const friFavSet = new Set(friFavs.map(ff => ff.favoriteId));
-      return friends.data.filter(f => friFavSet.has(f.id)); 
+      const friFavs = favorites.data.filter((ff) => ff.type === "friend");
+      const friFavSet = new Set(friFavs.map((ff) => ff.favoriteId));
+      return friends.data.filter((f) => friFavSet.has(f.id));
     }, [friends.data, favorites.data, favoriteGroups.data]);
 
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
           data={favoriteFriends}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ListViewUser user={item} style={styles.cardView} onPress={() => routeToUser(item.id)} />
+            <ListViewUser
+              user={item}
+              style={styles.cardView}
+              onPress={() => routeToUser(item.id)}
+            />
           )}
           numColumns={1}
           refreshing={isLoading}
           onRefresh={refresh}
         />
       </>
-    )
-  }
-
+    );
+  };
 
   const OnlineFriendsTab = () => {
     const { friends } = useData();
     const [isLoading, setIsLoading] = useState(false);
     const refresh = () => {
       setIsLoading(true);
-      friends.fetch()
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-    }
+      friends
+        .fetch()
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    };
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
-          data={friends.data.filter(f => getState(f) === "online")}
+          data={friends.data.filter((f) => getState(f) === "online")}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ListViewUser user={item} style={styles.cardView} onPress={() => routeToUser(item.id)} />
+            <ListViewUser
+              user={item}
+              style={styles.cardView}
+              onPress={() => routeToUser(item.id)}
+            />
           )}
           numColumns={1}
           refreshing={isLoading}
           onRefresh={refresh}
         />
       </>
-    )
-  }
+    );
+  };
 
   const ActiveFriendsTab = () => {
     const { friends } = useData();
     const [isLoading, setIsLoading] = useState(false);
     const refresh = () => {
       setIsLoading(true);
-      friends.fetch()
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-    }
+      friends
+        .fetch()
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    };
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
-          data={friends.data.filter(f => getState(f) === "active")}
+          data={friends.data.filter((f) => getState(f) === "active")}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ListViewUser user={item} style={styles.cardView} onPress={() => routeToUser(item.id)} />
+            <ListViewUser
+              user={item}
+              style={styles.cardView}
+              onPress={() => routeToUser(item.id)}
+            />
           )}
           numColumns={1}
           refreshing={isLoading}
           onRefresh={refresh}
         />
       </>
-    )
-  }
+    );
+  };
 
   const OfflineFriendsTab = () => {
     const { friends } = useData();
     const [isLoading, setIsLoading] = useState(false);
     const refresh = () => {
       setIsLoading(true);
-      friends.fetch()
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-    }
+      friends
+        .fetch()
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    };
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
-          data={friends.data.filter(f => getState(f) === "offline")}
+          data={friends.data.filter((f) => getState(f) === "offline")}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ListViewUser user={item} style={styles.cardView} onPress={() => routeToUser(item.id)} />
+            <ListViewUser
+              user={item}
+              style={styles.cardView}
+              onPress={() => routeToUser(item.id)}
+            />
           )}
           numColumns={1}
           refreshing={isLoading}
           onRefresh={refresh}
         />
       </>
-    )
-  }
+    );
+  };
   return (
     <GenericScreen>
       <MaterialTab.Navigator
@@ -140,25 +158,25 @@ export default function Friends() {
           tabBarIndicatorStyle: { backgroundColor: theme.colors.primary },
         }}
       >
-        <MaterialTab.Screen 
-          name="favorite" 
-          options={{tabBarLabel: "Favorite"}}
-          component={FavoriteFriendsTab} 
+        <MaterialTab.Screen
+          name="favorite"
+          options={{ tabBarLabel: "Favorite" }}
+          component={FavoriteFriendsTab}
         />
-        <MaterialTab.Screen 
-          name="online" 
-          options={{tabBarLabel: "Online"}}
-          component={OnlineFriendsTab} 
+        <MaterialTab.Screen
+          name="online"
+          options={{ tabBarLabel: "Online" }}
+          component={OnlineFriendsTab}
         />
-        <MaterialTab.Screen 
-          name="active" 
-          options={{tabBarLabel: "Active"}}
-          component={ActiveFriendsTab} 
+        <MaterialTab.Screen
+          name="active"
+          options={{ tabBarLabel: "Active" }}
+          component={ActiveFriendsTab}
         />
-        <MaterialTab.Screen 
-          name="offline" 
-          options={{tabBarLabel: "Offline"}}
-          component={OfflineFriendsTab} 
+        <MaterialTab.Screen
+          name="offline"
+          options={{ tabBarLabel: "Offline" }}
+          component={OfflineFriendsTab}
         />
       </MaterialTab.Navigator>
     </GenericScreen>

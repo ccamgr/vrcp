@@ -15,7 +15,7 @@ const GenericScreen = ({
   // title,
   // action,
   // contents,
-  children
+  children,
 }: GenericScreenProps) => {
   const theme = useTheme();
   const router = useRouter();
@@ -36,16 +36,14 @@ const GenericScreen = ({
           {contents}
         </View>
       </View> */}
-      <View style={styles.screenContainer}>
-        {children}
-      </View>
+      <View style={styles.screenContainer}>{children}</View>
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-  screenRoot: { // attach to Root-View
+  screenRoot: {
+    // attach to Root-View
     flex: 1,
   },
   screenHeader: {
@@ -55,17 +53,16 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     height: 64,
     padding: spacing.small,
-
   },
-  screenHeaderTitleAndAction:{
+  screenHeaderTitleAndAction: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
   },
-  screenHeaderContents:{
+  screenHeaderContents: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   screenContainer: {
     flex: 1,
@@ -73,7 +70,6 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     paddingHorizontal: spacing.small,
   },
-})
-
+});
 
 export default GenericScreen;

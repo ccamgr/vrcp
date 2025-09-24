@@ -3,7 +3,9 @@ import DetailItemContainer from "@/components/screen/detail/DetailItemContainer"
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
 import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardViewWorldDetail";
-import ListViewInstance, { MinInstance } from "@/components/view/item-ListView/ListViewInstance";
+import ListViewInstance, {
+  MinInstance,
+} from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, radius, spacing } from "@/config/styles";
@@ -11,19 +13,22 @@ import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { formatToDateTime } from "@/lib/date";
 import { extractErrMsg } from "@/lib/extractErrMsg";
-import { getAuthorTags, getWorldPlatform, parseInstanceId } from "@/lib/vrchatUtils";
+import {
+  getAuthorTags,
+  getWorldPlatform,
+  parseInstanceId,
+} from "@/lib/vrchatUtils";
 import { World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
-
 export default function WorldDetail() {
-  const { id } = useLocalSearchParams<{id: string}>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
-  const theme = useTheme();  
+  const theme = useTheme();
   const [world, setWorld] = useState<World>();
   const [mode, setMode] = useState<"info" | "instance">("info");
 
@@ -40,10 +45,11 @@ export default function WorldDetail() {
     fetchData();
   }, []);
 
-
-  const formatAndSortInstances = (instances : any[][] | undefined) : MinInstance[] => {
-    const parsedInstances = [] as MinInstance[] 
-    instances?.forEach(item => {
+  const formatAndSortInstances = (
+    instances: any[][] | undefined
+  ): MinInstance[] => {
+    const parsedInstances = [] as MinInstance[];
+    instances?.forEach((item) => {
       const [id, n_users] = item;
       if (typeof id !== "string" || typeof n_users !== "number") return;
       const parsed = parseInstanceId(id);
@@ -59,19 +65,17 @@ export default function WorldDetail() {
       };
       parsedInstances.push(instance);
     });
-    const sortedInstances = parsedInstances.sort((a, b) => b.n_users - a.n_users);
+    const sortedInstances = parsedInstances.sort(
+      (a, b) => b.n_users - a.n_users
+    );
     return sortedInstances;
-  }
-  
+  };
 
   return (
     <GenericScreen>
-      { world ? (
+      {world ? (
         <View style={{ flex: 1 }}>
-          <CardViewWorldDetail
-            world={world}
-            style={[styles.cardView]} 
-          />
+          <CardViewWorldDetail world={world} style={[styles.cardView]} />
 
           <SelectGroupButton
             data={["info", "instance"]}
@@ -95,33 +99,42 @@ export default function WorldDetail() {
 
               <DetailItemContainer title="Description">
                 <View style={styles.detailItemContent}>
-                  <Text style={{color: theme.colors.text}}>{world.description}</Text>
+                  <Text style={{ color: theme.colors.text }}>
+                    {world.description}
+                  </Text>
                 </View>
               </DetailItemContainer>
 
               <DetailItemContainer title="Info">
                 <View style={styles.detailItemContent}>
-                  <Text style={{color: theme.colors.text}}>{`capacity: ${world.capacity}`}</Text>
-                  <Text style={{color: theme.colors.text}}>{`visits: ${world.visits}`}</Text>
-                  <Text style={{color: theme.colors.text}}>{`created: ${formatToDateTime(world.created_at)}`}</Text>
-                  <Text style={{color: theme.colors.text}}>{`updated: ${formatToDateTime(world.updated_at)}`}</Text>
+                  <Text
+                    style={{ color: theme.colors.text }}
+                  >{`capacity: ${world.capacity}`}</Text>
+                  <Text
+                    style={{ color: theme.colors.text }}
+                  >{`visits: ${world.visits}`}</Text>
+                  <Text
+                    style={{ color: theme.colors.text }}
+                  >{`created: ${formatToDateTime(world.created_at)}`}</Text>
+                  <Text
+                    style={{ color: theme.colors.text }}
+                  >{`updated: ${formatToDateTime(world.updated_at)}`}</Text>
                 </View>
               </DetailItemContainer>
 
-              <Text style={{color:"gray"}}>{JSON.stringify(world, null, 2)}</Text>
-
+              <Text style={{ color: "gray" }}>
+                {JSON.stringify(world, null, 2)}
+              </Text>
             </ScrollView>
           )}
 
           {mode === "instance" && (
             <FlatList
               data={formatAndSortInstances(world.instances)}
-              renderItem={({ item }) => (
-                <ListViewInstance instance={item} />
-              )}
+              renderItem={({ item }) => <ListViewInstance instance={item} />}
               keyExtractor={(item) => item.id}
             />
-          )}  
+          )}
         </View>
       ) : (
         <LoadingIndicator />
@@ -149,7 +162,6 @@ const styles = StyleSheet.create({
     width: "20%",
     aspectRatio: 1,
   },
-
 
   detailItemContent: {
     flex: 1,

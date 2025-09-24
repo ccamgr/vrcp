@@ -28,7 +28,7 @@ const CardViewAvatar = ({ avatar, onPress, onLongPress, ...rest }: Props) => {
       onLongPress={onLongPress}
       imageUrl={extractImageUrl}
       title={extractTitle}
-      FooterStyle={{marginRight: mgn}}
+      FooterStyle={{ marginRight: mgn }}
       OverlapComponents={
         <View style={styles.chipContainer} onLayout={onLayout}>
           <ReleaseStatusChip data={avatar} />

@@ -14,12 +14,22 @@ const IconSymbol = ({ name, color, size, ...rest }: Props) => {
   return (
     <>
       {isMaterialIconsName(name) ? (
-        <MaterialIcons name={name} size={size} color={color || theme.colors.text} {...rest} />
+        <MaterialIcons
+          name={name}
+          size={size}
+          color={color || theme.colors.text}
+          {...rest}
+        />
       ) : (
-        <MaterialCommunityIcons name={name} size={size} color={color || theme.colors.text} {...rest} />
+        <MaterialCommunityIcons
+          name={name}
+          size={size}
+          color={color || theme.colors.text}
+          {...rest}
+        />
       )}
     </>
-  )
-}
+  );
+};
 
 export default IconSymbol;

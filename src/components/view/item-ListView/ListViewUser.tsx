@@ -1,6 +1,12 @@
 import { radius, spacing } from "@/config/styles";
 import { CachedImage, useCache } from "@/contexts/CacheContext";
-import { getInstanceType, getStatusColor, parseInstanceId, parseLocationString, UserLike } from "@/lib/vrchatUtils";
+import {
+  getInstanceType,
+  getStatusColor,
+  parseInstanceId,
+  parseLocationString,
+  UserLike,
+} from "@/lib/vrchatUtils";
 import { World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -16,23 +22,26 @@ interface Props {
 }
 const extractTitle = (data: UserLike) => data.displayName;
 const extractSubtitles = (data: UserLike, world?: World) => {
-  const statusText = data.statusDescription !== "" ? data.statusDescription : data.status;
+  const statusText =
+    data.statusDescription !== "" ? data.statusDescription : data.status;
   let locationText = "unknown";
   if (Object(data).hasOwnProperty("location")) {
-    const { isOffline, isPrivate, isTraveling, parsedLocation } =  parseLocationString(Object(data).location);
+    const { isOffline, isPrivate, isTraveling, parsedLocation } =
+      parseLocationString(Object(data).location);
     if (isOffline) locationText = "* user is offline *";
     if (isPrivate) locationText = "* user is in a private instance *";
     if (isTraveling) locationText = "* user is now traveling... *";
     if (parsedLocation) {
       const parsedInstance = parseInstanceId(parsedLocation.instanceId);
-      const worldName =  world?.name ?? ""
-      const instanceType = parsedInstance ? getInstanceType(parsedInstance.type, parsedInstance.groupAccessType) : "";
+      const worldName = world?.name ?? "";
+      const instanceType = parsedInstance
+        ? getInstanceType(parsedInstance.type, parsedInstance.groupAccessType)
+        : "";
       const instanceStr = parsedInstance ? `#${parsedInstance.name}` : "";
       locationText = `${instanceType} ${instanceStr}  ${worldName}`.trim();
     }
   }
   return [statusText, locationText];
-
 };
 
 const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
@@ -41,16 +50,19 @@ const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
   const [subtitles, setSubtitles] = useState<string[]>(extractSubtitles(user));
   // ワールド情報をキャッシュから取得してサブタイトルを更新
   useEffect(() => {
-    const {parsedLocation} = parseLocationString(Object(user).location);
+    const { parsedLocation } = parseLocationString(Object(user).location);
     if (!parsedLocation?.worldId) return;
     // get world data with using cache
-    world.get(parsedLocation.worldId)
-    .then((world) => {
-      setSubtitles(extractSubtitles(user, world));
-    })
-    .catch((e) => {
-      console.error(`Err fetching world on ListViewUser: ${parsedLocation.worldId}`);
-    });
+    world
+      .get(parsedLocation.worldId)
+      .then((world) => {
+        setSubtitles(extractSubtitles(user, world));
+      })
+      .catch((e) => {
+        console.error(
+          `Err fetching world on ListViewUser: ${parsedLocation.worldId}`
+        );
+      });
   }, [Object(user).location]);
   return (
     <BaseListView
@@ -65,17 +77,27 @@ const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
       OverlapComponents={
         <View style={styles.iconContainer}>
           <CachedImage
-            src={user.userIcon && user.userIcon.length > 0 ? user.userIcon : user.currentAvatarThumbnailImageUrl ?? user.currentAvatarImageUrl}
-            style={[styles.icon, { borderColor: getStatusColor(user), backgroundColor: theme.colors.card }]}
+            src={
+              user.userIcon && user.userIcon.length > 0
+                ? user.userIcon
+                : user.currentAvatarThumbnailImageUrl ??
+                  user.currentAvatarImageUrl
+            }
+            style={[
+              styles.icon,
+              {
+                borderColor: getStatusColor(user),
+                backgroundColor: theme.colors.card,
+              },
+            ]}
           />
         </View>
-        // ToDo: isFavoriteIcon, 
+        // ToDo: isFavoriteIcon,
       }
       {...rest}
     />
   );
 };
-
 
 const _defaultHeight = 65; // default, height-based
 const styles = StyleSheet.create({

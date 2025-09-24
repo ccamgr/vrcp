@@ -12,7 +12,12 @@ interface Props {
 const extractImageUrl = (data: GroupLike) => data.bannerUrl ?? "";
 const extractTitle = (data: GroupLike) => data.name ?? "";
 
-const CardViewGroupDetail = ({ group, onPress, onLongPress, ...rest }: Props) => {
+const CardViewGroupDetail = ({
+  group,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   return (
     <BaseCardView
       data={group}

@@ -1,16 +1,21 @@
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import { AuthenticationApi } from "@/vrchat/api";
 import { router } from "expo-router";
-import Storage from 'expo-sqlite/kv-store';
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import Storage from "expo-sqlite/kv-store";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useVRChat } from "./VRChatContext";
 
 type AuthUser = {
   id?: string;
   icon?: string;
   displayName?: string;
-}
-
+};
 
 interface LoginParam {
   username: string; // email or username
@@ -26,39 +31,41 @@ type VerifyRes = "success" | "failed" | "disabled" | "error";
 
 interface AuthContextType {
   user: AuthUser | undefined;
-  login: (param: LoginParam)=>Promise<LoginRes>;
-  logout: ()=>void;
-  verify: (param: VerifyParam)=>Promise<VerifyRes>;
+  login: (param: LoginParam) => Promise<LoginRes>;
+  logout: () => void;
+  verify: (param: VerifyParam) => Promise<VerifyRes>;
 }
 
-const Context = createContext<AuthContextType | undefined>(undefined)
+const Context = createContext<AuthContextType | undefined>(undefined);
 
 const useAuth = () => {
-  const context = useContext(Context)
+  const context = useContext(Context);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context
-}
+  return context;
+};
 
-const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
+const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const vrc = useVRChat();
-  const [user, setUser] = useState<AuthUser | undefined>(undefined)
+  const [user, setUser] = useState<AuthUser | undefined>(undefined);
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
     const conf = vrc.configureAPI({
       username: param.username,
-      password: param.password
+      password: param.password,
     });
-    const api = new AuthenticationApi(conf) // because of too slow of setState, use returned value
+    const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
     try {
-      await api.logout() // 前のセッションがライブラリに残ってる場合があるので、ログアウトしてからログインする
+      await api.logout(); // 前のセッションがライブラリに残ってる場合があるので、ログアウトしてからログインする
     } catch (e) {
-      console.log("already logged out")
+      console.log("already logged out");
     }
     try {
       const res = await api.getCurrentUser();
-      const requiredTFA = Object(res.data).hasOwnProperty("requiresTwoFactorAuth");
+      const requiredTFA = Object(res.data).hasOwnProperty(
+        "requiresTwoFactorAuth"
+      );
       if (requiredTFA) {
         // two factor auth
         const allowedTFA = Object(res.data).requiresTwoFactorAuth as string[];
@@ -80,7 +87,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
         // [ToDo] use SecureStore of expo
         if (authCookie) Storage.setItem("auth_authCookie", authCookie);
         if (tfaCookie) Storage.setItem("auth_2faCookie", tfaCookie);
-        
+
         if (authCookie) {
           vrc.configurePipeline(authCookie); // set auth cookie to pipeline
         }
@@ -89,8 +96,8 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
           id: res.data.id,
           displayName: res.data.displayName,
           icon: res.data.userIcon,
-        })
-        console.log(`login as ${res.data.displayName}: ${res.data.id}`)
+        });
+        console.log(`login as ${res.data.displayName}: ${res.data.id}`);
         router.replace("/maintab/home"); // navigate to tabs if user is logged in
 
         return "success";
@@ -101,13 +108,13 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
       console.error("Login failed", extractErrMsg(e));
       return "error";
     }
-  }
+  };
 
-  const verify = async ({code, mode}: VerifyParam): Promise<VerifyRes> => {
+  const verify = async ({ code, mode }: VerifyParam): Promise<VerifyRes> => {
     const api = new AuthenticationApi(vrc.config);
     try {
       if (mode == "totp") {
-        const res = await api.verify2FA({twoFactorAuthCode: {code}});
+        const res = await api.verify2FA({ twoFactorAuthCode: { code } });
         if (res.data.verified) {
           return "success";
         } else if (!res.data.enabled) {
@@ -116,7 +123,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
           return "failed";
         }
       } else if (mode == "email") {
-        const res = await api.verify2FA({twoFactorAuthCode: {code}});
+        const res = await api.verify2FA({ twoFactorAuthCode: { code } });
         if (res.data.verified) {
           const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
           if (tfaCookie) {
@@ -139,23 +146,22 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
 
   const logout = async () => {
     try {
-      await vrc.authenticationApi.logout()
+      await vrc.authenticationApi.logout();
     } catch (e) {
       console.error("Logout failed", e);
     }
     vrc.unConfigure();
     // logout logic
-    Storage.removeItem("auth_user_id")
-    Storage.removeItem("auth_user_displayName")
-    Storage.removeItem("auth_user_icon")
+    Storage.removeItem("auth_user_id");
+    Storage.removeItem("auth_user_displayName");
+    Storage.removeItem("auth_user_icon");
 
     // [ToDo] use SecureStore of expo
-    Storage.removeItem("auth_authCookie")
-    Storage.removeItem("auth_2faCookie") 
-    setUser(undefined)
+    Storage.removeItem("auth_authCookie");
+    Storage.removeItem("auth_2faCookie");
+    setUser(undefined);
     router.replace("/"); // navigate to index after logout
-  }
-
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,46 +180,44 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({children}) => {
         displayName: storedData[1] || undefined,
         icon: storedData[2] || undefined,
       };
-      if (storedUser.id) {  
-        const verified = (await api.verifyAuthToken()).data.ok
+      if (storedUser.id) {
+        const verified = (await api.verifyAuthToken()).data.ok;
         if (verified) {
           const authCookie = storedData[3];
           if (authCookie) {
             vrc.configurePipeline(authCookie); // set auth cookie to pipeline
           }
           setUser(storedUser);
-          console.log(`login as ${storedUser.displayName}: ${storedUser.id}`)
+          console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
           router.replace("/maintab/home"); // navigate to tabs if user is logged in
           return;
         } else {
           console.log("token expired.");
         }
       }
-      api.logout()
+      api.logout();
       setUser(undefined); // clear user data if not logged in
       // router.replace("/"); // navigate to login if user is not logged in
     };
-    
+
     fetchData().catch(console.error);
-  }, [])
+  }, []);
 
   return (
-    <Context.Provider value={{user, login, logout, verify}}>
+    <Context.Provider value={{ user, login, logout, verify }}>
       {children}
     </Context.Provider>
-  )
-} 
-
+  );
+};
 
 // なんかフォーマットが変になるので、関数化しておく
 const extractAuthCookie = (string: string | undefined): string | undefined => {
   const match = string?.match(/auth=([^;]+);/);
   return match ? match[1] : undefined;
-}
+};
 const extract2faCookie = (string: string | undefined): string | undefined => {
   const match = string?.match(/twoFactorAuth=([^;]+);/);
   return match ? match[1] : undefined;
-}
+};
 
 export { AuthProvider, useAuth };
-

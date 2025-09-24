@@ -15,7 +15,15 @@ interface Props<T> {
   [key: string]: any; // for additional props
 }
 
-const SelectGroupButton = <T extends unknown>({ data, value, onChange, keyExtractor, isEqual, nameExtractor, ...rest }: Props<T>) => {
+const SelectGroupButton = <T extends unknown>({
+  data,
+  value,
+  onChange,
+  keyExtractor,
+  isEqual,
+  nameExtractor,
+  ...rest
+}: Props<T>) => {
   const theme = useTheme();
 
   const _isEqual = (a: T | null, b: T) => {
@@ -29,8 +37,8 @@ const SelectGroupButton = <T extends unknown>({ data, value, onChange, keyExtrac
   };
   const _nameExtractor = (item: T, idx: number) => {
     if (nameExtractor) return nameExtractor(item, idx);
-    if (typeof item === 'string' || typeof item === 'number') return `${item}`;
-    if (typeof item === 'object') {
+    if (typeof item === "string" || typeof item === "number") return `${item}`;
+    if (typeof item === "object") {
       const obj = Object(item);
       return `${obj.displayName ?? obj.name ?? obj.id}`;
     }
@@ -40,7 +48,7 @@ const SelectGroupButton = <T extends unknown>({ data, value, onChange, keyExtrac
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
       {data.map((item, idx) => {
-        const displayname = _nameExtractor(item,idx);
+        const displayname = _nameExtractor(item, idx);
         return (
           <Text
             key={_keyExtractor(item, idx)}
@@ -48,20 +56,24 @@ const SelectGroupButton = <T extends unknown>({ data, value, onChange, keyExtrac
               styles.text,
               {
                 width: `${100 / data.length}%`,
-                ...(_isEqual(value,item) ? {
-                  borderColor: theme.colors.primary,
-                  borderWidth: 2,
-                  color: theme.colors.primary,
-                } : {
-                  borderColor: theme.colors.card,
-                  borderWidth: 2,
-                  backgroundColor: theme.colors.card,
-                  color: theme.colors.text,
-                }),
-                ...(!displayname ? { 
-                  color: theme.colors.subText,
-                  fontStyle: "italic",
-                } : {}),
+                ...(_isEqual(value, item)
+                  ? {
+                      borderColor: theme.colors.primary,
+                      borderWidth: 2,
+                      color: theme.colors.primary,
+                    }
+                  : {
+                      borderColor: theme.colors.card,
+                      borderWidth: 2,
+                      backgroundColor: theme.colors.card,
+                      color: theme.colors.text,
+                    }),
+                ...(!displayname
+                  ? {
+                      color: theme.colors.subText,
+                      fontStyle: "italic",
+                    }
+                  : {}),
               },
             ]}
             numberOfLines={1}
@@ -90,7 +102,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     textOverflow: "ellipsis",
     borderRadius: spacing.medium,
-  }
+  },
 });
 
 export default SelectGroupButton;

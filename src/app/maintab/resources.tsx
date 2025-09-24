@@ -27,7 +27,12 @@ export default function Resources() {
     const fetchAvatars = async () => {
       setIsLoading(true);
       try {
-        const res = await vrc.avatarsApi.searchAvatars({offset: offset.current, n: NumPerReq, user: "me", releaseStatus: "all"});
+        const res = await vrc.avatarsApi.searchAvatars({
+          offset: offset.current,
+          n: NumPerReq,
+          user: "me",
+          releaseStatus: "all",
+        });
         setAvatars(res.data);
         offset.current += NumPerReq;
       } catch (e) {
@@ -35,7 +40,7 @@ export default function Resources() {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     useEffect(() => {
       fetchAvatars();
@@ -44,12 +49,16 @@ export default function Resources() {
     return (
       <View>
         {isLoading && <LoadingIndicator absolute />}
-        <Text style={{color: theme.colors.text}}>Avatars</Text>
+        <Text style={{ color: theme.colors.text }}>Avatars</Text>
         <FlatList
           data={avatars}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <CardViewAvatar avatar={item} style={styles.cardView} onPress={() => routeToAvatar(item.id)} />
+            <CardViewAvatar
+              avatar={item}
+              style={styles.cardView}
+              onPress={() => routeToAvatar(item.id)}
+            />
           )}
           numColumns={2}
         />
@@ -64,7 +73,12 @@ export default function Resources() {
     const fetchWorlds = async () => {
       setIsLoading(true);
       try {
-        const res = await vrc.worldsApi.searchWorlds({offset: offset.current, n: NumPerReq, user: "me", releaseStatus: "all"});
+        const res = await vrc.worldsApi.searchWorlds({
+          offset: offset.current,
+          n: NumPerReq,
+          user: "me",
+          releaseStatus: "all",
+        });
         setWorlds(res.data);
         offset.current += NumPerReq;
       } catch (e) {
@@ -72,7 +86,7 @@ export default function Resources() {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     useEffect(() => {
       fetchWorlds();
@@ -80,23 +94,28 @@ export default function Resources() {
 
     return (
       <View>
-        {isLoading && <LoadingIndicator absolute/>}
-        <Text style={{color: theme.colors.text}}>Worlds</Text>
+        {isLoading && <LoadingIndicator absolute />}
+        <Text style={{ color: theme.colors.text }}>Worlds</Text>
         <FlatList
           data={worlds}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <CardViewWorld world={item} style={styles.cardView} onPress={() => routeToWorld(item.id)} />
+            <CardViewWorld
+              world={item}
+              style={styles.cardView}
+              onPress={() => routeToWorld(item.id)}
+            />
           )}
           numColumns={2}
         />
       </View>
     );
   };
-  const OtherTab = () => { // prints, ...etc
+  const OtherTab = () => {
+    // prints, ...etc
     return (
       <View>
-        <Text style={{color: theme.colors.text}}>Other</Text>
+        <Text style={{ color: theme.colors.text }}>Other</Text>
       </View>
     );
   };
@@ -134,4 +153,4 @@ const styles = StyleSheet.create({
     padding: spacing.small,
     width: "50%",
   },
-})
+});

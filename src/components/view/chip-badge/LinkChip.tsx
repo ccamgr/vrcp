@@ -6,7 +6,7 @@ import IconButton from "../icon-components/IconButton";
 
 interface Props {
   url: string | undefined;
-  text?: string ;
+  text?: string;
 }
 const LinkChip = ({ url, text }: Props) => {
   const theme = useTheme();
@@ -18,7 +18,11 @@ const LinkChip = ({ url, text }: Props) => {
         if (url) Linking.openURL(url);
       }}
     >
-      <Text style={{color: theme.colors.text, textDecorationLine: "underline"}}>{text || url}</Text>
+      <Text
+        style={{ color: theme.colors.text, textDecorationLine: "underline" }}
+      >
+        {text || url}
+      </Text>
     </IconButton>
   );
 };

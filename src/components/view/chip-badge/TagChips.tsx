@@ -12,8 +12,11 @@ const TagChips = ({ tags, ...rest }: Props) => {
   const theme = useTheme();
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
-      {tags.map(tag => (
-        <Text style={[styles.tag, {backgroundColor: theme.colors.card}]} key={tag}>
+      {tags.map((tag) => (
+        <Text
+          style={[styles.tag, { backgroundColor: theme.colors.card }]}
+          key={tag}
+        >
           {tag}
         </Text>
       ))}
@@ -31,8 +34,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.all,
     paddingVertical: spacing.mini,
     paddingHorizontal: spacing.medium,
-    margin: spacing.mini
-  }
+    margin: spacing.mini,
+  },
 });
 
 export default TagChips;

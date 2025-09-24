@@ -16,24 +16,34 @@ const IconButton = ({ onPress, name, color, size, ...rest }: Props) => {
   const theme = useTheme();
   return (
     <TouchableOpacity
-      style={[{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-      }, rest.style]}
+      style={[
+        {
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        },
+        rest.style,
+      ]}
       {...omitObject(rest, "style")}
       // style={{borderColor: "black", borderWidth: 1, borderStyle: "solid"}}
       onPress={onPress}
     >
       {isMaterialIconsName(name) ? (
-        <MaterialIcons name={name} size={size || 32} color={color || theme.colors.text} />
+        <MaterialIcons
+          name={name}
+          size={size || 32}
+          color={color || theme.colors.text}
+        />
       ) : (
-        <MaterialCommunityIcons name={name} size={size || 32} color={color || theme.colors.text} />
+        <MaterialCommunityIcons
+          name={name}
+          size={size || 32}
+          color={color || theme.colors.text}
+        />
       )}
       {rest.children}
     </TouchableOpacity>
-  )
-}
-
+  );
+};
 
 export default IconButton;

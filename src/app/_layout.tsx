@@ -11,11 +11,11 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 function RootLayout() {
   return (
-        <Stack initialRouteName="index" > 
-          <Stack.Screen name="maintab" options={{ headerShown: false }} />
-          <Stack.Screen name="other" options={{ headerShown: false  }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
+    <Stack initialRouteName="index">
+      <Stack.Screen name="maintab" options={{ headerShown: false }} />
+      <Stack.Screen name="other" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
   );
 }
 
@@ -25,14 +25,16 @@ export default function Root() {
       <AuthProvider>
         <CacheProvider>
           <DataProvider>
-          <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
-              <ThemeProvider value={ useColorScheme() !== 'dark' ? lightTheme : darkTheme }>
-                <RootLayout />
-                <StatusBar style="auto" />
-              </ThemeProvider>
-            </SafeAreaView>
-          </SafeAreaProvider>
+            <SafeAreaProvider>
+              <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+                <ThemeProvider
+                  value={useColorScheme() !== "dark" ? lightTheme : darkTheme}
+                >
+                  <RootLayout />
+                  <StatusBar style="auto" />
+                </ThemeProvider>
+              </SafeAreaView>
+            </SafeAreaProvider>
           </DataProvider>
         </CacheProvider>
       </AuthProvider>

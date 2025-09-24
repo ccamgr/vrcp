@@ -12,12 +12,11 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-
 export default function GroupDetail() {
-  const { id } = useLocalSearchParams<{id: string}>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
-  const theme = useTheme();  
+  const theme = useTheme();
   const [group, setGroup] = useState<Group>();
 
   const fetchData = async () => {
@@ -33,31 +32,31 @@ export default function GroupDetail() {
     fetchData();
   }, []);
 
-
   return (
     <GenericScreen>
-      { group ? (
+      {group ? (
         <View style={{ flex: 1 }}>
-          <CardViewGroupDetail
-            group={group}
-            style={[styles.cardView]} 
-          />
+          <CardViewGroupDetail group={group} style={[styles.cardView]} />
           <ScrollView>
             <DetailItemContainer title="Title1">
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>text1-1</Text>
-                <Text style={{color: theme.colors.text}}>text1-2</Text>
+                <Text style={{ color: theme.colors.text }}>text1-1</Text>
+                <Text style={{ color: theme.colors.text }}>text1-2</Text>
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title="Title2" iconButtonConfig={{name: "edit", onPress: () => {}}}>
+            <DetailItemContainer
+              title="Title2"
+              iconButtonConfig={{ name: "edit", onPress: () => {} }}
+            >
               <View style={styles.detailItemContent}>
-                <Text style={{color: theme.colors.text}}>text2-1</Text>
+                <Text style={{ color: theme.colors.text }}>text2-1</Text>
               </View>
             </DetailItemContainer>
 
-            <Text style={{color:"gray"}}>{JSON.stringify(group, null, 2)}</Text>
-
+            <Text style={{ color: "gray" }}>
+              {JSON.stringify(group, null, 2)}
+            </Text>
           </ScrollView>
         </View>
       ) : (
@@ -86,7 +85,6 @@ const styles = StyleSheet.create({
     width: "20%",
     aspectRatio: 1,
   },
-
 
   detailItemContent: {
     flex: 1,

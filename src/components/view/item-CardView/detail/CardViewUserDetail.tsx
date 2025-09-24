@@ -16,10 +16,19 @@ interface Props {
 
   [key: string]: any;
 }
-const extractImageUrl = (data: UserLike) => data.profilePicOverride !== "" ? data.profilePicOverride : data.currentAvatarImageUrl ?? "";
+const extractImageUrl = (data: UserLike) =>
+  data.profilePicOverride && data.profilePicOverride !== ""
+    ? data.profilePicOverride
+    : data.currentAvatarImageUrl;
 const extractTitle = (data: UserLike) => data.displayName;
 
-const CardViewUserDetail = ({ user, onPress, onLongPress, isMe = false, ...rest }: Props) => {
+const CardViewUserDetail = ({
+  user,
+  onPress,
+  onLongPress,
+  isMe = false,
+  ...rest
+}: Props) => {
   const theme = useTheme();
   return (
     <BaseCardView
@@ -34,20 +43,31 @@ const CardViewUserDetail = ({ user, onPress, onLongPress, isMe = false, ...rest 
         <>
           <View style={styles.iconContainer}>
             <CachedImage
-              src={user.userIcon.length > 0 ? user.userIcon : user.currentAvatarThumbnailImageUrl ?? ""}
-              style={[styles.icon, { borderColor: theme.colors.card, backgroundColor: theme.colors.card }]}
+              src={
+                user.userIcon && user.userIcon.length > 0
+                  ? user.userIcon
+                  : user.currentAvatarThumbnailImageUrl ??
+                    user.currentAvatarImageUrl
+              }
+              style={[
+                styles.icon,
+                {
+                  borderColor: theme.colors.card,
+                  backgroundColor: theme.colors.card,
+                },
+              ]}
             />
           </View>
           <View style={styles.underRowContainer}>
             <View style={styles.statusContainer}>
-              <IconSymbol name="circle" size={fontSize.medium} style={{color: getStatusColor(user)}} /> 
-              <Text style={styles.status}>
-                {user.statusDescription}
-              </Text>
+              <IconSymbol
+                name="circle"
+                size={fontSize.medium}
+                style={{ color: getStatusColor(user) }}
+              />
+              <Text style={styles.status}>{user.statusDescription}</Text>
             </View>
-            <View style={styles.badgesContainer}>
-
-            </View>
+            <View style={styles.badgesContainer}></View>
           </View>
         </>
       }
@@ -74,7 +94,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     // for status spacing
-    paddingBottom: fontSize.large + spacing.small * 2
+    paddingBottom: fontSize.large + spacing.small * 2,
   },
   icon: {
     aspectRatio: 1,
@@ -87,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 0,
-    width: "100%"
+    width: "100%",
   },
   statusContainer: {
     display: "flex",
@@ -109,6 +129,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.medium,
     // borderColor: "blue",borderWidth: 1,borderStyle: "solid",
-  }
+  },
 });
 export default CardViewUserDetail;

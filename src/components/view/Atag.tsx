@@ -1,8 +1,8 @@
-import { spacing } from '@/config/styles';
-import { useTheme } from '@react-navigation/native';
-import { Href, Link } from 'expo-router';
-import { openBrowserAsync } from 'expo-web-browser';
-import { Platform } from 'react-native';
+import { spacing } from "@/config/styles";
+import { useTheme } from "@react-navigation/native";
+import { Href, Link } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
+import { Platform } from "react-native";
 
 interface Props {
   href: Href & string;
@@ -15,11 +15,18 @@ export function Atag({ children, href, ...rest }: Props) {
   return (
     <Link
       target="_blank" // open in new tab on web, ignored on mobile
-      style={[{color: theme.colors.primary, textDecorationLine: 'underline', paddingHorizontal: spacing.small }, rest.style]}
+      style={[
+        {
+          color: theme.colors.primary,
+          textDecorationLine: "underline",
+          paddingHorizontal: spacing.small,
+        },
+        rest.style,
+      ]}
       {...rest}
       href={href}
       onPress={async (event) => {
-        if (Platform.OS !== 'web') {
+        if (Platform.OS !== "web") {
           event.preventDefault();
           await openBrowserAsync(href);
         }
