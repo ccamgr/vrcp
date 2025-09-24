@@ -83,11 +83,11 @@ const CardViewLocation = ({ locationData, onPress, onLongPress, ...rest }: Props
       ImageStyle={styles.image}
       OverlapComponents={
         <>
-          {/* <LinearGradient
+          <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)']}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={styles.gradient}
-          /> */}
+          />
           <View style={styles.friendsContainer}>
             {locationData.friends?.map((friend)=> (
               <UserChip key={friend.id} user={friend} style={styles.chip}/>
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
     left: 0,
     aspectRatio: 1,
   },
+  image: {
+    aspectRatio: 1,
+  },
   chip: {
     marginVertical: spacing.mini,
   },
-  image: {
-    aspectRatio: 1,
-  }
 });
  
 export default React.memo(CardViewLocation);
