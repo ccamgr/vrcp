@@ -14,10 +14,11 @@ interface Props {
   optional?: boolean; //
   size?: number; // default 32
   textSize?: number;
+  textColor?: string;
   [key: string]: any;
 }
 
-const UserChip = ({ user, optional = false, textSize, size = 32, ...rest }: Props) => {
+const UserChip = ({ user, optional = false, textSize, textColor, size = 32, ...rest }: Props) => {
   return (
     <View style={[styles.container, rest.style]}>
       
@@ -30,7 +31,7 @@ const UserChip = ({ user, optional = false, textSize, size = 32, ...rest }: Prop
         style={[styles.icon, { height: size, borderColor: getStatusColor(user)}, rest.style]}
         {...omitObject(rest, "style")}
       />
-      <Text numberOfLines={1} style={[styles.text, { color: getTrustRankColor(user, true, false), fontSize: textSize ?? fontSize.medium }]}>{user.displayName}</Text>
+      <Text numberOfLines={1} style={[styles.text, { color: textColor, fontSize: textSize ?? fontSize.medium }]}>{user.displayName}</Text>
       
     </View>
   );

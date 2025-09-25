@@ -16,6 +16,7 @@ import { formatToDateTime } from "@/lib/date";
 import { extractErrMsg } from "@/lib/extractErrMsg";
 import {
   getAuthorTags,
+  getTrustRankColor,
   getWorldPlatform,
   InstanceLike,
   parseInstanceId,
@@ -90,7 +91,7 @@ export default function InstanceDetail() {
             <DetailItemContainer title="Users">
               <View style={styles.detailItemContent}>
                 {ownerAndFriends.map((friend) => (
-                  <UserChip key={friend.id} user={friend} optional={friend.id === owner?.id}/>
+                  <UserChip key={friend.id} user={friend} textColor={getTrustRankColor(friend, true, false)} optional={friend.id === owner?.id}/>
                 ))}
               </View>
             </DetailItemContainer>
