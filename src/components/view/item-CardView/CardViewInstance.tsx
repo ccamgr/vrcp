@@ -1,4 +1,4 @@
-import { spacing } from "@/configs/styles";
+import { fontSize, spacing } from "@/configs/styles";
 import { LimitedUserInstance } from "@/vrchat/api";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -89,7 +89,7 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
           />
           <View style={styles.friendsContainer}>
             {friends.map((friend)=> (
-              <UserChip key={friend.id} user={friend} style={styles.chip}/>
+              <UserChip key={friend.id} user={friend} size={fontSize.large * 1.2} textSize={fontSize.medium} style={styles.chip}/>
             ))}
           </View>
         </>
@@ -102,10 +102,12 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
 const styles = StyleSheet.create({
   friendsContainer: {
     position: "absolute",
+    paddingVertical: spacing.mini,
     top: 0,
     left: 0,
-    bottom: 0,
-    // width: "70%",
+    right: 0,
+    bottom: fontSize.large + fontSize.small + spacing.medium * 2,
+    overflow: "hidden",
     // borderColor: "blue", borderStyle: "dotted", borderWidth: 1,
   },
   gradient: {
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   chip: {
-    marginVertical: spacing.mini,
+    marginVertical: spacing.mini ,
   },
 });
  

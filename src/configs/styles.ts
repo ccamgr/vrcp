@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 const fontWeight = {
   light: '300',
@@ -23,6 +23,7 @@ const radius = {
   large: 24,
   all: 1000,
 }
+const navigationBarHeight = Platform.OS === 'ios' ? 44 : 56; // default 56dp
 
 const globalStyles = StyleSheet.create({
   // container styles
@@ -105,3 +106,4 @@ const globalStyles = StyleSheet.create({
 
 export default globalStyles;
 export { fontSize, fontWeight, radius, spacing };
+export { navigationBarHeight };

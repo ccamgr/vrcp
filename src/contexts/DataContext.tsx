@@ -170,9 +170,10 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
         const dataF = content as PipelineContent<
           "friend-update" | "friend-location" | "friend-online" | "friend-active"
         >;
+        const location = type === "friend-location" ? (dataF as any).location as string : dataF.user.location ?? "offline";
         if (wrappers.friends.data.find((f) => f.id === dataF.userId) != undefined) {
           wrappers.friends.set((prev) =>
-            prev.map((f) => (f.id === dataF.userId ? { ...f, ...dataF.user } : f))
+            prev.map((f) => (f.id === dataF.userId ? { ...f, ...dataF.user, location } : f))
           );
         } else {
           wrappers.friends.set((prev) => [
