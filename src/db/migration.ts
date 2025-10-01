@@ -1,5 +1,5 @@
 export const migrations = {
-  '0000_elite_preak.sql': {
+  '0000_legal_power_pack.sql': {
     version: 0,
     sql: `CREATE TABLE \`users\` (
 	\`id\` text PRIMARY KEY NOT NULL,
@@ -52,21 +52,6 @@ CREATE TABLE \`favorite_groups\` (
 	\`type\` text,
 	\`option\` text DEFAULT '{}' NOT NULL
 );
---> statement-breakpoint
-CREATE TABLE \`sample\` (
-	\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	\`key\` text NOT NULL,
-	\`created_at\` text DEFAULT (current_timestamp) NOT NULL,
-	\`updated_at\` text,
-	\`deleted_at\` text,
-	\`sample_int\` integer,
-	\`sample_float\` real,
-	\`sample_text\` text,
-	\`sample_bool\` integer DEFAULT false,
-	\`sample_json\` text DEFAULT '[]' NOT NULL,
-	\`sample_enum\` text
-);
---> statement-breakpoint
-CREATE UNIQUE INDEX \`sample_key_unique\` ON \`sample\` (\`key\`);`
+`
   },
 };

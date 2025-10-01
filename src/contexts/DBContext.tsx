@@ -3,14 +3,18 @@ import * as sqlite from "expo-sqlite";
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import Constants from 'expo-constants';
 import { SQLiteColumn, SQLiteInsertValue, sqliteTable, SQLiteTableWithColumns, SQLiteUpdateSetSource, TableConfig } from "drizzle-orm/sqlite-core";
-import { eq, SQL } from "drizzle-orm";
-import { avatarsTable, favoriteGroupsTable, groupsTable, sample, usersTable, worldsTable } from "@/db/schema";
+import { eq, sql, SQL } from "drizzle-orm";
+import { avatarsTable, favoriteGroupsTable, groupsTable, usersTable, worldsTable } from "@/db/schema";
+import { migrations } from "@/db/migration";
+import Storage from "expo-sqlite/kv-store";
+import * as FileSystem from "expo-file-system";
 // provide db access globally
 
 
 interface TableWrapper<
   T extends SQLiteTableWithColumns<any>
 > {
+  _tableName: string;
   get: (id: T["$inferSelect"]["id"]) => Promise<T["$inferSelect"] | null>;
   create: (data: SQLiteInsertValue<T>) => Promise<T["$inferSelect"]>;
   update: (id: T["$inferInsert"]["id"], data: SQLiteUpdateSetSource<T>) => Promise<T["$inferSelect"]>;
@@ -18,8 +22,9 @@ interface TableWrapper<
 }
 
 interface DBContextType {
-  db: ReturnType<typeof drizzle>;
-  fileName: string;
+  _db: ReturnType<typeof drizzle>;
+  _fileName: string;
+  _resetDB: () => Promise<void>;
   users: TableWrapper<typeof usersTable>;
   worlds: TableWrapper<typeof worldsTable>;
   avatars: TableWrapper<typeof avatarsTable>;
@@ -38,7 +43,7 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
   children
 }) => {
   const fileName = Constants.expoConfig?.extra?.vrcmm?.buildProfile !== "production" ? "vrcmm-dev.db" : "vrcmm.db";
-  const expoDB = sqlite.openDatabaseSync(fileName);
+  const expoDB = sqlite.openDatabaseSync(fileName, undefined, sqlite.defaultDatabaseDirectory);
   const db = drizzle(expoDB);
 
 
@@ -46,14 +51,8 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
 
   // migration on initial load
   useEffect(() => {
-    console.log("wwwww:\n", initTableSql(sample));
-    // Object.values(migrations.migrations).forEach(mig => {
-    //   console.log("Applying migration:", mig);
-    // });
-    // const tables = [usersTable, worldsTable, avatarsTable, groupsTable, favoriteGroupsTable];
-    // const createTableSQLs = tables.map(t => initTableSql(t)).join("\n");
-    // expoDB.execAsync(createTableSQLs);
-  }, []);
+    applyMigrations(false);
+  }, []); 
 
   const wrappers = {
     users: initTableWrapper(db, usersTable),
@@ -63,9 +62,43 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
     favoriteGroups: initTableWrapper(db, favoriteGroupsTable),
   }
 
+  const applyMigrations = async (init: boolean = false) => {
+    const currentVersion = init ? -1 : Number((await Storage.getItemAsync('dbVersion')) ?? -1); // -1:未作成
+    const appliables = Object.values(migrations).filter(m => m.version > currentVersion).sort((a, b) => a.version - b.version);
+    if (appliables.length === 0) {
+      console.log("DB version up to date:", currentVersion);
+    } else {
+      console.log("updating DB from version", currentVersion, "to", appliables[appliables.length - 1].version);
+      await db.transaction(async (tx) => {
+        for (const m of appliables) {
+          await tx.run(m.sql)
+        }
+      }, { behavior: "immediate" });
+      await Storage.setItemAsync('dbVersion', String(appliables[appliables.length - 1].version));
+      console.log("DB updated to version", appliables[appliables.length - 1].version);
+    }
+  }
+  const resetDB = async () => {
+    try {
+      const tables = Object.values(wrappers).map(w => w._tableName);
+      await db.transaction(async (tx) => {
+        for (const table of tables) {
+          // drop table if exists
+          await tx.run(`DROP TABLE IF EXISTS "${table}";`);
+        }
+      });
+      await applyMigrations(true);
+      console.log("DB reset complete");
+    } catch (error) {
+      console.error("Error resetting DB:", error);
+    } 
+  }
+
   return (
     <Context.Provider value={{
-      db, fileName,
+      _db: db, 
+      _fileName: fileName,
+      _resetDB: resetDB,
       ...wrappers
     }}>
       {children}
@@ -81,6 +114,8 @@ const initTableWrapper = <
 ): TableWrapper<SQLiteTableWithColumns<T>> => {
   // if not exist, create table
 
+  // @ts-ignore
+  const tableName = table.getSQL().usedTables?.[0];
 
   // CRUD operations
   const get = async (id: typeof table.$inferSelect['id']): Promise<SQLiteTableWithColumns<T>["$inferSelect"] | null> => {
@@ -106,51 +141,7 @@ const initTableWrapper = <
     return result.changes > 0;
   }
 
-  return { get, create, update, delete: del };
+  return { get, create, update, delete: del, _tableName: tableName ?? "" };
 }
-
-const initTableSql = <T extends TableConfig>(table: SQLiteTableWithColumns<T>) => {
-    try {
-          const columns = Object.values(table);
-          // @ts-ignore
-          const tableName = table.getSQL().usedTables[0];
-          console.log("Table Name:", tableName);
-          console.log("Columns:", columns.map(c=>c.name));
-          const c = columns[2];
-          console.log(
-            `\nname: ${c.name}`,
-            `\ndataType: ${c.dataType}`,
-            `\nisUnique: ${c.isUnique}`,
-            `\nhasDefault: ${c.hasDefault}`,
-            `\ndefault: ${c.default}`,
-            `\nnotNull: ${c.notNull}`,
-            `\n_: ${c.primary}`,
-          );
-          const uniques = [] as string[];
-          const columnDefs = columns.map(column => {
-            let colDef = `"${column.name}" ${column.columnType}`;
-            if (column.primary) colDef += " PRIMARY KEY";
-            // if (column._.isAutoincrement) colDef += " AUTOINCREMENT";
-            if (column.hasDefault && column.default !== undefined) {
-              if (typeof column.default === "string") {
-                colDef += ` DEFAULT '${column.default}'`;
-              } else if (typeof column.default === "number" || typeof column.default === "boolean") {
-                colDef += ` DEFAULT ${column.default}`;
-              } else {
-                colDef += ` DEFAULT ${column.default?.queryChunks?.[0]?.value?.[0]}`;
-              }
-            }
-            if (column.notNull) colDef += " NOT NULL";
-            if (column.isUnique) uniques.push(`CREATE UNIQUE INDEX "${tableName}_${column.name}_unique" ON "${tableName}" ("${column.name}");\n`);
-            return colDef;
-          }).join(",\n");
-          const basesql = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs});\n`;
-          return [basesql, ...uniques].join("");
-    } catch (error) {
-      console.error("Error generating table SQL:", table._.name);
-      return "";
-    }
-}
-
 
 export { DBProvider, useDB };
