@@ -57,5 +57,8 @@
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
   },
+  "overrides": {
+    "esbuild": "^0.25.1"
+  },
   "private": true
 }
