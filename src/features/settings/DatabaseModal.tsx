@@ -36,12 +36,6 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
     await cache.clearCache();
     refleshCacheInfo();
   }
-  useEffect(() => {
-    if (open) {
-      setCacheInfo(undefined);
-      refleshCacheInfo();
-    }
-  }, [open, cache]);
 
   const refleshDatabaseInfo = async () => {
     const info = await db.getDBInfo();
@@ -58,8 +52,11 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
     if (open) {
       setDatabaseInfo(undefined);
       refleshDatabaseInfo();
+      
+      setCacheInfo(undefined);
+      refleshCacheInfo();
     }
-  }, [open, db]);
+  }, [open]);
 
   return (
     <GenericModal open={open} onClose={() => setOpen(false)}>

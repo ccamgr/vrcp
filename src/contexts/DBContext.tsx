@@ -66,6 +66,11 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
 
   const applyMigrations = async (init: boolean = false) => {
     const currentVersion = init ? -1 : Number((await Storage.getItemAsync('dbVersion')) ?? -1); // -1:未作成
+    if (isNaN(currentVersion)) {
+      console.warn("Invalid DB version, resetting DB");
+      await resetDB();
+      return;
+    }
     const appliables = Object.values(migrations).filter(m => m.version > currentVersion).sort((a, b) => a.version - b.version);
     if (appliables.length === 0) {
       console.log("DB version up to date:", currentVersion);
@@ -97,18 +102,14 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
   }
   const getDBInfo = async (): Promise<{ size: number; rows: number; }> => {
     try {
-      const fileInfo = await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite/" + fileName);
-      if (!fileInfo.exists || !fileInfo.size) {
-        return { size: 0, rows: 0 };
-      }
-      const size = fileInfo.size;
-      const tables = Object.values(wrappers).map(w => w._table);
-      let rows = 0;
-      for (const t of tables) {
-        const rowResult = await db.select({ count: sql<number>`COUNT(*)` }).from(t).get();
-        rows += rowResult?.count ?? 0;
-      }
-      return { size, rows };
+      // const size = fileInfo.size;
+      // const tables = Object.values(wrappers).map(w => w._table);
+      // let rows = 0;
+      // for (const t of tables) {
+      //   const rowResult = (await db.select().from(t)).length
+      //   rows += rowResult;
+      // }
+      return { size: 0, rows: 0 };
     } catch (error) {
       console.error("Error getting DB info:", error);
       return { size: 0, rows: 0 };
