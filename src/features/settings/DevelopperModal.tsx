@@ -58,40 +58,6 @@ const DevelopperModal = ({ open, setOpen }: Props) => {
         >
           [Sitemap]
         </Button>
-        <Button
-          style={[globalStyles.button, { marginTop: spacing.medium }]}
-          color={theme.colors.primary}
-          onPress={() =>{
-            db.users.create({
-              id: "usr_test",
-              displayName: "Test User",
-
-            }).then((res)=>{
-              console.log("Created test user:", res);
-            }).catch((err)=>{
-              console.error("Error creating test user:", err);
-            });
-          }}
-        >
-          [user]
-        </Button>
-        <Button
-          style={[globalStyles.button, { marginTop: spacing.medium }]}
-          color={theme.colors.primary}
-          onPress={() =>{
-            db.worlds.create({
-              id: "usr_test",
-              name: "Test World",
-
-            }).then((res)=>{
-              console.log("Created test world:", res);
-            }).catch((err)=>{
-              console.error("Error creating test world:", err);
-            });
-          }}
-        >
-          [world]
-        </Button>
       </View>
 
       <Button

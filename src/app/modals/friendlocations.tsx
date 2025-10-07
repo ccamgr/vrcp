@@ -11,7 +11,7 @@ import { routeToInstance, routeToUser } from "@/libs/route";
 import { InstanceLike } from "@/libs/vrchat";
 import { LimitedUserFriend } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
@@ -19,10 +19,20 @@ import { FlatList, SectionList, StyleSheet, Text, TouchableOpacity, View } from 
 export default function FriendLocations() {
   const theme = useTheme();
   const { friends, favorites } = useData();
+  const [isLoading, setIsLoading] = useState(false);
+  const refresh = () => {
+    setIsLoading(true);
+    friends
+      .fetch()
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  };
 
   const {instances, unlocatableFriends} = useMemo(() => {
     return calcFriendsLocations(friends.data, favorites.data, false, true);
   }, [friends.data, favorites.data]);
+
+  
 
   return (
     <GenericScreen>
@@ -33,7 +43,7 @@ export default function FriendLocations() {
             { 
               title: `Friends in Instances `, 
               data: chunkArray(instances, 2), // 2 columns
-              keyExtractor: (_, index) => `instance-chunk-${index}`,
+              keyExtractor: (_, index) => `friend-instance-chunk-${index}`,
               renderItem: ({ item }) => (
                 <View style={styles.chunk}>
                 {item.map((instance: InstanceLike) => (
@@ -45,7 +55,7 @@ export default function FriendLocations() {
             { 
               title: `Private Friends`, 
               data: chunkArray(unlocatableFriends, 3), // 3 columns
-              keyExtractor: (_, index) => `private-friend-${index}`,
+              keyExtractor: (_, index) => `private-friend-chunk-${index}`,
               renderItem: ({ item }) => (
                 <View style={styles.chunk}>
                   {item.map((friend: LimitedUserFriend) => (
@@ -62,13 +72,14 @@ export default function FriendLocations() {
             keyExtractor: (item: any, index: number) => string;
             renderItem: ({ item }: { item: any }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null 
           }[]}
-          keyExtractor={(item) => item.id}
           renderSectionHeader={({ section: { title } }) => (
             <View style={[styles.sectionHeader, {borderBottomColor: theme.colors.border}]}>
               <Text style={{fontWeight: "bold", color: theme.colors.text}}>{title}</Text>
             </View>
           )}
           contentContainerStyle={styles.listInner}
+          refreshing={isLoading}
+          onRefresh={refresh}
         />
       </View>
     </GenericScreen>

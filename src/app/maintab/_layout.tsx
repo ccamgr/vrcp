@@ -1,4 +1,5 @@
 import { HapticTab } from "@/components/layout/HapticTab";
+import MenuButtonForHeader from "@/components/layout/MenuButtonForHeader";
 import IconButton from "@/components/view/icon-components/IconButton";
 import SearchBox from "@/components/view/SearchBox";
 import { spacing } from "@/configs/styles";
@@ -27,6 +28,7 @@ export default function TabLayout() {
           },
           default: {},
         }),
+        headerRight: MenuButtonForHeader,
       }}
     >
       <Tabs.Screen
@@ -62,20 +64,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorites"
-        options={{
-          title: "Favorites",
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name="favorite" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="friends"
         options={{
           title: "Friends",
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="people" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favorites",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons size={28} name="favorite" color={color} />
           ),
         }}
       />
@@ -98,15 +100,7 @@ export default function TabLayout() {
           title: "Profile",
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="account-circle" color={color} />
-          ),
-          headerRight: ({ tintColor }) => (
-            <IconButton
-              style={{ marginRight: spacing.large }}
-              onPress={() => console.log("menu button pressed")}
-              name="menu"
-              color={tintColor}
-            />
-          ),
+          )
         }}
       />
       <Tabs.Screen

@@ -1,8 +1,9 @@
 import { spacing } from "@/configs/styles";
 import { useRouter } from "expo-router";
 import IconButton from "../view/icon-components/IconButton";
+import { StackHeaderLeftProps } from "@react-navigation/stack";
 
-const BackButtonForHeader = () => {
+const BackButtonForHeader = (props: StackHeaderLeftProps) => {
   const router = useRouter();
   return (
     <IconButton

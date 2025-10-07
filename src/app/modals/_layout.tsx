@@ -7,6 +7,7 @@ import {
 } from "@react-navigation/stack";
 import { ParamListBase, StackNavigationState } from "@react-navigation/native";
 import { Platform } from 'react-native';
+import MenuButtonForHeader from '@/components/layout/MenuButtonForHeader';
 
 const { Navigator } = createStackNavigator();
 
@@ -26,6 +27,7 @@ export default function ModalLayout() {
         presentation: 'modal',
         // headerShown: false, // 必要に応じてヘッダーの表示を制御
         headerLeft: BackButtonForHeader,
+        headerRight: MenuButtonForHeader,
       }} 
     >
       <ModalStack.Screen
