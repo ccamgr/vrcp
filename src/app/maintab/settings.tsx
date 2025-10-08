@@ -11,6 +11,9 @@ import { useTheme } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
+import { navigate } from "expo-router/build/global-state/routing";
+import DebugModal from "@/features/settings/DebugModal";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -24,6 +27,7 @@ export default function Settings() {
   const theme = useTheme();
   const [openLogout, setOpenLogout] = useState(false);
   const [openDevelopper, setOpenDevelopper] = useState(false);
+  const [openDebug, setOpenDebug] = useState(false);
   const [openDatabase, setOpenDatabase] = useState(false);
   const [openUI, setOpenUI] = useState(false);
 
@@ -63,12 +67,26 @@ export default function Settings() {
         description: "Get help and support",
         onPress: () => {},
       },
-      ...(Constants.expoConfig?.extra?.vrcmm.buildProfile == "development" ? [{
+      {
+        icon: "code",
+        title: "Developper",
+        description: "Manage development features",
+        onPress: () => setOpenDevelopper(true),
+      },
+      ...(Constants.expoConfig?.extra?.vrcmm.buildProfile == "development" ? [
+        {
           icon: "bug" as SupportedIconNames,
-          title: "developper",
-          description: "Manage development features",
-          onPress: () => setOpenDevelopper(true),
-      }] : []),
+          title: "debug",
+          description: "(only in development mode)",
+          onPress: () => setOpenDebug(true),
+        },
+        {
+          icon: "routes" as SupportedIconNames,
+          title: "sitemap",
+          description: "(only in development mode)",
+          onPress: () => router.push("/_sitemap"),
+        }
+      ] : []),
     ],
     logout: [
       {
@@ -129,9 +147,10 @@ export default function Settings() {
         cancelTitle="Cancel"
       />
 
+      <DatabaseModal open={openDatabase} setOpen={setOpenDatabase} />
       <UIModal open={openUI} setOpen={setOpenUI} />
       <DevelopperModal open={openDevelopper} setOpen={setOpenDevelopper} />
-      <DatabaseModal open={openDatabase} setOpen={setOpenDatabase} />
+      <DebugModal open={openDebug} setOpen={setOpenDebug} />
     </GenericScreen>
   );
 }

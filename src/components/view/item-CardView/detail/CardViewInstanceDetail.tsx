@@ -7,6 +7,8 @@ import { useCache } from "@/contexts/CacheContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import BaseCardView from "../BaseCardView";
 import UserChip from "../../chip-badge/UserChip";
+import IconButton from "../../icon-components/IconButton";
+import { routeToWorld } from "@/libs/route";
 
 
 interface Props {
@@ -25,7 +27,7 @@ const extractTitle = (data: InstanceLike) => { // <instanceName> <worldName>
   const parsedInstance = parseInstanceId(data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId);
   if (parsedInstance) {
     const instType = getInstanceType(parsedInstance.type, parsedInstance.groupAccessType);
-    return `${instType} #${parsedInstance.name}\n${data.world?.name}`;
+    return `${instType} #${parsedInstance.name}${data.displayName ? `  (${data.displayName})` : ""}\n${data.world?.name}`;
   }
   return data.world?.name ?? "Unknown";
 };
@@ -53,16 +55,6 @@ const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Pro
     }
   };
 
-  const friends = useMemo(() => {
-    const users = instance.users ?? [];
-    const friends = [] as LimitedUserInstance[];
-    users.forEach((user) => {
-      if (user.isFriend) {
-        friends.push(user);
-      }
-    });
-    return friends;
-  }, [instance.users]);
 
   useEffect(() => {
     fetchWorld();
@@ -78,36 +70,12 @@ const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Pro
       title={title}
       numberOfLines={2}
       ImageStyle={styles.image}
-      OverlapComponents={
-        <>
-          {/* <LinearGradient
-            colors={['transparent', 'rgba(0, 0, 0, 0.62)', 'rgba(0, 0, 0, 0.87)']}
-            start={{ x: 0.0, y: 0.0 }}
-            end={{ x: 1.0, y: 0.0 }}
-            locations={[0.0, 0.5, 1.0]}
-            style={styles.gradient}
-          /> */}
-          <View style={styles.friendsContainer}>
-            {friends.map((friend)=> (
-              <UserChip key={friend.id} user={friend} style={styles.chip}/>
-            ))}
-          </View>
-        </>
-      }
       {...rest}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  friendsContainer: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    width: "70%",
-    // borderColor: "blue", borderStyle: "dotted", borderWidth: 1,
-  },
   gradient: {
     position: "absolute",
     top: 0,

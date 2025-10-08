@@ -9,7 +9,7 @@ import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, radius, spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
+import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { formatToDateTime } from "@/libs/date";
@@ -21,12 +21,14 @@ import {
   parseLocationString,
   UserLike,
 } from "@/libs/vrchat";
-import { Instance, World } from "@/vrchat/api";
+import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
-import { routeToUser } from "@/libs/route";
+import { routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
+import ListViewWorld from "@/components/view/item-ListView/ListViewWorld";
+import IconSymbol from "@/components/view/icon-components/IconView";
 
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp)) 
@@ -55,21 +57,25 @@ export default function InstanceDetail() {
   }, []);
 
   const [owner, setOwner] = useState<UserLike>();
+  const [friends, setFriends] = useState<(LimitedUserFriend | LimitedUserInstance)[]>([]);
   useEffect(() => {
-    if (!instance || !instance.ownerId) return;
-    cache.user.get(instance.ownerId)
-      .then(setOwner)
-      .catch(console.error);
-  }, [instance, instance?.ownerId]);
-
-  const friends = useMemo(() => {
-    if (!instance) return [];
-    if (instance?.users) {
-      return instance.users.filter((u) => u.isFriend);
-    }
+    if (!instance) return;
+    let foundOwner = false;
+    const friendList: (LimitedUserFriend | LimitedUserInstance)[] = [];
     const location = `${instance.worldId}:${instance.instanceId}`;
-    return allFriends.data.filter((f) => f.location === location);
-  }, [instance, instance?.users]);
+    allFriends.data.forEach((f) => {
+      if (f.location === location) friendList.push(f);
+      if (f.id === instance.ownerId) {
+        foundOwner = true;
+        setOwner(f);
+      }
+    });
+    setFriends(friendList);
+    if (!foundOwner && instance.ownerId) {
+      // not found in friends, fetch owner data
+      cache.user.get(instance.ownerId).then(setOwner).catch(console.error);
+    }
+  }, [instance, instance?.users, instance?.ownerId]);
 
 
 
@@ -80,22 +86,30 @@ export default function InstanceDetail() {
           <CardViewInstanceDetail instance={instance} style={[styles.cardView]} />
           <ScrollView>
 
-            <DetailItemContainer title="Owner">
-              <View style={styles.detailItemContent}>
+            <DetailItemContainer title={owner ? "Owner & World" : "World"}>
+              <View style={[styles.detailItemContent, styles.horizontal]}>
                 {owner && (
                   <TouchableOpacity key={owner.id} onPress={() => routeToUser(owner.id)} activeOpacity={0.7}>
                     <UserChip user={owner} icon="crown" textColor={getTrustRankColor(owner, true, false)} />
                   </TouchableOpacity>
                 )}
+                <TouchableOpacity onPress={() => routeToWorld(instance.worldId)} activeOpacity={0.7}>
+                  <IconSymbol name="earth" size={fontSize.large} color={theme.colors.text} style={styles.worldIcon} />
+                  <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.subText }]} />
+                </TouchableOpacity>
               </View>
             </DetailItemContainer>
 
             <DetailItemContainer title="Users">
               <View style={styles.detailItemContent}>
-                {friends.map((friend) => (
-                  <TouchableOpacity key={friend.id} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
-                    <UserChip user={friend} textColor={getTrustRankColor(friend, true, false)} />
-                  </TouchableOpacity>
+                {chunkArray(friends, 2).map((chunk, index) => (
+                  <View style={{ flexDirection: "row" }} key={`friend-chunk-${index}`}>
+                    {chunk.map((friend) => (
+                      <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)} activeOpacity={0.7}>
+                        <UserChip user={friend} textColor={getTrustRankColor(friend, true, false)} />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 ))}
                 {instance.n_users > friends.length && (
                   <Text style={[styles.moreUser,{ color: theme.colors.text }]}>{`+ ${instance.n_users - friends.length} more users`}</Text>
@@ -111,7 +125,7 @@ export default function InstanceDetail() {
 
             <DetailItemContainer title="Tags">
               <View style={styles.detailItemContent}>
-                <TagChips tags={getAuthorTags(instance.world)} />
+                <TagChips tags={getAuthorTags(instance.world)} onPress={(tag) => routeToSearch(tag)} />
               </View>
             </DetailItemContainer>
 
@@ -140,7 +154,22 @@ export default function InstanceDetail() {
   );
 }
 
+
+const chunkArray = <T,>(array: T[], size: number): T[][] => {
+  const chunkedArr: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunkedArr.push(array.slice(i, i + size));
+  }
+  return chunkedArr;
+};
+
 const styles = StyleSheet.create({
+  horizontal: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   cardView: {
     position: "relative",
     paddingVertical: spacing.medium,
@@ -159,17 +188,35 @@ const styles = StyleSheet.create({
     width: "20%",
     aspectRatio: 1,
   },
+  listWorld: {
+
+  },
+  user: {
+    width: "50%",
+    // borderStyle:"dotted", borderColor:"blue",borderWidth:1
+  },
   moreUser: {
-    marginLeft: spacing.medium,
+    alignSelf: "flex-end",
+    marginRight: spacing.medium,
   },
 
   detailItemContent: {
     flex: 1,
     // borderStyle:"dotted", borderColor:"red",borderWidth:1
   },
-  detailItemImage: {
+  worldImage: {
     marginRight: spacing.small,
     height: spacing.small * 2 + fontSize.medium * 3,
     aspectRatio: 16 / 9,
+    borderRadius: radius.small,
+    borderStyle:"solid", 
+    borderWidth: 1
+  },
+  worldIcon: {
+    position: "absolute",
+    left: spacing.mini,
+    top: spacing.mini,
+    zIndex: 1,
+    // borderStyle:"dotted", borderColor:"blue",borderWidth:1
   },
 });

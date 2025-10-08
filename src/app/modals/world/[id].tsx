@@ -6,7 +6,7 @@ import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardView
 import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
-import { fontSize, radius, spacing } from "@/configs/styles";
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { formatToDateTime } from "@/libs/date";
@@ -25,7 +25,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserChip from "@/components/view/chip-badge/UserChip";
-import { routeToUser } from "@/libs/route";
+import { routeToSearch, routeToUser } from "@/libs/route";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -113,7 +113,7 @@ export default function WorldDetail() {
 
               <DetailItemContainer title="Tags">
                 <View style={styles.detailItemContent}>
-                  <TagChips tags={getAuthorTags(world)} />
+                  <TagChips tags={getAuthorTags(world)} onPress={(tag) => routeToSearch(tag)} />
                 </View>
               </DetailItemContainer>
 
@@ -155,6 +155,14 @@ export default function WorldDetail() {
               data={formatAndSortInstances(world.instances)}
               renderItem={({ item }) => <ListViewInstance instance={item} />}
               keyExtractor={(item) => item.id}
+              ListEmptyComponent={() => (
+                <View style={{ alignItems: "center", marginTop: spacing.large }}>
+                  <Text style={{ color: theme.colors.text }}>
+                    No instances available.
+                  </Text>
+                </View>
+              )}
+              contentContainerStyle={styles.listInner}
             />
           )}
         </View>
@@ -183,6 +191,10 @@ const styles = StyleSheet.create({
     padding: spacing.small,
     width: "20%",
     aspectRatio: 1,
+  },
+  listInner: {
+    paddingTop: spacing.small,
+    paddingBottom: navigationBarHeight + spacing.medium,
   },
 
   detailItemContent: {

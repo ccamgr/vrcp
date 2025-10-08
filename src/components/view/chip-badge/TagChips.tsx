@@ -6,14 +6,16 @@ import { StyleSheet, View } from "react-native";
 
 interface Props {
   tags: string[];
+  onPress?: (tag: string) => void;
   [key: string]: any;
 }
-const TagChips = ({ tags, ...rest }: Props) => {
+const TagChips = ({ tags, onPress, ...rest }: Props) => {
   const theme = useTheme();
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
       {tags.map((tag) => (
         <Text
+          onPress={() => onPress?.(tag)}
           style={[styles.tag, { backgroundColor: theme.colors.card }]}
           key={tag}
         >

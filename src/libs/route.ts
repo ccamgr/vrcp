@@ -1,9 +1,8 @@
 import { push } from "expo-router/build/global-state/routing";
 
-export const routeToSearch = (search?:string, tags?:string[]) => {
+export const routeToSearch = (search?:string) => {
   const q = []; 
   if (search) q.push(`search=${search}`);
-  if (tags) q.push(`tags=${tags.join(",")}`);
   if (q.length) {
     push(`/modals/search?${q.join("&")}`);
   } else {

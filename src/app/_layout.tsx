@@ -17,6 +17,7 @@ function RootLayout() {
       <Stack.Screen name="maintab" options={{ headerShown: false }} />
       <Stack.Screen name="modals" options={{ headerShown: false }} />
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="tmp" options={{ headerShown: false }} />
     </Stack>
   );
 }

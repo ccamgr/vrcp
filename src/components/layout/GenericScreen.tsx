@@ -2,40 +2,28 @@ import { spacing } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { SupportedIconNames } from "../view/icon-components/utils";
+
+export interface MenuItem {
+  icon?: SupportedIconNames;
+  title: string;
+  onPress: () => void;
+}
 
 interface GenericScreenProps {
-  // title?: string; // screen title
-  // action?: React.ReactNode | "back"; // left action, default back
-  // contents?: React.ReactNode; // right actions
-
+  menuItems?: MenuItem[];
   children: React.ReactNode;
 }
 
 const GenericScreen = ({
-  // title,
-  // action,
-  // contents,
+  menuItems,
   children,
 }: GenericScreenProps) => {
   const theme = useTheme();
   const router = useRouter();
   return (
     <View style={styles.screenRoot}>
-      {/* <View style={[styles.screenHeader, {backgroundColor: theme.colors.border}]}>
-        <View style={styles.screenHeaderTitleAndAction}>
-          {
-            action == "back" 
-            ? <IconButton onPress={router.back} iconName="chevron-left" />
-            : action
-          }
-          <Text style={{ color: theme.colors.text, fontSize: 24, fontWeight: "bold", marginLeft: action ? 10 : 40 }}>
-            {title}
-          </Text>
-        </View>
-        <View style={styles.screenHeaderContents}>
-          {contents}
-        </View>
-      </View> */}
+      {/* Menu　from HeaderButtons */}
       <View style={styles.screenContainer}>{children}</View>
     </View>
   );

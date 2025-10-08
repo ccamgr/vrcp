@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, TouchableOpacity } from "react-native";
 import { KeyboardAvoidingView, KeyboardAvoidingViewComponent, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { routeToInstance } from "@/libs/route";
+import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -63,7 +64,7 @@ export default function UserDetail() {
             iId: res.data.instanceId,
             image: res.data.world?.thumbnailImageUrl,
             baseInfo: `${res.data.world?.name}`,
-            instType: `${getInstanceType(res.data.type)} #${res.data.name}`,
+            instType: `${getInstanceType(res.data.type)} #${res.data.name}${res.data.displayName ? ` (${res.data.displayName})` : ""}`,
             capacity: `${res.data.n_users}/${res.data.capacity}`,
           });
         }
@@ -110,6 +111,7 @@ export default function UserDetail() {
         <View style={{ flex: 1 }}>
           <CardViewUserDetail user={user} style={[styles.cardView]} />
           <ScrollView>
+
             <DetailItemContainer title="Location">
               {locationInfo ? (
                 <TouchableOpacity 
@@ -188,6 +190,14 @@ export default function UserDetail() {
               </View>
             </DetailItemContainer>
 
+            <DetailItemContainer title="Badges">
+              <View style={[styles.detailItemContent, styles.horizontal]}>
+                {user.badges?.map((badge) => (
+                  <BadgeChip key={badge.badgeId} badge={badge} />
+                ))}
+              </View>
+            </DetailItemContainer>
+
             <DetailItemContainer title="Info">
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>
@@ -244,5 +254,10 @@ const styles = StyleSheet.create({
     marginRight: spacing.small,
     height: spacing.small * 2 + fontSize.medium * 3,
     aspectRatio: 16 / 9,
+  },
+  horizontal: { 
+    flexDirection: "row", 
+    alignItems: "center",
+    flexWrap: "wrap",
   },
 });

@@ -16,8 +16,21 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const DevelopperModal = ({ open, setOpen }: Props) => {
+const DebugModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
+
+  const devInfo = {
+    version: Constants.expoConfig?.version,
+    expoSdkVersion: Constants.expoConfig?.sdkVersion,
+    deviceName: Constants.deviceName,
+    platform: Platform.OS,
+    packageName: Platform.select({
+      android: Constants.expoConfig?.android?.package,
+      ios: Constants.expoConfig?.ios?.bundleIdentifier,
+    }),
+    expoBuildProfile: Constants.expoConfig?.extra?.vrcmm?.buildProfile,
+    node_env: process.env.NODE_ENV,
+  };
 
   return (
     <GenericModal open={open} onClose={() => setOpen(false)}>
@@ -28,7 +41,13 @@ const DevelopperModal = ({ open, setOpen }: Props) => {
           { color: theme.colors.text },
         ]}
       >
-        Development Features
+        Debug Info
+      </Text>
+
+      <Text style={[globalStyles.text, { color: theme.colors.text }]}>
+        {Object.entries(devInfo)
+          .map(([key, value]) => `${key}:   ${value}`)
+          .join("\n")}
       </Text>
 
       <Button
@@ -45,4 +64,4 @@ const DevelopperModal = ({ open, setOpen }: Props) => {
   );
 };
 
-export default DevelopperModal;
+export default DebugModal;

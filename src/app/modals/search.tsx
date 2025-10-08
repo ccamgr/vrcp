@@ -3,11 +3,13 @@ import CardViewGroup from "@/components/view/item-CardView/CardViewGroup";
 import CardViewUser from "@/components/view/item-CardView/CardViewUser";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import SearchBox from "@/components/view/SearchBox";
-import { spacing } from "@/configs/styles";
+import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
-import { routeToGroup, routeToUser, routeToWorld } from "@/libs/route";
+import { routeToAvatar, routeToGroup, routeToUser, routeToWorld } from "@/libs/route";
 import {
+  Avatar,
+  AvatarsApi,
   GroupsApi,
   LimitedGroup,
   LimitedUserSearch,
@@ -19,15 +21,14 @@ import {
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function Search() {
   const vrc = useVRChat();
   const theme = useTheme();
-  const initialParams = useLocalSearchParams<{ search?: string, tags?: string[] }>();
+  const initialParams = useLocalSearchParams<{ search?: string }>();
   const [search, setSearch] = useState(initialParams.search || "");
-  const [tags, setTags] = useState(initialParams.tags || []);
   const limit = 50; // Number of items to fetch per request
 
   const MaterialTab = createMaterialTopTabNavigator();
@@ -36,12 +37,16 @@ export default function Search() {
     setSearch(search);
   };
 
-  // Worlds Tab
+  
+  // Worlds Tab (search)
   const ResultWorldsTab = () => {
     const [worlds, setWorlds] = useState<LimitedWorld[]>([]);
     const offset = useRef(0);
+    const fetchingRef = useRef(false);
     const fetchWorlds = async () => {
       try {
+        if (fetchingRef.current) return; // Prevent multiple simultaneous fetches
+        fetchingRef.current = true;
         const res = await new WorldsApi(vrc.config).searchWorlds({
           sort: SortOption.Magic,
           n: limit,
@@ -52,10 +57,11 @@ export default function Search() {
         offset.current += limit;
       } catch (error) {
         console.error("Error searching worlds:", extractErrMsg(error));
+      } finally {
+        fetchingRef.current = false;
       }
     };
     useEffect(() => {
-      if (search.length === 0) return;
       offset.current = 0;
       fetchWorlds();
     }, [search]);
@@ -74,16 +80,20 @@ export default function Search() {
         numColumns={2}
         onEndReached={fetchWorlds}
         onEndReachedThreshold={0.3}
+        contentContainerStyle={styles.listInner}
       />
     );
   };
 
-  // User Tab
+  // User Tab (search only)
   const ResultUsersTab = () => {
     const [users, setUsers] = useState<LimitedUserSearch[]>([]);
     const offset = useRef(0);
+    const fetchingRef = useRef(false);
     const fetchUsers = async () => {
       try {
+        if (fetchingRef.current) return;
+        fetchingRef.current = true;
         const res = await new UsersApi(vrc.config).searchUsers({
           n: limit,
           offset: offset.current,
@@ -93,10 +103,11 @@ export default function Search() {
         offset.current += limit;
       } catch (error) {
         console.error("Error searching users:", extractErrMsg(error));
+      } finally {
+        fetchingRef.current = false;
       }
     };
     useEffect(() => {
-      if (search.length === 0) return;
       offset.current = 0;
       fetchUsers();
     }, [search]);
@@ -115,17 +126,22 @@ export default function Search() {
         numColumns={2}
         onEndReached={fetchUsers}
         onEndReachedThreshold={0.3}
+        contentContainerStyle={styles.listInner}
       />
     );
   };
 
-  // Groups Tab
+  // Groups Tab (search only)
   const ResultGroupsTab = () => {
     const [groups, setGroups] = useState<LimitedGroup[]>([]);
     const offset = useRef(0);
+    const fetchingRef = useRef(false);
 
     const fetchGroups = async () => {
       try {
+        if (fetchingRef.current) return;
+        fetchingRef.current = true;
+
         const res = await new GroupsApi(vrc.config).searchGroups({
           n: limit,
           offset: offset.current,
@@ -135,10 +151,11 @@ export default function Search() {
         offset.current += limit;
       } catch (error) {
         console.error("Error searching groups:", extractErrMsg(error));
+      } finally {
+        fetchingRef.current = false;
       }
     };
     useEffect(() => {
-      if (search.length === 0) return;
       offset.current = 0;
       fetchGroups();
     }, [search]);
@@ -146,7 +163,7 @@ export default function Search() {
     return (
       <FlatList
         data={groups}
-        keyExtractor={(item) => item.id ?? ""}
+        keyExtractor={(item, index) => item.id || `unknown-${index}`}
         renderItem={({ item }) => (
           <CardViewGroup
             group={item}
@@ -157,6 +174,7 @@ export default function Search() {
         numColumns={2}
         onEndReached={fetchGroups}
         onEndReachedThreshold={0.3}
+        contentContainerStyle={styles.listInner}
       />
     );
   };
@@ -180,17 +198,17 @@ export default function Search() {
           <MaterialTab.Screen
             name="worlds"
             options={{ tabBarLabel: "Worlds" }}
-            component={ResultWorldsTab}
+            component={useCallback(ResultWorldsTab, [search])}
           />
           <MaterialTab.Screen
             name="users"
             options={{ tabBarLabel: "Users" }}
-            component={ResultUsersTab}
+            component={useCallback(ResultUsersTab, [search])}
           />
           <MaterialTab.Screen
             name="groups"
             options={{ tabBarLabel: "Groups" }}
-            component={ResultGroupsTab}
+            component={useCallback(ResultGroupsTab, [search])}
           />
         </MaterialTab.Navigator>
       </View>
@@ -208,5 +226,8 @@ const styles = StyleSheet.create({
   cardView: {
     padding: spacing.small,
     width: "50%",
+  },
+  listInner: {
+    paddingBottom: navigationBarHeight + spacing.medium,
   },
 });

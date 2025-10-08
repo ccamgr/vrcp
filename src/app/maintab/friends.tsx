@@ -31,13 +31,15 @@ export default function Friends() {
 
   const FavoriteFriendsTab = () => {
     const { friends, favorites, favoriteGroups } = useData();
-    const [isLoading, setIsLoading] = useState(false);
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
     const refresh = () => {
-      setIsLoading(true);
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
       friends
         .fetch()
         .catch(console.error)
-        .finally(() => setIsLoading(false));
+        .finally(() => (fetchingRef.current = false));
     };
 
     const friFavSet = useMemo<Map<string, string>>(() => {
@@ -96,13 +98,15 @@ export default function Friends() {
 
   const OnlineFriendsTab = () => {
     const { friends } = useData();
-    const [isLoading, setIsLoading] = useState(false);
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
     const refresh = () => {
-      setIsLoading(true);
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
       friends
         .fetch()
         .catch(console.error)
-        .finally(() => setIsLoading(false));
+        .finally(() => (fetchingRef.current = false));
     };
 
     const onlineFriends = useMemo(() => {
@@ -133,13 +137,15 @@ export default function Friends() {
 
   const ActiveFriendsTab = () => {
     const { friends } = useData();
-    const [isLoading, setIsLoading] = useState(false);
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
     const refresh = () => {
-      setIsLoading(true);
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
       friends
         .fetch()
         .catch(console.error)
-        .finally(() => setIsLoading(false));
+        .finally(() => (fetchingRef.current = false));
     };
 
     const activeFriends = useMemo(() => {
@@ -170,13 +176,15 @@ export default function Friends() {
 
   const OfflineFriendsTab = () => {
     const { friends } = useData();
-    const [isLoading, setIsLoading] = useState(false);
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
     const refresh = () => {
-      setIsLoading(true);
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
       friends
         .fetch()
         .catch(console.error)
-        .finally(() => setIsLoading(false));
+        .finally(() => (fetchingRef.current = false));
     };
 
     const offlineFriends = useMemo(() => {
