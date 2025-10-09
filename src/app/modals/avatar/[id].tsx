@@ -1,4 +1,4 @@
-import GenericScreen from "@/components/layout/GenericScreen";
+import GenericScreen, { MenuItem } from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/features/detail/DetailItemContainer";
 import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
@@ -16,14 +16,18 @@ import UserChip from "@/components/view/chip-badge/UserChip";
 import { getAuthorTags, getPlatform, getTrustRankColor } from "@/libs/vrchat";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
+import { useData } from "@/contexts/DataContext";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
+  const data = useData();
   const theme = useTheme();
   const [avatar, setAvatar] = useState<Avatar>();
   const [author, setAuthor] = useState<User>();
+
+  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "avatar");
 
   const fetchData = async () => {
     try {
@@ -43,8 +47,41 @@ export default function AvatarDetail() {
     cache.user.get(avatar.authorId).then((u) => setAuthor(u)).catch(console.error)
   }, [avatar?.authorId])
 
+
+  const handleAddFavorite = (name:string) => {
+    vrc.favoritesApi.addFavorite({addFavoriteRequest: {
+      favoriteId: id,
+      type: "avatar",
+      tags: name ? [name] : [], // ex. avatars1
+    }}).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => [...prev, res.data]); // update cache
+    }).catch(err => {
+      console.error("Error adding favorite:", extractErrMsg(err));
+    });
+  };
+  const handleRemoveFavorite = () => {
+    vrc.favoritesApi.removeFavorite({
+      favoriteId: id,
+    }).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => prev.filter(fav => fav.favoriteId !== id)); // update cache
+    }).catch(err => {
+      console.error("Error removing favorite:", extractErrMsg(err));
+    });
+  };
+
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: isFavorite ? "heart-minus" : "heart-plus",
+      title: isFavorite ? "Remove Favorite" : "Add Favorite",
+      onPress: isFavorite ? () => console.log("remove favorite modal") : () => console.log("add favorite modal"),
+    },
+  ];
+
   return (
-    <GenericScreen>
+    <GenericScreen menuItems={menuItems}>
       {avatar ? (
         <View style={{ flex: 1 }}>
           <CardViewAvatarDetail avatar={avatar} style={[styles.cardView]} />

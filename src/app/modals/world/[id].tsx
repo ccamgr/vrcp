@@ -1,4 +1,4 @@
-import GenericScreen from "@/components/layout/GenericScreen";
+import GenericScreen, { MenuItem } from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/features/detail/DetailItemContainer";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
@@ -26,15 +26,19 @@ import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserChip from "@/components/view/chip-badge/UserChip";
 import { routeToSearch, routeToUser } from "@/libs/route";
+import { useData } from "@/contexts/DataContext";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
+  const data = useData();
   const theme = useTheme();
   const [world, setWorld] = useState<World>();
   const [author, setAuthor] = useState<User>();
   const [mode, setMode] = useState<"info" | "instance">("info");
+  
+  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "world");
 
   const fetchData = async () => {
     try {
@@ -83,8 +87,40 @@ export default function WorldDetail() {
     return sortedInstances;
   };
 
+  const handleAddFavorite = (name:string) => {
+    vrc.favoritesApi.addFavorite({addFavoriteRequest: {
+      favoriteId: id,
+      type: "world",
+      tags: name ? [name] : [], // ex. worlds1
+    }}).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => [...prev, res.data]); // update cache
+    }).catch(err => {
+      console.error("Error adding favorite:", extractErrMsg(err));
+    });
+  };
+  const handleRemoveFavorite = () => {
+    vrc.favoritesApi.removeFavorite({
+      favoriteId: id,
+    }).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => prev.filter(fav => fav.favoriteId !== id)); // update cache
+    }).catch(err => {
+      console.error("Error removing favorite:", extractErrMsg(err));
+    });
+  };
+
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: isFavorite ? "heart-minus" : "heart-plus",
+      title: isFavorite ? "Remove Favorite" : "Add Favorite",
+      onPress: isFavorite ? () => console.log("remove favorite modal") : () => console.log("add favorite modal"),
+    },
+  ];
+
   return (
-    <GenericScreen>
+    <GenericScreen menuItems={menuItems}>
       {world ? (
         <View style={{ flex: 1 }}>
           <CardViewWorldDetail world={world} style={[styles.cardView]} />

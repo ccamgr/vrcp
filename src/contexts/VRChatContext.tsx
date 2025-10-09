@@ -8,6 +8,7 @@ import {
   GroupsApi,
   InstancesApi,
   InviteApi,
+  PrintsApi,
   UsersApi,
   WorldsApi,
 } from "@/vrchat/api";
@@ -51,6 +52,7 @@ export interface VRChatContextType {
   groupsApi: GroupsApi;
   instancesApi: InstancesApi;
   inviteApi: InviteApi;
+  printsApi: PrintsApi;
   // pipeline
   pipeline: Pipeline;
 }
@@ -189,6 +191,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         groupsApi: new GroupsApi(config, BASE_API_URL, _axios),
         instancesApi: new InstancesApi(config, BASE_API_URL, _axios),
         inviteApi: new InviteApi(config, BASE_API_URL, _axios),
+        printsApi: new PrintsApi(config, BASE_API_URL, _axios),
         // pipeline
         pipeline: {
           client: pipelineRef.current,

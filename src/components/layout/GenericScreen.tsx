@@ -1,8 +1,13 @@
 import { spacing } from "@/configs/styles";
-import { useTheme } from "@react-navigation/native";
-import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { DrawerRouter, useTheme } from "@react-navigation/native";
+import { usePathname, useRouter } from "expo-router";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { SupportedIconNames } from "../view/icon-components/utils";
+import { useMenu } from "@/contexts/MenuContext";
+import { Drawer } from 'react-native-drawer-layout';
+import { Text } from "@react-navigation/elements";
+import { useEffect } from "react";
+import IconSymbol from "../view/icon-components/IconView";
 
 export interface MenuItem {
   icon?: SupportedIconNames;
@@ -20,37 +25,88 @@ const GenericScreen = ({
   children,
 }: GenericScreenProps) => {
   const theme = useTheme();
-  const router = useRouter();
+  const path = usePathname();
+  const { openMenu, setOpenMenu } = useMenu();
+
+  useEffect(() => {
+    if (!openMenu) return;
+    setOpenMenu(false); // close menu on path change
+  }, [path]);
+
+  if (menuItems !== undefined) {
+    return (
+      <View style={styles.screenRoot}>
+        
+        <Drawer
+          direction="rtl"
+          drawerStyle={[styles.drawer, { backgroundColor: theme.colors.card }]}
+          open={openMenu}
+          onOpen={() => setOpenMenu(true)}
+          onClose={() => setOpenMenu(false)}
+          renderDrawerContent={() => (
+            <DrawerContent menuItems={menuItems} setOpenMenu={setOpenMenu} />
+          )}
+        >
+          <View style={styles.screenContainer}>{children}</View>
+        </Drawer>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.screenRoot}>
+        <View style={styles.screenContainer}>{children}</View>
+      </View>
+    );
+  } 
+};
+
+const DrawerContent = ({
+  menuItems,
+  setOpenMenu,
+}: {
+  menuItems?: MenuItem[];
+  setOpenMenu: (open: boolean) => void;
+}) => {
+  const theme = useTheme();
   return (
-    <View style={styles.screenRoot}>
-      {/* Menu　from HeaderButtons */}
-      <View style={styles.screenContainer}>{children}</View>
+    <View>
+      {menuItems?.map((item, index) => {
+        const onPress = () => {
+          item.onPress();
+          setOpenMenu(false);
+        }
+        return (
+          <TouchableOpacity key={`menu-item-${index}-${item.title}`} onPress={onPress} style={styles.drawerItemContainer}>
+            {item.icon && (
+              <IconSymbol name={item.icon} size={20} color={theme.colors.text} />
+            )}
+            <Text style={{ color: theme.colors.text }}>{item.title}</Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screenRoot: {
     // attach to Root-View
     flex: 1,
   },
-  screenHeader: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    height: 64,
-    padding: spacing.small,
+  drawer: {
+    right: 0,
+    width: 200,
+    maxWidth: "66%",
+    // borderColor: "red", borderStyle: "dashed", borderWidth: 1,
   },
-  screenHeaderTitleAndAction: {
-    display: "flex",
+  drawerItemContainer: {
+    width: "100%",
     flexDirection: "row",
-    justifyContent: "flex-start",
-  },
-  screenHeaderContents: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: spacing.medium,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.large,
+    // borderColor: "blue", borderStyle: "dashed", borderWidth: 1,
   },
   screenContainer: {
     flex: 1,

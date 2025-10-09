@@ -1,4 +1,4 @@
-import GenericScreen from "@/components/layout/GenericScreen";
+import GenericScreen, { MenuItem } from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/features/detail/DetailItemContainer";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
@@ -16,11 +16,13 @@ import { Platform, TouchableOpacity } from "react-native";
 import { KeyboardAvoidingView, KeyboardAvoidingViewComponent, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { routeToInstance } from "@/libs/route";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
+import { useData } from "@/contexts/DataContext";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
   const cache = useCache();
+  const data = useData();
   const theme = useTheme();
   const [user, setUser] = useState<User>();
   const [locationInfo, setLocationInfo] = useState<{
@@ -34,6 +36,8 @@ export default function UserDetail() {
 
   const [editNote, setEditNote] = useState(false);
   const editting = React.useRef<string>("");
+
+  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "friend");
 
   const fetchLocationInfo = async () => {
     if (!user?.location) return;
@@ -104,9 +108,51 @@ export default function UserDetail() {
     setEditNote(false);
   }
 
+  const handleAddFavorite = (name:string) => {
+    vrc.favoritesApi.addFavorite({addFavoriteRequest: {
+      favoriteId: id,
+      type: "friend",
+      tags: name ? [name] : [], // ex. group_0
+    }}).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => [...prev, res.data]); // update cache
+    }).catch(err => {
+      console.error("Error adding favorite:", extractErrMsg(err));
+    });
+  };
+  const handleRemoveFavorite = () => {
+    vrc.favoritesApi.removeFavorite({
+      favoriteId: id,
+    }).then(res => {
+      if (res.status !== 200) return;
+      data.favorites.set((prev) => prev.filter(fav => fav.favoriteId !== id)); // update cache
+    }).catch(err => {
+      console.error("Error removing favorite:", extractErrMsg(err));
+    });
+  };
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: user?.isFriend ? "account-multiple-minus" : "account-multiple-plus",
+      title: user?.isFriend ? "Remove Friend" : "Add Friend",
+      onPress: user?.isFriend ? () => console.log("remove friend modal") : () => console.log("add friend modal"),
+    },
+    {
+      icon: isFavorite ? "heart-minus" : "heart-plus",
+      title: isFavorite ? "Remove Favorite" : "Add Favorite",
+      onPress: isFavorite ? () => console.log("remove favorite modal") : () => console.log("add favorite modal"),
+    },
+    {
+      icon: "hanger",
+      title: "Current Avatar",
+      onPress: () => console.log("go to current avatar"),
+    }
+
+  ];
+
   return (
     <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-    <GenericScreen>
+    <GenericScreen menuItems={menuItems}>
       {user ? (
         <View style={{ flex: 1 }}>
           <CardViewUserDetail user={user} style={[styles.cardView]} />

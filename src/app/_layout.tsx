@@ -3,6 +3,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CacheProvider } from "@/contexts/CacheContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { DBProvider } from "@/contexts/DBContext";
+import { MenuProvider } from "@/contexts/MenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
@@ -30,16 +31,18 @@ export default function Root() {
         <AuthProvider>
           <CacheProvider>
             <DataProvider>
-              <SafeAreaProvider>
-                <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-                  <ThemeProvider
-                    value={useColorScheme() !== "dark" ? lightTheme : darkTheme}
-                  >
-                    <RootLayout />
-                    <StatusBar style="auto" />
-                  </ThemeProvider>
-                </SafeAreaView>
-              </SafeAreaProvider>
+              <MenuProvider>
+                <SafeAreaProvider>
+                  <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+                    <ThemeProvider
+                      value={useColorScheme() !== "dark" ? lightTheme : darkTheme}
+                    >
+                      <RootLayout />
+                      <StatusBar style="auto" />
+                    </ThemeProvider>
+                  </SafeAreaView>
+                </SafeAreaProvider>
+              </MenuProvider>
             </DataProvider>
           </CacheProvider>
         </AuthProvider>
