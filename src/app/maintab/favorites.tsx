@@ -45,7 +45,7 @@ export default function Favorites() {
   );
 
   const WorldsTab = () => {
-    const { worlds: worldsData, favorites } = useData();
+    const { favWorlds: worldsData, favorites } = useData();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null
     );
@@ -178,7 +178,7 @@ export default function Favorites() {
     );
   };
   const AvatarsTab = () => {
-    const { avatars: avatarsData, favorites } = useData();
+    const { favAvatars: avatarsData, favorites } = useData();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null
     );

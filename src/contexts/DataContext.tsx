@@ -4,6 +4,7 @@ import {
   Favorite,
   FavoritedWorld,
   FavoriteGroup,
+  FavoriteLimits,
   LimitedUserFriend,
   LimitedWorld,
 } from "@/vrchat/api";
@@ -13,23 +14,21 @@ import { useVRChat } from "./VRChatContext";
 import { PipelineContent, PipelineMessage, PipelineType } from "@/vrchat/pipline/type";
 import { convertToLimitedUserFriend } from "@/libs/vrchat";
 import { useCache } from "./CacheContext";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useSetting } from "./SettingContext";
 import Storage from "expo-sqlite/kv-store";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 
 // Store VRCAPI Data Globally
 
 
-// [Todo] use Tanstanck Query for better data management?
+// [ToDo] use Tanstack Query for better data management?
 interface DataWrapper<T> {
   data: T;
   isLoading: boolean;
   fetch: () => Promise<T>; // fetch and update data
   set: (v: React.SetStateAction<T>) => void; // manually set data
   clear: () => void;
-  _order: number; // lower number means execute earlier
 }
 
 interface DataContextType {
@@ -38,8 +37,8 @@ interface DataContextType {
 
   currentUser: DataWrapper<CurrentUser | undefined>;
   friends: DataWrapper<LimitedUserFriend[]>; // all friends
-  worlds: DataWrapper<FavoritedWorld[]>; // favorited worlds
-  avatars: DataWrapper<Avatar[]>; // favorited avatars
+  favWorlds: DataWrapper<FavoritedWorld[]>; // favorited worlds
+  favAvatars: DataWrapper<Avatar[]>; // favorited avatars
   favoriteGroups: DataWrapper<FavoriteGroup[]>;
   favorites: DataWrapper<Favorite[]>; // almost for favorited friends
 
@@ -63,9 +62,10 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   const cache = useCache();
   const [pipelineMessages, setPipelineMessages] = useState<PipelineMessage[]>([]); // store pipeline messages
 
+
   /** APIs */
   // data getters
-  const getCurrentUser = async () => cache.currentUser.get(true); // fetch and set cache current user
+  const getCurrentUser = async () => await cache.currentUser.get(); // fetch and set cache current user
   const getFavoriteGroups = async () =>
     (await vrc.favoritesApi.getFavoriteGroups()).data;
   const getFavorites = async () => {
@@ -111,7 +111,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
     ]);
     return res.flatMap((r) => r.data);
   };
-  const getWorlds = async () => {
+  const getFavWorlds = async () => {
     const npr = 100;
     const limits = await cache.favoriteLimits.get();
     const wld =
@@ -124,7 +124,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
     ]);
     return res.flatMap((r) => r.data);
   };
-  const getAvatars = async () => {
+  const getFavAvatars = async () => {
     const npr = 100;
     const limits = await cache.favoriteLimits.get();
     const avt =
@@ -138,14 +138,15 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
     return res.flatMap((r) => r.data);
   };
 
+
   // register data wrappers
   const wrappers = {
     currentUser: useDataWrapper<CurrentUser | undefined>(undefined, getCurrentUser),
     friends: useDataWrapper<LimitedUserFriend[]>([], getFriends),
     favoriteGroups: useDataWrapper<FavoriteGroup[]>([], getFavoriteGroups),
     favorites: useDataWrapper<Favorite[]>([], getFavorites),
-    worlds: useDataWrapper<FavoritedWorld[]>([], getWorlds),
-    avatars: useDataWrapper<Avatar[]>([], getAvatars),
+    favWorlds: useDataWrapper<FavoritedWorld[]>([], getFavWorlds),
+    favAvatars: useDataWrapper<Avatar[]>([], getFavAvatars),
   };
   // fetch all data in order
   const fetchAll = async () => {
@@ -266,7 +267,6 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
 function useDataWrapper<T>(
   initialData: T,
   getter?: () => Promise<T>,
-  order?: number
 ): DataWrapper<T> {
   const [wrapperState, setWrapperState] = useState<{data: T, isLoading: boolean}>({data: initialData, isLoading: false});
   const fetch = async () => {
@@ -290,7 +290,7 @@ function useDataWrapper<T>(
     }
   };
   const clear = () => setWrapperState({data: initialData, isLoading: false});
-  return { data: wrapperState.data, fetch, set, clear, isLoading: wrapperState.isLoading, _order: order ?? 0 };
+  return { data: wrapperState.data, fetch, set, clear, isLoading: wrapperState.isLoading};
 }
 
 export { DataProvider, useData };
