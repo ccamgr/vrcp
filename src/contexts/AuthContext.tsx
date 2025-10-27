@@ -7,6 +7,8 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react";
 import { useVRChat } from "./VRChatContext";
@@ -31,6 +33,7 @@ type VerifyRes = "success" | "failed" | "disabled" | "error";
 
 interface AuthContextType {
   user: AuthUser | undefined;
+  isLoading: boolean;
   login: (param: LoginParam) => Promise<LoginRes>;
   logout: () => void;
   verify: (param: VerifyParam) => Promise<VerifyRes>;
@@ -47,8 +50,10 @@ const useAuth = () => {
 const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const vrc = useVRChat();
   const [user, setUser] = useState<AuthUser | undefined>(undefined);
+  const [ isLoading, setIsLoading ] = useState<boolean>(true);
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
+    setIsLoading(true);
     const conf = vrc.configureAPI({
       username: param.username,
       password: param.password,
@@ -68,10 +73,13 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         // two factor auth
         const allowedTFA = Object(res.data).requiresTwoFactorAuth as string[];
         if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
+          setIsLoading(false);
           return "tfa-totp"; // return for TOTP 2FA
         } else if (allowedTFA.includes("emailOtp")) {
+          setIsLoading(false);
           return "tfa-email"; // return for Email 2FA
         } else {
+          setIsLoading(false);
           return "error"; // no supported 2FA method
         }
       } else if (res.data.id) {
@@ -98,26 +106,33 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         console.log(`login as ${res.data.displayName}: ${res.data.id}`);
         router.replace("/maintab/home"); // navigate to tabs if user is logged in
 
+        setIsLoading(false);
         return "success";
       } else {
+        setIsLoading(false);
         return "error";
       }
     } catch (e) {
-      console.error("Login failed", extractErrMsg(e));
+      console.log("Login failed", extractErrMsg(e));
+      setIsLoading(false);
       return "error";
     }
   };
 
   const verify = async ({ code, mode }: VerifyParam): Promise<VerifyRes> => {
     const api = new AuthenticationApi(vrc.config);
+    setIsLoading(true);
     try {
       if (mode == "totp") {
         const res = await api.verify2FA({ twoFactorAuthCode: { code } });
         if (res.data.verified) {
+          setIsLoading(false);
           return "success";
         } else if (!res.data.enabled) {
+          setIsLoading(false);
           return "disabled"; // TFA is disabled
         } else {
+          setIsLoading(false);
           return "failed";
         }
       } else if (mode == "email") {
@@ -128,21 +143,27 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
             // [ToDo] use SecureStore of expo
             Storage.setItem("auth_2faCookie", tfaCookie);
           }
+          setIsLoading(false);
           return "success";
         } else if (!res.data.enabled) {
+          setIsLoading(false);
           return "disabled"; // TFA is disabled
         } else {
+          setIsLoading(false);
           return "failed";
         }
       }
+      setIsLoading(false);
       return "error";
     } catch (e) {
-      console.error(e);
+      console.log("2FA verification failed", extractErrMsg(e));
+      setIsLoading(false);
       return "error";
     }
   };
 
   const logout = async () => {
+    setIsLoading(true);
     try {
       await vrc.authenticationApi.logout();
     } catch (e) {
@@ -158,56 +179,66 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     Storage.removeItem("auth_authCookie");
     Storage.removeItem("auth_2faCookie");
     setUser(undefined);
+    setIsLoading(false);
+
     router.replace("/"); // navigate to index after logout
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const conf = vrc.configureAPI({}); // configure VRChat client with past data
-      const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
-      const storedData = await Promise.all([
-        Storage.getItem("auth_user_id"),
-        Storage.getItem("auth_user_displayName"),
-        Storage.getItem("auth_user_icon"),
+      setIsLoading(true);
+      try {
+        const conf = vrc.configureAPI({}); // configure VRChat client with past data
+        const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
+        const storedData = await Promise.all([
+          Storage.getItem("auth_user_id"),
+          Storage.getItem("auth_user_displayName"),
+          Storage.getItem("auth_user_icon"),
 
-        Storage.getItem("auth_authCookie"),
-        Storage.getItem("auth_2faCookie"),
-      ]);
-      const storedUser = {
-        id: storedData[0] || undefined,
-        displayName: storedData[1] || undefined,
-        icon: storedData[2] || undefined,
-      };
-      if (storedUser.id) {
-        const verified = (await api.verifyAuthToken()).data.ok;
-        if (verified) {
-          const authCookie = storedData[3];
-          if (authCookie) {
-            vrc.configurePipeline(authCookie); // set auth cookie to pipeline
+          Storage.getItem("auth_authCookie"),
+          Storage.getItem("auth_2faCookie"),
+        ]);
+        const storedUser = {
+          id: storedData[0] || undefined,
+          displayName: storedData[1] || undefined,
+          icon: storedData[2] || undefined,
+        };
+        if (storedUser.id) {
+          const verified = (await api.verifyAuthToken()).data.ok;
+          if (verified) {
+            const authCookie = storedData[3];
+            if (authCookie) {
+              vrc.configurePipeline(authCookie); // set auth cookie to pipeline
+            }
+            setUser(storedUser);
+            console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
+            router.replace("/maintab/home"); // navigate to tabs if user is logged in
+            setIsLoading(false);
+            return;
+          } else {
+            console.log("token expired.");
           }
-          setUser(storedUser);
-          console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
-          router.replace("/maintab/home"); // navigate to tabs if user is logged in
-          return;
-        } else {
-          console.log("token expired.");
         }
+        api.logout();
+        setUser(undefined); // clear user data if not logged in
+        setIsLoading(false);
+      } catch (e) {
+        console.log("Error loading auth data:", extractErrMsg(e));
+        setUser(undefined);
+        setIsLoading(false);
       }
-      api.logout();
-      setUser(undefined); // clear user data if not logged in
-      // router.replace("/"); // navigate to login if user is not logged in
     };
 
-    fetchData().catch(console.error);
+    fetchData()
   }, []);
 
   return (
-    <Context.Provider value={{ user, login, logout, verify }}>
+    <Context.Provider value={{ user, login, logout, verify, isLoading }}>
       {children}
     </Context.Provider>
   );
 };
-
+ 
 // なんかフォーマットが変になるので、関数化しておく
 const extractAuthCookie = (string: string | undefined): string | undefined => {
   const match = string?.match(/auth=([^;]+);/);

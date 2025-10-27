@@ -1,5 +1,7 @@
 import Constants from "expo-constants";
 
+
+// object 
 export function omitObject <T extends object> (obj: T, ...keys: Array<keyof T>): Partial<T> {
   const newObj: Partial<T> = {};
   const ks: Array<keyof T> = Object.keys(obj) as Array<keyof T>;
@@ -11,11 +13,48 @@ export function omitObject <T extends object> (obj: T, ...keys: Array<keyof T>):
   return newObj;
 };
 
+export function mergeWithDefaults<Tbase extends object, Toverride extends object>(
+  defaults: Tbase,
+  overrides: Toverride,
+): Tbase {
 
+  // primitive => override
+  // array => override
+  // object => merge recursively
+  const result: any = { ...defaults };
+  const keys = Object.keys({...defaults, ...overrides}) as Array<keyof Toverride & keyof Tbase>;
+  for (const key of keys) {
+    if (overrides[key] === undefined) {
+      result[key] = defaults[key as keyof Tbase];
+    } else if (isOverridable(defaults[key as keyof Tbase], overrides[key as keyof Toverride])) {
+      result[key] = overrides[key];
+    } else {
+      if (typeof defaults[key as keyof Tbase] === "object" && typeof overrides[key as keyof Toverride] === "object") {
+        result[key] = mergeWithDefaults(
+          defaults[key as keyof Tbase] as object,
+          overrides[key as keyof Toverride] as object,
+        );
+      }
+    }
+  }
+
+  return result;
+}
+
+function isOverridable(base: any, target: any): boolean {
+  if (target === null) return false;
+  if (Array.isArray(base) && Array.isArray(target)) return true;
+  if (typeof base !== "object" && typeof target !== "object") return true;
+  return typeof base == typeof target;
+}
+
+
+// error
 export function extractErrMsg (error: any): string {
   return error.response?.data?.error?.message || "Unknown error";
 };
 
+// user agent
 export function getUserAgent (): string {
   const name = Constants.expoConfig?.slug + Constants.expoConfig?.extra?.vrcmm?.buildProfile;
   const version = Constants.expoConfig?.version || "0.0.0-dev";
@@ -23,6 +62,7 @@ export function getUserAgent (): string {
   return `${name}/${version} ${contact}`;
 }
 
+// color
 export function getTintedColor (hexColor: string): string {
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);

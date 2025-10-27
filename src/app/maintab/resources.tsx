@@ -15,10 +15,13 @@ import { useData } from "@/contexts/DataContext";
 import CardViewPrint from "@/components/view/item-CardView/CardViewPrint";
 import { CachedImage } from "@/contexts/CacheContext";
 import ImagePreview from "@/components/view/ImagePreview";
+import { useSetting } from "@/contexts/SettingContext";
 // user's avatar, world, and other uploaded resources
 export default function Resources() {
   const vrc = useVRChat();
   const { currentUser } = useData();
+  const { settings } = useSetting();
+  const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
   const theme = useTheme();
   const NumPerReq = 50;
 
@@ -69,16 +72,17 @@ export default function Resources() {
       <View style={styles.tabpanel}>
         {isLoading && <LoadingIndicator absolute />}
         <FlatList
+          // key={`avatar-list-col-${cardViewColumns}`} // to re-render on column change
           data={avatars}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <CardViewAvatar
               avatar={item}
-              style={styles.cardView}
+              style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
               onPress={() => routeToAvatar(item.id)}
             />
           )}
-          numColumns={2}
+          numColumns={cardViewColumns}
           onEndReached={fetchAvatars}
           onEndReachedThreshold={0.5}
           onRefresh={reload}
@@ -132,16 +136,17 @@ export default function Resources() {
       <View style={styles.tabpanel}>
         {isLoading && <LoadingIndicator absolute />}
         <FlatList
+          // key={`world-list-col-${cardViewColumns}`} // to re-render on column change
           data={worlds}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <CardViewWorld
               world={item}
-              style={styles.cardView}
+              style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
               onPress={() => routeToWorld(item.id)}
             />
           )}
-          numColumns={2}
+          numColumns={cardViewColumns}
           onEndReached={fetchWorlds}
           onEndReachedThreshold={0.5}
           onRefresh={reload}
@@ -201,10 +206,11 @@ export default function Resources() {
       <View style={styles.tabpanel}>
         {isLoading && <LoadingIndicator absolute />}
         <FlatList
+          // key={`print-list-col-${cardViewColumns}`} // to re-render on column change
           data={prints}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
-            <CardViewPrint print={item} style={styles.printView} onPress={() => setPreview({ idx: index, open: true })} />
+            <CardViewPrint print={item} style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]} onPress={() => setPreview({ idx: index, open: true })} />
           )}
           ListEmptyComponent={() => (
             <View style={{ alignItems: "center", marginTop: spacing.large }}>
@@ -213,7 +219,7 @@ export default function Resources() {
               </Text>
             </View>
           )}
-          numColumns={2}
+          numColumns={cardViewColumns}
           onEndReached={fetchPrints}
           onEndReachedThreshold={0.5}
           onRefresh={reload}
@@ -260,10 +266,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardView: {
-    padding: spacing.small,
-    width: "50%",
-  },
-  printView: {
     padding: spacing.small,
     width: "50%",
   },

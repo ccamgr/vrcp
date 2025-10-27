@@ -3,8 +3,9 @@ import { SupportedIconNames } from "../view/icon-components/utils";
 
 export interface ButtonItem {
   title: string;
-  onPress: () => void;
+  onPress?: () => void;
   color?: string;
+  variant?: 'plain' | 'tinted' | 'filled';
   disabled?: boolean;
 }
 export interface ButtonItemForFooter extends ButtonItem {

@@ -2,6 +2,7 @@ import AsyncStorage from "expo-sqlite/kv-store";
 import { createContext, useContext, useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import { vrcColors } from "@/configs/vrchat";
+import { mergeWithDefaults } from "@/libs/utils";
 
 const documentDirectory = FileSystem.documentDirectory;
 
@@ -13,14 +14,13 @@ const documentDirectory = FileSystem.documentDirectory;
 interface UIOption { // layout, color schema
   layouts: {
     homeTabMode: "default" | "friend-locations" | "feeds" | "calendar";
-    // CardViewColumns: 1 | 2 | 3 | 4;
+    cardViewColumns: number; // integer, number of columns in card view
   };
   theme: {
     colorSchema: "light" | "dark" | "system";
-    accentColor: string | undefined; 
   };
   user: {
-    friendColor: string | undefined; 
+    friendColor: string; 
     favoriteFriendsColors: { [favoriteGroupId: string]: string }; // override friend color for favorite groups
     // useFriendOrder: boolean;
   };
@@ -37,7 +37,7 @@ interface OtherOption {
   sendDebugLogs: boolean;
 }
 
-interface Setting {
+export interface Setting {
   uiOptions: UIOption;
   notificationOptions: NotificationOption;
   pipelineOptions: PipelineOption;
@@ -48,10 +48,10 @@ const defaultSettings: Setting = {
   uiOptions: {
     layouts: {
       homeTabMode: "default",
+      cardViewColumns: 2,
     },
     theme: {
       colorSchema: "system",
-      accentColor: undefined,
     },
     user: {
       friendColor: vrcColors.friend,
@@ -114,23 +114,13 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
     storedSettings.forEach(([key, value]) => {
       if (value !== null) {
         const settingKey = key.replace("setting_", "") as keyof Setting;
-        newSettings[settingKey] = { ...recursiveApply(newSettings[settingKey], JSON.parse(value)) };
+        newSettings[settingKey] = mergeWithDefaults(newSettings[settingKey], JSON.parse(value)) as any;
       }
     });
-    // console.log("Loaded settings:", JSON.stringify(newSettings, null, 2));
+    console.log("Loaded settings:", JSON.stringify(newSettings, null, 2));
     return newSettings;
   }
 
-  const recursiveApply = (base: any, apply: any) => {
-    for (const key in base) {
-      if (typeof base[key] === "object" && !Array.isArray(base[key])) {
-        if (apply[key] !== undefined) recursiveApply(base[key], apply[key]);
-      } else {
-        base[key] = apply[key];
-      }
-    }
-    return base;
-  }
 
   return (
     <Context.Provider value={{

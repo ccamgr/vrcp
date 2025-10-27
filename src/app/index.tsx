@@ -30,8 +30,6 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [TFACode, setTFACode] = useState("");
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
-  const [isLoadingVerify, setIsLoadingVerify] = useState(false);
   const [modeTFA, setModeTFA] = useState<"totp" | "email">("totp");
   const [openTFA, setOpenTFA] = useState(false);
   const [openLinks, setOpenLinks] = useState(false);
@@ -47,7 +45,6 @@ export default function Login() {
       return;
     }
     ///
-    setIsLoadingLogin(true);
     const res = await auth.login({
       username: username,
       password: password,
@@ -63,7 +60,6 @@ export default function Login() {
     } else {
       Alert.alert("Login failed", "Please check your username and password");
     }
-    setIsLoadingLogin(false);
   };
 
   const handleVerify = async () => {
@@ -73,7 +69,6 @@ export default function Login() {
       return;
     }
     ///
-    setIsLoadingVerify(true);
     const res = await auth.verify({
       code: TFACode, // get the code from the input
       mode: modeTFA,
@@ -103,7 +98,6 @@ export default function Login() {
     } else {
       Alert.alert("2FA verification error", "please try again later");
     }
-    setIsLoadingVerify(false);
   };
 
   const logoAnim = useRef(new Animated.Value(0)).current; //
@@ -132,7 +126,7 @@ export default function Login() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <GenericScreen>
-        {(isLoadingLogin || isLoadingVerify) && <LoadingIndicator absolute />}
+        {auth.isLoading && <LoadingIndicator absolute />}
         <View style={styles.containerCentered}>
           <Pressable
             style={{
@@ -152,7 +146,7 @@ export default function Login() {
               source={require("@/assets/images/logo.png")}
               style={{
                 height: "100%",
-                aspectRatio: 1,
+                aspectRatio: 1, 
                 resizeMode: "cover",
                 transform: [
                   {

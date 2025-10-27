@@ -75,6 +75,8 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                     width: item.width,
                   }]}
                   onPress={item.onPress}
+                  pointerEvents={item.onPress ? "auto" : "none"}
+                  variant={item.variant}
                   color={item.color || theme.colors.text}
                   disabled={item.disabled}
                 >
@@ -139,9 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.small,
     overflow: "hidden",
 
-    // borderColor: 'blue',
-    // borderWidth: 1,
-    // borderStyle: 'solid',
+    // borderColor: 'blue', borderWidth: 1, borderStyle: 'solid',
   },
   titleContainer: {
     flexDirection: "row",
@@ -157,14 +157,15 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   childContainer: {
-    padding: spacing.large
+    padding: spacing.medium,
   },
   footer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     gap: spacing.small,
-    padding: spacing.small,
+    paddingHorizontal: spacing.small,
+    paddingBottom: spacing.small,
   },
   footterButton: {
     borderRadius: radius.button,
