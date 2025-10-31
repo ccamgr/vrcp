@@ -46,7 +46,7 @@
     "prettier": "^3.6.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-native": "0.79.5",
+    "react-native": "0.79.6",
     "react-native-draggable-flatlist": "^4.0.3",
     "react-native-drawer-layout": "^4.1.13",
     "react-native-gesture-handler": "~2.24.0",
