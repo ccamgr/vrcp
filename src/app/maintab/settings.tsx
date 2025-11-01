@@ -1,7 +1,7 @@
 import GenericDialog from "@/components/layout/GenericDialog";
 import GenericScreen from "@/components/layout/GenericScreen";
 import DatabaseModal from "@/components/features/settings/DatabaseModal";
-import DevelopperModal from "@/components/features/settings/DevelopperModal";
+import DevelopmentModal from "@/components/features/settings/DevelopmentModal";
 import UIModal from "@/components/features/settings/UIModal";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { SupportedIconNames } from "@/components/view/icon-components/utils";
@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { navigate } from "expo-router/build/global-state/routing";
 import InfoModal from "@/components/features/settings/InfoModal";
 import { ScrollView } from "react-native-gesture-handler";
+import FeedbackModal from "@/components/features/settings/FeedbackModal";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -27,7 +28,8 @@ export default function Settings() {
   const auth = useAuth();
   const theme = useTheme();
   const [openLogout, setOpenLogout] = useState(false);
-  const [openDevelopper, setOpenDevelopper] = useState(false);
+  const [openDevelopment, setOpenDevelopment] = useState(false);
+  const [openFeedback, setOpenFeedback] = useState(false);
   const [openInfo, setOpenInfo] = useState(false);
   const [openDatabase, setOpenDatabase] = useState(false);
   const [openUI, setOpenUI] = useState(false);
@@ -55,22 +57,22 @@ export default function Settings() {
     ],
     other: [
       {
-        icon: "info",
+        icon: "information",
         title: "Information",
         description: "View information about this app",
         onPress: () => setOpenInfo(true),
       },
       {
-        icon: "help",
-        title: "Help",
-        description: "Get help and support",
-        onPress: () => {},
+        icon: "code-not-equal-variant",
+        title: "Development",
+        description: "Manage development features",
+        onPress: () => setOpenDevelopment(true),
       },
       {
-        icon: "code",
-        title: "Developper",
-        description: "Manage development features",
-        onPress: () => setOpenDevelopper(true),
+        icon: "message-alert",
+        title: "Feedback",
+        description: "send your feedback to developer",
+        onPress: () => setOpenFeedback(true),
       },
       ...(Constants.expoConfig?.extra?.vrcmm.buildProfile == "development" ? [
         {
@@ -144,8 +146,10 @@ export default function Settings() {
       />
       <DatabaseModal open={openDatabase} setOpen={setOpenDatabase} />
       <UIModal open={openUI} setOpen={setOpenUI} />
-      <DevelopperModal open={openDevelopper} setOpen={setOpenDevelopper} />
+      <DevelopmentModal open={openDevelopment} setOpen={setOpenDevelopment} />
       <InfoModal open={openInfo} setOpen={setOpenInfo} />
+      <FeedbackModal open={openFeedback} setOpen={setOpenFeedback} />
+
     </GenericScreen>
   );
 }

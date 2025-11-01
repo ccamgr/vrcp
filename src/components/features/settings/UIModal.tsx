@@ -181,21 +181,21 @@ const UIModal = ({ open, setOpen }: Props) => {
 
       <ColorSchemaModal
         open={colorSchemaModal.open}
-        onClose={() => setColorSchemaModal(prev => ({ ...prev, open: false }))}
+        setOpen={(v) => setColorSchemaModal(prev => ({ ...prev, open: v }))}
         defaultValue={colorSchemaModal.defaultValue}
         onSubmit={colorSchemaModal.onSubmit}
       />
 
       <HomeTabModeModal
         open={homeTabModeModal.open}
-        onClose={() => setHomeTabModeModal(prev => ({ ...prev, open: false }))}
+        setOpen={(v) => setHomeTabModeModal(prev => ({ ...prev, open: v }))}
         defaultValue={homeTabModeModal.defaultValue}
         onSubmit={homeTabModeModal.onSubmit}
       />
 
       <CardViewColumnsModal
         open={cardViewColumnsModal.open}
-        onClose={() => setCardViewColumnsModal(prev => ({ ...prev, open: false }))}
+        setOpen={(v) => setCardViewColumnsModal(prev => ({ ...prev, open: v }))}
         defaultValue={cardViewColumnsModal.defaultValue}
         onSubmit={cardViewColumnsModal.onSubmit}
       />

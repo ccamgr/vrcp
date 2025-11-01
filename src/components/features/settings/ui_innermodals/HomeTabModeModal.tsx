@@ -14,7 +14,7 @@ type HomeTabMode = Setting["uiOptions"]["layouts"]["homeTabMode"];
 
 interface Props {
   open: boolean;
-  onClose: () => void;
+  setOpen: (v: boolean) => void;
   defaultValue: HomeTabMode | undefined;
   onSubmit?: (value: HomeTabMode) => void;
 }
@@ -44,7 +44,7 @@ const getTextLabel = (v: HomeTabMode): string => {
   return "It may require restarting the app.";
 }
 
-const HomeTabModeModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
+const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
   const [ selectedValue, setSelectedValue ] = useState<HomeTabMode>(defaultValue || 'default');
 
@@ -64,7 +64,7 @@ const HomeTabModeModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
       title: "Apply",
       onPress: () => {
         onSubmit?.(selectedValue);
-        onClose();
+        setOpen(false);
       },
     },
   ];
@@ -76,7 +76,7 @@ const HomeTabModeModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
       <GenericModal
         showCloseButton
         open={open}
-        onClose={onClose}
+        onClose={() => setOpen(false)}
         buttonItems={buttonItems}
       >
         <View style={styles.container}>

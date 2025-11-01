@@ -15,7 +15,7 @@ type ColorSchema = Setting["uiOptions"]["theme"]["colorSchema"];
 
 interface Props {
   open: boolean;
-  onClose: () => void;
+  setOpen: (v: boolean) => void;
   defaultValue: ColorSchema | undefined;
   onSubmit?: (value: ColorSchema) => void;
 }
@@ -36,7 +36,7 @@ const getTextLabel = (v: ColorSchema): string => {
 }
 
 
-const ColorSchemaModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
+const ColorSchemaModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
   const [ selectedValue, setSelectedValue ] = useState<ColorSchema>(defaultValue || 'system');
 
@@ -58,7 +58,7 @@ const ColorSchemaModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
       title: "Apply",
       onPress: () => {
         onSubmit?.(selectedValue);
-        onClose();
+        setOpen(false);
       },
     },
   ];
@@ -67,7 +67,7 @@ const ColorSchemaModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
       <GenericModal
         showCloseButton
         open={open}
-        onClose={onClose}
+        onClose={() => setOpen(false)}
         buttonItems={buttonItems}
       >
         <View style={styles.container}>

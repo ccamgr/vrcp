@@ -17,12 +17,12 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const TermOfServiceModal = ({ open, setOpen }: Props) => {
+const PrivacyPolicyModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
 
   return (
     <GenericModal
-      title="Terms of Service"
+      title="Privacy Policy"
       showCloseButton
       size="full"
       open={open}
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default TermOfServiceModal;
+export default PrivacyPolicyModal;

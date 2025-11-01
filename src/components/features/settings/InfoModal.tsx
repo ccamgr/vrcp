@@ -6,6 +6,7 @@ import Constants from "expo-constants";
 import { useState } from "react";
 import { Platform, View } from "react-native";
 import TermOfServiceModal from "./info_innermodals/TermOfServiceModal";
+import PrivacyPolicyModal from "./info_innermodals/PrivacyPolicyModal";
 
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 const InfoModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const [ termOfServiceModal, setTermOfServiceModal ] = useState<boolean>(false);
+  const [ privacyPolicyModal, setPrivacyPolicyModal ] = useState<boolean>(false);
 
   const devInfo = {
     version: Constants.expoConfig?.version,
@@ -34,6 +36,11 @@ const InfoModal = ({ open, setOpen }: Props) => {
     {
       title: "Terms of Service",
       onPress: () => setTermOfServiceModal(true),
+      flex: 1,
+    },
+    {
+      title: "Privacy Policy",
+      onPress: () => setPrivacyPolicyModal(true),
       flex: 1,
     },
   ];
@@ -58,6 +65,10 @@ const InfoModal = ({ open, setOpen }: Props) => {
       <TermOfServiceModal
         open={termOfServiceModal}
         setOpen={setTermOfServiceModal}
+      />
+      <PrivacyPolicyModal
+        open={privacyPolicyModal}
+        setOpen={setPrivacyPolicyModal}
       />
 
     </GenericModal>

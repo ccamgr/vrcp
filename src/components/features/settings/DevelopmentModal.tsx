@@ -6,12 +6,12 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const DevelopperModal = ({ open, setOpen }: Props) => {
+const DevelopmentModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
 
   return (
     <GenericModal
-      title="Developper Options"
+      title="Development Features"
       showCloseButton
       size="large"
       open={open}
@@ -22,4 +22,4 @@ const DevelopperModal = ({ open, setOpen }: Props) => {
   );
 };
 
-export default DevelopperModal;
+export default DevelopmentModal;

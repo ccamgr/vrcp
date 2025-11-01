@@ -14,7 +14,7 @@ type CardViewColumns = Setting["uiOptions"]["layouts"]["cardViewColumns"];
 
 interface Props {
   open: boolean;
-  onClose: () => void;
+  setOpen: (v: boolean) => void;
   defaultValue: CardViewColumns | undefined;
   onSubmit?: (value: CardViewColumns) => void;
 }
@@ -35,7 +35,7 @@ const getTextLabel = (v: CardViewColumns): string => {
   return "It may require restarting the app.";
 }
 
-const CardViewColumnsModal = ({ open, onClose, defaultValue, onSubmit }: Props) => {
+const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
   const [ selectedValue, setSelectedValue ] = useState<CardViewColumns>(defaultValue || 2);
 
@@ -55,7 +55,7 @@ const CardViewColumnsModal = ({ open, onClose, defaultValue, onSubmit }: Props) 
       title: "Apply",
       onPress: () => {
         onSubmit?.(selectedValue);
-        onClose();
+        setOpen(false);
       },
     },
   ];
@@ -67,7 +67,7 @@ const CardViewColumnsModal = ({ open, onClose, defaultValue, onSubmit }: Props) 
       <GenericModal
         showCloseButton
         open={open}
-        onClose={onClose}
+        onClose={() => setOpen(false)}
         buttonItems={buttonItems}
       >
         <View style={styles.container}>

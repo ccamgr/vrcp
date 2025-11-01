@@ -157,7 +157,7 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       const countFileRecursive = async (dir: string): Promise<number> => {
         let totalCount = 0;
         const items = await FileSystem.readDirectoryAsync(dir);
-        for (const item of items) {
+        await Promise.all(items.map(async (item) => {
           const itemPath = dir + item;
           const info = await FileSystem.getInfoAsync(itemPath);
           if (info.isDirectory) {
@@ -166,7 +166,7 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
           } else {
             totalCount += 1;
           }
-        }
+        }));
         return totalCount;
       };
       const rootInfo = await FileSystem.getInfoAsync(cacheRootDir);
