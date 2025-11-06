@@ -100,7 +100,7 @@ const FavoriteFriendsTab = memo(() => {
     };
 
     return sorted;
-  }, [friends.data]);
+  }, [friends.data, friFavSet]);
 
   const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (
     <ListViewUser

@@ -16,15 +16,11 @@ import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { Setting, useSetting } from "@/contexts/SettingContext";
 import { CalendarEvent, PaginatedCalendarEventList } from "@/vrchat/api";
 
-type HomeTabMode = Setting["uiOptions"]["layouts"]["homeTabMode"]
-
 export default function Home() {
   const theme = useTheme();
   const { settings } = useSetting();
   const { homeTabMode, cardViewColumns } = settings.uiOptions.layouts;
-
-
-  
+ 
   return (
     <GenericScreen>
       { homeTabMode === "feeds" ? (
@@ -111,6 +107,8 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={2}
+        onRefresh={friends.fetch}
+        refreshing={friends.isLoading}
       />
     </SeeMoreContainer>
   );

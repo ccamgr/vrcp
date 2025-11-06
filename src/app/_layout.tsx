@@ -12,6 +12,8 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 function RootLayout() {
   return (
@@ -25,25 +27,31 @@ function RootLayout() {
 }
 
 export default function Root() {
+
+  const queryClient = new QueryClient();
+  const cs = useColorScheme();
+  const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
+
   return (
     <SettingProvider>
-      {/* <DBProvider> */}
-      <VRChatProvider>
-        <AuthProvider>
-          <CacheProvider>
-            <DataProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* <DBProvider> */}
+        <VRChatProvider>
+          <AuthProvider>
+            <CacheProvider>
+              <DataProvider>
               <MenuProvider>
                 <SafeAreaProvider>
-                  <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+                  {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
                     <GestureHandlerRootView style={{ flex: 1 }}>
                       <ThemeProvider
-                        value={useColorScheme() !== "dark" ? lightTheme : darkTheme}
+                        value={theme}
                       >
                         <RootLayout />
                         <StatusBar style="auto" />
                       </ThemeProvider>
                     </GestureHandlerRootView>
-                  </SafeAreaView>
+                  {/* </SafeAreaView> */}
                 </SafeAreaProvider>
               </MenuProvider>
             </DataProvider>
@@ -51,6 +59,7 @@ export default function Root() {
         </AuthProvider>
       </VRChatProvider>
       {/* </DBProvider> */}
+    </QueryClientProvider>
     </SettingProvider>
   );
 }

@@ -16,6 +16,7 @@ import { convertToLimitedUserFriend } from "@/libs/vrchat";
 import { useCache } from "./CacheContext";
 import { useSetting } from "./SettingContext";
 import Storage from "expo-sqlite/kv-store";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 // Store VRCAPI Data Globally
@@ -30,8 +31,8 @@ interface DataWrapper<T> {
 }
 
 interface DataContextType {
-  fetchAll: () => Promise<void>;
-  clearAll: () => Promise<void>;
+  // fetchAll: () => Promise<void>;
+  // clearAll: () => Promise<void>;
 
   currentUser: DataWrapper<CurrentUser | undefined>;
   friends: DataWrapper<LimitedUserFriend[]>; // all friends
@@ -55,6 +56,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const { settings } = useSetting();
+  const queryClient = useQueryClient();
   const vrc = useVRChat();
   const auth = useAuth();
   const cache = useCache();
@@ -139,26 +141,22 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
 
   // register data wrappers
   const wrappers = {
-    currentUser: useDataWrapper<CurrentUser | undefined>(undefined, getCurrentUser),
-    friends: useDataWrapper<LimitedUserFriend[]>([], getFriends),
-    favoriteGroups: useDataWrapper<FavoriteGroup[]>([], getFavoriteGroups),
-    favorites: useDataWrapper<Favorite[]>([], getFavorites),
-    favWorlds: useDataWrapper<FavoritedWorld[]>([], getFavWorlds),
-    favAvatars: useDataWrapper<Avatar[]>([], getFavAvatars),
-  };
-  // fetch all data in order
-  const fetchAll = async () => {
-    await Promise.all(Object.values(wrappers).map((v) => v.fetch()));
-  };
-  const clearAll = async () => {
-    await Promise.all(Object.values(wrappers).map((v) => v.clear()));
+    currentUser: useDataWrapper<CurrentUser | undefined>("currentUser", getCurrentUser, undefined, !!auth.user),
+    friends: useDataWrapper<LimitedUserFriend[]>("friends", getFriends , [], !!auth.user),
+    favoriteGroups: useDataWrapper<FavoriteGroup[]>("favoriteGroups", getFavoriteGroups, [], !!auth.user),
+    favorites: useDataWrapper<Favorite[]>("favorites", getFavorites, [], !!auth.user),
+    favWorlds: useDataWrapper<FavoritedWorld[]>("favWorlds", getFavWorlds, [], !!auth.user),
+    favAvatars: useDataWrapper<Avatar[]>("favAvatars", getFavAvatars, [], !!auth.user),
   };
 
   useEffect(() => {
     if (auth.user) {
-      fetchAll().catch(console.error);
+      Object.values(wrappers).forEach((w) => w.fetch().catch(console.error));
     } else {
-      clearAll(); // clear data on logout
+      queryClient.removeQueries({
+        queryKey: ["dataContext"],
+        exact: false,
+      });
     }
   }, [auth.user]);
 
@@ -251,8 +249,8 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   return (
     <Context.Provider
       value={{
-        fetchAll,
-        clearAll,
+        // fetchAll,
+        // clearAll,
         ...wrappers,
         pipelineMessages
       }}
@@ -262,33 +260,42 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
+
 function useDataWrapper<T>(
+  key: string,
+  queryFn: () => Promise<T>,
   initialData: T,
-  getter?: () => Promise<T>,
+  enabled: boolean = true,
+  expiration: number = 1000 * 60 * 10 // default 10 minutes
 ): DataWrapper<T> {
-  const [wrapperState, setWrapperState] = useState<{data: T, isLoading: boolean}>({data: initialData, isLoading: false});
-  const fetch = async () => {
-    if (!getter) return wrapperState.data; // no getter, just return current data
-    if (wrapperState.isLoading) return wrapperState.data; // already loading
-    setWrapperState((s) => ({...s, isLoading: true}));
-    try {
-      const newData = await getter();
-      setWrapperState({data: newData, isLoading: false});
-      return newData;
-    } catch (error) {
-      setWrapperState((s) => ({...s, isLoading: false}));
-      throw error;
-    }
-  };
+  const queryClient = useQueryClient();
+  const queryKey = ["dataContext", key];
+
+  const { data, isFetching, refetch } = useQuery<T>({
+    queryKey,
+    queryFn,
+    initialData,
+    staleTime: expiration,
+    enabled,
+    refetchOnReconnect: true,
+  });
+
   const set = (v: React.SetStateAction<T>) => {
-    if (typeof v === "function") {
-      setWrapperState((s) => ({...s, data: (v as (prevState: T) => T)(s.data)}));
-    } else {
-      setWrapperState((s) => ({...s, data: v}));
-    }
+    queryClient.setQueryData(queryKey, (prev: T | undefined) => {
+      if (typeof v === "function") return (v as (prevState: T) => T)(prev ?? initialData);
+      return v;
+    });
   };
-  const clear = () => setWrapperState({data: initialData, isLoading: false});
-  return { data: wrapperState.data, fetch, set, clear, isLoading: wrapperState.isLoading};
+
+  const clear = () => queryClient.removeQueries({ queryKey });
+
+  return {
+    data: data ?? initialData,
+    isLoading: isFetching,
+    fetch: async () => (await refetch()).data ?? initialData,
+    set,
+    clear,
+  };
 }
 
 export { DataProvider, useData };

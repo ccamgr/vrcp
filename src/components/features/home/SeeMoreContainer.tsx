@@ -1,3 +1,4 @@
+import IconButton from "@/components/view/icon-components/IconButton";
 import globalStyles, { radius, spacing } from "@/configs/styles";
 import { omitObject } from "@/libs/utils";
 import { Button, Text } from "@react-navigation/elements";
