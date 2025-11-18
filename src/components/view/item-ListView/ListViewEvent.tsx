@@ -1,34 +1,38 @@
 import { spacing } from "@/configs/styles";
 import { getInstanceType, InstanceLike, WorldLike } from "@/libs/vrchat";
-import { Instance } from "@/vrchat/api";
+import { CalendarEvent, Instance } from "@/vrchat/api";
 import { StyleSheet, View } from "react-native";
 import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
 import { CachedImage } from "@/contexts/CacheContext";
+import { formatToTimeStr } from "@/libs/date";
 
 
 
 
 interface Props {
-  world: WorldLike;
+  event: CalendarEvent;
   onPress?: () => void;
   onLongPress?: () => void;
 
   [key: string]: any;
 }
-const extractTitle = (data: WorldLike) =>
-  `${data.name}`;
-const extractSubtitles = (data: WorldLike) => [];
+const extractTitle = (data: CalendarEvent) =>
+  `${data.title}`;
+const extractSubtitles = (data: CalendarEvent) => [
+  `${formatToTimeStr(data.startsAt ?? "")} - ${formatToTimeStr(data.endsAt ?? "")}`,
+  data.description ?? "",
+];
 
-const ListViewWorld = ({
-  world,
+const ListViewEvent = ({
+  event,
   onPress,
   onLongPress,
   ...rest
 }: Props) => {
   return (
     <BaseListView
-      data={world}
+      data={event}
       title={extractTitle}
       subtitles={extractSubtitles}
       onPress={onPress}
@@ -37,7 +41,7 @@ const ListViewWorld = ({
       TitleStyle={styles.title}
       SubtitleStyle={styles.subtitle}
       OverlapComponents={
-        <CachedImage src={world.imageUrl} style={styles.image} />
+        <CachedImage src={event.imageUrl ?? ""} style={styles.image} />
       }
       {...rest}
     />
@@ -65,4 +69,4 @@ const styles = StyleSheet.create({
     // borderColor: "red", borderStyle: "solid", borderWidth: 1,
   },
 });
-export default ListViewWorld;
+export default ListViewEvent;

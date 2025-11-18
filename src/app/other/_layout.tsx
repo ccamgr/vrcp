@@ -52,16 +52,19 @@ export default function ModalLayout() {
       />
 
       <Stack.Screen
+        name="events"
+        options={{title: "Events", headerRight: undefined }}
+      /><Stack.Screen
         name="feeds"
-        options={{title: "Feeds" }}
+        options={{title: "Feeds", headerRight: undefined }}
       />
       <Stack.Screen
         name="friendlocations"
-        options={{title: "FriendLocations" }}
+        options={{title: "FriendLocations", headerRight: undefined }}
       />
       <Stack.Screen
         name="search"
-        options={{title: "Search" }}
+        options={{title: "Search", headerRight: undefined }}
       />
     </Stack>
   );

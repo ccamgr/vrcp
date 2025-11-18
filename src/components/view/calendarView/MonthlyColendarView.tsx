@@ -1,5 +1,6 @@
 import { TouchableOpacity } from "@/components/CustomElements";
 import { fontSize, spacing } from "@/configs/styles";
+import { isSameDate } from "@/libs/date";
 import { getTintedColor } from "@/libs/utils";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
@@ -11,17 +12,20 @@ import { StyleSheet, View } from "react-native";
 interface CalendarViewProps {
   renderDateContent?: (date: Date) => React.ReactNode;
   initialDate?: Date;
-  onSelectDate: (date: Date) => void;
+  onSelectDate?: (date: Date) => void;
+  onChangeMonth?: (month: Date) => void;
 }
 
 const MonthlyCalendarView = ({
   renderDateContent,
   initialDate = new Date(),
   onSelectDate,
+  onChangeMonth
 }: CalendarViewProps) => {
   const theme = useTheme();
   const [selectedMonth, setSelectedMonth] = useState<Date>(initialDate);
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
+  const today = new Date();
 
   const calendarWeeks = useMemo<Date[][]>(() => {
     const weeks: Date[][] = [];
@@ -53,28 +57,25 @@ const MonthlyCalendarView = ({
       1
     );
     setSelectedMonth(newMonth);
+    onChangeMonth?.(newMonth);
   };
 
   const handleTapDate = (date: Date) => {
     setSelectedDate(date);
-    onSelectDate(date);
+    onSelectDate?.(date);
   }
 
   const getDateColor = (date: Date) => {
+    if (isSameDate(date, today)) {
+      return theme.colors.primary;
+    }
     let dateColor = theme.colors.text;
     if (date.getDay() === 6) {
       dateColor = theme.colors.error;
     } else if (date.getDay() === 0) {
       dateColor = theme.colors.info;
     }
-    if (
-      date.getDate() === selectedDate.getDate() &&
-      date.getMonth() === selectedDate.getMonth() &&
-      date.getFullYear() === selectedDate.getFullYear()
-    ) {
-      return theme.colors.primary;
-    }
-    
+
     if (date.getMonth() !== selectedMonth.getMonth()) {
       dateColor = getTintedColor(dateColor, 0.60); 
     };
@@ -104,7 +105,7 @@ const MonthlyCalendarView = ({
       {calendarWeeks.map((week, weekIndex) => (
         <View key={weekIndex} style={[styles.weekContainer, { height: `${100 / calendarWeeks.length}%` }]}>
           {week.map((date, dateIndex) => (
-            <TouchableOpacity style={[styles.border, styles.dateContainer]} onPress={() => handleTapDate(date)} key={dateIndex} >
+            <TouchableOpacity style={[styles.border, styles.dateContainer, isSameDate(date, selectedDate) ? styles.selectedDate : null]} onPress={() => handleTapDate(date)} key={dateIndex} >
               <Text style={[styles.dateNumber, {color: getDateColor(date) }]}>{date.getDate()}</Text>
               {renderDateContent ? renderDateContent(date) : null}
             </TouchableOpacity>
@@ -165,6 +166,10 @@ const styles = StyleSheet.create({
   border: {
     borderColor: "gray",
     borderWidth: 0.5,
+  },
+  selectedDate: {
+    borderColor: "cornflowerblue",
+    backgroundColor: "rgba(100, 149, 237, 0.2)", // cornflowerblue with opacity
   },
 
 }); 

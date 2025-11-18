@@ -19,7 +19,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { extractErrMsg } from "@/libs/utils";
 import { formatToDateStr, formatToTimeStr } from "@/libs/date";
 import { useAuth } from "@/contexts/AuthContext";
-import MonthlyCalendarView from "@/components/view/calendarView/MonthlyColendarView";
+import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
+import EventDetailModal from "@/components/features/events/EventDetailModal";
 
 export default function Home() {
   const theme = useTheme();
@@ -141,6 +142,9 @@ const EventsArea = memo(({ style }: {
   const fetchingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const npr = 60;
+  
+  const [ eventDetailModal, setEventDetailModal ] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
+
 
   const getDateKey = (date: Date) => {
     const res = formatToDateStr(date);
@@ -151,9 +155,13 @@ const EventsArea = memo(({ style }: {
     fetchingRef.current = true;
     setIsLoading(true);
     try {
+      // adjust to UTC to avoid timezone issues
+      const targetMonth = new Date()
+      targetMonth.setMinutes(targetMonth.getMinutes() - targetMonth.getTimezoneOffset());
+
       while (fetchingRef.current) {
         const res = await vrc.calendarApi.getCalendarEvents({
-          date: new Date().toISOString(), // month only affects the returned events
+          date: targetMonth.toISOString(), // month only affects the returned events
           n: npr,
           offset: offset.current,
         });
@@ -188,19 +196,7 @@ const EventsArea = memo(({ style }: {
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (
-      <View key={item.id} style={{ backgroundColor: theme.colors.card, padding: spacing.small, margin: spacing.small, borderRadius: 8 }}>
-        <View style={{ paddingHorizontal: spacing.small, flexDirection: "row", gap: spacing.small, alignItems: "center" }}>
-          <Text style={{ color: theme.colors.text, marginTop: spacing.mini }}>
-            {`${item.startsAt ? formatToTimeStr(item.startsAt) : "N/A"} ~ ${item.endsAt ? formatToTimeStr(item.endsAt) : "N/A"}`}
-          </Text>
-          <View style={{ flex: 1 }} >
-            <Text numberOfLines={1} style={{ color: theme.colors.text, fontSize: 16, fontWeight: "bold" }}>{item.title}</Text>
-          </View>
-        </View>
-        <Text numberOfLines={3} style={{ color: theme.colors.subText, marginTop: spacing.mini, marginLeft: spacing.small }}>
-          {item.description}
-        </Text>
-      </View>
+      <ListViewEvent style={styles.listview} event={item} onPress={() => setEventDetailModal({ open: true, event: item })} />
     );
   }, []);
   
@@ -221,10 +217,12 @@ const EventsArea = memo(({ style }: {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
-        numColumns={2}
+        numColumns={1}
         onRefresh={reload}
         refreshing={isLoading}
       />
+
+      <EventDetailModal event={eventDetailModal.event} open={eventDetailModal.open} setOpen={(v) => setEventDetailModal((prev) => ({ ...prev, open: v }))} />
     </SeeMoreContainer>
   );
 });
@@ -237,6 +235,9 @@ const styles = StyleSheet.create({
     // borderStyle:"dotted", borderColor:"red",borderWidth:1
   },
   feed: {
+    width: "100%",
+  },
+  listview: {
     width: "100%",
   },
   cardView: {

@@ -27,7 +27,6 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
 import { routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
-import ListViewWorld from "@/components/view/item-ListView/ListViewWorld";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
