@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   },
   descripContainer: {
     maxHeight: 300,
+    height: 100,
     marginTop: spacing.medium,
   },
   

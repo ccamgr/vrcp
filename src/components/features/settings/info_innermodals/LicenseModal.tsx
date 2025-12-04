@@ -22,7 +22,7 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-export default function LicenseScreen({ open, setOpen }: Props) {
+export default function LicenseModal({ open, setOpen }: Props) {
   const theme = useTheme();
   const {showToast} = useToast();
 

@@ -11,13 +11,14 @@ import {
   Text,
 } from "react-native";
 import {
+  Gesture,
   PinchGestureHandler,
   PinchGestureHandlerGestureEvent,
-  TapGestureHandler,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import IconButton from "./icon-components/IconButton";
+import { radius } from "@/configs/styles";
 
 interface Props {
   imageUrls: string[];
@@ -49,6 +50,8 @@ const ZoomableImageItem = ({ uri, headers, index, rotate, zoomEnabled }: Zoomabl
     ],
   }));
 
+  const isRotateVert = rotate % 180 !== 0;
+
   const onPinchEvent = (event: PinchGestureHandlerGestureEvent) => {
     if (zoomEnabled) {
       scale.value = event.nativeEvent.scale;
@@ -61,23 +64,15 @@ const ZoomableImageItem = ({ uri, headers, index, rotate, zoomEnabled }: Zoomabl
     }
   };
 
-  const onDoubleTap = () => {
-    // zoomEnabled は親で管理
-  };
-
   return (
     <View style={{ width, height, justifyContent: "center", alignItems: "center" }}>
-      <TapGestureHandler numberOfTaps={2} onActivated={onDoubleTap}>
-        <PinchGestureHandler onGestureEvent={onPinchEvent} onEnded={onPinchEnd}>
-          <Animated.View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <AnimatedExpoImage
-              source={{ uri, headers }}
-              contentFit="contain"
-              style={[{ width, height }, animatedStyle]}
-            />
-          </Animated.View>
-        </PinchGestureHandler>
-      </TapGestureHandler>
+      <Animated.View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <AnimatedExpoImage
+          source={{ uri, headers }}
+          contentFit="contain"
+          style={[{ width:isRotateVert ? height : width, height:isRotateVert ? width : height }, animatedStyle]}
+        />
+      </Animated.View>
     </View>
   );
 };
@@ -184,6 +179,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 40,
     height: 40,
+    borderRadius: radius.all,
+    backgroundColor: "rgba(136, 136, 136, 0.3)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -198,8 +195,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     width: 40,
     height: 40,
-    borderRadius: 25,
-    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: radius.all,
+    backgroundColor: "rgba(136, 136, 136, 0.3)",
     justifyContent: "center",
     alignItems: "center",
   },
