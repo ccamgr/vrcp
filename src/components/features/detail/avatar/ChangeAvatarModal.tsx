@@ -9,6 +9,7 @@ import { Avatar } from "@/vrchat/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -21,6 +22,7 @@ interface Props {
 
 const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const vrc = useVRChat();
   const { showToast } = useToast();
   const { currentUser } = useData();
@@ -51,12 +53,12 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeAvatarModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Change Avatar",
+      title: t("components.changeAvatarModal.button_confirm"),
       onPress: handleChangeAvatar,
       color: theme.colors.primary,
       flex: 1, 
@@ -67,8 +69,7 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
       {isLoading && <LoadingIndicator absolute />}
       { avatar && (
         <Text style={[globalStyles.text, { fontSize: fontSize.medium }]}>
-          Are you sure you want to change your avatar to{" "}
-          <Text style={{ fontWeight: "bold" }}>{avatar.name}</Text>?
+          {t("components.changeAvatarModal.confirm_text", { avatarName: avatar.name })}
         </Text>
       )}
     </GenericModal>

@@ -7,9 +7,11 @@ import rawVersions from '@/../versions.json';
 import GenericModal from '@/components/layout/GenericModal';
 import { isNewVersion, updateLastVersion } from '@/libs/utils';
 import { radius, spacing } from '@/configs/styles';
+import { useTranslation } from 'react-i18next';
 
 export default function ReleaseNote() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [ open, setOpen ] = useState<boolean>(false);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function ReleaseNote() {
 
   return (
     <GenericModal
-      title="Release Note" // タイトルもお知らせ風に
+      title={t('components.releaseNote.title')} // タイトルもお知らせ風に
       open={open}
       onClose={handleClose}
       showCloseButton={false} // 下部に大きな閉じるボタンを置くので、右上の×は隠しても良いかも
@@ -67,7 +69,7 @@ export default function ReleaseNote() {
           style={[styles.closeButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleClose}
         >
-          <Text style={styles.closeButtonText}>OK</Text>
+          <Text style={styles.closeButtonText}>{t('components.releaseNote.button_close')}</Text>
         </TouchableOpacity>
       </View>
     </GenericModal>

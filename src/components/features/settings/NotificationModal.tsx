@@ -7,12 +7,12 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const DevelopmentModal = ({ open, setOpen }: Props) => {
+const NotificationModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const { t } = useTranslation();
   return (
     <GenericModal
-      title={t("components.developmentModal.title")}
+      title={t("components.notificationModal.title")}
       showCloseButton
       size="large"
       open={open}
@@ -23,4 +23,4 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
   );
 };
 
-export default DevelopmentModal;
+export default NotificationModal;

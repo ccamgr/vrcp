@@ -8,6 +8,7 @@ import { Setting } from "@/contexts/SettingContext";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
@@ -27,17 +28,11 @@ export const getIconName = (v: ColorSchema): SupportedIconNames => {
   return 'theme-light-dark';
 };
 
-const getButtonText = (v: ColorSchema): string => {
-  return `${v.charAt(0).toUpperCase() + v.slice(1)}`;
-}
-
-const getTextLabel = (v: ColorSchema): string => {
-  return "It may require restarting the app.";
-}
 
 
-const ColorSchemaModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
+const ThemeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [ selectedValue, setSelectedValue ] = useState<ColorSchema>(defaultValue || 'system');
 
   useEffect(() => {
@@ -46,16 +41,28 @@ const ColorSchemaModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   }, [defaultValue]);
 
   
+  const getButtonText = (v: ColorSchema): string => {
+    switch (v) {
+      case 'light':
+        return t("components.uiModal.innerModals.theme.option_light");
+      case 'dark':
+        return t("components.uiModal.innerModals.theme.option_dark");
+      case 'system':
+        return t("components.uiModal.innerModals.theme.option_system");
+      default:
+        return "";
+    }
+  }
 
   const buttonItems: ButtonItemForFooter[] = [
     {
       // use button as text display only 
-      title: getTextLabel(selectedValue),
+      type: "text",
+      title: t("components.uiModal.innerModals.theme.maybe_requireRestart"),
       flex: 1,
-      variant: "plain",
     },
     {
-      title: "Apply",
+      title: t("components.uiModal.innerModals.theme.button_apply"),
       onPress: () => {
         onSubmit?.(selectedValue);
         setOpen(false);
@@ -115,4 +122,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ColorSchemaModal;
+export default ThemeModal;

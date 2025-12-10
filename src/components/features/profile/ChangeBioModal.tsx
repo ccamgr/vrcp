@@ -11,6 +11,7 @@ import { UserStatus } from "@/vrchat/api";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -22,6 +23,7 @@ interface Props {
 const ChangeBioModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { currentUser } = useData();
   const [isLoading, setIsLoading] = useState(false);
@@ -55,12 +57,12 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeBioModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Update Bio",
+      title: t("components.changeBioModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       flex: 1, 
@@ -75,7 +77,7 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
             style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}
             value={bio}
             onChangeText={setBio}
-            placeholder="Enter your new bio"
+            placeholder={t("components.changeBioModal.placeholder")}
             multiline
             numberOfLines={10}
           />

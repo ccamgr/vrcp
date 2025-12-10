@@ -9,6 +9,7 @@ import { User, UserStatus } from "@/vrchat/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,11 +63,11 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
 
   const getActionTitle = (user: User | undefined) => {
     if (user) {
-      if (friReqStatus === "completed") return "Remove This Friend";
-      if (friReqStatus === "outgoing") return "Cancel Friend Request";
-      if (friReqStatus === "null") return "Send Friend Request";
+      if (friReqStatus === "completed") return t("components.changeFriendModal.button_confirm_remove");
+      if (friReqStatus === "outgoing") return t("components.changeFriendModal.button_confirm_cancel");
+      if (friReqStatus === "null") return t("components.changeFriendModal.button_confirm_send");
     }
-    return "Submit";
+    return t("components.changeFriendModal.button_confirm_send");
   }
   const getActionColor = (user: User | undefined) => {
     if (user) {
@@ -78,7 +80,7 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeFriendModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
@@ -95,7 +97,9 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
       { user && (
         <View style={styles.container}>
           <Text style={[styles.text, {color: theme.colors.text}]}>
-            Can you confirm to {getActionTitle(user)} {friReqStatus == "completed" ? "?" : "to this User ?"}
+            {friReqStatus === "completed" && t("components.changeFriendModal.confirm_text_remove", { userName: user.displayName })}
+            {friReqStatus === "outgoing" && t("components.changeFriendModal.confirm_text_cancel", { userName: user.displayName })}
+            {friReqStatus === "null" && t("components.changeFriendModal.confirm_text_send", { userName: user.displayName })}
           </Text>
         </View>
       )}

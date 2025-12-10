@@ -11,6 +11,7 @@ export interface ButtonItem {
 export interface ButtonItemForFooter extends ButtonItem {
   flex?: number;
   width?: DimensionValue;
+  type?: "button" | "text";
   // align?: "left" | "right";
 }
 

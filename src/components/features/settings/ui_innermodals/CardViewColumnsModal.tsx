@@ -8,6 +8,7 @@ import { Setting } from "@/contexts/SettingContext";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 type CardViewColumns = Setting["uiOptions"]["layouts"]["cardViewColumns"];
@@ -27,16 +28,11 @@ export const getIconName = (v: CardViewColumns): SupportedIconNames => {
   return 'square';
 };
 
-const getButtonText = (v: CardViewColumns): string => {
-  return `${v} Column${v > 1 ? 's' : ''}`;
-}
 
-const getTextLabel = (v: CardViewColumns): string => {
-  return "It may require restarting the app.";
-}
 
 const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [ selectedValue, setSelectedValue ] = useState<CardViewColumns>(defaultValue || 2);
 
   useEffect(() => {
@@ -44,15 +40,28 @@ const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) 
     setSelectedValue(defaultValue);
   }, [defaultValue]);
 
+  const getButtonText = (v: CardViewColumns): string => {
+  switch (v) {
+    case 1:
+      return t("components.uiModal.innerModals.cardViewColumns.option_1_columns");
+    case 2:
+      return t("components.uiModal.innerModals.cardViewColumns.option_2_columns");
+    case 3:
+      return t("components.uiModal.innerModals.cardViewColumns.option_3_columns");
+    default:
+      return "";
+  }
+}
+
   const buttonItems: ButtonItemForFooter[] = [
     {
       // use button as text display only
-      title: getTextLabel(selectedValue),
+      type: "text",
+      title: t("components.uiModal.innerModals.cardViewColumns.maybe_requireRestart"),
       flex: 1,
-      variant: "plain",
     },
     {
-      title: "Apply",
+      title: t("components.uiModal.innerModals.cardViewColumns.button_apply"),
       onPress: () => {
         onSubmit?.(selectedValue);
         setOpen(false);

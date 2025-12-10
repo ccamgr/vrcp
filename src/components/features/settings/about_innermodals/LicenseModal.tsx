@@ -6,6 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import rawLicenses from '@/assets/licenses.json';
 import { useToast } from '@/contexts/ToastContext';
 import GenericModal from '@/components/layout/GenericModal';
+import { useTranslation } from 'react-i18next';
 
 interface LicenseData {
   key: string;
@@ -24,6 +25,7 @@ interface Props {
 
 export default function LicenseModal({ open, setOpen }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const {showToast} = useToast();
 
   const licenses = useMemo(() => {
@@ -75,7 +77,7 @@ export default function LicenseModal({ open, setOpen }: Props) {
         
         {item.url && (
           <Text style={[styles.linkHint, { color: theme.colors.border }]}>
-             Repository ↗
+            {t("components.aboutModal.innerModals.licenses.link_to_repos")}
           </Text>
         )}
       </TouchableOpacity>
@@ -84,7 +86,7 @@ export default function LicenseModal({ open, setOpen }: Props) {
 
   return (
     <GenericModal
-      title="Licenses"
+      title={t("components.aboutModal.innerModals.licenses.title")}
       showCloseButton
       open={open}
       onClose={() => setOpen(false)}

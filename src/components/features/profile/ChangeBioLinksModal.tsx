@@ -13,6 +13,7 @@ import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flat
 import { TextInput } from "react-native-gesture-handler";
 import DraggableFlatListItem from "@/components/view/DraggableFlatListItem";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
@@ -22,6 +23,7 @@ interface Props {
 const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { currentUser } = useData();
   const [isLoading, setIsLoading] = useState(false);
@@ -55,12 +57,12 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeBioLinksModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Update Bio",
+      title: t("components.changeBioLinksModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       flex: 1, 
@@ -74,7 +76,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
           <TextInput
             style={[globalStyles.input, styles.input, {backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border}]}
             defaultValue=""
-            placeholder="Add new bio link and press enter"
+            placeholder={t("components.changeBioLinksModal.placeholder")}
             placeholderTextColor={theme.colors.text + "99"}
             editable={!isLoading}
             onSubmitEditing={(e) => {

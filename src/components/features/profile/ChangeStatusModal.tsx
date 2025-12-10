@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
@@ -23,6 +24,7 @@ interface Props {
 const ChangeStatusModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { currentUser } = useData();
   const [isLoading, setIsLoading] = useState(false);
@@ -67,12 +69,12 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeStatusModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Update Status",
+      title: t("components.changeStatusModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       flex: 1, 
@@ -101,7 +103,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
               value={statusDescription}
               onChange={e => setStatusDescription(e.nativeEvent.text)}
               // autoFocus
-              placeholder="Set a status..."
+              placeholder={t("components.changeStatusModal.placeholder")}
 
             />
             <FlatList 

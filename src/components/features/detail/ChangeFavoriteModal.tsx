@@ -11,6 +11,7 @@ import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -25,6 +26,7 @@ interface Props {
 const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const {favoriteGroups, favorites} = useData();
   const [isLoading, setIsLoading] = useState(false);
@@ -82,12 +84,12 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeFavoriteModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Update",
+      title: t("components.changeFavoriteModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       // disabled: !group,
@@ -109,7 +111,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       {/* remove */}
       <TouchableOpacity onPress={() => setGroup(null)}>
         <View style={[styles.group, {backgroundColor: getTintedColor(theme.colors.error)}, group === null && {borderColor: theme.colors.error}]}>
-          <Text style={[{color: theme.colors.text}]}>Not Favorite</Text>
+          <Text style={[{color: theme.colors.text}]}>{t("components.changeFavoriteModal.button_unselect")}</Text>
         </View>
       </TouchableOpacity>
     </GenericModal>

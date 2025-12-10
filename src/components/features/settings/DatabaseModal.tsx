@@ -5,6 +5,7 @@ import { useCache } from "@/contexts/CacheContext";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 const DatabaseModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const cache = useCache();
   // const db = useDB();
 
@@ -59,7 +61,7 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
 
   return (
     <GenericModal
-      title="Database Management"
+      title={t("components.databaseModal.title")}
       showCloseButton
       size="large"
       open={open}
@@ -97,7 +99,7 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
         </View>
       </View> */}
       <Text style={[globalStyles.subheader, { color: theme.colors.text }]}>
-        Cache Clear
+        {t("components.databaseModal.groupLabel_storage")}
       </Text>
       <View style={globalStyles.container}>
         <View>
@@ -109,17 +111,15 @@ const DatabaseModal = ({ open, setOpen }: Props) => {
                   globalStyles.container,
                   { color: theme.colors.text },
                 ]}
-              >
-                {`${(cacheInfo.size / (1024 * 1024)).toFixed(2)} MB, ${
-                  cacheInfo.count
-                } Files`}
+              >   
+                {t("components.databaseModal.cache_size_and_count", {size: (cacheInfo.size / (1024 * 1024)).toFixed(2), count: cacheInfo.count})}
               </Text>
               <Button
                 style={[globalStyles.button, { marginLeft: spacing.medium }]}
                 color={theme.colors.text}
                 onPress={clearCache}
               >
-                Clear
+                {t("components.databaseModal.button_clearCache")}
               </Button>
             </View>
           ) : (

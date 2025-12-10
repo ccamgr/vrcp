@@ -18,6 +18,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import FeedbackModal from "@/components/features/settings/FeedbackModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import NotificationModal from "@/components/features/settings/NotificationModal";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -37,6 +38,7 @@ export default function Settings() {
   const [openAbout, setOpenAbout] = useState(false);
   const [openDatabase, setOpenDatabase] = useState(false);
   const [openUI, setOpenUI] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
 
   const { showToast } = useToast();
 
@@ -63,10 +65,7 @@ export default function Settings() {
           icon: "notifications",
           title: t("pages.settings.itemLabel_notifications"),
           description: t("pages.settings.itemDescription_notifications"),
-          onPress: () => {
-            const type = ["info", "success", "error"][Math.floor(Math.random() * 3)] as "info" | "success" | "error";
-            showToast(type, "test", `${new Date().getTime()}`);
-          },
+          onPress: () => setOpenNotification(true),
         },
       ],
     },
@@ -163,6 +162,7 @@ export default function Settings() {
       <DevelopmentModal open={openDevelopment} setOpen={setOpenDevelopment} />
       <AboutModal open={openAbout} setOpen={setOpenAbout} />
       <FeedbackModal open={openFeedback} setOpen={setOpenFeedback} />
+      <NotificationModal open={openNotification} setOpen={setOpenNotification} />
 
     </GenericScreen>
   );

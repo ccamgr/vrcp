@@ -5,7 +5,9 @@ import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@react-navigation/native";
+import { it } from "date-fns/locale";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TextInput } from "react-native";
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
 
 const FeedbackModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const {showToast} = useToast();
   const webhookUrl = process.env.EXPO_PUBLIC_DISCORD_WEBHOOK_URL;
   const [type, setType] = useState<string>("feedback");
@@ -68,19 +71,28 @@ ${content}
 
   const buttonItems: ButtonItemForFooter[] = [
     {
-      title: "Cancel",
+      title: t("components.feedbackModal.button_cancel"),
       onPress: () => setOpen(false),
     },
     {
-      title: "Send Feedback",
+      title: t("components.feedbackModal.button_send"),
       flex: 1,
       onPress: sendFeedback,
     },
   ];
 
+  const feedbackTypes: {
+    label: string;
+    value: string;
+  }[] = [
+    { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
+    { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
+    { label: t("components.feedbackModal.type_request"), value: "request" },
+  ];
+
   return (
     <GenericModal
-      title="Feedback"
+      title={t("components.feedbackModal.title")}
       showCloseButton
       buttonItems={buttonItems}
       size="large"
@@ -88,20 +100,20 @@ ${content}
       onClose={() => setOpen(false)}
     >
       {isLoading && (<LoadingIndicator absolute />)}
-      <Text style={{ color: theme.colors.text }}>
-        pls send your feedback or request to improving this app! 
-      </Text>
 
       <SelectGroupButton
-        data={["feedback", "bug-report", "request"]}
-        value={type}
-        onChange={setType}
+        style={styles.typeSelector}
+        data={feedbackTypes}
+        value={feedbackTypes.find((item) => item.value === type)}
+        onChange={(item) => item && setType(item.value)}
+        keyExtractor={(item) => item?.value || ""}
+        nameExtractor={(item) => item?.label}
       />
 
       <TextInput
         ref={emailRef}
         style={[styles.input, { color: theme.colors.text }]}
-        placeholder="Email"
+        placeholder={t("components.feedbackModal.placeholder_email")}
         placeholderTextColor={theme.colors.subText}
         autoComplete="email"
         textContentType="emailAddress"
@@ -112,7 +124,7 @@ ${content}
       <TextInput
         ref={contentRef}
         style={[styles.mlinput, { color: theme.colors.text }]}
-        placeholder="Your feedback"
+        placeholder={t("components.feedbackModal.placeholder_message")}
         placeholderTextColor={theme.colors.subText}
         multiline
         numberOfLines={5}
@@ -128,6 +140,9 @@ const styles = StyleSheet.create({
   // container styles
   container: {
     padding: spacing.small,
+  },
+  typeSelector: {
+    marginBottom: spacing.medium,
   },
   text: {
     fontSize: fontSize.medium,

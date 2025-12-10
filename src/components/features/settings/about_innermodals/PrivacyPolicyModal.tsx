@@ -5,6 +5,7 @@ import { useCache } from "@/contexts/CacheContext";
 import { Button, Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 
@@ -19,10 +20,10 @@ interface Props {
 
 const PrivacyPolicyModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
-
+  const { t } = useTranslation();
   return (
     <GenericModal
-      title="Privacy Policy"
+      title={t("components.aboutModal.innerModals.privacyPolicy.title")}
       showCloseButton
       size="full"
       open={open}

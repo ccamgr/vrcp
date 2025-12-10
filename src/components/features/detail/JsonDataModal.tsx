@@ -13,6 +13,7 @@ import { TextInput } from "react-native-gesture-handler";
 import JSONTree, { Renderable } from 'react-native-json-tree';
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
@@ -22,6 +23,7 @@ interface Props {
 
 const JsonDataModal = ({ open, setOpen, data }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { showToast } = useToast();
 
   const handleCopy = async (value: Renderable) => {
@@ -47,12 +49,12 @@ const JsonDataModal = ({ open, setOpen, data }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.jsonDataModal.button_close"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Copy to Clipboard",
+      title: t("components.jsonDataModal.button_copy"),
       onPress: handleCopyAll, 
       color: theme.colors.text,
       flex: 1,
@@ -108,7 +110,6 @@ const jsonTheme = {scheme: 'custom_dark',
   
   // --- その他 ---
   
-  // ※ 使わない色も定義しておくと安全ですが、省略するとデフォルト値が使われることがあります
   base01: '#383830',
   base02: '#49483e',
   base03: '#c0c2bfff',

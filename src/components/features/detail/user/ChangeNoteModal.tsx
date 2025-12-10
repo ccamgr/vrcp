@@ -7,6 +7,7 @@ import { useVRChat } from "@/contexts/VRChatContext";
 import { User, UserStatus } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -20,6 +21,7 @@ interface Props {
 const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,12 +54,12 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
 
   const footerButtons: ButtonItemForFooter[] = [
     {
-      title: "Close",
+      title: t("components.changeNoteModal.button_cancel"),
       onPress: () => setOpen(false), 
       color: theme.colors.text,
     },
     {
-      title: "Update Note",
+      title: t("components.changeNoteModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
       flex: 1, 
@@ -72,7 +74,7 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
             style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}
             value={note}
             onChangeText={setNote}
-            placeholder="Enter your new note"
+            placeholder={t("components.changeNoteModal.placeholder")}
             multiline
             numberOfLines={10}
           />

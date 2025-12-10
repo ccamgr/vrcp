@@ -11,10 +11,11 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import SettingItem, { SettingItemProps } from "./components/SettingItem";
 import { ScrollView } from "react-native-gesture-handler";
-import ColorSchemaModal, { getIconName as getIconNameCS } from "./ui_innermodals/ColorSchemaModal";
-import HomeTabModeModal, { getIconName as getIconNameHT } from "./ui_innermodals/HomeTabModeModal";
+import ThemeModal, { getIconName as getIconNameCS } from "./ui_innermodals/ThemeModal";
+import HomeTabLayoutModal, { getIconName as getIconNameHT } from "./ui_innermodals/HomeTabLayoutModal";
 import CardViewColumnsModal, { getIconName as getIconNameCV } from "./ui_innermodals/CardViewColumnsModal";
 import { getUserLanguage, setUserLanguage } from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
@@ -34,6 +35,7 @@ interface InnerModalOption<T> {
 
 const UIModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { settings, saveSettings } = useSetting();
   const { uiOptions } = settings;
 
@@ -56,12 +58,12 @@ const UIModal = ({ open, setOpen }: Props) => {
 
   const sectionItems: SectionProps[] = [
     {
-      title: "Theme",
+      title: t("components.uiModal.groupLabel_appearance"),
       items: [
         {
           icon: "theme-light-dark",
-          title: "Color Schema",
-          description: "Select your color schema",
+          title: t("components.uiModal.itemLabel_theme"),
+          description: t("components.uiModal.itemDescription_theme"),
           leading: (
             <IconSymbol
               name={getIconNameCS(uiOptions.theme.colorSchema)}
@@ -77,15 +79,41 @@ const UIModal = ({ open, setOpen }: Props) => {
             }
           }),
         },
+        {
+          icon: "account",
+          title: t("components.uiModal.itemLabel_friendColor"),
+          description: t("components.uiModal.itemDescription_friendColor"),
+          leading: <ColorSquarePreview colors={[uiOptions.user.friendColor]} />,
+          onPress: () => setFriendColorModal({
+            open: true,
+            defaultValue: uiOptions.user.friendColor,
+            onSubmit: (value) => {
+              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, friendColor: value } } });
+            }
+          }),
+        },
+        {
+          icon: "group",
+          title: t("components.uiModal.itemLabel_favoriteFriendsColors"),
+          description: t("components.uiModal.itemDescription_favoriteFriendsColors"),
+          leading: <ColorSquarePreview colors={Object.values(uiOptions.user.favoriteFriendsColors)} />,
+          onPress: () => setFavoriteFriendsColorsModal({
+            open: true,
+            defaultValue: uiOptions.user.favoriteFriendsColors,
+            onSubmit: (value) => {
+              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, favoriteFriendsColors: value } } });
+            }
+          }),
+        },
       ]
     },
     {
-      title: "Layout",
+      title: t("components.uiModal.groupLabel_layouts"),
       items: [
         {
           icon: "page-layout-body",
-          title: "Home Tab",
-          description: "Select layout modes for the home tab",
+          title: t("components.uiModal.itemLabel_homeTabLayout"),
+          description: t("components.uiModal.itemDescription_homeTabLayout"),
           leading: (
             <IconSymbol
               name={getIconNameHT(uiOptions.layouts.homeTabTopVariant)}
@@ -118,8 +146,8 @@ const UIModal = ({ open, setOpen }: Props) => {
         },
         {
           icon: "format-columns",
-          title: "Card View Columns",
-          description: "Select number of columns for the card view",
+          title: t("components.uiModal.itemLabel_cardViewColumns"),
+          description: t("components.uiModal.itemDescription_cardViewColumns"),
           leading: (
             <IconSymbol
               name={getIconNameCV(uiOptions.layouts.cardViewColumns)}
@@ -138,43 +166,12 @@ const UIModal = ({ open, setOpen }: Props) => {
       ]
     },
     {
-      title: "Color",
-      items: [
-        {
-          icon: "account",
-          title: "Friend Color",
-          description: "Select your friends color theme",
-          leading: <ColorSquarePreview colors={[uiOptions.user.friendColor]} />,
-          onPress: () => setFriendColorModal({
-            open: true,
-            defaultValue: uiOptions.user.friendColor,
-            onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, friendColor: value } } });
-            }
-          }),
-        },
-        {
-          icon: "group",
-          title: "Favorite Friend Color",
-          description: "Select your favorite-friends color theme",
-          leading: <ColorSquarePreview colors={Object.values(uiOptions.user.favoriteFriendsColors)} />,
-          onPress: () => setFavoriteFriendsColorsModal({
-            open: true,
-            defaultValue: uiOptions.user.favoriteFriendsColors,
-            onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, favoriteFriendsColors: value } } });
-            }
-          }),
-        },
-      ]
-    },
-    {
-      title: "Others",
+      title: t("components.uiModal.groupLabel_others"),
       items: [
         {
           icon: "language",
-          title: "Language",
-          description: "Change application language",
+          title: t("components.uiModal.itemLabel_language"),
+          description: t("components.uiModal.itemDescription_language"),
           onPress: async () => {
             const cur = await getUserLanguage()
             const newLang = cur === 'en' ? 'ja' : 'en';
@@ -183,7 +180,7 @@ const UIModal = ({ open, setOpen }: Props) => {
           },
           leading: (
             <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
-              {_tmpState[0] === 'en' ? 'English' : '日本語'}
+              {_tmpState[0] === 'ja' ? '日本語' : 'English'}
             </Text>
           ),
         },
@@ -193,7 +190,7 @@ const UIModal = ({ open, setOpen }: Props) => {
 
   return (
     <GenericModal
-      title="UI Settings"
+      title={t("components.uiModal.title")}
       size="large"
       showCloseButton
       scrollable
@@ -227,14 +224,14 @@ const UIModal = ({ open, setOpen }: Props) => {
 
       {/* inner Modals for each setting Items */}
 
-      <ColorSchemaModal
+      <ThemeModal
         open={colorSchemaModal.open}
         setOpen={(v) => setColorSchemaModal(prev => ({ ...prev, open: v }))}
         defaultValue={colorSchemaModal.defaultValue}
         onSubmit={colorSchemaModal.onSubmit}
       />
 
-      <HomeTabModeModal
+      <HomeTabLayoutModal
         open={homeTabModeModal.open}
         setOpen={(v) => setHomeTabModeModal(prev => ({ ...prev, open: v }))}
         defaultValue={homeTabModeModal.defaultValue}

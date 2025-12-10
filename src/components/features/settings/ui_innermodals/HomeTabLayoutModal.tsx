@@ -8,6 +8,7 @@ import { Setting } from "@/contexts/SettingContext";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 type HomeTopVariant = Setting["uiOptions"]["layouts"]["homeTabTopVariant"];
@@ -36,27 +37,30 @@ export const getIconName = (v: HomeTopVariant | HomeBottomVariant): SupportedIco
   return 'home';
 };
 
-const getButtonText = (v: HomeTopVariant | HomeBottomVariant): string => {
-  if (v === 'friend-locations') return "Locations";
-  if (v === 'feeds') return "Feeds";
-  if (v === 'events') return "Events";
-  return "";
-}
 
-const getTextLabel = (v: HomeTopVariant | HomeBottomVariant): string => {
-  if (v === 'friend-locations') return "Friend Locations";
-  if (v === 'feeds') return "Feeds of your friends";
-  if (v === 'events') return "Group Events";
-  return "It may require restarting the app.";
-}
-
-const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
+const HomeTabLayoutModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [ selectedValue, setSelectedValue ] = useState<{ top: HomeTopVariant; bottom: HomeBottomVariant; sepPos: HomeSepPos }>({
     top: defaultValue?.top || 'feeds',
     bottom: defaultValue?.bottom || 'friend-locations',
     sepPos: defaultValue?.sepPos || 30,
   });
+
+    
+  const getButtonText = (v: HomeTopVariant | HomeBottomVariant): string => {
+    if (v === 'friend-locations') return t("components.uiModal.innerModals.homeTabLayout.option_friendLocations");
+    if (v === 'feeds') return t("components.uiModal.innerModals.homeTabLayout.option_feeds");
+    if (v === 'events') return t("components.uiModal.innerModals.homeTabLayout.option_events");
+    return "";
+  }
+
+  const getTextLabel = (v: HomeTopVariant | HomeBottomVariant): string => {
+    if (v === 'friend-locations') return t("components.uiModal.innerModals.homeTabLayout.selectedLabel_friendLocations");
+    if (v === 'feeds') return t("components.uiModal.innerModals.homeTabLayout.selectedLabel_feeds");
+    if (v === 'events') return t("components.uiModal.innerModals.homeTabLayout.selectedLabel_events");
+    return t("components.uiModal.innerModals.homeTabLayout.maybe_requireRestart");
+  }
 
   useEffect(() => {
     if (!defaultValue) return;
@@ -71,12 +75,12 @@ const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const buttonItems: ButtonItemForFooter[] = [
     {
       // use button as text display only
+      type: "text",
       title: getTextLabel(selectedValue.top ?? "events"),
       flex: 1,
-      variant: "plain",
     },
     {
-      title: "Apply",
+      title: t("components.uiModal.innerModals.homeTabLayout.button_apply"),
       onPress: () => {
         onSubmit?.(selectedValue);
         setOpen(false);
@@ -98,7 +102,7 @@ const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
           <View style={styles.variantsContainer}>
             <View>
               <Text style={{ color: theme.colors.subText, textAlign: "center" }}>
-                top section
+                {t("components.uiModal.innerModals.homeTabLayout.section_top")}
               </Text>
               <View style={styles.iconButtonContainer}>
                 {['friend-locations', 'feeds', 'events' ].map((value) => (
@@ -126,7 +130,7 @@ const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
             </View>
             <View>
               <Text style={{ color: theme.colors.subText, textAlign: "center" }}>
-                bottom section
+                {t("components.uiModal.innerModals.homeTabLayout.section_bottom")}
               </Text>
               <View style={styles.iconButtonContainer}>
                 {['friend-locations', 'feeds', 'events' ].map((value) => (
@@ -157,7 +161,8 @@ const HomeTabModeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
           
           <View style={styles.sepPosContainer}>  
             <Text style={{ color: theme.colors.subText, textAlign: "center" }}>
-              Separator Position: {selectedValue.sepPos ?? 30}%
+              {t("components.uiModal.innerModals.homeTabLayout.section_separatePos")}
+              : {selectedValue.sepPos ?? 30}%
             </Text>
           </View>
         </View>
@@ -201,4 +206,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default HomeTabModeModal;
+export default HomeTabLayoutModal;

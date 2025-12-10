@@ -67,10 +67,24 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
               {children}
             </ChildContainer>
             <View style={styles.footer}>
-              {buttonItems?.map((item, index) => (
+              {buttonItems?.map((item, index) => item.type === "text" ? (
+                  <Text
+                    key={index}
+                    style={[
+                      styles.footerText,
+                      {
+                        flex: item.flex,
+                        width: item.width,
+                        color: item.color || theme.colors.text,
+                      }
+                    ]}
+                  >
+                    {item.title}
+                  </Text>
+                ) : (
                 <Button
                   key={index}
-                  style={[styles.footterButton, {
+                  style={[styles.footerButton, {
                     flex: item.flex,
                     width: item.width,
                   }]}
@@ -180,8 +194,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.small,
     paddingVertical: spacing.small,
   },
-  footterButton: {
+  footerButton: {
     borderRadius: radius.button,
+  },
+  footerText: {
+    borderRadius: radius.button,
+    textAlign: "center",
   },
 });
 

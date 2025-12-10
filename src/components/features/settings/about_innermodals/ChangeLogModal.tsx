@@ -4,6 +4,7 @@ import { useTheme } from '@react-navigation/native';
 
 import rawVersions from '@/../versions.json'; 
 import GenericModal from '@/components/layout/GenericModal';
+import { useTranslation } from 'react-i18next';
 
 interface UpdateEntry {
   date: string;
@@ -22,6 +23,7 @@ interface Props {
 
 export default function ChangeLogModal({ open, setOpen }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // Transform versions.json structure for SectionList
   const sections: VersionSection[] = useMemo(() => {
@@ -38,7 +40,7 @@ export default function ChangeLogModal({ open, setOpen }: Props) {
   const renderSectionHeader = ({ section: { title } }: { section: VersionSection }) => (
     <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
       <View style={[styles.versionBadge, { backgroundColor: theme.colors.primary }]}>
-        <Text style={styles.versionText}>v{title}</Text>
+        <Text style={styles.versionText}>{t("components.aboutModal.innerModals.changeLog.format_version", { version: title })}</Text>
       </View>
       <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
     </View>
@@ -55,7 +57,7 @@ export default function ChangeLogModal({ open, setOpen }: Props) {
         !isLastItem && { borderBottomWidth: 1, borderBottomColor: theme.colors.border }
       ]}>
         <Text style={[styles.date, { color: theme.colors.primary }]}>
-          {item.date}
+          {t("components.aboutModal.innerModals.changeLog.format_date", { date: new Date(item.date) })}
         </Text>
         <Text style={[styles.message, { color: theme.colors.text }]}>
           {item.message}
@@ -66,7 +68,7 @@ export default function ChangeLogModal({ open, setOpen }: Props) {
 
   return (
     <GenericModal
-      title="Release Notes"
+      title={t("components.aboutModal.innerModals.changeLog.title")}
       showCloseButton
       open={open}
       onClose={() => setOpen(false)}
@@ -77,7 +79,7 @@ export default function ChangeLogModal({ open, setOpen }: Props) {
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         contentContainerStyle={styles.listContent}
-        stickySectionHeadersEnabled={false} // trueにするとヘッダーが上に吸着します
+        stickySectionHeadersEnabled={false} // Disable sticky headers for better UX
       />
     </GenericModal>
   );

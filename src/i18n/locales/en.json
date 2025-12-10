@@ -1,10 +1,10 @@
 {
-  "app": "Home",
+  "app": "VRCP",
   "common": {
     "dateFormats": {
-      "date": "YYYY/MM/DD",
+      "date": "yyyy/MM/DD",
       "time": "HH:mm",
-      "dateTime": "YYYY/MM/DD HH:mm"
+      "dateTime": "yyyy/MM/DD HH:mm"
     },
     "message": {
       "loading": "Loading...",
@@ -225,8 +225,158 @@
   },
 
   "components" : {
+    "releaseNote": {
+      "title": "VRCP Release Notes",
+      "button_close": "Close"
+    },
+    "jsonDataModal": {
+      "button_close": "Close",
+      "button_copy": "Copy to Clipboard"
+    },
+    "changeAvatarModal": {
+      "button_confirm": "Change Avatar",
+      "button_cancel": "Cancel",
+      "confirm_text": "Are you sure you want to change your avatar to '{{avatarName}}'?"
+    },
+    "changeFriendModal": {
+      "button_confirm_remove": "Remove This Friend",
+      "button_confirm_send": "Send Friend Request",
+      "button_confirm_cancel": "Cancel Friend Request",
+      "button_cancel": "Cancel",
+      "confirm_text_remove": "Are you sure you want to remove '{{userName}}' from your friends?",
+      "confirm_text_send": "Are you sure you want to send a friend request to '{{userName}}'?",
+      "confirm_text_cancel": "Are you sure you want to cancel the friend request to '{{userName}}'?"
+    },
+    "changeNoteModal": {
+      "button_save": "Save Note",
+      "button_cancel": "Cancel",
+      "placeholder": "Enter note here..."
+    },
+    "changeFavoriteModal": {
+      "button_save": "Save to Favorite Group",
+      "button_cancel": "Cancel",
+      "button_unselect": "Unfavorite"
+    },
+    "changeBioModal": {
+      "button_save": "Save Bio",
+      "button_cancel": "Cancel",
+      "placeholder": "Enter bio here..."
+    },
+    "changeBioLinksModal": {
+      "button_save": "Save Bio Links",
+      "button_cancel": "Cancel",
+      "placeholder": "Add Link URL (e.g. https://example.com)"
+    },
+    "changeStatusModal": {
+      "button_save": "Save Status",
+      "button_cancel": "Cancel",
+      "placeholder": "Enter status here..."
+    },
+    "eventDetailModal": {
+      "eventTime_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "eventTime_differentDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}"
+    },
 
+    "uiModal": {
+      "title": "UI Settings",
+      "groupLabel_appearance": "Appearance",
+      "itemLabel_theme": "Theme",
+      "itemDescription_theme": "Select light or dark theme for the application.",
+      "itemLabel_friendColor": "Friend Color",
+      "itemDescription_friendColor": "Select your friends color theme.",
+      "itemLabel_favoriteFriendsColors": "Favorite Friend Colors",
+      "itemDescription_favoriteFriendsColors": "Select your favorite-friends color theme.",
+      "groupLabel_layouts": "Layouts",
+      "itemLabel_homeTabLayout": "Home Tab Layout",
+      "itemDescription_homeTabLayout": "Select which tab to show by default on the Home page.",
+      "itemLabel_cardViewColumns": "Card View Columns",
+      "itemDescription_cardViewColumns": "Select the number of columns to display in card views.",
+      "groupLabel_others": "Others",
+      "itemLabel_language": "Language",
+      "itemDescription_language": "Select the language for the application.",
+      "innerModals": {
+        "theme": {
+          "title": "Select Theme",
+          "button_apply": "Apply",
+          "option_light": "Light",
+          "option_dark": "Dark",
+          "option_system": "System",
+          "maybe_requireRestart": "It may require restart app\nto take effect."
+        },
+        "friendColor": {
 
+        },
+        "favoriteFriendsColors": {
 
+        },
+        "homeTabLayout": {
+          "button_apply": "Apply",
+          "section_top": "Top area",
+          "section_bottom": "Bottom area",
+          "section_separatePos": "Separate Position",
+          "option_events": "Events",
+          "selectedLabel_events": "Events for Today",
+          "option_feeds": "Feeds",
+          "selectedLabel_feeds": "Feeds of Friends",
+          "option_friendLocations": "Locations",
+          "selectedLabel_friendLocations": "Friend Locations",
+          "maybe_requireRestart": "It may require restart app\nto take effect."
+        },
+        "cardViewColumns": {
+          "button_apply": "Apply",
+          "option_1_columns": "1 Columns",
+          "option_2_columns": "2 Columns",
+          "option_3_columns": "3 Columns",
+          "maybe_requireRestart": "It may require restart app\nto take effect."
+        }
+      }
+    },
+    "databaseModal": {
+      "title": "Database Settings",
+      "groupLabel_storage": "Storage",
+      "cache_size_and_count_one": "CacheSize: {{size}} MB ({{count}} item)",
+      "cache_size_and_count_other": "CacheSize: {{size}} MB ({{count}} items)",
+      "button_clearCache": "Clear Cache"
+    },
+    "aboutModal": {
+      "title": "App Informations",
+      "button_termOfService": "Terms of Service",
+      "button_privacyPolicy": "Privacy Policy",
+      "button_Licenses": "Open Source Licenses",
+      "button_ChangeLog": "Change Log",
+      "innerModals": {
+        "termOfService": {
+          "title": "Terms of Service"
+        },
+        "privacyPolicy": {
+          "title": "Privacy Policy"
+        },
+        "licenses": {
+          "title": "Open Source Licenses",
+          "link_to_repos": "Link to Repos ↗"
+        },
+        "changeLog": {
+          "title": "Change Log",
+          "format_version": "Ver {{version}}",
+          "format_date": "{{date, yyyy/MM/dd}}"
+        }
+      }
+    },
+    "developmentModal": {
+      "title": "Development Features"
+    },
+    "feedbackModal": {
+      "title": "Send Feedback",
+      "button_cancel": "Cancel",
+      "button_send": "Send Feedback",
+      "placeholder_email": "Your email",
+      "placeholder_message": "Enter your feedback here...",
+      "type_feedback": "Feedback",
+      "type_bug": "Bug Report",
+      "type_request": "Feature Request"
+    },
+    "notificationModal": {
+      "title": "Notification Settings"
+    }
   }
 }
