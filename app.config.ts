@@ -75,17 +75,26 @@ export default ({ config }: ConfigContext) => ({
       },
     },
     ios: {
-      supportsTablet: true,
       bundleIdentifier: appIdentifier[profile],
+      supportsTablet: true,
+      infoPlist: {
+        UIBackgroundModes: ["fetch"], // enable background fetch
+        LSApplicationQueriesSchemes: ["vrcp"], // allow querying for our own scheme
+      },
     },
     android: {
+      package: appIdentifier[profile],
+      edgeToEdgeEnabled: true,
       adaptiveIcon: {
         foregroundImage: appIcons[profile].foregroundImage,
         backgroundImage: appIcons[profile].backgroundImage,
         monochromeImage: appIcons[profile].monochromeImage,
       },
-      edgeToEdgeEnabled: true,
-      package: appIdentifier[profile],
+      permissions: [
+        "RECEIVE_BOOT_COMPLETED", // work on device reboot for background fetch
+        "WAKE_LOCK",              // keep device awake for background fetch
+        "VIBRATE"                 // for haptic feedback
+      ]
     },
     web: {
       bundler: "metro",
@@ -98,6 +107,25 @@ export default ({ config }: ConfigContext) => ({
       "expo-sqlite",
       "expo-font",
       "expo-localization",
+      "expo-background-fetch",
+      [
+        "expo-build-properties",
+        {
+          android: {
+            javaMaxHeapSize: "4g" // increase max heap size for Gradle to prevent OOM errors
+          },
+          ios: {
+            useFrameworks: "static" // may need to enable new architecture
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./src/assets/images/notification-icon.png", // must be a transparent white PNG
+          color: "#ffffff"
+        }
+      ],
       [
         "expo-splash-screen",
         {
