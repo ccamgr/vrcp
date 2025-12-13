@@ -19,19 +19,26 @@ import {
   getPlatform,
   parseLocationString,
   UserLike,
+  GroupLike,
 } from "@/libs/vrchat";
 import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/vrchat/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native";
-import { routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import { routeToGroup, routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
 import JsonDataModal from "@/components/features/detail/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { TouchableOpacity } from "@/components/CustomElements";
+import { t } from "i18next";
+
+type Owner = 
+  | { type: "user"; owner: UserLike }
+  | { type: "group"; owner: GroupLike };
 
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp)) 
@@ -46,7 +53,7 @@ export default function InstanceDetail() {
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
-  const [owner, setOwner] = useState<UserLike>();
+  const [owner, setOwner] = useState<Owner>();
   const [friends, setFriends] = useState<(LimitedUserFriend | LimitedUserInstance)[]>([]);
 
   const [openJson, setOpenJson] = useState(false);
@@ -77,15 +84,21 @@ export default function InstanceDetail() {
       if (f.location === location) friendList.push(f);
       if (f.id === instance.ownerId) {
         foundOwner = true;
-        setOwner(f);
+        setOwner({ type: "user", owner: f }); // if owner is friend, set owner data
       }
     });
     setFriends(friendList);
     if (!foundOwner && instance.ownerId) {
       // not found in friends, fetch owner data
-      cache.user.get(instance.ownerId).then(setOwner).catch((e) => {
-        showToast("error", "Error fetching owner profile", extractErrMsg(e));
-      });
+      if (instance.ownerId.startsWith("usr_")) {
+        cache.user.get(instance.ownerId).then((owner) => setOwner({ type: "user", owner })).catch((e) => {
+          showToast("error", "Error fetching owner profile", extractErrMsg(e));
+        });
+      } else if (instance.ownerId.startsWith("grp_")) {
+        cache.group.get(instance.ownerId).then((owner) => setOwner({ type: "group", owner })).catch((e) => {
+          showToast("error", "Error fetching owner group", extractErrMsg(e));
+        });
+      }
     }
   }, [instance, instance?.users, instance?.ownerId]);
 
@@ -119,9 +132,17 @@ export default function InstanceDetail() {
             <DetailItemContainer title={owner ? t("pages.detail_instance.sectionLabel_ownerAndWorld") : t("pages.detail_instance.sectionLabel_World")}>
               <View style={[styles.detailItemContent, styles.horizontal]}>
                 {owner && (
-                  <TouchableOpacity key={owner.id} onPress={() => routeToUser(owner.id)} activeOpacity={0.7}>
-                    <UserChip user={owner} icon="crown" textColor={getTrustRankColor(owner, true, false)} />
-                  </TouchableOpacity>
+                  owner.type === "user" ? (
+                    <TouchableOpacity key={owner.owner.id} onPress={() => routeToUser(owner.owner.id)}>
+                      <UserChip user={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity key={owner.owner.id} onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
+                      <Text style={{ color: theme.colors.text, fontSize: fontSize.medium }}>
+                        <IconSymbol name="group" size={fontSize.medium} /> {owner.owner.name}
+                      </Text>
+                    </TouchableOpacity>
+                  )
                 )}
                 <TouchableOpacity onPress={() => routeToWorld(instance.worldId)} activeOpacity={0.7}>
                   <IconSymbol name="earth" size={fontSize.large} color={theme.colors.text} style={styles.worldIcon} />
