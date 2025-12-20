@@ -1,50 +1,58 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+// desktop/src/App.tsx
+
+import { useEffect, useState } from "react";
+import "./App.css"; // 必要ならスタイル定義
+import { fetchNewLogs, greet, LogEntry } from "./lib/commands-wrapper";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  // ログのリストを保持するState
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [greetMessage, setGreetMessage] = useState<string>("greet me!");
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  // コンポーネントが表示されたら定期実行を開始
+  useEffect(() => {
+    // 2秒ごとに実行するタイマー
+    const intervalId = setInterval(async () => {
+      const newEntries = await fetchNewLogs();
+      
+      if (newEntries.length > 0) {
+        // 新しいログがあれば、既存のリストの後ろに追加
+        setLogs((prev) => [...newEntries.reverse(), ...prev, ]);
+      }
+    }, 2000); 
+
+    // 画面が閉じられたらタイマーを解除（メモリリーク防止）
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container">
+      <h1>VRChat Log Monitor 📜</h1>
+      
+      <div className="controls">
+        <button onClick={async () => setGreetMessage(await greet(new Date().toISOString()))}>{greetMessage}</button>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      <div className="controls">
+        <p>Total Logs: {logs.length}</p>
+        <button onClick={() => setLogs([])}>Clear Log</button>
+      </div>
+
+      <div className="log-container">
+        {logs.length === 0 ? (
+          <p className="no-logs">Waiting for logs...</p>
+        ) : (
+          /* ログのリストを表示 */
+          logs.map((log, index) => (
+            <div key={index} className={`log-item ${log.log_type.toLowerCase()}`}>
+              <span className="time">[{log.timestamp}]</span>
+              <span className="type">{log.log_type}</span>
+              <span className="content">{log.content}</span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
   );
 }
 

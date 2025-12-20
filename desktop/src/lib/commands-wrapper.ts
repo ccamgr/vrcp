@@ -1,11 +1,14 @@
-// desktop/src/lib/vrchat-api.ts
-
 import { commands, type LogEntry } from './bindings';
 
 export type { LogEntry };
 
 // Tauri環境かどうかの判定
-const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+export const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+
+export async function greet(name: string): Promise<string> {
+  return isTauri ? commands.greet(name) : `Hello, ${name}! (from dev mode)`;
+} 
+
 
 /**
  * 新しいログを取得する関数
@@ -34,7 +37,7 @@ export async function fetchNewLogs(): Promise<LogEntry[]> {
         {
           timestamp: now.toLocaleTimeString(),
           log_type: "Log",
-          content: `[Mock] Player joined implementation test at ${now.getSeconds()}`,
+          content: `[Mock] Player joined implementation test at ${now.toISOString()}`,
         }
       ];
     }
