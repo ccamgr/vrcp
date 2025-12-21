@@ -26,7 +26,7 @@ jobs:
   build:
     name: Build APK
     runs-on: ${{ inputs.build_platform == 'ios' && 'macos-latest' || 'ubuntu-latest' }}
-    environment: ${{ (inputs.build_profile == 'production' || inputs.build_profile == 'prod-apk') && 'production' || 'development' }} 
+    environment: ${{ (inputs.build_profile == 'production' || inputs.build_profile == 'prod-apk') && 'production' || 'development' }}
     defaults:
       run:
         working-directory: ./mobile
@@ -73,10 +73,10 @@ jobs:
         id: extract_info
         run: |
           PROFILE="${{ inputs.build_profile }}"
-          
+
           # get envs from eas.json and save to eas_env file
           jq -r ".build[\"$PROFILE\"].env // {} | to_entries[] | .key + \"=\" + (.value | tostring)" eas.json > .eas_env
-          
+
           # export all envs on eas_env file
           while IFS='=' read -r key value; do
             export "$key=$value"
@@ -85,13 +85,13 @@ jobs:
           rm .eas_env
 
           # Generate app config to get app info
-          APP_CONFIG=$(npx expo config --json --non-interactive)
-          
+          APP_CONFIG=$(npx expo config --json)
+
           NATIVE_VER=$(echo "$APP_CONFIG" | jq -r '.version')
-          
+
           # set to env for build steps
           echo "NATIVE_VER=$NATIVE_VER" >> $GITHUB_ENV
-          
+
           # 次のワークフローに渡すためにファイルに保存
           mkdir -p build_assets
           echo "$NATIVE_VER" > build_assets/version.txt
@@ -103,7 +103,7 @@ jobs:
           PROFILE="${{ inputs.build_profile }}"
           EXT=""
           SUFFIX=""
-          
+
           if  [ "$PROFILE" == "development" ]; then
             SUFFIX="-dev"
           elif [ "$PROFILE" == "preview" ]; then
@@ -111,7 +111,7 @@ jobs:
           else
             SUFFIX=""
           fi
-  
+
           if [ "$PLATFORM" == "android" ]; then
             if [ "$PROFILE" == "production" ]; then
               # Android:production => aab
@@ -135,7 +135,7 @@ jobs:
           APP_VERSION: ${{ env.NATIVE_VER }}
 
           EXPO_PUBLIC_DISCORD_WEBHOOK_URL: ${{ secrets.EXPO_PUBLIC_DISCORD_WEBHOOK_URL }}
-        
+
         run: |
           eas build \
           --platform ${{ inputs.build_platform }} \
