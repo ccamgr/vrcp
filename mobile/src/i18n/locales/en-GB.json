@@ -146,7 +146,8 @@
       "label": "Notification Settings"
     },
     "setting_language": {
-      "label": "Language Settings"
+      "label": "Language Settings",
+      "description": "Select Your Language"
     },
     "detail_user": {
       "label": "User Details",

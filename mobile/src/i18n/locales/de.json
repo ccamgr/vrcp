@@ -146,7 +146,8 @@
       "label": "Benachrichtigungseinstellungen"
     },
     "setting_language": {
-      "label": "Spracheinstellungen"
+      "label": "Spracheinstellungen",
+      "description": "Wählen Sie Ihre Sprache aus"
     },
     "detail_user": {
       "label": "Benutzerdetails",

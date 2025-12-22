@@ -146,7 +146,8 @@
       "label": "通知设置"
     },
     "setting_language": {
-      "label": "语言设置"
+      "label": "语言设置",
+      "description": "选择您的语言"
     },
     "detail_user": {
       "label": "用户详情",

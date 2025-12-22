@@ -146,7 +146,8 @@
       "label": "Настройки уведомлений"
     },
     "setting_language": {
-      "label": "Язык"
+      "label": "Язык",
+      "description": "Выберите свой язык"
     },
     "detail_user": {
       "label": "Пользователь",

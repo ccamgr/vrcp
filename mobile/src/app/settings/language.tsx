@@ -38,7 +38,7 @@ export default function LanguageSettings() {
       {isLoading && <LoadingIndicator absolute />}
       {/* Language Selection */}
       <View style={{ padding: 16 }}>
-        <Text style={[styles.label, { color: theme.colors.text }]}>{i18n.language}</Text>
+        <Text style={[styles.label, { color: theme.colors.text }]}>{t("pages.setting_language.description")}</Text>
         <FlatList
           data={langNames}
           keyExtractor={(item) => item.langTag}
