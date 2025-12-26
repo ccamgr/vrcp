@@ -32,7 +32,7 @@ export const constants: AppConfig = {
     vrc_register: "https://vrchat.com/home/register",
     vrc_forgot_password: "https://vrchat.com/home/password",
     vrc_forgot_email: "https://vrchat.com/home/forgot-email",
-    privacy_policy: "https://kitrinor.github.io/vrcp/privacy-policy",
-    terms_of_use: "https://kitrinor.github.io/vrcp/terms-of-use",
+    privacy_policy: "https://amgr-cc.github.io/vrcp/privacy-policy",
+    terms_of_use: "https://amgr-cc.github.io/vrcp/terms-of-use",
   }
 }
