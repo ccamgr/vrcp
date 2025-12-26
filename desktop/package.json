@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "pretauri": "tsx tools/update-version.ts",
+    "pretauri": "tsx tools/sync-version.ts",
     "tauri": "tauri"
   },
   "dependencies": {
