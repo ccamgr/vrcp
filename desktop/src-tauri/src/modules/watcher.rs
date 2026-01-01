@@ -1,246 +1,168 @@
-use std::fs::{self, File};
-use std::io::{BufRead, BufReader, Seek, SeekFrom};
-use std::path::PathBuf;
-use std::time::SystemTime;
-use serde::{Serialize, Deserialize};
-use regex::Regex;
+use regex::{Captures, Regex};
+use serde::Serialize;
 use specta::Type;
+use std::sync::OnceLock;
+use tauri::{AppHandle, Manager};
 use tauri_specta::Event;
-use chrono::NaiveDateTime;
 
-// ▼▼▼ 1. データ構造 ▼▼▼
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Type)]
-pub struct LogEntry {
-    pub timestamp: String, // "2025.12.13 15:30:00"
-    pub log_type: String,  // "Log", "Warning", "Error"
-    pub content: String,   // "[Player] John Doe Joined"
+/// Enum representing specific events detected in VRChat logs.
+/// This will be serialized and sent to the frontend.
+#[derive(Clone, Serialize, Debug, Type, Event)]
+#[serde(tag = "type", content = "data")]
+pub enum VrcLogEvent {
+    AppStart,
+    AppStop,
+    Login {
+        username: String,
+        user_id: String,
+    },
+    WorldEnter {
+        world_name: String,
+    },
+    InstanceJoin {
+        world_id: String,
+        instance_id: String,
+    },
+    PlayerJoin {
+        player_name: String,
+        user_id: String,
+    },
+    PlayerLeft {
+        player_name: String,
+        user_id: String,
+    },
+    SelfLeft,
 }
 
-impl LogEntry {
-    /// ログの日時文字列を Unix Timestamp (ミリ秒) に変換するヘルパー
-    pub fn get_timestamp_millis(&self) -> Option<i64> {
-        // VRChatの形式: "2025.12.13 15:30:00"
-        let fmt = "%Y.%m.%d %H:%M:%S";
-        NaiveDateTime::parse_from_str(&self.timestamp, fmt)
-            .ok()
-            .map(|dt| dt.and_utc().timestamp_millis())
-    }
+/// The actual payload structure sent to the frontend via the event system.
+#[derive(Clone, Serialize, Type, Event)]
+pub struct Payload {
+    event: VrcLogEvent,
+    timestamp: String,
 }
 
-// フロントエンドへの通知用イベント定義
-#[derive(Debug, Clone, Serialize, Type, Event)]
-#[tauri_specta(name = "log-update")]
-pub struct LogUpdateEvent(pub Vec<LogEntry>);
-
-// ▼▼▼ 2. ログ監視・管理クラス ▼▼▼
-
-pub struct LogManager {
-    parser: Regex,
-    current_file_path: Option<PathBuf>,
-    last_position: u64,
+/// Configuration struct defining a regex pattern and a factory function.
+/// Used to define log matching rules in a static context.
+struct LogDefinition {
+    /// The regex pattern string following the timestamp prefix.
+    pattern_part: &'static str,
+    /// Function to convert regex captures into a VrcLogEvent.
+    factory: fn(&Captures) -> VrcLogEvent,
 }
 
-impl LogManager {
-    pub fn new() -> Self {
-        // 正規表現: "YYYY.MM.DD HH:MM:SS Type - Content"
-        let re = Regex::new(r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}) ([^ ]+)\s+-\s+(.*)$").unwrap();
-        
-        Self {
-            parser: re,
-            current_file_path: None,
-            last_position: 0,
-        }
-    }
+/// Static list of log patterns to monitor.
+/// Add new log patterns here to extend functionality.
+const LOG_DEFINITIONS: &[LogDefinition] = &[
+    // 1. Application Start
+    LogDefinition {
+        pattern_part: r"VRCNP: Server started",
+        factory: |_| VrcLogEvent::AppStart,
+    },
+    // 2. Application Stop
+    LogDefinition {
+        pattern_part: r"VRCNP: Stopping server",
+        factory: |_| VrcLogEvent::AppStop,
+    },
+    // 3. User Login
+    LogDefinition {
+        pattern_part: r"User Authenticated: (.+) \((usr_[\w-]+)\)",
+        factory: |caps| VrcLogEvent::Login {
+            username: caps[2].to_string(),
+            user_id: caps[3].to_string(),
+        },
+    },
+    // 4. World Entry
+    LogDefinition {
+        pattern_part: r"\[Behaviour\] Entering Room: (.+)",
+        factory: |caps| VrcLogEvent::WorldEnter {
+            world_name: caps[2].to_string(),
+        },
+    },
+    // 5. Instance Join
+    LogDefinition {
+        pattern_part: r"\[Behaviour\] Joining (wrld_[\w-]+):(.+)",
+        factory: |caps| VrcLogEvent::InstanceJoin {
+            world_id: caps[2].to_string(),
+            instance_id: caps[3].to_string(),
+        },
+    },
+    // 6. Other Player Join
+    LogDefinition {
+        pattern_part: r"\[Behaviour\] OnPlayerJoined (.+) \((usr_[\w-]+)\)",
+        factory: |caps| VrcLogEvent::PlayerJoin {
+            player_name: caps[2].to_string(),
+            user_id: caps[3].to_string(),
+        },
+    },
+    // 7. Other Player Left
+    LogDefinition {
+        pattern_part: r"\[Behaviour\] OnPlayerLeft (.+) \((usr_[\w-]+)\)",
+        factory: |caps| VrcLogEvent::PlayerLeft {
+            player_name: caps[2].to_string(),
+            user_id: caps[3].to_string(),
+        },
+    },
+    // 8. Self Left
+    LogDefinition {
+        pattern_part: r"\[Behaviour\] OnLeftRoom",
+        factory: |_| VrcLogEvent::SelfLeft,
+    },
+];
 
-    /// 指定した時刻 (Unix millis) 以降のログを、全ての過去ログファイルから検索して取得
-    pub fn get_logs_since(&self, since_timestamp: i64) -> Vec<LogEntry> {
-        let log_dir = get_default_vrchat_dir().unwrap_or_default();
-        if !log_dir.exists() {
-            return vec![];
-        }
-
-        let mut all_logs = Vec::new();
-        
-        // 1. すべてのログファイルを列挙
-        if let Ok(entries) = fs::read_dir(log_dir) {
-            let mut files: Vec<(PathBuf, SystemTime)> = entries
-                .filter_map(|e| e.ok())
-                .filter(|e| {
-                    let name = e.file_name().to_string_lossy().to_string();
-                    name.starts_with("output_log_") && name.ends_with(".txt")
-                })
-                .filter_map(|e| {
-                    let meta = e.metadata().ok()?;
-                    Some((e.path(), meta.modified().unwrap_or(SystemTime::UNIX_EPOCH)))
-                })
-                .collect();
-
-            // 2. 更新日時が古い順にソート
-            files.sort_by_key(|(_, time)| *time);
-
-            // 3. 各ファイルをチェック
-            for (path, modified) in files {
-                // ファイルの最終更新が指定時刻より古ければ、中身を見るまでもなくスキップ
-                // (少しマージンを持たせて判定しても良い)
-                let modified_millis = modified.duration_since(SystemTime::UNIX_EPOCH)
-                    .unwrap_or_default().as_millis() as i64;
-                
-                if modified_millis < since_timestamp {
-                    continue; 
-                }
-
-                // ファイルを読んで解析
-                if let Ok(logs) = self.parse_entire_file(&path) {
-                    for log in logs {
-                        // ログ個別の行時間をチェック
-                        if let Some(ts) = log.get_timestamp_millis() {
-                            if ts > since_timestamp {
-                                all_logs.push(log);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        all_logs
-    }
-
-    /// 監視ループ用: 最新のログファイルだけをチェックして差分を返す
-    pub fn check_recent_updates(&mut self) -> Vec<LogEntry> {
-        let log_dir = get_default_vrchat_dir().unwrap_or_default();
-        let latest_path = find_latest_log(&log_dir);
-
-        match latest_path {
-            Some(path) => {
-                // ファイルが変わった場合（VRChat再起動時など）
-                if self.current_file_path.as_ref() != Some(&path) {
-                    self.current_file_path = Some(path.clone());
-                    self.last_position = 0; // 最初から読む
-                }
-
-                self.read_diff(&path).unwrap_or_default()
-            }
-            None => vec![],
-        }
-    }
-
-    // --- 内部ヘルパー ---
-
-    /// ファイル全体を読んでパースする（Sync用）
-    fn parse_entire_file(&self, path: &PathBuf) -> Result<Vec<LogEntry>, std::io::Error> {
-        let file = File::open(path)?;
-        let reader = BufReader::new(file);
-        let mut entries = Vec::new();
-
-        for line in reader.lines() {
-            if let Ok(l) = line {
-                if let Some(entry) = self.parse_line(&l) {
-                    entries.push(entry);
-                }
-            }
-        }
-        Ok(entries)
-    }
-
-    /// ファイルの前回読んだ位置から続きを読む（Watch用）
-    fn read_diff(&mut self, path: &PathBuf) -> Result<Vec<LogEntry>, std::io::Error> {
-        let mut file = File::open(path)?;
-        let current_len = file.metadata()?.len();
-
-        // ファイルサイズが縮んでいたらリセット (ログローテート等の異常系)
-        if current_len < self.last_position {
-            self.last_position = 0;
-        }
-
-        // 変化なし
-        if current_len == self.last_position {
-            return Ok(vec![]);
-        }
-
-        // シークして続きから読む
-        file.seek(SeekFrom::Start(self.last_position))?;
-        let reader = BufReader::new(file);
-
-        let mut entries = Vec::new();
-        // let mut bytes_read = 0;
-
-        for line in reader.lines() {
-            let line_str = line?;
-            // Windowsの改行(CRLF)などは line? で処理されるが、
-            // バイト数を計算するために +1 (LF) や +2 (CRLF) の考慮が必要
-            // 簡易的に文字列長 + 1 (LF想定) とするが、厳密には metadata 再取得が確実
-            // ここでは簡易実装として current_len を最後に代入する方式をとる
-            if let Some(entry) = self.parse_line(&line_str) {
-                entries.push(entry);
-            }
-        }
-
-        // 読み終わった位置を更新
-        self.last_position = current_len;
-        Ok(entries)
-    }
-
-    fn parse_line(&self, line: &str) -> Option<LogEntry> {
-        if let Some(caps) = self.parser.captures(line) {
-            return Some(LogEntry {
-                timestamp: caps[1].to_string(),
-                log_type: caps[2].to_string(),
-                content: caps[3].to_string(),
-            });
-        }
-        None
-    }
+/// Internal struct holding the compiled Regex object and the factory function.
+struct CompiledMatcher {
+    regex: Regex,
+    factory: fn(&Captures) -> VrcLogEvent,
 }
 
-// ▼▼▼ パス解決系 (変更なし) ▼▼▼
+/// Initializes and returns the list of compiled regex matchers.
+/// Uses OnceLock to ensure compilation happens only once (lazy initialization).
+fn get_compiled_matchers() -> &'static Vec<CompiledMatcher> {
+    static CACHE: OnceLock<Vec<CompiledMatcher>> = OnceLock::new();
 
-pub fn get_default_vrchat_dir() -> Option<PathBuf> {
-    dirs::home_dir().map(|path| {
-        path.join("AppData")
-            .join("LocalLow")
-            .join("VRChat")
-            .join("VRChat")
+    CACHE.get_or_init(|| {
+        // Common regex pattern for the timestamp prefix (e.g., "2025.12.20 00:00:00")
+        let ts_prefix = r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}).*";
+
+        LOG_DEFINITIONS
+            .iter()
+            .map(|def| {
+                let full_pattern = format!("{}{}", ts_prefix, def.pattern_part);
+                CompiledMatcher {
+                    regex: Regex::new(&full_pattern).expect("Regex compile failed"),
+                    factory: def.factory,
+                }
+            })
+            .collect()
     })
 }
 
-pub fn find_latest_log(dir: &PathBuf) -> Option<PathBuf> {
-    let entries = fs::read_dir(dir).ok()?;
-    let mut log_files: Vec<PathBuf> = entries
-        .filter_map(|entry| entry.ok())
-        .map(|entry| entry.path())
-        .filter(|path| {
-            if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                name.starts_with("output_log_") && name.ends_with(".txt")
-            } else {
-                false
+/// Parses a single log line, checks against defined patterns, and emits an event if matched.
+/// This function is intended to be called for every line read from the log file.
+pub fn process_log_line(line: &str, app: &AppHandle) {
+    let line = line.trim();
+    if line.is_empty() {
+        return;
+    }
+
+    // Iterate through cached matchers to find a match
+    for matcher in get_compiled_matchers() {
+        if let Some(caps) = matcher.regex.captures(line) {
+            let event_data = (matcher.factory)(&caps);
+
+            // Extract timestamp (Always in Group 1 based on ts_prefix)
+            let timestamp = caps.get(1).map_or("unknown", |m| m.as_str()).to_string();
+
+            let payload = Payload {
+                event: event_data,
+                timestamp,
+            };
+
+            // Emit the event to the frontend safely
+            if let Err(e) = Payload::emit(&payload, app) {
+                eprintln!("Failed to emit log event: {}", e);
             }
-        })
-        .collect();
-
-    // 最終更新日時でソート
-    log_files.sort_by_key(|path| {
-        path.metadata()
-            .and_then(|m| m.modified())
-            .unwrap_or(SystemTime::UNIX_EPOCH)
-    });
-
-    log_files.pop() // 一番新しいものを返す
-}
-
-// ▼▼▼ テストコード ▼▼▼
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_and_timestamp() {
-        let entry = LogEntry {
-            timestamp: "2025.12.20 12:00:00".to_string(),
-            log_type: "Log".to_string(),
-            content: "Test".to_string(),
-        };
-        // 変換できるか
-        assert!(entry.get_timestamp_millis().is_some());
+            return;
+        }
     }
 }

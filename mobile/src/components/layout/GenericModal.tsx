@@ -10,7 +10,7 @@ import { hide } from "expo-router/build/utils/splash";
 import { ButtonEx } from "../CustomElements";
 interface Props {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   showCloseButton?: boolean;
   scrollable?: boolean | "horizontal" | "vertical" | "both"; // if true, vertical only, if "both", horizontal and vertical
