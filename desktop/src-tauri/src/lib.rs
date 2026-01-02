@@ -8,7 +8,12 @@ use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
 pub fn create_specta_builder() -> SpectaBuilder {
     SpectaBuilder::new()
-        .commands(collect_commands![modules::server::get_server_url])
+        .commands(collect_commands![
+            modules::server::set_server_port,
+            modules::server::get_server_port,
+            modules::server::get_server_url,
+            modules::db::get_logs,
+        ])
         .events(collect_events![
             modules::watcher::Payload,
             modules::watcher::VrcLogEvent
@@ -35,7 +40,9 @@ pub fn run() {
             builder.mount_events(app);
 
             // DB 初期化
-            let db = modules::db::LogDatabase::new().expect("failed to initialize database");
+            let db = modules::db::LogDatabase::new(app.handle().clone())
+                .expect("failed to initialize database");
+            app.manage(db.clone());
             // Watcher起動
             modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
             // http srv 起動

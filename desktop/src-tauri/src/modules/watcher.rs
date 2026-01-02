@@ -135,7 +135,11 @@ fn process_log_line(line: &str, app: &AppHandle, db: &LogDatabase) {
     for matcher in get_compiled_matchers() {
         if let Some(caps) = matcher.regex.captures(line) {
             let event_data = (matcher.factory)(&caps);
-            let timestamp = caps.get(1).map_or("unknown", |m| m.as_str()).to_string();
+            let timestamp = caps
+                .get(1)
+                .map_or("unknown", |m| m.as_str())
+                .to_string()
+                .replace(".", "-"); // normalize to YYYY-MM-DD HH:mm:ss
 
             let payload = Payload {
                 event: event_data,

@@ -2,6 +2,8 @@ use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
 use std::fs;
 use std::sync::{Arc, Mutex};
+use tauri::Manager;
+
 // エラーハンドリング用
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
@@ -12,14 +14,12 @@ pub struct LogDatabase {
 
 impl LogDatabase {
     /// データベースを初期化する
-    /// 保存場所: AppData\Local\VRCP\vrcp.db
-    pub fn new() -> DbResult<Self> {
-        // 1. AppData\Local ディレクトリを取得
-        // (Linuxでは ~/.local/share, Macでは ~/Library/Application Support 相当)
-        let data_local_dir = dirs::data_local_dir().ok_or("Failed to get local data directory")?;
-
-        // 2. VRCP フォルダのパスを作成
-        let app_dir = data_local_dir.join("VRCP");
+    pub fn new(app: tauri::AppHandle) -> DbResult<Self> {
+        // 1. AppData\Local\{cc.amgr.vrcp} のパス取得
+        let app_dir = app
+            .path()
+            .app_local_data_dir()
+            .expect("failed to resolve app local data dir");
 
         // 3. ディレクトリが存在しなければ作成
         if !app_dir.exists() {
@@ -34,6 +34,7 @@ impl LogDatabase {
         // 5. 接続とテーブル作成
         let conn = Connection::open(db_path)?;
 
+        // log保存用table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,12 +44,39 @@ impl LogDatabase {
             )",
             [],
         )?;
+        // setting用table
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            )",
+            [],
+        )?;
 
         Ok(LogDatabase {
             conn: Arc::new(Mutex::new(conn)),
         })
     }
 
+    //** Settings */
+    /// 設定値取得
+    pub fn get_setting(&self, key: &str) -> DbResult<String> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare("SELECT value FROM settings WHERE key = ?1")?;
+        let value: String = stmt.query_row(params![key], |row| row.get(0))?;
+        Ok(value)
+    }
+    /// 設定値保存
+    pub fn set_setting(&self, key: &str, value: &str) -> DbResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO settings (key, value) VALUES (?1, ?2)",
+            params![key, value],
+        )?;
+        Ok(())
+    }
+
+    //** Logs */
     /// ログを1件保存する
     pub fn insert_log(&self, payload: &Payload) -> DbResult<()> {
         let conn = self.conn.lock().unwrap();
@@ -74,20 +102,26 @@ impl LogDatabase {
     }
 
     /// Retrieve logs newer than the specified timestamp.
-    /// timestamp format: "YYYY.MM.DD HH:mm:ss" (Same as VRChat log format)
-    pub fn get_logs_since(&self, since_timestamp: &str) -> DbResult<Vec<Payload>> {
+    /// timestamp format: "YYYY-MM-DD HH:mm:ss" (converted from VRChat log format "YYYY.MM.DD HH:mm:ss")
+    ///
+    pub fn get_logs(
+        &self,
+        start_timestamp: Option<&str>,
+        end_timestamp: Option<&str>,
+    ) -> DbResult<Vec<Payload>> {
         let conn = self.conn.lock().unwrap();
 
         // Prepare the SQL query
         // String comparison works for ISO-like dates (YYYY.MM.DD...)
         let mut stmt = conn.prepare(
             "SELECT timestamp, data FROM logs
-             WHERE timestamp > ?1
+             WHERE timestamp > ?1 AND timestamp <= ?2
              ORDER BY timestamp ASC",
         )?;
-
+        let start = start_timestamp.unwrap_or("1970-01-01 00:00:00");
+        let end = end_timestamp.unwrap_or("9999-12-31 23:59:59");
         // Map the rows to Payload objects
-        let log_iter = stmt.query_map(params![since_timestamp], |row| {
+        let log_iter = stmt.query_map(params![start, end], |row| {
             let timestamp: String = row.get(0)?;
             let data_json: String = row.get(1)?;
 
@@ -108,4 +142,18 @@ impl LogDatabase {
 
         Ok(logs)
     }
+}
+
+// commands
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_logs(
+    db: tauri::State<'_, LogDatabase>,
+    start: Option<String>,
+    end: Option<String>,
+) -> Result<Vec<Payload>, String> {
+    // db.get_logs の frontからの呼び出し
+    db.get_logs(start.as_deref(), end.as_deref())
+        .map_err(|e| e.to_string())
 }

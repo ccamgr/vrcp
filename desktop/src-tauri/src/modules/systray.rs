@@ -1,6 +1,6 @@
 use tauri::{
     image::Image,
-    menu::{Menu, MenuItem},
+    menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
     AppHandle, Manager, Window, WindowEvent,
 };
@@ -8,10 +8,13 @@ use tauri::{
 /// タスクトレイのセットアップ
 /// (アイコン表示、メニュー作成、クリックイベントの登録)
 pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
-    // 1. メニュー項目の作成
-    let quit_i = MenuItem::with_id(app, "quit", "Quit VRCP", true, None::<&str>)?;
+    // 1. メニューアイテムの作成
     let show_i = MenuItem::with_id(app, "show", "Show Window", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show_i, &quit_i])?;
+    let separator = PredefinedMenuItem::separator(app)?;
+    let restart_i = MenuItem::with_id(app, "restart", "Restart VRCP", true, None::<&str>)?;
+    let quit_i = MenuItem::with_id(app, "quit", "Quit VRCP", true, None::<&str>)?;
+    // メニュー配置
+    let menu = Menu::with_items(app, &[&show_i, &separator, &restart_i, &quit_i])?;
 
     // 2. アイコン画像の読み込み
     // modulesフォルダ内にあるため、iconsフォルダへは ../../ でアクセス
@@ -25,8 +28,12 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
         .on_menu_event(|app, event| {
             match event.id.as_ref() {
                 "quit" => {
-                    // 本当に終了する
+                    // 終了する
                     app.exit(0);
+                }
+                "restart" => {
+                    // アプリを再起動
+                    app.restart();
                 }
                 "show" => {
                     // ウィンドウを表示
@@ -47,12 +54,8 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
             {
                 let app = tray.app_handle();
                 if let Some(window) = app.get_webview_window("main") {
-                    if window.is_visible().unwrap_or(false) {
-                        let _ = window.hide();
-                    } else {
-                        let _ = window.show();
-                        let _ = window.set_focus();
-                    }
+                    let _ = window.show();
+                    let _ = window.set_focus();
                 }
             }
         })
