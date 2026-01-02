@@ -85,7 +85,7 @@ export default ({ config }: ConfigContext) => ({
     supportsTablet: true,
     infoPlist: {
       UIBackgroundModes: ["fetch", "processing"], // for background fetch
-      BGTaskSchedulerPermittedIdentifiers: ["BACKGROUND_SYNC_TASK"], // must match the task name defined in src/tasks/
+      BGTaskSchedulerPermittedIdentifiers: ["BACKGROUND_FETCH_TASK"], // must match the task name defined in src/tasks/
       LSApplicationQueriesSchemes: ["vrcp"], // allow querying for our own scheme
     },
   },
@@ -132,6 +132,13 @@ export default ({ config }: ConfigContext) => ({
         icon: "./src/assets/images/notification-icon.png", // must be a transparent white PNG
         color: "#ffffff"
       }
+    ],
+    [
+      'expo-camera',
+      {
+        cameraPermission: "allow $(PRODUCT_NAME) to access your camera to read QR codes",
+        // microphonePermission: "allow $(PRODUCT_NAME) to access your microphone" // if you need microphone access
+      },
     ],
     [
       "expo-splash-screen",

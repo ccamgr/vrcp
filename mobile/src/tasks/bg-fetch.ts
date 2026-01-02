@@ -2,7 +2,7 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 // app.json の BGTaskSchedulerPermittedIdentifiers に登録した名前と一致させる
-export const TASK_NAME = 'BACKGROUND_SYNC_TASK';
+export const TASK_NAME = 'BACKGROUND_FETCH_TASK';
 
 // タスクの定義
 TaskManager.defineTask(TASK_NAME, async () => {
