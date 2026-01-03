@@ -5,11 +5,11 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::sync::OnceLock;
-use std::time::Duration;
+use std::time::{Duration, Instant}; // Instantを追加
 use tauri::AppHandle;
 use tauri_specta::Event;
 
-use crate::modules::db::LogDatabase;
+use crate::modules::db::{LogDatabase, WatcherState}; // WatcherStateを追加
 
 // ================================================================
 // Section A: Data Types & Parsing Logic
@@ -21,6 +21,7 @@ use crate::modules::db::LogDatabase;
 pub enum VrcLogEvent {
     AppStart,
     AppStop,
+    InvalidAppStop, // AppStopの前にログ書き込みが終了
     Login {
         username: String,
         user_id: String,
@@ -80,7 +81,7 @@ const LOG_DEFINITIONS: &[LogDefinition] = &[
         pattern_part: r"\[Behaviour\] Joining (wrld_[\w-]+):(.+)",
         factory: |caps| VrcLogEvent::InstanceJoin {
             world_id: caps[2].to_string(),
-            instance_id: caps[3].to_string(),
+            instance_id: caps[2].to_string() + ":" + &caps[3].to_string(), // instanceId = worldId:instanceSuffix
         },
     },
     LogDefinition {
@@ -124,6 +125,19 @@ fn get_compiled_matchers() -> &'static Vec<CompiledMatcher> {
             .collect()
     })
 }
+
+pub fn extract_timestamp(line: &str) -> Option<String> {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    let re = RE.get_or_init(|| {
+        // 行頭が "YYYY.MM.DD HH:mm:ss" で始まるかチェック
+        Regex::new(r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2})").unwrap()
+    });
+
+    if let Some(caps) = re.captures(line) {
+        return Some(caps[1].replace(".", "-"));
+    }
+    None
+}
 /// 1行を解析してPayloadを返す
 pub fn parse_log_line(line: &str) -> Option<Payload> {
     let line = line.trim();
@@ -147,20 +161,6 @@ pub fn parse_log_line(line: &str) -> Option<Payload> {
         }
     }
     None
-}
-/// 1行解析してイベントを送信する内部関数
-fn process_log_line(line: &str, app: &AppHandle, db: &LogDatabase) {
-    if let Some(payload) = parse_log_line(line) {
-        // to frontend
-        if let Err(e) = Payload::emit(&payload, app) {
-            eprintln!("Failed to emit log event: {}", e);
-        }
-        // to DataBase
-        if let Err(e) = db.insert_log(&payload) {
-            eprintln!("Failed to save log to DB: {}", e);
-        }
-        return;
-    }
 }
 
 // ================================================================
@@ -205,33 +205,120 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
     let mut rotation_check_interval = tokio::time::interval(Duration::from_secs(5));
     let mut current_log_path = get_latest_log_path();
 
+    let current_path_str = current_log_path
+        .as_ref()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_default();
+
+    // メモリ上の状態初期化
+    let mut last_seen_timestamp: String = "unknown".to_string();
+    let mut is_app_running = false;
+    let mut current_position: u64 = 0; // 現在の読み取り位置
+
+    // 前回起動時の状態復元
+    if let Ok(Some(saved_state)) = db.get_watcher_state() {
+        // パスが一致する場合のみ、前回の続きから読む
+        if saved_state.log_path == current_path_str && !current_path_str.is_empty() {
+            println!(
+                "Resuming watcher from position: {}",
+                saved_state.last_position
+            );
+
+            is_app_running = saved_state.is_running;
+            last_seen_timestamp = saved_state.last_timestamp;
+            current_position = saved_state.last_position; // 位置を復元
+        } else if !current_path_str.is_empty() {
+            // パスが違う(ローテーション済み)の場合
+            // 前回のセッションがRunningのままならクラッシュ判定
+            if saved_state.is_running {
+                println!(
+                    "Startup: Previous session crashed (rotation). Inserting event at {}",
+                    saved_state.last_timestamp
+                );
+                let crash_payload = Payload {
+                    event: VrcLogEvent::InvalidAppStop,
+                    timestamp: saved_state.last_timestamp.clone(),
+                };
+                let _ = db.insert_log(&crash_payload);
+            }
+            // 新しいファイルなので位置は 0 からスタート
+            current_position = 0;
+        }
+    }
     // 初回オープン処理
     let mut reader = match &current_log_path {
         Some(path) => {
             println!("Start watching log file: {:?}", path);
             File::open(path).ok().map(|mut f| {
-                // 初回は過去ログを読まないよう末尾にシーク
-                let _ = f.seek(SeekFrom::End(0));
+                // ファイルサイズ取得
+                let file_len = f.metadata().map(|m| m.len()).unwrap_or(0);
+
+                // 安全策: 保存された位置がファイルサイズより大きかったら 0 に戻す (ファイルが作り直された場合など)
+                if current_position > file_len {
+                    println!(
+                        "Saved position {} > File length {}. Resetting to 0.",
+                        current_position, file_len
+                    );
+                    current_position = 0;
+                }
+
+                // 指定位置までシーク
+                if let Err(e) = f.seek(SeekFrom::Start(current_position)) {
+                    eprintln!("Seek failed: {}, resetting to 0", e);
+                    let _ = f.seek(SeekFrom::Start(0));
+                    current_position = 0;
+                }
+
                 BufReader::new(f)
             })
         }
         None => {
-            println!("No VRChat log file found yet. Waiting for creation...");
+            println!("No VRChat log file found yet.");
             None
         }
     };
 
     let mut line = String::new();
+    let mut last_db_sync = Instant::now();
 
     loop {
         let mut read_success = false;
+        let mut state_changed = false;
 
         // 1. 現在のリーダーから行を読み込む
         if let Some(r) = &mut reader {
+            // read_line は改行コード込みのバイト数を返す
             match r.read_line(&mut line) {
                 Ok(0) => { /* EOF */ }
-                Ok(_) => {
-                    process_log_line(&line, &app, &db);
+                Ok(bytes_read) => {
+                    // ★読み込んだバイト数を加算
+                    current_position += bytes_read as u64;
+
+                    // タイムスタンプ更新(イベントの有無にかかわらず)
+                    if let Some(ts) = extract_timestamp(&line) {
+                        if ts != last_seen_timestamp {
+                            last_seen_timestamp = ts;
+                        }
+                    }
+
+                    // イベント解析
+                    if let Some(payload) = parse_log_line(&line) {
+                        match payload.event {
+                            VrcLogEvent::AppStart => {
+                                is_app_running = true;
+                                state_changed = true;
+                            }
+                            VrcLogEvent::AppStop => {
+                                is_app_running = false;
+                                state_changed = true;
+                            }
+                            _ => {}
+                        }
+                        // 通知 & 保存 (ここは変わらず)
+                        let _ = Payload::emit(&payload, &app);
+                        let _ = db.insert_log(&payload);
+                    }
+
                     line.clear();
                     read_success = true;
                 }
@@ -239,36 +326,64 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
             }
         }
 
-        // 読み込み成功したら即座に次へ（高速処理）
+        // ▼▼▼ 状態の永続化 (位置情報を含めて保存) ▼▼▼
+        if state_changed || (read_success && last_db_sync.elapsed() > Duration::from_secs(5)) {
+            if let Some(path) = &current_log_path {
+                let state = WatcherState {
+                    log_path: path.to_string_lossy().to_string(),
+                    is_running: is_app_running,
+                    last_timestamp: last_seen_timestamp.clone(),
+                    last_position: current_position, // ★現在の位置を保存
+                };
+                let _ = db.save_watcher_state(&state);
+                last_db_sync = Instant::now();
+            }
+        }
+
         if read_success {
+            // 読み込みが成功している間はループを回し続ける（一気に追いつく）
             continue;
         }
 
         // 2. 読み込むものがなければ、待機しつつローテーションチェック
         tokio::select! {
-            _ = tokio::time::sleep(Duration::from_millis(500)) => {
-                // CPU負荷軽減のための短いスリープ
-            }
+            _ = tokio::time::sleep(Duration::from_millis(500)) => {}
             _ = rotation_check_interval.tick() => {
-                // 最新ファイルをチェック
                 let latest = get_latest_log_path();
 
-                // パスが変わっていたら（＝新ファイル生成 or 初めて見つかった）
                 if latest != current_log_path {
-                    println!("Log rotation detected! Switching to: {:?}", latest);
-                    current_log_path = latest.clone();
+                    println!("Log rotation detected!");
+                    // ... (クラッシュ検知ロジックは既存のまま) ...
+                    if is_app_running {
+                         let crash_payload = Payload {
+                            event: VrcLogEvent::InvalidAppStop,
+                            timestamp: last_seen_timestamp.clone(),
+                        };
+                        let _ = db.insert_log(&crash_payload);
+                        let _ = Payload::emit(&crash_payload, &app);
+                    }
 
+                    current_log_path = latest.clone();
+                    is_app_running = false;
+                    current_position = 0; // ★新しいファイルなので位置をリセット
+
+                    // DB保存
+                    if let Some(path) = &current_log_path {
+                        let _ = db.save_watcher_state(&WatcherState {
+                            log_path: path.to_string_lossy().to_string(),
+                            is_running: false,
+                            last_timestamp: last_seen_timestamp.clone(),
+                            last_position: 0, // ★0で保存
+                        });
+                    }
+
+                    // Reader再生成
                     if let Some(path) = latest {
                         match File::open(&path) {
                             Ok(f) => {
-                                // 新しいファイルは「先頭」から読む（Start Upイベントなどを逃さないため）
                                 reader = Some(BufReader::new(f));
-                                println!("Switched to new log file successfully.");
                             }
-                            Err(e) => {
-                                eprintln!("Failed to open new log file: {}", e);
-                                reader = None;
-                            }
+                            Err(_) => reader = None,
                         }
                     }
                 }

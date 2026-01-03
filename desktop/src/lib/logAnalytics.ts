@@ -132,15 +132,16 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
       }
     }
     // 4. アプリ終了など (セッション終了)
-    else if (type === "AppStop" && currentSession) {
+    else if ((type === "AppStop" || type === "InvalidAppStop") && currentSession) {
       closeSession(ts);
     }
   });
 
-  // ループ終了時にまだセッションが続いていれば、現在時刻(または最後のログ時刻)で閉じる
+  // ループ終了時にまだセッションが続いている
+  // (rust側でInvalidAppStopを挿入しているので, "セッションが続く" = VRC起動中 となる)の場合、
+  // 現在時刻(または最後のログ時刻)で閉じる
   if (currentSession) {
-    const lastTime = logs.length > 0 ? toTime(logs[logs.length - 1].timestamp) : Date.now();
-    closeSession(lastTime);
+    closeSession(Date.now());
   }
 
   // 新しい順に並び替え

@@ -7,6 +7,13 @@ use std::sync::{Arc, Mutex};
 // エラーハンドリング用
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
+pub struct WatcherState {
+    pub log_path: String,
+    pub is_running: bool,
+    pub last_timestamp: String,
+    pub last_position: u64,
+}
+
 #[derive(Clone)]
 pub struct LogDatabase {
     conn: Arc<Mutex<Connection>>,
@@ -53,14 +60,14 @@ impl LogDatabase {
     }
 
     //** Settings */
-    /// 設定値取得
+    /// 設定値取得 generic
     pub fn get_setting(&self, key: &str) -> DbResult<String> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare("SELECT value FROM settings WHERE key = ?1")?;
         let value: String = stmt.query_row(params![key], |row| row.get(0))?;
         Ok(value)
     }
-    /// 設定値保存
+    /// 設定値保存 generic
     pub fn set_setting(&self, key: &str, value: &str) -> DbResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
@@ -70,6 +77,69 @@ impl LogDatabase {
         Ok(())
     }
 
+    //** Watcher States */
+    // 頻繁に呼ばれるため、一括で実装
+    pub fn save_watcher_state(&self, state: &WatcherState) -> DbResult<()> {
+        let conn = self.conn.lock().unwrap();
+
+        // last_position を保存するように追加
+        conn.execute_batch(&format!(
+            "INSERT OR REPLACE INTO settings (key, value) VALUES
+            ('watcher_log_path', '{}'),
+            ('watcher_is_running', '{}'),
+            ('watcher_last_timestamp', '{}'),
+            ('watcher_last_position', '{}');",
+            state.log_path.replace("'", "''"),
+            if state.is_running { "1" } else { "0" },
+            state.last_timestamp,
+            state.last_position
+        ))?;
+        Ok(())
+    }
+
+    pub fn get_watcher_state(&self) -> DbResult<Option<WatcherState>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt =
+            conn.prepare("SELECT key, value FROM settings WHERE key LIKE 'watcher_%'")?;
+
+        let rows = stmt.query_map([], |row| {
+            let key: String = row.get(0)?;
+            let value: String = row.get(1)?;
+            Ok((key, value))
+        })?;
+
+        let mut path = None;
+        let mut is_running = false;
+        let mut timestamp = None;
+        let mut position = 0; // ★追加 (デフォルト0)
+
+        for row in rows {
+            let (k, v) = row?;
+            match k.as_str() {
+                "watcher_log_path" => path = Some(v),
+                "watcher_is_running" => is_running = v == "1",
+                "watcher_last_timestamp" => timestamp = Some(v),
+                "watcher_last_position" => {
+                    // ★追加
+                    if let Ok(p) = v.parse::<u64>() {
+                        position = p;
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        if let (Some(p), Some(ts)) = (path, timestamp) {
+            Ok(Some(WatcherState {
+                log_path: p,
+                is_running,
+                last_timestamp: ts,
+                last_position: position, // ★追加
+            }))
+        } else {
+            Ok(None)
+        }
+    }
     //** Logs */
     /// ログを1件保存する
     pub fn insert_log(&self, payload: &Payload) -> DbResult<()> {

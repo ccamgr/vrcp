@@ -74,7 +74,7 @@ vrcLogEvent: "vrc-log-event"
 /** user-defined types **/
 
 export type Payload = { event: VrcLogEvent; timestamp: string }
-export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }
+export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "InvalidAppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }
 
 /** tauri-specta globals **/
 

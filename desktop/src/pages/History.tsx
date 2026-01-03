@@ -2,11 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { commands } from "../generated/bindings";
 import { analyzeSessions, type WorldSession } from "../lib/logAnalytics";
 import { Calendar, ChevronLeft, ChevronRight, LayoutList, BarChart3, Clock, MapPin, User, Hash, Users, Globe } from "lucide-react";
+import { getLocalISODate } from "../lib/date";
 
 export default function History() {
-  const [targetDate, setTargetDate] = useState(new Date().toISOString().split('T')[0]); // YYYY-MM-DD
+  const [targetDate, setTargetDate] = useState<string>(getLocalISODate(new Date()).split('T')[0]); // YYYY-MM-DD形式
   const [sessions, setSessions] = useState<WorldSession[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // 表示モードの状態管理 (list | timeline)
   const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
