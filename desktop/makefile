@@ -10,7 +10,7 @@ help:   # show this list
 run:  # run the application (ts-front only)
 	@npm run dev
 run-tauri:  # run the tauri application (ts-front and rust-backend)
-	@npm run tauri dev
+	@npm run tauri -- dev --config src-tauri/tauri.conf.dev.json
 
 .PHONY : gen-bindings
 gen-bindings:  # generate the bindings for commands-wrapper

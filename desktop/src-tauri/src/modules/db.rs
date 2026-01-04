@@ -1,9 +1,10 @@
 use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
+use std::collections::hash_map::DefaultHasher;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::io;
 use std::sync::{Arc, Mutex};
-
 // エラーハンドリング用
 type DbResult<T> = Result<T, Box<dyn std::error::Error>>;
 
@@ -41,7 +42,8 @@ impl LogDatabase {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT NOT NULL,
                 event_type TEXT NOT NULL,
-                data TEXT NOT NULL
+                data TEXT NOT NULL,
+                hash INTEGER NOT NULL UNIQUE
             )",
             [],
         )?;
@@ -157,9 +159,16 @@ impl LogDatabase {
             .replace(" {", "")
             .replace("}", "");
 
+        // ハッシュ値を計算して一意性を確保
+        let mut hasher = DefaultHasher::new();
+        payload.timestamp.hash(&mut hasher);
+        event_type.hash(&mut hasher);
+        data_json.hash(&mut hasher);
+        let log_hash = hasher.finish() as i64; // SQLiteのINTEGERに収まるようにi64に変換
+
         conn.execute(
-            "INSERT INTO logs (timestamp, event_type, data) VALUES (?1, ?2, ?3)",
-            params![payload.timestamp, event_type, data_json],
+            "INSERT INTO logs (timestamp, event_type, data, hash) VALUES (?1, ?2, ?3, ?4)",
+            params![payload.timestamp, event_type, data_json, log_hash],
         )?;
 
         Ok(())
