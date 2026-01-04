@@ -7,12 +7,26 @@ use axum::{
 use local_ip_address::local_ip;
 use serde::Deserialize;
 use std::net::SocketAddr;
+use std::sync::Mutex;
+use tauri::async_runtime::JoinHandle;
 use tower_http::cors::CorsLayer;
 
 use super::db::LogDatabase;
 use super::watcher::Payload;
 
 const SERVER_PORT: u16 = 8727;
+
+pub struct ServerState {
+    pub handle: Mutex<Option<JoinHandle<()>>>,
+}
+
+impl ServerState {
+    pub fn new() -> Self {
+        Self {
+            handle: Mutex::new(None),
+        }
+    }
+}
 
 /// Query parameters for the /logs endpoint
 #[derive(Deserialize)]

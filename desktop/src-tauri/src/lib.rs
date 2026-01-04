@@ -50,8 +50,11 @@ pub fn run() {
                     .expect("failed to resolve app local data dir"),
             )
             .expect("failed to initialize database");
-            app.manage(db.clone());
-            // Watcher起動
+
+            app.manage(db.clone()); // グローバルステートとしてDBを登録
+            app.manage(modules::server::ServerState::new()); // グローバルステートとしてServerStateを登録
+
+            // ログ監視開始
             modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
             // http srv 起動
             modules::server::spawn_server(db);
