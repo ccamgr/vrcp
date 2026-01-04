@@ -30,6 +30,8 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
   } | null = null;
 
   let currentSession: Partial<WorldSession> | null = null;
+  // 一時的に保持するワールド名
+  let worldName: string | null = null;
   // 一時的にプレイヤーの入室時間を記録するマップ (id -> timestamp)
   let activePlayers = new Map<string, { name: string; start: number }>();
   // 完了したプレイヤーの区間記録 (id -> [{name, start, end }, ...])
@@ -85,7 +87,7 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
     activePlayers.clear();
     playerIntervals.clear();
   };
-
+  console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
     const ts = toTime(log.timestamp);
     // @ts-ignore
@@ -101,26 +103,16 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
 
     // 1. ワールドに参加 (セッション開始)
     else if (type === "WorldEnter") {
-      if (currentSession) {
-        currentSession.worldName = data.world_name || currentSession.worldName || "Unknown World";
-        currentSession.startTime = ts;
-      } else {
-        currentSession = {
-          worldName: data.world_name || "Unknown World",
-          startTime: ts,
-        };
-      }
+      worldName = data.world_name || "Unknown World";
     }
     else if (type === "InstanceJoin") {
-      if (currentSession) {
-        currentSession.instanceId = data.instance_id || currentSession.instanceId || "";
-        currentSession.startTime = ts;
-      } else {
-        currentSession = {
-          instanceId: data.instance_id || "",
-          startTime: ts,
-        };
-      }
+      if (currentSession) closeSession(ts)
+      currentSession = {
+        worldName: worldName || "Unknown World", // 直前のWorldEnterで設定されたワールド名を引き継ぐ
+        instanceId: data.instance_id || "",
+        startTime: ts,
+      };
+      worldName = null; // ワールド名は使い切ったのでリセット
     }
     // 2. 誰かが入ってきた
     else if (type === "PlayerJoin" && currentSession) {
