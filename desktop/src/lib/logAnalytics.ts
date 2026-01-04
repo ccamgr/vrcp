@@ -1,5 +1,6 @@
 import { s } from "framer-motion/client";
 import { type Payload } from "../generated/bindings";
+import { start } from "repl";
 
 export interface PlayerInterval {
   name: string;
@@ -100,20 +101,26 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
 
     // 1. ワールドに参加 (セッション開始)
     else if (type === "WorldEnter") {
-      // 前のセッションがあれば閉じる
       if (currentSession) {
-        closeSession(ts);
+        currentSession.worldName = data.world_name || currentSession.worldName || "Unknown World";
+        currentSession.startTime = ts;
+      } else {
+        currentSession = {
+          worldName: data.world_name || "Unknown World",
+          startTime: ts,
+        };
       }
-      currentSession = { // name のみ
-        worldName: data.world_name || "Unknown World",
-      };
     }
     else if (type === "InstanceJoin") {
-      currentSession = {
-        ...currentSession, // 既存の worldName を保持
-        instanceId: data.instance_id || "",
-        startTime: ts,
-      };
+      if (currentSession) {
+        currentSession.instanceId = data.instance_id || currentSession.instanceId || "";
+        currentSession.startTime = ts;
+      } else {
+        currentSession = {
+          instanceId: data.instance_id || "",
+          startTime: ts,
+        };
+      }
     }
     // 2. 誰かが入ってきた
     else if (type === "PlayerJoin" && currentSession) {
