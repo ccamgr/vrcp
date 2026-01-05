@@ -45,7 +45,7 @@ type Owner =
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp))
   const { parsedLocation } = parseLocationString(id);
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
@@ -156,7 +156,7 @@ export default function InstanceDetail() {
                   </TouchableEx>
                 ))}
                 {instance.n_users > friends.length && (
-                  <Text style={[styles.moreUser,{ color: theme.colors.text }]}>{t("pages.detail_instance.section_users_more_user_count_other", { count: instance.n_users - friends.length })}</Text>
+                  <Text style={[styles.moreUser, { color: theme.colors.text }]}>{t("pages.detail_instance.section_users_more_user_count_other", { count: instance.n_users - friends.length })}</Text>
                 )}
               </View>
             </DetailItemContainer>
@@ -180,8 +180,8 @@ export default function InstanceDetail() {
                       <UserOrGroupChip data={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
                     </TouchableEx>
                   ) : (
-                    <TouchableEx onPress={() => owner.owner.id &&routeToGroup(owner.owner.id)}>
-                      <UserOrGroupChip data={owner.owner} icon="crown"/>
+                    <TouchableEx onPress={() => owner.owner.id && routeToGroup(owner.owner.id)}>
+                      <UserOrGroupChip data={owner.owner} icon="crown" />
                     </TouchableEx>
                   )}
                 </View>
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     height: spacing.small * 2 + fontSize.medium * 3,
     aspectRatio: 16 / 9,
     borderRadius: radius.small,
-    borderStyle:"solid",
+    borderStyle: "solid",
     borderWidth: 1
   },
   worldName: {

@@ -31,7 +31,7 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const cache = useCache();
@@ -39,8 +39,8 @@ export default function UserDetail() {
   const { showToast } = useToast();
   const theme = useTheme();
   const [user, setUser] = useState<User>();
-    const fetchingRef = useRef(false);
-    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const fetchingRef = useRef(false);
+  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const [locationInfo, setLocationInfo] = useState<{
     wId?: string;
     iId?: string;
@@ -126,7 +126,7 @@ export default function UserDetail() {
       icon: freReqStatus === "completed" ? "account-minus" : freReqStatus === "null" ? "account-plus" : "account-cancel",
       title: freReqStatus === "completed" ? t("pages.detail_user.menuLabel_friend_remove")
         : freReqStatus === "null" ? t("pages.detail_user.menuLabel_friend_sendRequest")
-        : t("pages.detail_user.menuLabel_friend_cancelRequest"),
+          : t("pages.detail_user.menuLabel_friend_cancelRequest"),
       onPress: () => setOpenChangeFriend(true)
     },
     {
@@ -190,8 +190,8 @@ export default function UserDetail() {
         <View style={{ flex: 1 }}>
           <CardViewUserDetail
             user={user}
-            onPress={() => user && setPreview({imageUrl: getUserProfilePicUrl(user, true), open: true})}
-            onPressIcon={() => user && setPreview({imageUrl: getUserIconUrl(user, true), open: true})}
+            onPress={() => user && setPreview({ imageUrl: getUserProfilePicUrl(user, true), open: true })}
+            onPressIcon={() => user && setPreview({ imageUrl: getUserIconUrl(user, true), open: true })}
             style={[styles.cardView]}
           />
           <ScrollView
@@ -270,7 +270,7 @@ export default function UserDetail() {
 
             <DetailItemContainer title={t("pages.detail_user.sectionLabel_info")}>
               <View style={styles.detailItemContent}>
-                { user.last_activity && (
+                {user.last_activity && (
                   <Text style={{ color: theme.colors.text }}>
                     {t("pages.detail_user.section_info_last_activity", { date: new Date(user.last_activity) })}
                   </Text>

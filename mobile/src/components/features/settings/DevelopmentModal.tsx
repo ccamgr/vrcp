@@ -33,9 +33,9 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
           description: t("components.developmentModal.itemDescription_sendLogs"),
           leading: (
             <Switch
-              value={settings.otherOptions.sendDebugLogs}
+              value={settings.otherOptions_sendDebugLogs}
               onValueChange={(value) => {
-                saveSettings({otherOptions: {...settings.otherOptions, sendDebugLogs: value}});
+                saveSettings({ otherOptions_sendDebugLogs: value });
               }}
             />
           )
@@ -46,9 +46,9 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
           description: t("components.developmentModal.itemDescription_json"),
           leading: (
             <Switch
-              value={settings.otherOptions.enableJsonViewer}
+              value={settings.otherOptions_enableJsonViewer}
               onValueChange={(value) => {
-                saveSettings({otherOptions: {...settings.otherOptions, enableJsonViewer: value}});
+                saveSettings({ otherOptions_enableJsonViewer: value });
               }}
             />
           )
@@ -77,7 +77,7 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
             <Text style={[styles.sectionHeaderText, { color: theme.colors.text }]}>
               {section.title}
             </Text>
-            <View style={[styles.sectionHeaderDivider, { borderBottomColor: theme.colors.border}]} />
+            <View style={[styles.sectionHeaderDivider, { borderBottomColor: theme.colors.border }]} />
           </View>
           <View style={styles.settingItemContainer}>
             {section.items.map((item, idx) => (
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: spacing.medium,
   },
-  settingItemContainer : {
+  settingItemContainer: {
     padding: spacing.small,
   },
   settingItem: {

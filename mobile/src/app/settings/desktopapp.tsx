@@ -14,7 +14,7 @@ export default function DesktopAppSettings() {
   const { settings, saveSettings } = useSetting();
 
   // 設定から読み込んだ値を管理
-  const desktopAppURL = settings.otherOptions.desktopAppURL;
+  const desktopAppURL = settings.otherOptions_desktopAppURL;
 
   // テキスト入力用のローカルステート (入力中は保存せず、確定時に保存するため)
   const [inputValue, setInputValue] = useState(desktopAppURL || "");
@@ -36,12 +36,7 @@ export default function DesktopAppSettings() {
       formattedUrl = formattedUrl.replace(/\/?$/, `:${DEFAULT_PORT}`);
     }
 
-    saveSettings({
-      otherOptions: {
-        ...settings.otherOptions,
-        desktopAppURL: formattedUrl,
-      }
-    });
+    saveSettings({ otherOptions_desktopAppURL: formattedUrl });
     // 入力エリアも整形後の値に更新
     setInputValue(formattedUrl);
   };

@@ -13,7 +13,6 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { routeToAppearanceSettings, routeToDatabaseSettings, routeToDesktopAppSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/libs/route";
 import SettingItemList from "@/components/features/settings/SettingItemList";
-import { useSetting } from "@/contexts/SettingContext";
 
 interface SettingItem {
   icon: SupportedIconNames;

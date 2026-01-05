@@ -37,7 +37,7 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const cache = useCache();
@@ -135,15 +135,15 @@ export default function WorldDetail() {
     label: string;
     value: typeof mode,
   }[] = [
-    {
-      label: t("pages.detail_world.tabLabel_info"),
-      value: "info",
-    },
-    {
-      label: t("pages.detail_world.tabLabel_instances"),
-      value: "instance",
-    },
-  ];
+      {
+        label: t("pages.detail_world.tabLabel_info"),
+        value: "info",
+      },
+      {
+        label: t("pages.detail_world.tabLabel_instances"),
+        value: "instance",
+      },
+    ];
 
   return (
     <GenericScreen>
@@ -192,7 +192,7 @@ export default function WorldDetail() {
                 {author && (
                   <View style={styles.detailItemContent}>
                     <TouchableEx onPress={() => routeToUser(author.id)}  >
-                      <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
+                      <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)} />
                     </TouchableEx>
                   </View>
                 )}
@@ -208,10 +208,10 @@ export default function WorldDetail() {
                   >{t("pages.detail_world.section_info_visits", { visits: world.visits })}</Text>
                   <Text
                     style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_updated", { date: new Date(world.updated_at )})}</Text>
+                  >{t("pages.detail_world.section_info_updated", { date: new Date(world.updated_at) })}</Text>
                   <Text
                     style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_created", { date: new Date(world.created_at )})}</Text>
+                  >{t("pages.detail_world.section_info_created", { date: new Date(world.created_at) })}</Text>
                 </View>
               </DetailItemContainer>
 

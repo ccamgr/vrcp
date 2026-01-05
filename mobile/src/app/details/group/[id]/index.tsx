@@ -21,7 +21,7 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const cache = useCache();
@@ -75,15 +75,15 @@ export default function GroupDetail() {
     label: string;
     value: typeof mode,
   }[] = [
-    {
-      label: "INFO",
-      value: "info",
-    },
-    {
-      label: "ACTIVITY",
-      value: "instances",
-    },
-  ];
+      {
+        label: "INFO",
+        value: "info",
+      },
+      {
+        label: "ACTIVITY",
+        value: "instances",
+      },
+    ];
 
   return (
     <GenericScreen>
@@ -108,7 +108,7 @@ export default function GroupDetail() {
 
             <DetailItemContainer
               title="Title2"
-              iconButtonConfig={[{ name: "edit", onPress: () => {} }]}
+              iconButtonConfig={[{ name: "edit", onPress: () => { } }]}
             >
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>text2-1</Text>

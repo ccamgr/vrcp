@@ -11,27 +11,25 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import * as BackgroundTask from 'expo-background-task';
 
 
 export default function Analytics() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [QROpen, setQROpen] = useState(false);
 
   return (
     <GenericScreen>
       <View style={styles.container} >
         <ButtonEx
-          onPress={() => setQROpen(true)}
+          onPress={async () => {
+            await BackgroundTask.triggerTaskWorkerForTestingAsync();
+            console.log('Manual background task triggered');
+          }}
         >
-          QR Scanner
+          manual fire background task
         </ButtonEx>
       </View>
-      <QRScanner
-        open={QROpen}
-        setOpen={setQROpen}
-        onScan={(v) => console.log(v)}
-      />
     </GenericScreen>
   );
 };

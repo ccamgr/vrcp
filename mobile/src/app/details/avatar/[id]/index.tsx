@@ -31,7 +31,7 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { showToast } = useToast();
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const cache = useCache();
   const data = useData();
   const theme = useTheme();
@@ -138,7 +138,7 @@ export default function AvatarDetail() {
               {author && (
                 <View style={styles.detailItemContent}>
                   <TouchableEx onPress={() => routeToUser(author.id)}  >
-                    <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)}/>
+                    <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)} />
                   </TouchableEx>
                 </View>
               )}

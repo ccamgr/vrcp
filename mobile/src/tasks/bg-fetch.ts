@@ -1,3 +1,4 @@
+import { SettingKey } from '@/contexts/SettingContext';
 import StorageWrapper from '@/libs/wrappers/storageWrapper';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -12,10 +13,14 @@ TaskManager.defineTask(TASK_NAME, async () => {
 
   try {
     // ここにAPIリクエストなどの処理を書く
-    const reqUrl = await StorageWrapper.getItemAsync('setting_desktopapp_url');
+    const key: SettingKey = 'otherOptions_desktopAppURL';
+    const reqUrl = await StorageWrapper.getItemAsync(key);
+
+    if (reqUrl) {
+      console.log(`[Background Task] 設定されたURL: ${reqUrl}`);
+    }
 
     // 成功時
-    // BackgroundFetchResult ではなく BackgroundTaskResult を使う
     return BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
     console.error(error);

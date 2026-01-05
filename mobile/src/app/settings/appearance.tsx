@@ -24,17 +24,16 @@ export default function AppearanceSettings() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { settings, saveSettings } = useSetting();
-  const { uiOptions } = settings;
 
-  const [colorSchemaModal, setColorSchemaModal] = useState<InnerModalOption<typeof uiOptions.theme.colorSchema>>({open: false});
+  const [colorSchemaModal, setColorSchemaModal] = useState<InnerModalOption<typeof settings.uiOptions_colorSchema>>({ open: false });
   const [homeTabModeModal, setHomeTabModeModal] = useState<InnerModalOption<{
-    top?: typeof uiOptions.layouts.homeTabTopVariant;
-    bottom?: typeof uiOptions.layouts.homeTabBottomVariant;
-    sepPos?: typeof uiOptions.layouts.homeTabSeparatePos;
-  }>>({open: false});
-  const [cardViewColumnsModal, setCardViewColumnsModal] = useState<InnerModalOption<typeof uiOptions.layouts.cardViewColumns>>({open: false});
-  const [friendColorModal, setFriendColorModal] = useState<InnerModalOption<typeof uiOptions.user.friendColor>>({open: false});
-  const [favoriteFriendsColorsModal, setFavoriteFriendsColorsModal] = useState<InnerModalOption<typeof uiOptions.user.favoriteFriendsColors>>({open: false});
+    top?: typeof settings.uiOptions_homeTabTopVariant;
+    bottom?: typeof settings.uiOptions_homeTabBottomVariant;
+    sepPos?: typeof settings.uiOptions_homeTabSeparatePos;
+  }>>({ open: false });
+  const [cardViewColumnsModal, setCardViewColumnsModal] = useState<InnerModalOption<typeof settings.uiOptions_cardViewColumns>>({ open: false });
+  const [friendColorModal, setFriendColorModal] = useState<InnerModalOption<typeof settings.uiOptions_friendColor>>({ open: false });
+  const [favoriteFriendsColorsModal, setFavoriteFriendsColorsModal] = useState<InnerModalOption<typeof settings.uiOptions_favoriteFriendsColors>>({ open: false });
 
   const _tmpState = useState(""); // for re-render
   useEffect(() => {
@@ -53,16 +52,16 @@ export default function AppearanceSettings() {
           description: t("pages.setting_appearance.itemDescription_theme"),
           leading: (
             <IconSymbol
-              name={getIconNameCS(uiOptions.theme.colorSchema)}
+              name={getIconNameCS(settings.uiOptions_colorSchema)}
               size={32}
               color={theme.colors.text}
             />
           ),
           onPress: () => setColorSchemaModal({
             open: true,
-            defaultValue: uiOptions.theme.colorSchema,
+            defaultValue: settings.uiOptions_colorSchema,
             onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, theme: { ...uiOptions.theme, colorSchema: value } } });
+              saveSettings({ uiOptions_colorSchema: value });
             }
           }),
         },
@@ -72,7 +71,7 @@ export default function AppearanceSettings() {
           description: t("pages.setting_appearance.itemDescription_homeTabLayout"),
           leading: (
             <IconSymbol
-              name={getIconNameHT(uiOptions.layouts.homeTabTopVariant)}
+              name={getIconNameHT(settings.uiOptions_homeTabTopVariant)}
               size={32}
               color={theme.colors.text}
             />
@@ -80,22 +79,15 @@ export default function AppearanceSettings() {
           onPress: () => setHomeTabModeModal({
             open: true,
             defaultValue: {
-              top: uiOptions.layouts.homeTabTopVariant,
-              bottom:  uiOptions.layouts.homeTabBottomVariant,
-              sepPos: uiOptions.layouts.homeTabSeparatePos,
+              top: settings.uiOptions_homeTabTopVariant,
+              bottom: settings.uiOptions_homeTabBottomVariant,
+              sepPos: settings.uiOptions_homeTabSeparatePos,
             },
             onSubmit: (value) => {
               saveSettings({
-                ...settings,
-                uiOptions: {
-                  ...uiOptions,
-                  layouts: {
-                    ...uiOptions.layouts,
-                    homeTabTopVariant: value.top ?? uiOptions.layouts.homeTabTopVariant,
-                    homeTabBottomVariant: value.bottom ?? uiOptions.layouts.homeTabBottomVariant,
-                    homeTabSeparatePos: value.sepPos ?? uiOptions.layouts.homeTabSeparatePos,
-                  }
-                }
+                uiOptions_homeTabTopVariant: value.top || settings.uiOptions_homeTabTopVariant,
+                uiOptions_homeTabBottomVariant: value.bottom || settings.uiOptions_homeTabBottomVariant,
+                uiOptions_homeTabSeparatePos: value.sepPos || settings.uiOptions_homeTabSeparatePos,
               });
             }
           }),
@@ -106,16 +98,16 @@ export default function AppearanceSettings() {
           description: t("pages.setting_appearance.itemDescription_cardViewColumns"),
           leading: (
             <IconSymbol
-              name={getIconNameCV(uiOptions.layouts.cardViewColumns)}
+              name={getIconNameCV(settings.uiOptions_cardViewColumns)}
               size={32}
               color={theme.colors.text}
             />
           ),
           onPress: () => setCardViewColumnsModal({
             open: true,
-            defaultValue: uiOptions.layouts.cardViewColumns,
+            defaultValue: settings.uiOptions_cardViewColumns,
             onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, layouts: { ...uiOptions.layouts, cardViewColumns: value } } });
+              saveSettings({ uiOptions_cardViewColumns: value });
             }
           }),
         },
@@ -128,12 +120,12 @@ export default function AppearanceSettings() {
           icon: "account",
           title: t("pages.setting_appearance.itemLabel_friendColor"),
           description: t("pages.setting_appearance.itemDescription_friendColor"),
-          leading: <ColorSquarePreview colors={[uiOptions.user.friendColor]} />,
+          leading: <ColorSquarePreview colors={[settings.uiOptions_friendColor]} />,
           onPress: () => setFriendColorModal({
             open: true,
-            defaultValue: uiOptions.user.friendColor,
+            defaultValue: settings.uiOptions_friendColor,
             onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, friendColor: value } } });
+              saveSettings({ uiOptions_friendColor: value });
             }
           }),
         },
@@ -141,12 +133,12 @@ export default function AppearanceSettings() {
           icon: "group",
           title: t("pages.setting_appearance.itemLabel_favoriteFriendsColors"),
           description: t("pages.setting_appearance.itemDescription_favoriteFriendsColors"),
-          leading: <ColorSquarePreview colors={Object.values(uiOptions.user.favoriteFriendsColors)} />,
+          leading: <ColorSquarePreview colors={Object.values(settings.uiOptions_favoriteFriendsColors)} />,
           onPress: () => setFavoriteFriendsColorsModal({
             open: true,
-            defaultValue: uiOptions.user.favoriteFriendsColors,
+            defaultValue: settings.uiOptions_favoriteFriendsColors,
             onSubmit: (value) => {
-              saveSettings({ ...settings, uiOptions: { ...uiOptions, user: { ...uiOptions.user, favoriteFriendsColors: value } } });
+              saveSettings({ uiOptions_favoriteFriendsColors: value });
             }
           }),
         },
@@ -227,7 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: spacing.medium,
   },
-  settingItemContainer : {
+  settingItemContainer: {
     padding: spacing.small,
   },
   settingItem: {

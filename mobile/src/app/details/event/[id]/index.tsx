@@ -27,8 +27,8 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 
 export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [ groupId, calendarId ] = id?.split(":") ?? [];
-  const { settings: { otherOptions: {enableJsonViewer} } } = useSetting();
+  const [groupId, calendarId] = id?.split(":") ?? [];
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const cache = useCache();
@@ -47,7 +47,7 @@ export default function EventDetail() {
     fetchingRef.current = true;
     vrc.calendarApi.getGroupCalendarEvent({
       groupId: groupId ?? "",
-      calendarId: calendarId  ?? "",
+      calendarId: calendarId ?? "",
     })
       .then((res) => setEvent(res.data))
       .catch((e) => showToast("error", "Error fetching event data", extractErrMsg(e)))

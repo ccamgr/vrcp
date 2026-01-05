@@ -24,7 +24,7 @@ export default function Prints() {
   const { showToast } = useToast();
   const { currentUser } = useData();
   const { settings } = useSetting();
-  const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
+  const cardViewColumns = settings.uiOptions_cardViewColumns;
   const NumPerReq = 50;
 
   const [prints, setPrints] = useState<Print[]>([]);

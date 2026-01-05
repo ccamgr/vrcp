@@ -26,9 +26,13 @@ import { isSameDay } from "date-fns";
 export default function Home() {
   const theme = useTheme();
   const { settings } = useSetting();
-  const { homeTabTopVariant, homeTabBottomVariant, homeTabSeparatePos, cardViewColumns } = settings.uiOptions.layouts;
+  const {
+    uiOptions_homeTabTopVariant: homeTabTopVariant,
+    uiOptions_homeTabBottomVariant: homeTabBottomVariant,
+    uiOptions_homeTabSeparatePos: homeTabSeparatePos
+  } = settings;
 
-  if ( homeTabSeparatePos <= 0 || homeTabSeparatePos >= 100) {
+  if (homeTabSeparatePos <= 0 || homeTabSeparatePos >= 100) {
     const singleVariant = homeTabSeparatePos >= 100 ? homeTabTopVariant : homeTabBottomVariant;
     return (
       <GenericScreen>
@@ -70,7 +74,7 @@ export default function Home() {
 }
 
 
-const FeedArea = memo(({style}: { style?: any }) => {
+const FeedArea = memo(({ style }: { style?: any }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { pipelineMessages } = useData();
@@ -106,7 +110,7 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
   const { friends, favorites } = useData();
 
   const instances = useMemo<InstanceLike[]>(() => {
-      return calcFriendsLocations(friends.data, favorites.data, true, false);
+    return calcFriendsLocations(friends.data, favorites.data, true, false);
   }, [friends.data, favorites.data]);
 
   const renderItem = useCallback(({ item }: { item: InstanceLike }) => (
@@ -145,13 +149,13 @@ const EventsArea = memo(({ style }: {
   const vrc = useVRChat();
   const { showToast } = useToast();
   const eventsRef = useRef<CalendarEvent[]>([]);
-  const [ todayEvents, setTodayEvents ] = useState<CalendarEvent[]>([]);
+  const [todayEvents, setTodayEvents] = useState<CalendarEvent[]>([]);
   const offset = useRef(0);
   const fetchingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const npr = 60;
 
-  const [ eventDetailModal, setEventDetailModal ] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
+  const [eventDetailModal, setEventDetailModal] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
 
 
   const fetchEvents = async () => {
@@ -196,7 +200,7 @@ const EventsArea = memo(({ style }: {
   useEffect(() => {
     if (!auth.user) return;
     reload();
-  },[auth.user]);
+  }, [auth.user]);
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (

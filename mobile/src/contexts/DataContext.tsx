@@ -149,7 +149,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   // register data wrappers
   const wrappers = {
     currentUser: useDataWrapper<CurrentUser | undefined>("currentUser", getCurrentUser, undefined, !!auth.user),
-    friends: useDataWrapper<LimitedUserFriend[]>("friends", getFriends , [], !!auth.user),
+    friends: useDataWrapper<LimitedUserFriend[]>("friends", getFriends, [], !!auth.user),
     favoriteGroups: useDataWrapper<FavoriteGroup[]>("favoriteGroups", getFavoriteGroups, [], !!auth.user),
     favorites: useDataWrapper<Favorite[]>("favorites", getFavorites, [], !!auth.user),
     favWorlds: useDataWrapper<FavoritedWorld[]>("favWorlds", getFavWorlds, [], !!auth.user),
@@ -170,7 +170,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   }, [auth.user]);
 
   /** Pipelines */
-  
+
   useEffect(() => {
     const msg = vrc.pipeline?.lastMessage;
     const prevMsg = pipelineMessages.length > 0 ? pipelineMessages[0] : null;
@@ -189,21 +189,21 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   // restore past pipeline messages from storage
   useEffect(() => {
     Storage.getItem("data_lastPipeMsgs")
-    .then((v) => {
-      if (v) {
-        const msgs = JSON.parse(v) as PipelineMessage[];
-        setPipelineMessages(msgs);
-      }
-    })
-    .catch(console.error);
+      .then((v) => {
+        if (v) {
+          const msgs = JSON.parse(v) as PipelineMessage[];
+          setPipelineMessages(msgs);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   // Store past pipeline messages
   const storeLastPipelineMessages = async (msg: PipelineMessage) => {
-    const newMsgs = [msg, ...pipelineMessages].slice(0, settings.pipelineOptions.keepMsgNum);
+    const newMsgs = [msg, ...pipelineMessages].slice(0, settings.pipelineOptions_keepMsgNum);
     setPipelineMessages(newMsgs);
     Storage.setItem("data_lastPipeMsgs", JSON.stringify(newMsgs))
-    .catch(console.error);
+      .catch(console.error);
   };
 
   // Apply pipeline messages to update states

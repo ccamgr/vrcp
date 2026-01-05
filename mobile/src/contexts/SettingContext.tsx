@@ -2,80 +2,52 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { vrcColors } from "@/configs/vrchat";
 import { mergeWithDefaults } from "@/libs/utils";
 import StorageWrapper from "@/libs/wrappers/storageWrapper";
+import { de } from "date-fns/locale";
 
 
 
 // provide user settings globally,
-// all data stored in async storage with prefix: "setting_"
 
 type HomeTabVariant = "friend-locations" | "feeds" | "events";
-//
-interface UIOption { // layout, color schema
-  layouts: {
-    homeTabTopVariant: HomeTabVariant; // which variant to show on top in Home Tab
-    homeTabBottomVariant: HomeTabVariant; // which variant to show on bottom in home tab
-    homeTabSeparatePos: number; // percentage position to separate top and bottom in home tab, 0-100
-    cardViewColumns: number; // integer, number of columns in card view
-  };
-  theme: {
-    colorSchema: "light" | "dark" | "system";
-  };
-  user: {
-    friendColor: string;
-    favoriteFriendsColors: { [favoriteGroupId: string]: string }; // override friend color for favorite groups
-    // useFriendOrder: boolean;
-  };
-}
-interface NotificationOption {
-  usePushNotification: boolean;
-  allowedNotificationTypes: string[]; // e.g. ["friend-online" ]
-}
-interface PipelineOption {
-  keepMsgNum: number; // how many feeds to keep, default 100
-  enableOnBackground: boolean;
-}
-interface OtherOption {
-  desktopAppURL: string | null;
-  sendDebugLogs: boolean;
-  enableJsonViewer: boolean;
-}
 
 export interface Setting {
-  uiOptions: UIOption;
-  notificationOptions: NotificationOption;
-  pipelineOptions: PipelineOption;
-  otherOptions: OtherOption;
+  // ui
+  uiOptions_homeTabTopVariant: HomeTabVariant;
+  uiOptions_homeTabBottomVariant: HomeTabVariant;
+  uiOptions_homeTabSeparatePos: number;
+  uiOptions_cardViewColumns: number;
+  uiOptions_colorSchema: "light" | "dark" | "system";
+  uiOptions_friendColor: string;
+  uiOptions_favoriteFriendsColors: { [friendId: string]: string };
+  // notifications
+  notificationOptions_usePushNotification: boolean;
+  notificationOptions_allowedNotificationTypes: string[];
+  // pipeline
+  pipelineOptions_keepMsgNum: number;
+  pipelineOptions_enableOnBackground: boolean;
+  // other
+  otherOptions_desktopAppURL: string | null;
+  otherOptions_sendDebugLogs: boolean;
+  otherOptions_enableJsonViewer: boolean;
 }
 
+export type SettingKey = keyof Setting;
+
 const defaultSettings: Setting = {
-  uiOptions: {
-    layouts: {
-      homeTabTopVariant: "events",
-      homeTabBottomVariant: "friend-locations",
-      homeTabSeparatePos: 30,
-      cardViewColumns: 2,
-    },
-    theme: {
-      colorSchema: "system",
-    },
-    user: {
-      friendColor: vrcColors.friend,
-      favoriteFriendsColors: {},
-    },
-  },
-  notificationOptions: {
-    usePushNotification: false,
-    allowedNotificationTypes: [],
-  },
-  pipelineOptions: {
-    keepMsgNum: 100,
-    enableOnBackground: false,
-  },
-  otherOptions: {
-    desktopAppURL: null,
-    sendDebugLogs: false,
-    enableJsonViewer: false,
-  },
+  uiOptions_homeTabTopVariant: "events",
+  uiOptions_homeTabBottomVariant: "friend-locations",
+  uiOptions_homeTabSeparatePos: 30,
+  uiOptions_cardViewColumns: 2,
+  uiOptions_colorSchema: "system",
+  uiOptions_friendColor: vrcColors.friend,
+  uiOptions_favoriteFriendsColors: {},
+  notificationOptions_usePushNotification: false,
+  notificationOptions_allowedNotificationTypes: [],
+  pipelineOptions_keepMsgNum: 100,
+  pipelineOptions_enableOnBackground: false,
+  otherOptions_desktopAppURL: null,
+  otherOptions_sendDebugLogs: false,
+  otherOptions_enableJsonViewer: false,
 }
 
 interface SettingContextType {
@@ -106,7 +78,7 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
     setSettings(updatedSettings);
     // Save settings to async storage
     const entries = Object.entries(newSettings).map(([key, value]) => [
-      `setting_${key}`,
+      key,
       JSON.stringify(value),
     ] as [string, string]);
     await StorageWrapper.multiSet(entries);
@@ -115,13 +87,13 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
   const loadSettings = async (): Promise<Setting> => {
     // Load settings from async storage
     const storedSettings = await StorageWrapper.multiGet(
-      Object.keys(defaultSettings).map(key => `setting_${key}`)
+      Object.keys(defaultSettings)
     );
     const newSettings = { ...defaultSettings };
     storedSettings.forEach(([key, value]) => {
-      if (value !== null) {
-        const settingKey = key.replace("setting_", "") as keyof Setting;
-        newSettings[settingKey] = mergeWithDefaults(newSettings[settingKey], JSON.parse(value)) as any;
+      if (value !== null && key in defaultSettings) {
+        // @ts-ignore
+        newSettings[key] = JSON.parse(value);
       }
     });
     console.log("Loaded settings:", JSON.stringify(newSettings, null, 2));
