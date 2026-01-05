@@ -1,3 +1,4 @@
+import StorageWrapper from '@/libs/wrappers/storageWrapper';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -11,7 +12,7 @@ TaskManager.defineTask(TASK_NAME, async () => {
 
   try {
     // ここにAPIリクエストなどの処理を書く
-    // const result = await fetchMyApi();
+    const reqUrl = await StorageWrapper.getItemAsync('setting_desktopapp_url');
 
     // 成功時
     // BackgroundFetchResult ではなく BackgroundTaskResult を使う

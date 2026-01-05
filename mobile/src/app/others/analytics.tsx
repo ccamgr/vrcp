@@ -30,6 +30,7 @@ export default function Analytics() {
       <QRScanner
         open={QROpen}
         setOpen={setQROpen}
+        onScan={(v) => console.log(v)}
       />
     </GenericScreen>
   );

@@ -16,19 +16,23 @@ export default function ModalLayout() {
     >
       <Stack.Screen
         name="appearance"
-        options={{title: t("pages.setting_appearance.label"), headerRight: undefined }} // no menu button
+        options={{ title: t("pages.setting_appearance.label"), headerRight: undefined }} // no menu button
       />
       <Stack.Screen
         name="database"
-        options={{title: t("pages.setting_database.label"), headerRight: undefined }} // no menu button
+        options={{ title: t("pages.setting_database.label"), headerRight: undefined }} // no menu button
       />
       <Stack.Screen
         name="notification"
-        options={{title: t("pages.setting_notifications.label"), headerRight: undefined }} // no menu button
+        options={{ title: t("pages.setting_notifications.label"), headerRight: undefined }} // no menu button
+      />
+      <Stack.Screen
+        name="desktopapp"
+        options={{ title: t("pages.setting_desktopapp.label"), headerRight: undefined }} // no menu button
       />
       <Stack.Screen
         name="language"
-        options={{title: t("pages.setting_language.label"), headerRight: undefined }} // no menu button
+        options={{ title: t("pages.setting_language.label"), headerRight: undefined }} // no menu button
       />
     </Stack>
   );

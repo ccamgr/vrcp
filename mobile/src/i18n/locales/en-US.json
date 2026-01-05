@@ -76,6 +76,8 @@
       "itemDescription_database": "Manage database settings and storage options.",
       "itemLabel_notifications": "Notifications",
       "itemDescription_notifications": "Manage Push notifications and alerts.",
+      "itemLabel_desktopapp": "Desktop App",
+      "itemDescription_desktopapp": "Configure settings specific to the desktop version of VRCP.",
       "itemLabel_language": "Language",
       "itemDescription_language": "Select the language for the application.",
       "groupLabel_other": "Other",
@@ -147,6 +149,9 @@
     },
     "setting_notifications": {
       "label": "Notification Settings"
+    },
+    "setting_desktopapp": {
+      "label": "Desktop App"
     },
     "setting_language": {
       "label": "Language Settings",

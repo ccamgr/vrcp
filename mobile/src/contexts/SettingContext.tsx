@@ -4,6 +4,7 @@ import { mergeWithDefaults } from "@/libs/utils";
 import StorageWrapper from "@/libs/wrappers/storageWrapper";
 
 
+
 // provide user settings globally,
 // all data stored in async storage with prefix: "setting_"
 
@@ -13,14 +14,14 @@ interface UIOption { // layout, color schema
   layouts: {
     homeTabTopVariant: HomeTabVariant; // which variant to show on top in Home Tab
     homeTabBottomVariant: HomeTabVariant; // which variant to show on bottom in home tab
-    homeTabSeparatePos: number; // percentage position to separate top and bottom in home tab, 0-100 
+    homeTabSeparatePos: number; // percentage position to separate top and bottom in home tab, 0-100
     cardViewColumns: number; // integer, number of columns in card view
   };
   theme: {
     colorSchema: "light" | "dark" | "system";
   };
   user: {
-    friendColor: string; 
+    friendColor: string;
     favoriteFriendsColors: { [favoriteGroupId: string]: string }; // override friend color for favorite groups
     // useFriendOrder: boolean;
   };
@@ -30,10 +31,11 @@ interface NotificationOption {
   allowedNotificationTypes: string[]; // e.g. ["friend-online" ]
 }
 interface PipelineOption {
-  keepMsgNum:  number; // how many feeds to keep, default 100
+  keepMsgNum: number; // how many feeds to keep, default 100
   enableOnBackground: boolean;
 }
 interface OtherOption {
+  desktopAppURL: string | null;
   sendDebugLogs: boolean;
   enableJsonViewer: boolean;
 }
@@ -70,6 +72,7 @@ const defaultSettings: Setting = {
     enableOnBackground: false,
   },
   otherOptions: {
+    desktopAppURL: null,
     sendDebugLogs: false,
     enableJsonViewer: false,
   },
@@ -87,7 +90,7 @@ const useSetting = () => {
   const context = useContext(Context);
   if (!context) throw new Error("useSetting must be used within a SettingContextProvider");
   return context;
-} 
+}
 
 const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
