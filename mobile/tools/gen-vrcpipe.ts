@@ -5,6 +5,7 @@ const RAW_MDX_URL = "https://raw.githubusercontent.com/vrchatapi/vrchat.communit
 const OUTPUT_PATH = "src/generated/vrcpipline/type.ts";
 
 const importName = "_API"
+const importPath = "../vrcapi"
 
 async function fetchMdxContent(url: string): Promise<string> {
   const res = await fetch(url);
@@ -24,8 +25,9 @@ function extractExplaination(mdxcontent: string): string[] {
 
 function preprocessExplanation(explanation: string): string {
   let preprocessed = explanation;
-  // if <xxxx Object> in comments, replace the line with <obj-xxxx>
-  preprocessed = preprocessed.replace(/"(\w+)"\s*:\s*{[\s\n]*\/\/\s*<(\w+)\s+Object>[\s\S]*?}/g, '"$1": <obj-$2>');
+  // if <xxxx Object> in comments (refarence to default Api), replace the line with <obj-xxxx>
+  // e.g., "user": { // User object ... }  => "user": <obj-User>
+  preprocessed = preprocessed.replace(/"(\w+)"\s*:\s*{[\s\n]*\/\/\s*(\w+)\s+object[\s\S]*?}/g, '"$1": <obj-$2>');
   // remove comments
   preprocessed = preprocessed.replace(/\/\/.*$/gm, '');
   // remove trailing commas
@@ -87,7 +89,7 @@ function generateDefinitionFileContent (objs :  {type: string, content: Object |
 }
 
 function createimportStatements(): string {
-  return `import * as ${importName} from "../api";`;
+  return `import * as ${importName} from "${importPath}";`;
 }
 
 
@@ -130,7 +132,7 @@ function createEachContentDefinition(type: string, content: Object | null): stri
   let fields = JSON.stringify(content, null, 2);
   // find "<xxxx>" and replace (param is xxxx)
   const replacer = (v: string) => {
-    if (v.startsWith("obj-")) { // obj-xxxx -> Xxxx
+    if (v.startsWith("obj-")) { // obj-xxxx -> _API.Xxxx
       return `${importName}.${pascalCase(v.slice(4))}`;
     } else if (v.startsWith("string-")) { // string-xxxx -> string
       return "string";
@@ -165,8 +167,8 @@ function createEachContentDefinition(type: string, content: Object | null): stri
 
 /** 例外的処理を記述 */
 function manuallyFixDefinitions(content: string): string {
-  content = content.replace(/"dateTimeString"/g, 'string'); // NotificationV2.expiresAt
-  content = content.replace(/userid/g, 'userId'); // FriendActive.userId
+  content = content.replace(/"dateTimeString"/g, 'string'); // NotificationV2.expiresAt ("dateTimeString" => string)
+  content = content.replace(/userid/g, 'userId'); // FriendActive.userId (タイポ？)
   return content;
 }
 

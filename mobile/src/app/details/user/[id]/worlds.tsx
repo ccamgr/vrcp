@@ -23,7 +23,7 @@ export default function UserWorlds() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
-  const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
+  const cardViewColumns = settings.uiOptions_cardViewColumns;
   const NumPerReq = 50;
 
   const [worlds, setWorlds] = useState<LimitedWorld[]>([]);

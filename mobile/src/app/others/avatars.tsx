@@ -22,7 +22,7 @@ export default function MyAvatars() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
-  const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
+  const cardViewColumns = settings.uiOptions_cardViewColumns;
   const NumPerReq = 50;
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const fetchingRef = useRef(false);

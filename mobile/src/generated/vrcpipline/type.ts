@@ -36,6 +36,7 @@ export const PipelineType = [
   'user-badge-assigned',
   'user-badge-unassigned',
   'content-refresh',
+  'economy-update',
   'modified-image-update',
   'instance-queue-joined',
   'instance-queue-ready',
@@ -86,6 +87,8 @@ export type PipelineContent<T extends PipelineType> = T extends 'notification'
 ? UserBadgeUnassignedPipelineContent
 : T extends 'content-refresh'
 ? ContentRefreshPipelineContent
+: T extends 'economy-update'
+? EconomyUpdatePipelineContent
 : T extends 'modified-image-update'
 ? ModifiedImageUpdatePipelineContent
 : T extends 'instance-queue-joined'
@@ -241,6 +244,10 @@ export type ContentRefreshPipelineContent = {
   itemId: string;
   itemType: string;
   actionType: string;
+}
+
+export type EconomyUpdatePipelineContent = {
+  dirtyPurchases: boolean;
 }
 
 export type ModifiedImageUpdatePipelineContent = {
