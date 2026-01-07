@@ -1,1 +1,438 @@
-{}
+{
+  "_langDisplayName_": "英語（美國）",
+  "_langTag_": "en-US",
+  "app": "VRCP",
+  "common": {
+    "dateFormats": {
+      "date": "年/月/日",
+      "dateTime": "年/月/日 HH:mm",
+      "dateTimeRange_diffDay": "{{開始，yyyy/MM/dd HH:mm}} ~ {{結束，yyyy/MM/dd HH:mm}}",
+      "dateTimeRange_sameDay": "{{開始，yyyy/MM/dd HH:mm}} ~ {{結束，HH:mm}}",
+      "time": "高:毫米",
+      "timeRange": "{{開始，HH:mm}} ~ {{結束，HH:mm}}"
+    },
+    "message": {
+      "failed_to_fetch": "未能獲取 {{item}}。",
+      "failed_to_update": "更新 {{item}} 失敗。",
+      "invalid": "無效值",
+      "loading": "載入中...",
+      "no_data": "無可用數據。"
+    }
+  },
+  "components": {
+    "aboutModal": {
+      "button_ChangeLog": "變更日誌",
+      "button_Licenses": "開源許可證",
+      "button_privacyPolicy": "隱私政策",
+      "button_termsOfUse": "使用條款",
+      "innerModals": {
+        "changeLog": {
+          "format_date": "{{日期，年/月/日}}",
+          "format_version": "版本{{版本}}",
+          "label": "變更日誌"
+        },
+        "licenses": {
+          "label": "開源許可證",
+          "link_to_repos": "鏈接到存儲庫 ↗"
+        },
+        "privacyPolicy": {
+          "label": "隱私政策"
+        },
+        "termsOfUse": {
+          "label": "使用條款"
+        }
+      },
+      "label": "應用信息"
+    },
+    "changeAvatarModal": {
+      "button_cancel": "取消",
+      "button_confirm": "更改頭像",
+      "confirm_text": "您確定要將您的頭像更改為“{{avatarName}}”嗎？"
+    },
+    "changeBioLinksModal": {
+      "button_cancel": "取消",
+      "button_save": "保存生物鏈接",
+      "placeholder": "添加鏈接 URL（例如 https://example.com）"
+    },
+    "changeBioModal": {
+      "button_cancel": "取消",
+      "button_save": "保存個人簡介",
+      "placeholder": "在此輸入個人簡介..."
+    },
+    "changeFavoriteModal": {
+      "button_cancel": "取消",
+      "button_save": "保存到收藏夾組",
+      "button_unselect": "不喜歡"
+    },
+    "changeFriendModal": {
+      "button_cancel": "取消",
+      "button_confirm_cancel": "取消好友請求",
+      "button_confirm_remove": "刪除此好友",
+      "button_confirm_send": "發送好友請求",
+      "confirm_text_cancel": "您確定要取消對“{{userName}}”的好友請求嗎？",
+      "confirm_text_remove": "您確定要從好友中刪除“{{userName}}”嗎？",
+      "confirm_text_send": "您確定要向“{{userName}}”發送好友請求嗎？"
+    },
+    "changeNoteModal": {
+      "button_cancel": "取消",
+      "button_save": "保存備註",
+      "placeholder": "在此輸入註釋..."
+    },
+    "changeStatusModal": {
+      "button_cancel": "取消",
+      "button_save": "保存狀態",
+      "placeholder": "在此輸入狀態..."
+    },
+    "developmentModal": {
+      "groupLabel_debug": "偵錯",
+      "groupLabel_feature": "開發功能",
+      "itemDescription_json": "為詳細信息頁面啟用 JSON 查看器。",
+      "itemDescription_sendLogs": "允許向開發人員發送錯誤日誌。",
+      "itemLabel_json": "JSON查看器",
+      "itemLabel_sendLogs": "發送日誌",
+      "label": "開發商"
+    },
+    "eventDetailModal": {
+      "eventTime_differentDay": "{{開始，yyyy/MM/dd HH:mm}} ~ {{結束，yyyy/MM/dd HH:mm}}",
+      "eventTime_sameDay": "{{開始，yyyy/MM/dd HH:mm}} ~ {{結束，HH:mm}}"
+    },
+    "exitDialog": {
+      "button_no": "不",
+      "button_yes": "是的",
+      "message": "您確定要退出該應用程序嗎？"
+    },
+    "feedbackModal": {
+      "button_cancel": "取消",
+      "button_send": "發送反饋",
+      "label": "發送反饋",
+      "placeholder_email": "您的電子郵件",
+      "placeholder_message": "在此輸入內容...",
+      "type_bug": "錯誤報告",
+      "type_feedback": "回饋",
+      "type_request": "功能請求"
+    },
+    "jsonDataModal": {
+      "button_close": "關閉",
+      "button_copy": "複製到剪貼板"
+    },
+    "releaseNote": {
+      "button_close": "關閉",
+      "label": "VRCP 發行說明"
+    }
+  },
+  "pages": {
+    "analytics": {
+      "label": "分析",
+      "no_analytics": "沒有可用的分析數據。"
+    },
+    "avatars": {
+      "label": "我的頭像",
+      "no_avatars": "你沒有頭像。"
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} 事件",
+      "calendar_date_event_count_other": "{{count}} 個事件",
+      "calendar_month_label": "{{日期，yyyy MMMM}}",
+      "label": "活動",
+      "no_events": "沒有可用的活動。",
+      "selected_month_events": "{{date, yyyy/MM}} 的活動",
+      "selected_month_events_day_label": "{{日期，執行 (EEE)}}"
+    },
+    "detail_avatar": {
+      "label": "頭像詳情",
+      "menuLabel_avatar_changeTo": "換成這個頭像",
+      "menuLabel_avatar_nowUsing": "現在使用這個頭像",
+      "menuLabel_favoriteGroup_add": "添加到收藏夾組",
+      "menuLabel_favoriteGroup_edit": "編輯最喜歡的組",
+      "menuLabel_json": "原始 JSON 數據",
+      "sectionLabel_author": "作者",
+      "sectionLabel_description": "描述",
+      "sectionLabel_info": "資訊",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_tags": "標籤"
+    },
+    "detail_event": {
+      "label": "活動詳情",
+      "menuLabel_json": "原始 JSON 數據",
+      "sectionLabel_description": "描述",
+      "sectionLabel_owner": "所有者"
+    },
+    "detail_group": {
+      "label": "團體詳情",
+      "menuLabel_json": "原始 JSON 數據",
+      "sectionLabel_info": "資訊"
+    },
+    "detail_instance": {
+      "label": "實例詳情",
+      "menuLabel_json": "原始 JSON 數據",
+      "sectionLabel_info": "資訊",
+      "sectionLabel_owner": "所有者",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_tags": "標籤",
+      "sectionLabel_usersInInstance": "實例中的用戶",
+      "sectionLabel_world": "世界",
+      "section_info_ageGated": "年齡限制：{{ageGated}}",
+      "section_info_capacity": "容量：{{容量}}",
+      "section_users_more_user_count_one": "還有 {{count}} 個用戶",
+      "section_users_more_user_count_other": "還有 {{count}} 個用戶"
+    },
+    "detail_user": {
+      "label": "用戶詳細信息",
+      "menuLabel_favoriteGroup_add": "添加到收藏夾組",
+      "menuLabel_favoriteGroup_edit": "編輯最喜歡的組",
+      "menuLabel_friend_cancelRequest": "取消好友請求",
+      "menuLabel_friend_remove": "刪除好友",
+      "menuLabel_friend_sendRequest": "發送好友請求",
+      "menuLabel_invite_me": "邀請我自己",
+      "menuLabel_invite_request": "請求邀請",
+      "menuLabel_invite_send": "發送邀請",
+      "menuLabel_json": "原始 JSON 數據",
+      "menuLabel_note_edit": "編輯備註",
+      "sectionLabel_badges": "徽章",
+      "sectionLabel_bio": "簡介",
+      "sectionLabel_bio_links": "鏈接",
+      "sectionLabel_description": "描述",
+      "sectionLabel_info": "資訊",
+      "sectionLabel_location": "地點",
+      "sectionLabel_note": "筆記",
+      "section_info_joined": "加入日期：{{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "上次活動：{{date, yyyy/MM/dd HH:mm}}",
+      "userLocation_offline": "用戶離線...",
+      "userLocation_private": "用戶處於私有實例中...",
+      "userLocation_traveling": "用戶正在旅行...",
+      "userLocation_unknown": "用戶位於未知位置..."
+    },
+    "detail_user_groups": {
+      "label": "用戶組",
+      "no_groups_found": "沒有找到該用戶的組。"
+    },
+    "detail_user_worlds": {
+      "label": "用戶的世界",
+      "no_worlds_found": "沒有找到該用戶的世界。"
+    },
+    "detail_world": {
+      "label": "世界詳情",
+      "menuLabel_favoriteGroup_add": "添加到收藏夾組",
+      "menuLabel_favoriteGroup_edit": "編輯最喜歡的組",
+      "menuLabel_json": "原始 JSON 數據",
+      "no_instances": "沒有可用的實例。",
+      "sectionLabel_author": "作者",
+      "sectionLabel_description": "描述",
+      "sectionLabel_info": "資訊",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_tags": "標籤",
+      "section_info_capacityAndRecommended": "容量：{{容量}} |推薦：{{推薦容量}}",
+      "section_info_created": "創建時間：{{日期，yyyy/MM/dd}}",
+      "section_info_updated": "最後更新：{{date, yyyy/MM/dd}}",
+      "section_info_visits": "訪問次數：{{訪問}}",
+      "tabLabel_info": "資訊",
+      "tabLabel_instances": "實例"
+    },
+    "favorites": {
+      "label": "收藏夾",
+      "no_favoritegroup_selected": "沒有選擇最喜歡的團體。",
+      "tabLabel_avatars": "頭像",
+      "tabLabel_friends": "朋友們",
+      "tabLabel_worlds": "世界賽"
+    },
+    "feeds": {
+      "label": "飼料",
+      "no_feeds": "沒有可用的供稿。"
+    },
+    "friendlocations": {
+      "label": "朋友地點",
+      "no_friendlocations": "沒有可用的好友位置。",
+      "sectionLabel_instances": "實例中的朋友",
+      "sectionLabel_private": "私人實例中的朋友"
+    },
+    "friends": {
+      "label": "朋友們",
+      "tabLabel_active": "積極的",
+      "tabLabel_favorites": "收藏夾",
+      "tabLabel_offline": "離線",
+      "tabLabel_online": "在線的"
+    },
+    "groups": {
+      "label": "我的群組",
+      "no_groups": "你沒有組。"
+    },
+    "home": {
+      "events_area": "今日活動",
+      "feeds_area": "飼料",
+      "friendLocation": {
+        "more_friends_count_one": "還有 {{count}} 個朋友",
+        "more_friends_count_other": "還有 {{count}} 個朋友"
+      },
+      "friendlocations_area": "朋友地點",
+      "label": "家",
+      "no_events": "沒有可用的活動。",
+      "no_feeds": "沒有可用的供稿。",
+      "no_friendlocations": "沒有可用的好友位置。",
+      "see_more": "查看更多"
+    },
+    "login": {
+      "button_links": "無法登錄？",
+      "button_links_close": "關閉",
+      "button_login": "登入",
+      "button_tfa_close": "關閉",
+      "button_tfa_verify": "核實",
+      "disclaimer": "VRCP 是 VRChat 的非官方應用程序。此應用程序不隸屬於 VRChat Inc. 或其附屬公司，也不受其認可、贊助或批准。",
+      "label": "登入",
+      "linksModal_emailLinkText": "恢復電子郵件",
+      "linksModal_passwordLinkText": "重置密碼",
+      "linksModal_registerLinkText": "創建一個帳戶",
+      "linksModal_text1": "VRChat 新手？",
+      "linksModal_text2": "忘記了您的憑據？",
+      "linksModal_title": "登錄時遇到問題？",
+      "login_failed_error": "登錄失敗。請檢查您的憑據。",
+      "online_count_message": "VRChat 目前有 {{count}} 位用戶在線！",
+      "password_empty_error": "密碼不能為空。",
+      "password_placeholder": "密碼",
+      "save_credentials": "保存用戶名和密碼",
+      "tfaCode_placeholder": "代碼（例如 123456）",
+      "tfa_disabled_error": "2FA 已禁用。請檢查您的帳戶設置。",
+      "tfa_failed_error": "2FA 驗證失敗。請再試一次。",
+      "tfa_invalid_error": "2FA 代碼必須是 6 位數字。",
+      "tfa_modal_text_email": "2FA 代碼已發送至您的電子郵件。請在下面輸入。",
+      "tfa_modal_text_totp": "請輸入您的身份驗證器應用程序中的 2FA 代碼。",
+      "tfa_pasted": "從剪貼板粘貼",
+      "tfa_unknown_error": "發生未知 2FA 錯誤。請稍後重試。",
+      "username_empty_error": "用戶名或電子郵件不能為空。",
+      "username_placeholder": "用戶名/電子郵件",
+      "welcome": "歡迎來到VRCP！\n使用您的 VRChat 帳戶登錄。"
+    },
+    "notifications": {
+      "label": "通知",
+      "no_notifications": "沒有通知。"
+    },
+    "others": {
+      "label": "其他的",
+      "tabLabel_analytics": "分析",
+      "tabLabel_events": "活動",
+      "tabLabel_feeds": "飼料",
+      "tabLabel_notifications": "通知"
+    },
+    "prints": {
+      "label": "印刷",
+      "no_prints": "你沒有指紋。"
+    },
+    "profile": {
+      "label": "輪廓",
+      "menuLabel_change_status": "更改狀態",
+      "menuLabel_edit_bio": "編輯簡介",
+      "menuLabel_edit_bio_links": "編輯生物鏈接",
+      "menuLabel_json": "原始 JSON 數據",
+      "menuLabel_route_avatars": "頭像",
+      "menuLabel_route_current_avatar": "當前頭像",
+      "menuLabel_route_favorites": "收藏夾",
+      "menuLabel_route_groups": "團體",
+      "menuLabel_route_prints": "印刷",
+      "menuLabel_route_worlds": "世界賽",
+      "sectionLabel_badges": "徽章",
+      "sectionLabel_bio": "簡介",
+      "sectionLabel_bio_links": "鏈接",
+      "sectionLabel_info": "資訊",
+      "section_info_joined": "加入日期：{{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "上次活動：{{date, yyyy/MM/dd HH:mm}}"
+    },
+    "search": {
+      "label": "搜索結果",
+      "no_groups_found": "未找到“{{search}}”的群組。",
+      "no_users_found": "未找到“{{search}}”的用戶。",
+      "no_worlds_found": "未找到“{{search}}”的世界。",
+      "searchbox_placeholder": "搜索世界、群組或用戶"
+    },
+    "setting_appearance": {
+      "groupLabel_app": "應用程式",
+      "groupLabel_friends": "朋友們",
+      "innerModals": {
+        "cardViewColumns": {
+          "button_apply": "申請",
+          "maybe_requireRestart": "可能需要重新啟動應用程序\n才能生效。",
+          "option_1_columns": "1 列",
+          "option_2_columns": "2 列",
+          "option_3_columns": "3 列"
+        },
+        "homeTabLayout": {
+          "button_apply": "申請",
+          "option_events": "活動",
+          "option_feeds": "飼料",
+          "option_friendLocations": "地點",
+          "section_bottom": "底部面積",
+          "section_separatePos": "獨立位置",
+          "section_top": "頂部區域",
+          "selectedLabel_events": "今天的活動",
+          "selectedLabel_feeds": "朋友的動態",
+          "selectedLabel_friendLocations": "朋友地點",
+          "selectedLabel_sepPos": "單獨位置值越高，上部區域越大。"
+        },
+        "theme": {
+          "button_apply": "申請",
+          "maybe_requireRestart": "可能需要重新啟動應用程序\n才能生效。",
+          "option_dark": "黑暗的",
+          "option_light": "光",
+          "option_system": "系統"
+        }
+      },
+      "itemDescription_cardViewColumns": "選擇卡片視圖中顯示的列數。",
+      "itemDescription_favoriteFriendsColors": "選擇您最喜歡的朋友顏色主題。",
+      "itemDescription_friendColor": "選擇您朋友的顏色主題。",
+      "itemDescription_homeTabLayout": "選擇默認在主頁上顯示的選項卡。",
+      "itemDescription_theme": "為應用程序選擇淺色或深色主題。",
+      "itemLabel_cardViewColumns": "卡片視圖列",
+      "itemLabel_favoriteFriendsColors": "最喜歡的朋友顏色",
+      "itemLabel_friendColor": "朋友顏色",
+      "itemLabel_homeTabLayout": "主頁選項卡佈局",
+      "itemLabel_theme": "主題",
+      "label": "外觀設置"
+    },
+    "setting_database": {
+      "button_clearCache": "清除緩存",
+      "cache_size_and_count_one": "{{size}} MB（{{count}} 項）",
+      "cache_size_and_count_other": "{{size}} MB（{{count}} 項）",
+      "groupLabel_cache": "快取",
+      "label": "數據庫設置"
+    },
+    "setting_desktopapp": {
+      "label": "桌面應用程序"
+    },
+    "setting_language": {
+      "description": "選擇您的語言",
+      "label": "語言設置"
+    },
+    "setting_notifications": {
+      "label": "通知設置"
+    },
+    "settings": {
+      "groupLabel_account": "帳戶",
+      "groupLabel_general": "一般的",
+      "groupLabel_other": "其他",
+      "itemDescription_about": "查看申請信息和學分。",
+      "itemDescription_appearance": "自定義應用程序 UI 外觀。",
+      "itemDescription_database": "管理數據庫設置和存儲選項。",
+      "itemDescription_desktopapp": "配置特定於桌面版本 VRCP 的設置。",
+      "itemDescription_development": "訪問開發功能和選項。",
+      "itemDescription_feedback": "將您的反饋發送給開發人員。",
+      "itemDescription_language": "選擇應用程序的語言。",
+      "itemDescription_logout": "從此應用程序註銷。",
+      "itemDescription_notifications": "管理推送通知和警報。",
+      "itemLabel_about": "關於",
+      "itemLabel_appearance": "外觀設置",
+      "itemLabel_database": "資料庫",
+      "itemLabel_desktopapp": "桌面應用程序",
+      "itemLabel_development": "開發商",
+      "itemLabel_feedback": "回饋",
+      "itemLabel_language": "語言",
+      "itemLabel_logout": "退出",
+      "itemLabel_notifications": "通知",
+      "label": "設定",
+      "logout_dialog_cancel": "取消",
+      "logout_dialog_confirm": "退出",
+      "logout_dialog_text": "您確定要退出嗎？"
+    },
+    "worlds": {
+      "label": "我的世界",
+      "no_worlds": "你沒有世界。"
+    }
+  }
+}

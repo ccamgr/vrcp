@@ -1,0 +1,438 @@
+{
+  "_langDisplayName_": "английский (США)",
+  "_langTag_": "ru-US",
+  "app": "VRCP",
+  "common": {
+    "dateFormats": {
+      "date": "гггг/ММ/дд",
+      "dateTime": "гггг/ММ/дд ЧЧ:мм",
+      "dateTimeRange_diffDay": "{{начало, гггг/ММ/дд ЧЧ:мм}} ~ {{конец, гггг/ММ/дд ЧЧ:мм}}",
+      "dateTimeRange_sameDay": "{{начало, гггг/ММ/дд ЧЧ:мм}} ~ {{конец, ЧЧ:мм}}",
+      "time": "ЧЧ:мм",
+      "timeRange": "{{начало, ЧЧ:мм}} ~ {{конец, ЧЧ:мм}}"
+    },
+    "message": {
+      "failed_to_fetch": "не удалось получить {{item}}.",
+      "failed_to_update": "не удалось обновить {{item}}.",
+      "invalid": "Недопустимое значение",
+      "loading": "Загрузка...",
+      "no_data": "Данные отсутствуют."
+    }
+  },
+  "components": {
+    "aboutModal": {
+      "button_ChangeLog": "Журнал изменений",
+      "button_Licenses": "Лицензии с открытым исходным кодом",
+      "button_privacyPolicy": "политика конфиденциальности",
+      "button_termsOfUse": "Условия эксплуатации",
+      "innerModals": {
+        "changeLog": {
+          "format_date": "{{дата, гггг/ММ/дд}}",
+          "format_version": "Версия {{версия}}",
+          "label": "Журнал изменений"
+        },
+        "licenses": {
+          "label": "Лицензии с открытым исходным кодом",
+          "link_to_repos": "Ссылка на репозитории ↗"
+        },
+        "privacyPolicy": {
+          "label": "политика конфиденциальности"
+        },
+        "termsOfUse": {
+          "label": "Условия эксплуатации"
+        }
+      },
+      "label": "Информация о приложении"
+    },
+    "changeAvatarModal": {
+      "button_cancel": "Отмена",
+      "button_confirm": "Изменить аватар",
+      "confirm_text": "Вы уверены, что хотите изменить свой аватар на «{{avatarName}}»?"
+    },
+    "changeBioLinksModal": {
+      "button_cancel": "Отмена",
+      "button_save": "Сохранить био-ссылки",
+      "placeholder": "Добавьте URL-адрес ссылки (например, https://example.com)"
+    },
+    "changeBioModal": {
+      "button_cancel": "Отмена",
+      "button_save": "Сохранить биографию",
+      "placeholder": "Введите биографию здесь..."
+    },
+    "changeFavoriteModal": {
+      "button_cancel": "Отмена",
+      "button_save": "Сохранить в избранную группу",
+      "button_unselect": "Удалить из избранного"
+    },
+    "changeFriendModal": {
+      "button_cancel": "Отмена",
+      "button_confirm_cancel": "Отменить запрос на добавление в друзья",
+      "button_confirm_remove": "Удалить этого друга",
+      "button_confirm_send": "Отправить запрос на добавление в друзья",
+      "confirm_text_cancel": "Вы уверены, что хотите отменить запрос на добавление в друзья пользователю «{{userName}}»?",
+      "confirm_text_remove": "Вы уверены, что хотите удалить пользователя \"{{userName}}\" из списка друзей?",
+      "confirm_text_send": "Вы уверены, что хотите отправить запрос на добавление в друзья пользователю «{{userName}}»?"
+    },
+    "changeNoteModal": {
+      "button_cancel": "Отмена",
+      "button_save": "Сохранить заметку",
+      "placeholder": "Введите примечание здесь..."
+    },
+    "changeStatusModal": {
+      "button_cancel": "Отмена",
+      "button_save": "Сохранить статус",
+      "placeholder": "Введите статус здесь..."
+    },
+    "developmentModal": {
+      "groupLabel_debug": "отлаживать",
+      "groupLabel_feature": "Разработка функции",
+      "itemDescription_json": "Включите просмотрщик JSON для страниц с подробными сведениями.",
+      "itemDescription_sendLogs": "Включите отправку журналов ошибок разработчику.",
+      "itemLabel_json": "Средство просмотра JSON",
+      "itemLabel_sendLogs": "Отправить журналы",
+      "label": "Разработчик"
+    },
+    "eventDetailModal": {
+      "eventTime_differentDay": "{{начало, гггг/ММ/дд ЧЧ:мм}} ~ {{конец, гггг/ММ/дд ЧЧ:мм}}",
+      "eventTime_sameDay": "{{начало, гггг/ММ/дд ЧЧ:мм}} ~ {{конец, ЧЧ:мм}}"
+    },
+    "exitDialog": {
+      "button_no": "Нет",
+      "button_yes": "Да",
+      "message": "Вы уверены, что хотите выйти из приложения?"
+    },
+    "feedbackModal": {
+      "button_cancel": "Отмена",
+      "button_send": "Отправить отзыв",
+      "label": "Отправить отзыв",
+      "placeholder_email": "Ваш адрес электронной почты",
+      "placeholder_message": "Введите контент здесь...",
+      "type_bug": "Отчет об ошибке",
+      "type_feedback": "Обратная связь",
+      "type_request": "Запрос функции"
+    },
+    "jsonDataModal": {
+      "button_close": "Закрывать",
+      "button_copy": "Копировать в буфер обмена"
+    },
+    "releaseNote": {
+      "button_close": "Закрывать",
+      "label": "Примечания к выпуску VRCP"
+    }
+  },
+  "pages": {
+    "analytics": {
+      "label": "Аналитика",
+      "no_analytics": "Данных аналитики нет."
+    },
+    "avatars": {
+      "label": "Мои аватары",
+      "no_avatars": "У вас нет аватаров."
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} событие",
+      "calendar_date_event_count_other": "{{count}} событий",
+      "calendar_month_label": "{{дата, гггг ММММ}}",
+      "label": "События",
+      "no_events": "Нет доступных событий.",
+      "selected_month_events": "События на {{дата, гггг/ММ}}",
+      "selected_month_events_day_label": "{{дата, делай (EEE)}}"
+    },
+    "detail_avatar": {
+      "label": "Детали аватара",
+      "menuLabel_avatar_changeTo": "Изменить этот аватар",
+      "menuLabel_avatar_nowUsing": "Сейчас использую этот аватар",
+      "menuLabel_favoriteGroup_add": "Добавить в избранную группу",
+      "menuLabel_favoriteGroup_edit": "Изменить группу избранных",
+      "menuLabel_json": "Необработанные данные JSON",
+      "sectionLabel_author": "Автор",
+      "sectionLabel_description": "Описание",
+      "sectionLabel_info": "Информация",
+      "sectionLabel_platform": "Платформа",
+      "sectionLabel_tags": "Теги"
+    },
+    "detail_event": {
+      "label": "Подробности мероприятия",
+      "menuLabel_json": "Необработанные данные JSON",
+      "sectionLabel_description": "Описание",
+      "sectionLabel_owner": "Владелец"
+    },
+    "detail_group": {
+      "label": "Детали группы",
+      "menuLabel_json": "Необработанные данные JSON",
+      "sectionLabel_info": "Информация"
+    },
+    "detail_instance": {
+      "label": "Подробности об экземпляре",
+      "menuLabel_json": "Необработанные данные JSON",
+      "sectionLabel_info": "Информация",
+      "sectionLabel_owner": "Владелец",
+      "sectionLabel_platform": "Платформа",
+      "sectionLabel_tags": "Теги",
+      "sectionLabel_usersInInstance": "Пользователи в экземпляре",
+      "sectionLabel_world": "Мир",
+      "section_info_ageGated": "Возрастной контроль: {{ageGated}}",
+      "section_info_capacity": "Емкость: {{емкость}}",
+      "section_users_more_user_count_one": "Еще {{count}} пользователя",
+      "section_users_more_user_count_other": "Еще {{count}} пользователей"
+    },
+    "detail_user": {
+      "label": "Данные пользователя",
+      "menuLabel_favoriteGroup_add": "Добавить в избранную группу",
+      "menuLabel_favoriteGroup_edit": "Изменить группу избранных",
+      "menuLabel_friend_cancelRequest": "Отменить запрос на добавление в друзья",
+      "menuLabel_friend_remove": "Удалить друга",
+      "menuLabel_friend_sendRequest": "Отправить запрос на добавление в друзья",
+      "menuLabel_invite_me": "Пригласить себя",
+      "menuLabel_invite_request": "Запросить приглашение",
+      "menuLabel_invite_send": "Отправить приглашение",
+      "menuLabel_json": "Необработанные данные JSON",
+      "menuLabel_note_edit": "Редактировать заметку",
+      "sectionLabel_badges": "Значки",
+      "sectionLabel_bio": "Био",
+      "sectionLabel_bio_links": "Ссылки",
+      "sectionLabel_description": "Описание",
+      "sectionLabel_info": "Информация",
+      "sectionLabel_location": "Расположение",
+      "sectionLabel_note": "Примечание",
+      "section_info_joined": "Дата присоединения: {{дата, гггг/ММ/дд}}",
+      "section_info_last_activity": "Последняя активность: {{дата, гггг/ММ/дд ЧЧ:мм}}",
+      "userLocation_offline": "пользователь не в сети...",
+      "userLocation_private": "пользователь находится в частном экземпляре...",
+      "userLocation_traveling": "пользователь путешествует...",
+      "userLocation_unknown": "пользователь находится в неизвестном месте..."
+    },
+    "detail_user_groups": {
+      "label": "Группы пользователей",
+      "no_groups_found": "Для этого пользователя группы не найдены."
+    },
+    "detail_user_worlds": {
+      "label": "Миры пользователя",
+      "no_worlds_found": "Для этого пользователя миры не найдены."
+    },
+    "detail_world": {
+      "label": "Детали мира",
+      "menuLabel_favoriteGroup_add": "Добавить в избранную группу",
+      "menuLabel_favoriteGroup_edit": "Изменить группу избранных",
+      "menuLabel_json": "Необработанные данные JSON",
+      "no_instances": "Нет доступных экземпляров.",
+      "sectionLabel_author": "Автор",
+      "sectionLabel_description": "Описание",
+      "sectionLabel_info": "Информация",
+      "sectionLabel_platform": "Платформа",
+      "sectionLabel_tags": "Теги",
+      "section_info_capacityAndRecommended": "Емкость: {{емкость}} | \nРекомендуется: {{recommendedCapacity}}",
+      "section_info_created": "Создано: {{дата, гггг/ММ/дд}}",
+      "section_info_updated": "Последнее обновление: {{дата, гггг/ММ/дд}}",
+      "section_info_visits": "Посещения: {{посещения}}",
+      "tabLabel_info": "Информация",
+      "tabLabel_instances": "Экземпляры"
+    },
+    "favorites": {
+      "label": "Избранное",
+      "no_favoritegroup_selected": "Любимая группа не выбрана.",
+      "tabLabel_avatars": "Аватары",
+      "tabLabel_friends": "Друзья",
+      "tabLabel_worlds": "Миры"
+    },
+    "feeds": {
+      "label": "Ленты",
+      "no_feeds": "Нет доступных каналов."
+    },
+    "friendlocations": {
+      "label": "Локации друзей",
+      "no_friendlocations": "Нет доступных мест для друзей.",
+      "sectionLabel_instances": "Друзья в экземплярах",
+      "sectionLabel_private": "Друзья в частных случаях"
+    },
+    "friends": {
+      "label": "Друзья",
+      "tabLabel_active": "Активный",
+      "tabLabel_favorites": "Избранное",
+      "tabLabel_offline": "Офлайн",
+      "tabLabel_online": "Онлайн"
+    },
+    "groups": {
+      "label": "Мои группы",
+      "no_groups": "У вас нет групп."
+    },
+    "home": {
+      "events_area": "События сегодня",
+      "feeds_area": "Ленты",
+      "friendLocation": {
+        "more_friends_count_one": "Еще {{count}} друг",
+        "more_friends_count_other": "Еще {{count}} друзей"
+      },
+      "friendlocations_area": "Локации друзей",
+      "label": "Дом",
+      "no_events": "Нет доступных событий.",
+      "no_feeds": "Нет доступных каналов.",
+      "no_friendlocations": "Нет доступных мест для друзей.",
+      "see_more": "Посмотреть больше"
+    },
+    "login": {
+      "button_links": "Не можете войти?",
+      "button_links_close": "Закрывать",
+      "button_login": "Авторизоваться",
+      "button_tfa_close": "Закрывать",
+      "button_tfa_verify": "Проверять",
+      "disclaimer": "VRCP — неофициальное приложение для VRChat. \nЭто приложение не связано, не одобрено, не спонсируется и не одобрено VRChat Inc. или ее дочерними компаниями.",
+      "label": "Авторизоваться",
+      "linksModal_emailLinkText": "Восстановить электронную почту",
+      "linksModal_passwordLinkText": "Сбросить пароль",
+      "linksModal_registerLinkText": "Завести аккаунт",
+      "linksModal_text1": "Впервые в VRChat?",
+      "linksModal_text2": "Забыли свои учетные данные?",
+      "linksModal_title": "Возникли проблемы со входом?",
+      "login_failed_error": "Ошибка входа. \nПожалуйста, проверьте свои учетные данные.",
+      "online_count_message": "Сейчас на VRChat онлайн пользователей: {{count}}!",
+      "password_empty_error": "Пароль не может быть пустым.",
+      "password_placeholder": "Пароль",
+      "save_credentials": "Сохраните имя пользователя и пароль",
+      "tfaCode_placeholder": "код (например, 123456)",
+      "tfa_disabled_error": "2ФА отключен. \nПожалуйста, проверьте настройки вашего аккаунта.",
+      "tfa_failed_error": "Проверка 2FA не удалась. \nПожалуйста, попробуйте еще раз.",
+      "tfa_invalid_error": "Код 2FA должен состоять из 6 цифр.",
+      "tfa_modal_text_email": "Код 2FA был отправлен на вашу электронную почту. \nПожалуйста, введите его ниже.",
+      "tfa_modal_text_totp": "Введите код 2FA из приложения для аутентификации.",
+      "tfa_pasted": "Вставлено из буфера обмена",
+      "tfa_unknown_error": "Произошла неизвестная ошибка 2FA. \nПожалуйста, повторите попытку позже.",
+      "username_empty_error": "Имя пользователя или адрес электронной почты не могут быть пустыми.",
+      "username_placeholder": "Имя пользователя / адрес электронной почты",
+      "welcome": "Добро пожаловать в ВРКП!\n\nВойдите под своей учетной записью VRChat."
+    },
+    "notifications": {
+      "label": "Уведомления",
+      "no_notifications": "Никаких уведомлений."
+    },
+    "others": {
+      "label": "Другие",
+      "tabLabel_analytics": "Аналитика",
+      "tabLabel_events": "События",
+      "tabLabel_feeds": "Ленты",
+      "tabLabel_notifications": "Уведомления"
+    },
+    "prints": {
+      "label": "Принты",
+      "no_prints": "У тебя нет отпечатков."
+    },
+    "profile": {
+      "label": "Профиль",
+      "menuLabel_change_status": "Изменить статус",
+      "menuLabel_edit_bio": "Редактировать биографию",
+      "menuLabel_edit_bio_links": "Редактировать био-ссылки",
+      "menuLabel_json": "Необработанные данные JSON",
+      "menuLabel_route_avatars": "Аватары",
+      "menuLabel_route_current_avatar": "Текущий аватар",
+      "menuLabel_route_favorites": "Избранное",
+      "menuLabel_route_groups": "Группы",
+      "menuLabel_route_prints": "Принты",
+      "menuLabel_route_worlds": "Миры",
+      "sectionLabel_badges": "Значки",
+      "sectionLabel_bio": "Био",
+      "sectionLabel_bio_links": "Ссылки",
+      "sectionLabel_info": "Информация",
+      "section_info_joined": "Дата присоединения: {{дата, гггг/ММ/дд}}",
+      "section_info_last_activity": "Последняя активность: {{дата, гггг/ММ/дд ЧЧ:мм}}"
+    },
+    "search": {
+      "label": "Результаты поиска",
+      "no_groups_found": "По запросу '{{search}}' группы не найдены.",
+      "no_users_found": "По запросу «{{search}}» пользователей не найдено.",
+      "no_worlds_found": "По запросу '{{search}}' миры не найдены.",
+      "searchbox_placeholder": "Поиск миров, групп или пользователей"
+    },
+    "setting_appearance": {
+      "groupLabel_app": "Приложение",
+      "groupLabel_friends": "Друзья",
+      "innerModals": {
+        "cardViewColumns": {
+          "button_apply": "Применять",
+          "maybe_requireRestart": "Возможно, потребуется перезапустить приложение.\n\nчтобы вступило в силу.",
+          "option_1_columns": "1 столбец",
+          "option_2_columns": "2 столбца",
+          "option_3_columns": "3 столбца"
+        },
+        "homeTabLayout": {
+          "button_apply": "Применять",
+          "option_events": "События",
+          "option_feeds": "Ленты",
+          "option_friendLocations": "Локации",
+          "section_bottom": "Нижняя область",
+          "section_separatePos": "Отдельная позиция",
+          "section_top": "Верхняя область",
+          "selectedLabel_events": "События на сегодня",
+          "selectedLabel_feeds": "Ленты друзей",
+          "selectedLabel_friendLocations": "Локации друзей",
+          "selectedLabel_sepPos": "Чем выше значение отдельной позиции, тем больше верхняя область."
+        },
+        "theme": {
+          "button_apply": "Применять",
+          "maybe_requireRestart": "Возможно, потребуется перезапустить приложение.\n\nчтобы вступило в силу.",
+          "option_dark": "Темный",
+          "option_light": "Свет",
+          "option_system": "Система"
+        }
+      },
+      "itemDescription_cardViewColumns": "Выберите количество столбцов, которые будут отображаться в представлениях карточек.",
+      "itemDescription_favoriteFriendsColors": "Выберите цветовую тему любимых друзей.",
+      "itemDescription_friendColor": "Выберите цветовую тему своих друзей.",
+      "itemDescription_homeTabLayout": "Выберите, какую вкладку отображать по умолчанию на главной странице.",
+      "itemDescription_theme": "Выберите светлую или темную тему для приложения.",
+      "itemLabel_cardViewColumns": "Столбцы карточного представления",
+      "itemLabel_favoriteFriendsColors": "Любимые цвета друзей",
+      "itemLabel_friendColor": "Цвет друга",
+      "itemLabel_homeTabLayout": "Макет главной вкладки",
+      "itemLabel_theme": "Тема",
+      "label": "Настройки внешнего вида"
+    },
+    "setting_database": {
+      "button_clearCache": "Очистить кэш",
+      "cache_size_and_count_one": "{{size}} МБ (элемент: {{count}})",
+      "cache_size_and_count_other": "{{size}} МБ ({{count}} элементов)",
+      "groupLabel_cache": "Кэш",
+      "label": "Настройки базы данных"
+    },
+    "setting_desktopapp": {
+      "label": "Настольное приложение"
+    },
+    "setting_language": {
+      "description": "Выберите свой язык",
+      "label": "Языковые настройки"
+    },
+    "setting_notifications": {
+      "label": "Настройки уведомлений"
+    },
+    "settings": {
+      "groupLabel_account": "Счет",
+      "groupLabel_general": "Общий",
+      "groupLabel_other": "Другой",
+      "itemDescription_about": "Просмотр информации о приложении и кредитах.",
+      "itemDescription_appearance": "Настройте внешний вид пользовательского интерфейса приложения.",
+      "itemDescription_database": "Управляйте настройками базы данных и параметрами хранения.",
+      "itemDescription_desktopapp": "Настройте параметры, специфичные для настольной версии VRCP.",
+      "itemDescription_development": "Доступ к функциям и опциям разработки.",
+      "itemDescription_feedback": "Отправьте свой отзыв разработчику.",
+      "itemDescription_language": "Выберите язык приложения.",
+      "itemDescription_logout": "Выйдите из этого приложения.",
+      "itemDescription_notifications": "Управление push-уведомлениями и оповещениями.",
+      "itemLabel_about": "О",
+      "itemLabel_appearance": "Настройки внешнего вида",
+      "itemLabel_database": "База данных",
+      "itemLabel_desktopapp": "Настольное приложение",
+      "itemLabel_development": "Разработчик",
+      "itemLabel_feedback": "Обратная связь",
+      "itemLabel_language": "Язык",
+      "itemLabel_logout": "Выход из системы",
+      "itemLabel_notifications": "Уведомления",
+      "label": "Настройки",
+      "logout_dialog_cancel": "Отмена",
+      "logout_dialog_confirm": "Выход из системы",
+      "logout_dialog_text": "Вы уверены, что хотите выйти из системы?"
+    },
+    "worlds": {
+      "label": "Мои миры",
+      "no_worlds": "У вас нет миров."
+    }
+  }
+}

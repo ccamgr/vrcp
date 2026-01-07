@@ -1,0 +1,438 @@
+{
+  "_langDisplayName_": "영어(미국)",
+  "_langTag_": "en-US",
+  "app": "VRCP",
+  "common": {
+    "dateFormats": {
+      "date": "yyyy/MM/dd",
+      "dateTime": "yyyy/MM/dd HH:mm",
+      "dateTimeRange_diffDay": "{{시작, yyyy/MM/dd HH:mm}} ~ {{끝, yyyy/MM/dd HH:mm}}",
+      "dateTimeRange_sameDay": "{{시작, yyyy/MM/dd HH:mm}} ~ {{끝, HH:mm}}",
+      "time": "HH:mm",
+      "timeRange": "{{시작, HH:mm}} ~ {{끝, HH:mm}}"
+    },
+    "message": {
+      "failed_to_fetch": "{{item}}을(를) 가져오지 못했습니다.",
+      "failed_to_update": "{{item}}을(를) 업데이트하지 못했습니다.",
+      "invalid": "잘못된 값",
+      "loading": "로드 중...",
+      "no_data": "데이터가 없습니다."
+    }
+  },
+  "components": {
+    "aboutModal": {
+      "button_ChangeLog": "변경 로그",
+      "button_Licenses": "오픈 소스 라이선스",
+      "button_privacyPolicy": "개인 정보 보호 정책",
+      "button_termsOfUse": "이용약관",
+      "innerModals": {
+        "changeLog": {
+          "format_date": "{{날짜, yyyy/MM/dd}}",
+          "format_version": "버전 {{버전}}",
+          "label": "변경 로그"
+        },
+        "licenses": {
+          "label": "오픈 소스 라이선스",
+          "link_to_repos": "저장소 링크 ↗"
+        },
+        "privacyPolicy": {
+          "label": "개인 정보 보호 정책"
+        },
+        "termsOfUse": {
+          "label": "이용약관"
+        }
+      },
+      "label": "앱 정보"
+    },
+    "changeAvatarModal": {
+      "button_cancel": "취소",
+      "button_confirm": "아바타 변경",
+      "confirm_text": "아바타를 '{{avatarName}}'(으)로 변경하시겠습니까?"
+    },
+    "changeBioLinksModal": {
+      "button_cancel": "취소",
+      "button_save": "약력 링크 저장",
+      "placeholder": "링크 URL 추가(예: https://example.com)"
+    },
+    "changeBioModal": {
+      "button_cancel": "취소",
+      "button_save": "약력 저장",
+      "placeholder": "여기에 약력을 입력하세요..."
+    },
+    "changeFavoriteModal": {
+      "button_cancel": "취소",
+      "button_save": "즐겨찾는 그룹에 저장",
+      "button_unselect": "즐겨찾기 안함"
+    },
+    "changeFriendModal": {
+      "button_cancel": "취소",
+      "button_confirm_cancel": "친구 요청 취소",
+      "button_confirm_remove": "이 친구 삭제",
+      "button_confirm_send": "친구 요청 보내기",
+      "confirm_text_cancel": "정말로 '{{userName}}'님에 대한 친구 요청을 취소하시겠습니까?",
+      "confirm_text_remove": "친구에게서 '{{userName}}'을(를) 삭제하시겠습니까?",
+      "confirm_text_send": "정말로 '{{userName}}'에게 친구 요청을 보내시겠습니까?"
+    },
+    "changeNoteModal": {
+      "button_cancel": "취소",
+      "button_save": "메모 저장",
+      "placeholder": "여기에 메모를 입력하세요..."
+    },
+    "changeStatusModal": {
+      "button_cancel": "취소",
+      "button_save": "상태 저장",
+      "placeholder": "여기에 상태를 입력하세요..."
+    },
+    "developmentModal": {
+      "groupLabel_debug": "디버그",
+      "groupLabel_feature": "개발 기능",
+      "itemDescription_json": "세부정보 페이지에 JSON 뷰어를 활성화합니다.",
+      "itemDescription_sendLogs": "개발자에게 오류 로그 전송을 활성화합니다.",
+      "itemLabel_json": "JSON 뷰어",
+      "itemLabel_sendLogs": "로그 보내기",
+      "label": "개발자"
+    },
+    "eventDetailModal": {
+      "eventTime_differentDay": "{{시작, yyyy/MM/dd HH:mm}} ~ {{끝, yyyy/MM/dd HH:mm}}",
+      "eventTime_sameDay": "{{시작, yyyy/MM/dd HH:mm}} ~ {{끝, HH:mm}}"
+    },
+    "exitDialog": {
+      "button_no": "아니요",
+      "button_yes": "예",
+      "message": "앱을 종료하시겠습니까?"
+    },
+    "feedbackModal": {
+      "button_cancel": "취소",
+      "button_send": "피드백 보내기",
+      "label": "피드백 보내기",
+      "placeholder_email": "귀하의 이메일",
+      "placeholder_message": "여기에 내용을 입력하세요...",
+      "type_bug": "버그 신고",
+      "type_feedback": "피드백",
+      "type_request": "기능 요청"
+    },
+    "jsonDataModal": {
+      "button_close": "닫다",
+      "button_copy": "클립보드에 복사"
+    },
+    "releaseNote": {
+      "button_close": "닫다",
+      "label": "VRCP 출시 노트"
+    }
+  },
+  "pages": {
+    "analytics": {
+      "label": "해석학",
+      "no_analytics": "분석 데이터가 없습니다."
+    },
+    "avatars": {
+      "label": "내 아바타",
+      "no_avatars": "아바타가 없습니다."
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} 이벤트",
+      "calendar_date_event_count_other": "{{count}}개의 이벤트",
+      "calendar_month_label": "{{날짜, yyyy MMMM}}",
+      "label": "이벤트",
+      "no_events": "이용 가능한 이벤트가 없습니다.",
+      "selected_month_events": "{{date, yyyy/MM}}의 이벤트",
+      "selected_month_events_day_label": "{{날짜, 할 일(EEE)}}"
+    },
+    "detail_avatar": {
+      "label": "아바타 세부정보",
+      "menuLabel_avatar_changeTo": "이 아바타로 변경",
+      "menuLabel_avatar_nowUsing": "지금 이 아바타를 사용하고 있습니다",
+      "menuLabel_favoriteGroup_add": "즐겨찾기 그룹에 추가",
+      "menuLabel_favoriteGroup_edit": "즐겨찾는 그룹 편집",
+      "menuLabel_json": "원시 JSON 데이터",
+      "sectionLabel_author": "작가",
+      "sectionLabel_description": "설명",
+      "sectionLabel_info": "정보",
+      "sectionLabel_platform": "플랫폼",
+      "sectionLabel_tags": "태그"
+    },
+    "detail_event": {
+      "label": "이벤트 내용",
+      "menuLabel_json": "원시 JSON 데이터",
+      "sectionLabel_description": "설명",
+      "sectionLabel_owner": "소유자"
+    },
+    "detail_group": {
+      "label": "그룹 세부정보",
+      "menuLabel_json": "원시 JSON 데이터",
+      "sectionLabel_info": "정보"
+    },
+    "detail_instance": {
+      "label": "인스턴스 세부정보",
+      "menuLabel_json": "원시 JSON 데이터",
+      "sectionLabel_info": "정보",
+      "sectionLabel_owner": "소유자",
+      "sectionLabel_platform": "플랫폼",
+      "sectionLabel_tags": "태그",
+      "sectionLabel_usersInInstance": "인스턴스의 사용자",
+      "sectionLabel_world": "세계",
+      "section_info_ageGated": "연령 제한: {{ageGated}}",
+      "section_info_capacity": "용량: {{용량}}",
+      "section_users_more_user_count_one": "{{count}}명 이상의 사용자",
+      "section_users_more_user_count_other": "사용자가 {{count}}명 더 많습니다"
+    },
+    "detail_user": {
+      "label": "사용자 세부정보",
+      "menuLabel_favoriteGroup_add": "즐겨찾기 그룹에 추가",
+      "menuLabel_favoriteGroup_edit": "즐겨찾는 그룹 편집",
+      "menuLabel_friend_cancelRequest": "친구 요청 취소",
+      "menuLabel_friend_remove": "친구 삭제",
+      "menuLabel_friend_sendRequest": "친구 요청 보내기",
+      "menuLabel_invite_me": "나 자신을 초대",
+      "menuLabel_invite_request": "초대 요청",
+      "menuLabel_invite_send": "초대장 보내기",
+      "menuLabel_json": "원시 JSON 데이터",
+      "menuLabel_note_edit": "메모 편집",
+      "sectionLabel_badges": "배지",
+      "sectionLabel_bio": "바이오",
+      "sectionLabel_bio_links": "모래밭",
+      "sectionLabel_description": "설명",
+      "sectionLabel_info": "정보",
+      "sectionLabel_location": "위치",
+      "sectionLabel_note": "메모",
+      "section_info_joined": "가입 날짜: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "마지막 활동: {{날짜, yyyy/MM/dd HH:mm}}",
+      "userLocation_offline": "사용자가 오프라인 상태입니다...",
+      "userLocation_private": "사용자가 비공개 인스턴스에 있습니다.",
+      "userLocation_traveling": "사용자가 여행 중입니다...",
+      "userLocation_unknown": "사용자가 알 수 없는 위치에 있습니다..."
+    },
+    "detail_user_groups": {
+      "label": "사용자 그룹",
+      "no_groups_found": "이 사용자에 대한 그룹을 찾을 수 없습니다."
+    },
+    "detail_user_worlds": {
+      "label": "사용자의 세계",
+      "no_worlds_found": "이 사용자에 대한 세계를 찾을 수 없습니다."
+    },
+    "detail_world": {
+      "label": "월드 세부정보",
+      "menuLabel_favoriteGroup_add": "즐겨찾기 그룹에 추가",
+      "menuLabel_favoriteGroup_edit": "즐겨찾는 그룹 편집",
+      "menuLabel_json": "원시 JSON 데이터",
+      "no_instances": "사용 가능한 인스턴스가 없습니다.",
+      "sectionLabel_author": "작가",
+      "sectionLabel_description": "설명",
+      "sectionLabel_info": "정보",
+      "sectionLabel_platform": "플랫폼",
+      "sectionLabel_tags": "태그",
+      "section_info_capacityAndRecommended": "용량: {{capacity}} | \n권장: {{recommendedCapacity}}",
+      "section_info_created": "생성 날짜: {{날짜, yyyy/MM/dd}}",
+      "section_info_updated": "마지막 업데이트: {{날짜, yyyy/MM/dd}}",
+      "section_info_visits": "방문수: {{방문}}",
+      "tabLabel_info": "정보",
+      "tabLabel_instances": "인스턴스"
+    },
+    "favorites": {
+      "label": "즐겨찾기",
+      "no_favoritegroup_selected": "즐겨찾는 그룹이 선택되지 않았습니다.",
+      "tabLabel_avatars": "아바타",
+      "tabLabel_friends": "친구",
+      "tabLabel_worlds": "세계"
+    },
+    "feeds": {
+      "label": "피드",
+      "no_feeds": "사용 가능한 피드가 없습니다."
+    },
+    "friendlocations": {
+      "label": "친구 위치",
+      "no_friendlocations": "사용 가능한 친구 위치가 없습니다.",
+      "sectionLabel_instances": "인스턴스의 친구",
+      "sectionLabel_private": "비공개 인스턴스의 친구"
+    },
+    "friends": {
+      "label": "친구",
+      "tabLabel_active": "활동적인",
+      "tabLabel_favorites": "즐겨찾기",
+      "tabLabel_offline": "오프라인",
+      "tabLabel_online": "온라인"
+    },
+    "groups": {
+      "label": "내 그룹",
+      "no_groups": "그룹이 없습니다."
+    },
+    "home": {
+      "events_area": "오늘의 이벤트",
+      "feeds_area": "피드",
+      "friendLocation": {
+        "more_friends_count_one": "{{count}}명 이상의 친구",
+        "more_friends_count_other": "친구 {{count}}명 더 보기"
+      },
+      "friendlocations_area": "친구 위치",
+      "label": "집",
+      "no_events": "이용 가능한 이벤트가 없습니다.",
+      "no_feeds": "사용 가능한 피드가 없습니다.",
+      "no_friendlocations": "사용 가능한 친구 위치가 없습니다.",
+      "see_more": "자세히 보기"
+    },
+    "login": {
+      "button_links": "로그인할 수 없나요?",
+      "button_links_close": "닫다",
+      "button_login": "로그인",
+      "button_tfa_close": "닫다",
+      "button_tfa_verify": "확인하다",
+      "disclaimer": "VRCP는 VRChat의 비공식 애플리케이션입니다. \n이 응용 프로그램은 VRChat Inc. 또는 그 계열사와 제휴, 승인, 후원 또는 승인되지 않습니다.",
+      "label": "로그인",
+      "linksModal_emailLinkText": "이메일 복구",
+      "linksModal_passwordLinkText": "비밀번호 재설정",
+      "linksModal_registerLinkText": "계정 만들기",
+      "linksModal_text1": "VRChat을 처음 사용하시나요?",
+      "linksModal_text2": "자격 증명을 잊으셨나요?",
+      "linksModal_title": "로그인하는 데 문제가 있나요?",
+      "login_failed_error": "로그인에 실패했습니다. \n자격 증명을 확인하세요.",
+      "online_count_message": "현재 VRChat에 온라인 사용자가 {{count}}명 있습니다!",
+      "password_empty_error": "비밀번호는 비워둘 수 없습니다.",
+      "password_placeholder": "비밀번호",
+      "save_credentials": "사용자 이름과 비밀번호 저장",
+      "tfaCode_placeholder": "코드(예: 123456)",
+      "tfa_disabled_error": "2FA가 비활성화되었습니다. \n계정 설정을 확인하세요.",
+      "tfa_failed_error": "2FA 인증에 실패했습니다. \n다시 시도해 주세요.",
+      "tfa_invalid_error": "2FA 코드는 6자리여야 합니다.",
+      "tfa_modal_text_email": "2FA 코드가 귀하의 이메일로 전송되었습니다. \n아래에 입력해주세요.",
+      "tfa_modal_text_totp": "인증 앱에서 2FA 코드를 입력하세요.",
+      "tfa_pasted": "클립보드에서 붙여넣었습니다.",
+      "tfa_unknown_error": "알 수 없는 2FA 오류가 발생했습니다. \n나중에 다시 시도해 주세요.",
+      "username_empty_error": "사용자 이름이나 이메일은 비워둘 수 없습니다.",
+      "username_placeholder": "사용자 이름 / 이메일",
+      "welcome": "VRCP에 오신 것을 환영합니다!\n\nVRChat 계정으로 로그인하세요."
+    },
+    "notifications": {
+      "label": "알림",
+      "no_notifications": "알림이 없습니다."
+    },
+    "others": {
+      "label": "기타",
+      "tabLabel_analytics": "해석학",
+      "tabLabel_events": "이벤트",
+      "tabLabel_feeds": "피드",
+      "tabLabel_notifications": "알림"
+    },
+    "prints": {
+      "label": "인쇄물",
+      "no_prints": "지문이 없습니다."
+    },
+    "profile": {
+      "label": "윤곽",
+      "menuLabel_change_status": "상태 변경",
+      "menuLabel_edit_bio": "약력 편집",
+      "menuLabel_edit_bio_links": "소개 링크 편집",
+      "menuLabel_json": "원시 JSON 데이터",
+      "menuLabel_route_avatars": "아바타",
+      "menuLabel_route_current_avatar": "현재 아바타",
+      "menuLabel_route_favorites": "즐겨찾기",
+      "menuLabel_route_groups": "여러 떼",
+      "menuLabel_route_prints": "인쇄물",
+      "menuLabel_route_worlds": "세계",
+      "sectionLabel_badges": "배지",
+      "sectionLabel_bio": "바이오",
+      "sectionLabel_bio_links": "모래밭",
+      "sectionLabel_info": "정보",
+      "section_info_joined": "가입 날짜: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "마지막 활동: {{날짜, yyyy/MM/dd HH:mm}}"
+    },
+    "search": {
+      "label": "검색결과",
+      "no_groups_found": "'{{search}}'에 대한 그룹을 찾을 수 없습니다.",
+      "no_users_found": "'{{search}}'에 대한 사용자를 찾을 수 없습니다.",
+      "no_worlds_found": "'{{search}}'에 대한 세계를 찾을 수 없습니다.",
+      "searchbox_placeholder": "월드, 그룹 또는 사용자 검색"
+    },
+    "setting_appearance": {
+      "groupLabel_app": "앱",
+      "groupLabel_friends": "친구",
+      "innerModals": {
+        "cardViewColumns": {
+          "button_apply": "적용하다",
+          "maybe_requireRestart": "앱을 다시 시작해야 할 수도 있습니다.\n\n효력을 발휘합니다.",
+          "option_1_columns": "1개의 칼럼",
+          "option_2_columns": "2열",
+          "option_3_columns": "3개의 칼럼"
+        },
+        "homeTabLayout": {
+          "button_apply": "적용하다",
+          "option_events": "이벤트",
+          "option_feeds": "피드",
+          "option_friendLocations": "위치",
+          "section_bottom": "하단 영역",
+          "section_separatePos": "별도의 입장",
+          "section_top": "상단 영역",
+          "selectedLabel_events": "오늘의 이벤트",
+          "selectedLabel_feeds": "친구의 피드",
+          "selectedLabel_friendLocations": "친구 위치",
+          "selectedLabel_sepPos": "별도 위치 값이 높을수록 위쪽 영역이 커집니다."
+        },
+        "theme": {
+          "button_apply": "적용하다",
+          "maybe_requireRestart": "앱을 다시 시작해야 할 수도 있습니다.\n\n효력을 발휘합니다.",
+          "option_dark": "어두운",
+          "option_light": "빛",
+          "option_system": "체계"
+        }
+      },
+      "itemDescription_cardViewColumns": "카드 보기에 표시할 열 수를 선택합니다.",
+      "itemDescription_favoriteFriendsColors": "좋아하는 친구 색상 테마를 선택하세요.",
+      "itemDescription_friendColor": "친구 색상 테마를 선택하세요.",
+      "itemDescription_homeTabLayout": "홈 페이지에 기본적으로 표시할 탭을 선택합니다.",
+      "itemDescription_theme": "애플리케이션에 대해 밝거나 어두운 테마를 선택합니다.",
+      "itemLabel_cardViewColumns": "카드 보기 열",
+      "itemLabel_favoriteFriendsColors": "좋아하는 친구 색상",
+      "itemLabel_friendColor": "친구색",
+      "itemLabel_homeTabLayout": "홈 탭 레이아웃",
+      "itemLabel_theme": "주제",
+      "label": "모양새 설정"
+    },
+    "setting_database": {
+      "button_clearCache": "캐시 지우기",
+      "cache_size_and_count_one": "{{size}}MB({{count}}개 항목)",
+      "cache_size_and_count_other": "{{size}}MB({{count}}개 항목)",
+      "groupLabel_cache": "은닉처",
+      "label": "데이터베이스 설정"
+    },
+    "setting_desktopapp": {
+      "label": "데스크탑 앱"
+    },
+    "setting_language": {
+      "description": "언어를 선택하세요",
+      "label": "언어 설정"
+    },
+    "setting_notifications": {
+      "label": "알림 설정"
+    },
+    "settings": {
+      "groupLabel_account": "계정",
+      "groupLabel_general": "일반적인",
+      "groupLabel_other": "다른",
+      "itemDescription_about": "신청 정보 및 크레딧을 확인하세요.",
+      "itemDescription_appearance": "애플리케이션 UI 모양을 사용자 정의합니다.",
+      "itemDescription_database": "데이터베이스 설정 및 스토리지 옵션을 관리합니다.",
+      "itemDescription_desktopapp": "VRCP의 데스크톱 버전과 관련된 설정을 구성합니다.",
+      "itemDescription_development": "개발 기능 및 옵션에 액세스하세요.",
+      "itemDescription_feedback": "개발자에게 피드백을 보내주세요.",
+      "itemDescription_language": "애플리케이션의 언어를 선택합니다.",
+      "itemDescription_logout": "이 앱에서 로그아웃하세요.",
+      "itemDescription_notifications": "푸시 알림 및 경고를 관리합니다.",
+      "itemLabel_about": "에 대한",
+      "itemLabel_appearance": "모양새 설정",
+      "itemLabel_database": "데이터 베이스",
+      "itemLabel_desktopapp": "데스크탑 앱",
+      "itemLabel_development": "개발자",
+      "itemLabel_feedback": "피드백",
+      "itemLabel_language": "언어",
+      "itemLabel_logout": "로그아웃",
+      "itemLabel_notifications": "알림",
+      "label": "설정",
+      "logout_dialog_cancel": "취소",
+      "logout_dialog_confirm": "로그아웃",
+      "logout_dialog_text": "정말로 로그아웃하시겠습니까?"
+    },
+    "worlds": {
+      "label": "나의 세계",
+      "no_worlds": "당신에게는 세계가 없습니다."
+    }
+  }
+}
