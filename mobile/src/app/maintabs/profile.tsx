@@ -19,13 +19,13 @@ import {
   View,
 } from "react-native";
 import ImagePreview from "@/components/view/ImagePreview";
-import { getUserIconUrl, getUserProfilePicUrl } from "@/libs/vrchat";
+import { getUserIconUrl, getUserProfilePicUrl } from "@/lib/vrchat";
 import ChangeStatusModal from "@/components/modals/ChangeStatusModal";
 import { MenuItem } from "@/components/layout/type";
 import ChangeBioModal from "@/components/modals/ChangeBioModal";
 import ChangeBioLinksModal from "@/components/modals/ChangeBioLinksModal";
 import JsonDataModal from "@/components/modals/JsonDataModal";
-import { routeToAvatar, routeToFavorites, routeToAvatars, routeToGroups, routeToPrints, routeToWorlds} from "@/libs/route";
+import { routeToAvatar, routeToFavorites, routeToAvatars, routeToGroups, routeToPrints, routeToWorlds} from "@/lib/route";
 import { useTranslation } from "react-i18next";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 

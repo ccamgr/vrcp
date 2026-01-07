@@ -1,7 +1,7 @@
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { SupportedIconNames } from "@/components/view/icon-components/utils";
 import globalStyles, { fontSize, spacing } from "@/configs/styles";
-import { omitObject } from "@/libs/utils";
+import { omitObject } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";

@@ -1,6 +1,4 @@
-import { s } from "framer-motion/client";
-import { type Payload } from "../generated/bindings";
-import { start } from "repl";
+import { LogPayload } from "@/generated/desktopapi/type";
 
 export interface PlayerInterval {
   name: string;
@@ -21,7 +19,7 @@ export interface WorldSession {
 /**
  * ログ配列を解析し、ワールド滞在ごとのセッション情報に変換する
  */
-export function analyzeSessions(logs: Payload[]): WorldSession[] {
+export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
   const sessions: WorldSession[] = [];
 
   let me: {

@@ -9,21 +9,21 @@ import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/libs/utils";
+import { extractErrMsg } from "@/lib/utils";
 import {
   getAuthorTags,
   getPlatform,
   getTrustRankColor,
   InstanceLike,
   parseInstanceId,
-} from "@/libs/vrchat";
+} from "@/lib/vrchat";
 import { User, World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
-import { routeToSearch, routeToUser } from "@/libs/route";
+import { routeToSearch, routeToUser } from "@/lib/route";
 import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";

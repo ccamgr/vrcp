@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BaseCardView from "./BaseCardView";
 import { Print } from "@/generated/vrcapi";
-import { formatToDateStr } from "@/libs/date";
+import { formatToDateStr } from "@/lib/date";
 
 interface Props {
   print: Print;

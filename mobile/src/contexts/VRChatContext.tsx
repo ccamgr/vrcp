@@ -25,7 +25,7 @@ import {
   useState,
 } from "react";
 import axios from 'axios';
-import { getUserAgent } from "@/libs/utils";
+import { getUserAgent } from "@/lib/utils";
 
 const BASE_PIPELINE_URL = "wss://pipeline.vrchat.cloud";
 const BASE_API_URL = "https://api.vrchat.cloud/api/1";

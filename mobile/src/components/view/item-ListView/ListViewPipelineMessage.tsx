@@ -2,9 +2,9 @@ import globalStyles, { fontSize, spacing } from "@/configs/styles";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";
 import { PipelineContent, PipelineMessage } from "@/generated/vrcpipline/type";
-import { formatToDateTimeStr } from "@/libs/date";
-import { parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";
-import { extractPipelineMessageContent } from "@/libs/funcs/extractPipelineMessageContent";
+import { formatToDateTimeStr } from "@/lib/date";
+import { parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
+import { extractPipelineMessageContent } from "@/lib/funcs/extractPipelineMessageContent";
 import { useEffect, useState } from "react";
 import { useCache } from "@/contexts/CacheContext";
 

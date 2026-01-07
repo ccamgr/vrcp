@@ -1,6 +1,6 @@
 import { ButtonEx, TouchableEx } from "@/components/CustomElements";
 import { fontSize, spacing } from "@/configs/styles";
-import { getTintedColor } from "@/libs/utils";
+import { getTintedColor } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { isSameDay } from "date-fns";

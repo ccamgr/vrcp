@@ -6,7 +6,7 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { getTintedColor } from "@/libs/utils";
+import { getTintedColor } from "@/lib/utils";
 import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";

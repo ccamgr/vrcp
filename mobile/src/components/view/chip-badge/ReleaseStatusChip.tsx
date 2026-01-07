@@ -3,7 +3,7 @@ import {
   AvatarLike,
   getReleaseStatusColor,
   WorldLike,
-} from "@/libs/vrchat";
+} from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";

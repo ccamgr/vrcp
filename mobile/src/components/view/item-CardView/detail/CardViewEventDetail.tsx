@@ -7,8 +7,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BaseCardView from "../BaseCardView";
 import UserOrGroupChip from "../../chip-badge/UserOrGroupChip";
 import IconButton from "../../icon-components/IconButton";
-import { routeToWorld } from "@/libs/route";
-import { GroupLike } from "@/libs/vrchat";
+import { routeToWorld } from "@/lib/route";
+import { GroupLike } from "@/lib/vrchat";
 import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
 

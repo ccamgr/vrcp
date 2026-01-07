@@ -1,4 +1,4 @@
-import { getUserAgent } from "@/libs/utils";
+import { getUserAgent } from "@/lib/utils";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import {

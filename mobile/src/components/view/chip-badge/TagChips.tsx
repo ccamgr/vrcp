@@ -1,6 +1,6 @@
 import { TouchableEx } from "@/components/CustomElements";
 import { radius, spacing } from "@/configs/styles";
-import { omitObject } from "@/libs/utils";
+import { omitObject } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";

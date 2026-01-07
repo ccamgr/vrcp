@@ -13,7 +13,7 @@ import { openBrowserAsync } from "expo-web-browser";
 import { constants } from "@/configs/const";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { SupportedIconNames } from "@/components/view/icon-components/utils";
-import { getTintedColor } from "@/libs/utils";
+import { getTintedColor } from "@/lib/utils";
 
 interface AboutButtonItem {
   icon?: SupportedIconNames;

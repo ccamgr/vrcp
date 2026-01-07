@@ -5,7 +5,7 @@ import { Text } from "@react-navigation/elements";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import BaseCardView from "../BaseCardView";
-import { routeToUser } from "@/libs/route";
+import { routeToUser } from "@/lib/route";
 
 interface Props {
   avatar: Avatar;

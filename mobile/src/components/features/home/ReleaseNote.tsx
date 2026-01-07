@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 // ルートの json を読み込み
 import rawVersions from '@/../versions.json';
 import GenericModal from '@/components/layout/GenericModal';
-import { isNewVersion, updateLastVersion } from '@/libs/utils';
+import { isNewVersion, updateLastVersion } from '@/lib/utils';
 import { radius, spacing } from '@/configs/styles';
 import { useTranslation } from 'react-i18next';
 import { TouchableEx } from '@/components/CustomElements';

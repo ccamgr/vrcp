@@ -13,7 +13,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { useAuth } from "./AuthContext";
 import { useVRChat } from "./VRChatContext";
 import { PipelineContent, PipelineMessage, PipelineType } from "@/generated/vrcpipline/type";
-import { convertToLimitedUserFriend } from "@/libs/vrchat";
+import { convertToLimitedUserFriend } from "@/lib/vrchat";
 import { useCache } from "./CacheContext";
 import { useSetting } from "./SettingContext";
 import Storage from "expo-sqlite/kv-store";

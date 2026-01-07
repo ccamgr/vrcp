@@ -7,7 +7,7 @@ import {
   parseInstanceId,
   parseLocationString,
   UserLike,
-} from "@/libs/vrchat";
+} from "@/lib/vrchat";
 import { World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";

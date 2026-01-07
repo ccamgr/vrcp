@@ -14,7 +14,7 @@ import ImagePreview from "@/components/view/ImagePreview";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { OrderOption, Print, SortOption } from "@/generated/vrcapi";
-import { extractErrMsg } from "@/libs/utils";
+import { extractErrMsg } from "@/lib/utils";
 import { useData } from "@/contexts/DataContext";
 
 export default function Prints() {

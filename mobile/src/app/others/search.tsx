@@ -5,8 +5,8 @@ import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import SearchBox from "@/components/view/SearchBox";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/libs/utils";
-import { routeToAvatar, routeToGroup, routeToUser, routeToWorld } from "@/libs/route";
+import { extractErrMsg } from "@/lib/utils";
+import { routeToAvatar, routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
 import {
   Avatar,
   AvatarsApi,
