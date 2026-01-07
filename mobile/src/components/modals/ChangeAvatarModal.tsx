@@ -5,7 +5,7 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { Avatar } from "@/vrchat/api";
+import { Avatar } from "@/generated/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -54,14 +54,14 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeAvatarModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.changeAvatarModal.button_confirm"),
       onPress: handleChangeAvatar,
       color: theme.colors.primary,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: radius.input,
   },
-  
+
 });
 
 export default ChangeAvatarModal;

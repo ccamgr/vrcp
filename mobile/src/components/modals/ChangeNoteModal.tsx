@@ -4,7 +4,7 @@ import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { User, UserStatus } from "@/vrchat/api";
+import { User, UserStatus } from "@/generated/api";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,7 +33,7 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
     try {
       setIsLoading(true);
       const res = await vrc.usersApi.updateUserNote({
-        updateUserNoteRequest: { 
+        updateUserNoteRequest: {
           targetUserId: user.id,
           note: note,
         },
@@ -55,14 +55,14 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeNoteModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.changeNoteModal.button_save"),
       onPress: handleSubmitChange,
       color: theme.colors.primary,
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: radius.input,
   },
-  
+
 });
 
 export default ChangeNoteModal;

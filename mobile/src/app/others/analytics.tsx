@@ -4,7 +4,7 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import ListViewPipelineMessage from "@/components/view/item-ListView/ListViewPipelineMessage";
 import { spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
-import { PipelineMessage } from "@/vrchat/pipline/type";
+import { PipelineMessage } from "@/generated/pipline/type";
 import { useTheme } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";

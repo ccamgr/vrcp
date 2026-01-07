@@ -8,7 +8,7 @@ import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
 import { getFriendRequestStatus, getInstanceType, getUserIconUrl, getUserProfilePicUrl, parseLocationString } from "@/libs/vrchat";
-import { User } from "@/vrchat/api";
+import { User } from "@/generated/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";

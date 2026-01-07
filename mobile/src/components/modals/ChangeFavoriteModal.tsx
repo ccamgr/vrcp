@@ -7,7 +7,7 @@ import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getTintedColor } from "@/libs/utils";
-import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/vrchat/api";
+import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/generated/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";

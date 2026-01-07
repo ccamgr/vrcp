@@ -6,7 +6,7 @@ import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles
 import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
-import { CalendarEvent } from "@/vrchat/api";
+import { CalendarEvent } from "@/generated/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";

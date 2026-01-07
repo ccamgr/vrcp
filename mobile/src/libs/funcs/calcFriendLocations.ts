@@ -1,4 +1,4 @@
-import { Favorite, LimitedUserFriend } from "@/vrchat/api";
+import { Favorite, LimitedUserFriend } from "@/generated/api";
 import { convertToLimitedUserInstance, InstanceLike, parseInstanceId, parseLocationString } from "../vrchat";
 import { sortFriendWithStatus } from "./sortFriendWithStatus";
 
@@ -9,19 +9,19 @@ type LocationData = {
 }
 // overload signatures
 function calcFriendsLocations(
-  friends: LimitedUserFriend[], 
+  friends: LimitedUserFriend[],
   favorites: Favorite[],
   onlyHasFavorites: boolean,
   withUnlocatable: false,
 ): InstanceLike[];
 function calcFriendsLocations(
-  friends: LimitedUserFriend[], 
+  friends: LimitedUserFriend[],
   favorites: Favorite[],
   onlyHasFavorites: boolean,
   withUnlocatable: true,
 ): {instances: InstanceLike[], unlocatableFriends: LimitedUserFriend[]};
 function calcFriendsLocations(
-  friends: LimitedUserFriend[], 
+  friends: LimitedUserFriend[],
   favorites: Favorite[],
   onlyHasFavorites: boolean,
   withUnlocatable:boolean = false,

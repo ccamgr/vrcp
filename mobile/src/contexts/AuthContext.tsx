@@ -1,5 +1,5 @@
 import { extractErrMsg } from "@/libs/utils";
-import { AuthenticationApi } from "@/vrchat/api";
+import { AuthenticationApi } from "@/generated/api";
 import { router } from "expo-router";
 import Storage from "expo-sqlite/kv-store";
 import * as SecureStore from "expo-secure-store";
@@ -256,7 +256,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     </Context.Provider>
   );
 };
- 
+
 // なんかフォーマットが変になるので、関数化しておく
 const extractAuthCookie = (string: string | undefined): string | undefined => {
   const match = string?.match(/auth=([^;]+);/);

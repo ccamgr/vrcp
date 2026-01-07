@@ -8,11 +8,11 @@ import {
   LimitedUserFriend,
   LimitedWorld,
   Notification,
-} from "@/vrchat/api";
+} from "@/generated/api";
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { useVRChat } from "./VRChatContext";
-import { PipelineContent, PipelineMessage, PipelineType } from "@/vrchat/pipline/type";
+import { PipelineContent, PipelineMessage, PipelineType } from "@/generated/pipline/type";
 import { convertToLimitedUserFriend } from "@/libs/vrchat";
 import { useCache } from "./CacheContext";
 import { useSetting } from "./SettingContext";

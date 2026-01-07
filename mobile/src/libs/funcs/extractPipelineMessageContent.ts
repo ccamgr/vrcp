@@ -1,4 +1,4 @@
-import { PipelineContent, PipelineMessage } from "@/vrchat/pipline/type";
+import { PipelineContent, PipelineMessage } from "@/generated/pipline/type";
 import { parseLocationString, UserLike, WorldLike } from "../vrchat";
 
 export function extractPipelineMessageContent(message: PipelineMessage, user?:UserLike, world?: WorldLike): string[] {

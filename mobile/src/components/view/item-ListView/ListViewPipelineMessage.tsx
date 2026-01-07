@@ -1,7 +1,7 @@
 import globalStyles, { fontSize, spacing } from "@/configs/styles";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";
-import { PipelineContent, PipelineMessage } from "@/vrchat/pipline/type";
+import { PipelineContent, PipelineMessage } from "@/generated/pipline/type";
 import { formatToDateTimeStr } from "@/libs/date";
 import { parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";
 import { extractPipelineMessageContent } from "@/libs/funcs/extractPipelineMessageContent";
@@ -38,7 +38,7 @@ const ListViewPipelineMessage = ({
   const [subtitles, setSubtitles] = useState<string[]>(
     extractSubtitles(message)
   );
-  
+
   useEffect(() => {
     const content = message.content as any
     const userId = content.userId as string ?? undefined;

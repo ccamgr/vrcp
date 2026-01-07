@@ -17,23 +17,23 @@ gen-oss:  # generate open source software notice
 .PHONY : gen-vrcapi gen-vrcpipe
 gen-vrcapi:  # generate the vrcapi types and clients from openapi spec
 # config on openapitools.json
-	@rm -rf ./src/vrchat/api/* ./src/vrchat/openapi.yaml
-	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/vrchat/openapi.yaml
+	@rm -rf ./src/generated/api/* ./src/generated/openapi.yaml
+	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/generated/openapi.yaml
 	@npx @openapitools/openapi-generator-cli generate \
-		-i ./src/vrchat/openapi.yaml \
+		-i ./src/generated/openapi.yaml \
 		-g typescript-axios \
-		-o ./src/vrchat/api/ \
+		-o ./src/generated/api/ \
 		--additional-properties="useSingleRequestParameter=true"
-	@rm -f ./src/vrchat/openapi.yaml
+	@rm -f ./src/generated/openapi.yaml
 
 gen-vrcpipe: # generate the vrcpipe types from websocket spec
-	@npx tsx ./src/vrchat/pipline/gen-type.ts
+	@npx tsx ./tools/gen-vrcpipe.ts
 
 .PHONY : migrate/generate
 migrate/generate:  # generate migration files based on schema changes
 	@npx drizzle-kit generate
 	@echo "Migration .sql files generated in src/db/migration/drizzle-kit"
-	@npx tsx ./src/db/migration/gen-migration.ts	
+	@npx tsx ./src/db/migration/gen-migration.ts
 
 .PHONY : version-bump/ota version-bump/major version-bump/minor version-bump/patch
 version-bump/major:  # generate draft of versions.json with major bump
@@ -41,7 +41,7 @@ version-bump/major:  # generate draft of versions.json with major bump
 version-bump/minor:  # generate draft of versions.json with minor bump
 	@npx tsx ./tools/version-bump.ts native minor
 version-bump/patch:  # generate draft of versions.json with patch bump
-	@npx tsx ./tools/version-bump.ts native patch 
+	@npx tsx ./tools/version-bump.ts native patch
 version-bump/ota:  # generate draft of versions.json with OTA bump
 	@npx tsx ./tools/version-bump.ts ota
 
@@ -60,7 +60,7 @@ build/prod:  # build the application for production (apk)
 # 	@eas build --profile production --platform android --submit
 
 
-.PHONY: lint 
+.PHONY: lint
 lint: # lint the codebase
 # @npx eslint . --fix
 	@npx prettier --write "**/*.tsx"

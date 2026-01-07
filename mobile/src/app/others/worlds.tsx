@@ -12,7 +12,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import { routeToWorld } from "@/libs/route";
-import { LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/vrchat/api";
+import { LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/generated/api";
 import { extractErrMsg } from "@/libs/utils";
 import { useLocalSearchParams } from "expo-router";
 

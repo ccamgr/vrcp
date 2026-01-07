@@ -6,7 +6,7 @@ import {
   Group,
   User,
   World,
-} from "@/vrchat/api";
+} from "@/generated/api";
 import * as Crypto from "expo-crypto";
 import * as FileSystem from "expo-file-system";
 import React, {
@@ -29,7 +29,7 @@ interface Cache<T> {
   value: T;
 }
 
-type CacheMode = "byId" | "single"; // list: get-list & cache-list, id: get-byId & cache-list, single: get-single & cache-single 
+type CacheMode = "byId" | "single"; // list: get-list & cache-list, id: get-byId & cache-list, single: get-single & cache-single
 
 interface CacheOption {
   expiration: number; // in milliseconds
@@ -68,8 +68,8 @@ const isNative = Platform.OS !== "web";
 
 const Context = createContext<CacheContextType | undefined>(undefined);
 
-// root-directory for cache, only-use on native 
-const cacheRootDir = isNative ? `${FileSystem.cacheDirectory}` : "cache"; 
+// root-directory for cache, only-use on native
+const cacheRootDir = isNative ? `${FileSystem.cacheDirectory}` : "cache";
 
 // get local file uri from key (id or url), subDirName must end with /
 const getLocalUri = async (
@@ -133,8 +133,8 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   // }, [initTrigger.current]);
   const wrappers = useMemo(
     () => ({
-      // only used for DataContext, use useData(),currentUser instaead of this, 
-      currentUser: useCacheWrapper<CurrentUser, "single">("single", "currentUser/", getCurrentUser, { expiration: 1000 }), // expire with 1 second, basically, 
+      // only used for DataContext, use useData(),currentUser instaead of this,
+      currentUser: useCacheWrapper<CurrentUser, "single">("single", "currentUser/", getCurrentUser, { expiration: 1000 }), // expire with 1 second, basically,
       favoriteLimits: useCacheWrapper<FavoriteLimits, "single">("single", "favoriteLimits/", getFavoriteLimits, { expiration: 60 * 60 * 1000 }), // expire with 1 hour
       // by id (basiccally, use for name lookup)
       user: useCacheWrapper<User, "byId">("byId", "users/", getUser, { expiration: 1 * 24 * 60 * 60 * 1000 }), // expire with 1 day
@@ -267,9 +267,9 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
     const localUri = await getLocalUri(id, subDir, opt.encrypt);
     await FileWrapper.deleteAsync(localUri);
   };
-   
+
   // return based on mode
-  if (mode === "single") 
+  if (mode === "single")
     return {
       get: (forceFetch: boolean = false) => get("data", opt, forceFetch),
       set: (data: T) => set("data", data, opt),
@@ -387,7 +387,7 @@ const CachedImage = ({
 
   return (
     <ExpoImage
-      source={{ 
+      source={{
         uri: remoteUri,
         headers: {'User-Agent': getUserAgent()},
       }}

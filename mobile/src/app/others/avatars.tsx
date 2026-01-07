@@ -7,7 +7,7 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/contexts/ToastContext";
 import { useSetting } from "@/contexts/SettingContext";
-import { Avatar, OrderOption, ReleaseStatus, SortOption } from "@/vrchat/api";
+import { Avatar, OrderOption, ReleaseStatus, SortOption } from "@/generated/api";
 import { extractErrMsg } from "@/libs/utils";
 import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
 import { routeToAvatar } from "@/libs/route";

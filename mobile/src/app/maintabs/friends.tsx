@@ -7,7 +7,7 @@ import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
 import { routeToUser } from "@/libs/route";
 import { getState, parseLocationString } from "@/libs/vrchat";
-import { LimitedUserFriend, UserStatus } from "@/vrchat/api";
+import { LimitedUserFriend, UserStatus } from "@/generated/api";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -97,7 +97,7 @@ const FavoriteFriendsTab = memo(() => {
       else devided.offline.push(f);
     });
 
-    
+
     const sorted: FriendsByState = {
       online: sortFriendWithStatus(devided.online),
       active: sortFriendWithStatus(devided.active),
@@ -161,7 +161,7 @@ const StateFriendsTab = memo(({filterState}: {filterState: "online" | "active" |
     return sortFriendWithStatus(unsorted);
   }, [friends.data, filterState]);
 
-  
+
   const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (
     <ListViewUser
       user={item}
@@ -188,9 +188,9 @@ const StateFriendsTab = memo(({filterState}: {filterState: "online" | "active" |
 
 const styles = StyleSheet.create({
   sectionHeader: {
-    paddingTop: spacing.medium, 
-    marginBottom: spacing.small, 
-    borderBottomWidth: 1, 
+    paddingTop: spacing.medium,
+    marginBottom: spacing.small,
+    borderBottomWidth: 1,
   },
   cardView: {
     padding: spacing.small,

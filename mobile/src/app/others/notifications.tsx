@@ -1,7 +1,7 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import { spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
-import { Notification } from "@/vrchat/api";
+import { Notification } from "@/generated/api";
 import { useTheme } from "@react-navigation/native";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,14 +27,14 @@ export default function Notifications() {
       <Text style={{ color: theme.colors.text }}>{t("pages.notifications.no_notifications")}</Text>
     </View>
   ), []);
-  
+
   return (
     <GenericScreen>
       <View style={styles.container} >
         <FlatList
           data={notifications.data}
           keyExtractor={(item) => item.id}
-          renderItem={renderItem} 
+          renderItem={renderItem}
           ListEmptyComponent={emptyComponent}
           numColumns={1}
           contentContainerStyle={styles.flatlistInner}

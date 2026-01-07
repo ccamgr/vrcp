@@ -17,7 +17,7 @@ import {
   InstanceLike,
   parseInstanceId,
 } from "@/libs/vrchat";
-import { User, World } from "@/vrchat/api";
+import { User, World } from "@/generated/api";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";

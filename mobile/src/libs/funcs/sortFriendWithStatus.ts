@@ -1,4 +1,4 @@
-import { LimitedUserFriend, UserStatus } from "@/vrchat/api";
+import { LimitedUserFriend, UserStatus } from "@/generated/api";
 import { parseLocationString } from "../vrchat";
 
   const statusOrder = (status: UserStatus) => {
@@ -35,5 +35,5 @@ import { parseLocationString } from "../vrchat";
   const sortFriendWithStatus = (friends: LimitedUserFriend[]) => {
     return friends.sort(friendSorter);
   }
-  
+
   export { sortFriendWithStatus };

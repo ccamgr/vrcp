@@ -1,5 +1,5 @@
 import { spacing } from "@/configs/styles";
-import { CalendarEvent } from "@/vrchat/api";
+import { CalendarEvent } from "@/generated/api";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useCache } from "@/contexts/CacheContext";

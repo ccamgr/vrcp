@@ -2,6 +2,8 @@
 
 // "https://github.com/vrchatapi/vrchat.community/blob/main/content/docs/(guides)/websocket.mdx";
 const RAW_MDX_URL = "https://raw.githubusercontent.com/vrchatapi/vrchat.community/refs/heads/main/content/docs/(guides)/websocket.mdx";
+const OUTPUT_PATH = "src/generated/pipline/type.ts";
+
 const importName = "_API"
 
 async function fetchMdxContent(url: string): Promise<string> {
@@ -113,7 +115,7 @@ function createEnums(types: string[]): string {
 }
 
 function createConditionalTypes (types: string[]) : string {
-  const conditionalTypes = types.map((type) => 
+  const conditionalTypes = types.map((type) =>
     `T extends '${type}'\n? ${pascalCase(type)}PipelineContent\n: `
   ).join("");
 
@@ -126,12 +128,12 @@ function createEachContentDefinition(type: string, content: Object | null): stri
     return `export type ${interfaceName} = null;`;
   }
   let fields = JSON.stringify(content, null, 2);
-  // find "<xxxx>" and replace (param is xxxx) 
+  // find "<xxxx>" and replace (param is xxxx)
   const replacer = (v: string) => {
     if (v.startsWith("obj-")) { // obj-xxxx -> Xxxx
-      return `${importName}.${pascalCase(v.slice(4))}`; 
+      return `${importName}.${pascalCase(v.slice(4))}`;
     } else if (v.startsWith("string-")) { // string-xxxx -> string
-      return "string"; 
+      return "string";
     } else if (v.startsWith("string?-")) { // string?-xxxx -> string | undefined
       return "string | undefined";
     } else {
@@ -141,10 +143,10 @@ function createEachContentDefinition(type: string, content: Object | null): stri
   fields = fields.replace(/"<([?a-zA-Z0-9_-]+)>"/g, (_, v) => replacer(v));
   // remove quotes from keys and partial
   fields = fields.replace(/"([a-zA-Z0-9_-]+)"\s*:/g, '$1:');
-  
+
   // replace [ xxxx ] with xxxx[]
   fields = fields.replace(/\[\s*([^\[\]]+?)\s*\]/gm, (_, v) => `${v.trim()}[]`);
- 
+
   // replace {} with Record<string, any>
   fields = fields.replace(/{\s*}/g, 'Record<string, any>');
 
@@ -155,7 +157,7 @@ function createEachContentDefinition(type: string, content: Object | null): stri
   fields = fields.replace(/(\S+)\n(\s*)}/g, '$1;\n$2}');
 
 
-  // wrap with interface 
+  // wrap with interface
   return `export type ${interfaceName} = ${fields}`
 }
 
@@ -179,7 +181,7 @@ function main () {
     });
     const definitionContent = generateDefinitionFileContent(parsedExplanations);
     const fixedDefinitionContent = manuallyFixDefinitions(definitionContent); // fix &quot; to "
-    generateDefinitionFile(fixedDefinitionContent, "src/vrchat/pipline/type.ts");
+    generateDefinitionFile(fixedDefinitionContent, OUTPUT_PATH);
 
   }).catch(console.error);
 

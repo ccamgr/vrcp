@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/column-types/sqlite
-import { Avatar } from "@/vrchat/api";
+import { Avatar } from "@/generated/api";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
@@ -16,7 +16,7 @@ export const avatarsTable = sqliteTable("avatars", {
   }>().notNull().default({}),
 
   rawData: text("raw_data", { mode: 'json' }).$type<Avatar>(),
-  
+
 });
 
 export function convertToDBAvatar(avatar: Avatar) : DBAvatar {

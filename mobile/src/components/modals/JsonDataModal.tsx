@@ -3,7 +3,7 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { User, UserStatus } from "@/vrchat/api";
+import { User, UserStatus } from "@/generated/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { json } from "drizzle-orm/gel-core";
@@ -28,9 +28,9 @@ const JsonDataModal = ({ open, setOpen, data }: Props) => {
 
   const handleCopy = async (value: Renderable) => {
     if (
-      value !== 'null' 
-      && value !== 'true' 
-      && value !== 'false' 
+      value !== 'null'
+      && value !== 'true'
+      && value !== 'false'
       && value !== 'undefined'
       && typeof value !== 'number'
     ) {
@@ -50,12 +50,12 @@ const JsonDataModal = ({ open, setOpen, data }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.jsonDataModal.button_close"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: t("components.jsonDataModal.button_copy"),
-      onPress: handleCopyAll, 
+      onPress: handleCopyAll,
       color: theme.colors.text,
       flex: 1,
     },
@@ -63,12 +63,12 @@ const JsonDataModal = ({ open, setOpen, data }: Props) => {
   return (
     <GenericModal scrollable="both" buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
 
-      <JSONTree 
+      <JSONTree
         data={data}
         hideRoot
-        theme={jsonTheme} 
+        theme={jsonTheme}
         invertTheme={false}
-        getItemString={(type, data, itemType, itemString) => 
+        getItemString={(type, data, itemType, itemString) =>
           <Text style={{color: jsonTheme.base03}}>{itemType} {itemString}</Text>
         }
         valueRenderer={(value) => (
@@ -84,32 +84,32 @@ const JsonDataModal = ({ open, setOpen, data }: Props) => {
 
 const getStyleForValue = (value: Renderable) => {
   const type = typeof value;
-  
+
   if (value === 'null') return { color: jsonTheme.base08 }; // Null
   if (value === 'true' || value === 'false') return { color: jsonTheme.base0E }; // Boolean
   if (type === 'string') return { color: jsonTheme.base0B }; // String
   if (type === 'number') return { color: jsonTheme.base09 }; // Number
-  
+
   return { color: jsonTheme.base08 }; // その他
 };
 
 const jsonTheme = {scheme: 'custom_dark',
   author: 'me',
-  
+
   // --- 背景と基本 ---
   base00: '#1e1e1e', // 【背景】
 
   // --- 値のデータ型による色分け ---
-  base0B: '#ce9178', // 【文字列】"hoge" 
-  base09: '#b5cea8', // 【数値/Bool】123, true 
-  base08: '#6170a3ff', // 【null/undefined】null, undefined 
+  base0B: '#ce9178', // 【文字列】"hoge"
+  base09: '#b5cea8', // 【数値/Bool】123, true
+  base08: '#6170a3ff', // 【null/undefined】null, undefined
 
-  
+
   // --- キー（プロパティ名） ---
   base0D: '#9cdcfe', // 【キー】"userId": (水色)
-  
+
   // --- その他 ---
-  
+
   base01: '#383830',
   base02: '#49483e',
   base03: '#c0c2bfff',
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   content: {
   },
-  
+
 });
 
 export default JsonDataModal;

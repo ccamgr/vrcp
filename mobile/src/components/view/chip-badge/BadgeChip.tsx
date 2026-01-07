@@ -1,7 +1,7 @@
 import { fontSize, spacing } from "@/configs/styles";
 import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/libs/utils";
-import { Badge, InstanceRegion, Region } from "@/vrchat/api";
+import { Badge, InstanceRegion, Region } from "@/generated/api";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 
 interface Props {

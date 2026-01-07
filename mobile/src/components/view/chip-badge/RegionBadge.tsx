@@ -1,6 +1,6 @@
 import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/libs/utils";
-import { InstanceRegion, Region } from "@/vrchat/api";
+import { InstanceRegion, Region } from "@/generated/api";
 
 const REGION_IMAGE_URL = "https://assets.vrchat.com/www/images/";
 

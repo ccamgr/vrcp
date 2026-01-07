@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/column-types/sqlite
-import { FavoriteGroup } from "@/vrchat/api";
+import { FavoriteGroup } from "@/generated/api";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 

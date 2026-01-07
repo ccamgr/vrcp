@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/column-types/sqlite
-import { User } from "@/vrchat/api";
+import { User } from "@/generated/api";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
@@ -13,8 +13,8 @@ export const usersTable = sqliteTable("users", {
   imageUrl: text("image_url"),
   isFriend: integer("is_friend", { mode: 'boolean' }).default(false),
   favoriteGroupId: text("favorite_group_id"),
-  option: text("option", { mode: 'json' }).$type<{ 
-    color?: string, 
+  option: text("option", { mode: 'json' }).$type<{
+    color?: string,
     localNote?:string,
     [key: string]: any
    }>().notNull().default({}),
@@ -25,10 +25,10 @@ export function convertToDBUser(user: User) : DBUser {
   return {
     id: user.id,
     displayName: user.displayName,
-    iconUrl: (user.userIcon && user.userIcon.length > 0) ? user.userIcon 
-    : (user.profilePicOverride && user.profilePicOverride.length > 0) ? user.profilePicOverride 
+    iconUrl: (user.userIcon && user.userIcon.length > 0) ? user.userIcon
+    : (user.profilePicOverride && user.profilePicOverride.length > 0) ? user.profilePicOverride
     : user.currentAvatarImageUrl,
-    imageUrl: (user.profilePicOverride && user.profilePicOverride.length > 0) ? user.profilePicOverride 
+    imageUrl: (user.profilePicOverride && user.profilePicOverride.length > 0) ? user.profilePicOverride
     : user.currentAvatarImageUrl,
     isFriend: user.isFriend || false,
     favoriteGroupId: null,

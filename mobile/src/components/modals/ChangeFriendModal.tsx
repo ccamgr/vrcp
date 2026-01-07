@@ -5,7 +5,7 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getFriendRequestStatus } from "@/libs/vrchat";
-import { User, UserStatus } from "@/vrchat/api";
+import { User, UserStatus } from "@/generated/api";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -46,7 +46,7 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
         const res = await vrc.friendsApi.friend({
           userId: user.id,
         });
-      } 
+      }
 
       onSuccess?.();
       setOpen(false);
@@ -81,14 +81,14 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
   const footerButtons: ButtonItemForFooter[] = [
     {
       title: t("components.changeFriendModal.button_cancel"),
-      onPress: () => setOpen(false), 
+      onPress: () => setOpen(false),
       color: theme.colors.text,
     },
     {
       title: getActionTitle(user),
       onPress: handleSubmitChange,
       color: getActionColor(user),
-      flex: 1, 
+      flex: 1,
     },
   ]
   return (
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: fontSize.medium,
   }
-  
+
 });
 
 export default ChangeFriendModal;
