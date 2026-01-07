@@ -1,8 +1,6 @@
 use super::watcher::{Payload, VrcLogEvent};
 use rusqlite::{params, Connection};
-use std::collections::hash_map::DefaultHasher;
 use std::fs;
-use std::hash::{Hash, Hasher};
 use std::io;
 use std::sync::{Arc, Mutex};
 // エラーハンドリング用
@@ -150,7 +148,7 @@ impl LogDatabase {
         // JSON変換
         let data_json = serde_json::to_string(&payload.event)?;
 
-        // イベントタイプ名を取得 (簡易実装)
+        // イベントタイプ名を取得 (検索のためのデータであり，dataに含んでいるためここで生成)
         let event_type = format!("{:?}", payload.event)
             .split_whitespace()
             .next()
@@ -159,16 +157,9 @@ impl LogDatabase {
             .replace(" {", "")
             .replace("}", "");
 
-        // ハッシュ値を計算して一意性を確保
-        let mut hasher = DefaultHasher::new();
-        payload.timestamp.hash(&mut hasher);
-        event_type.hash(&mut hasher);
-        data_json.hash(&mut hasher);
-        let log_hash = hasher.finish() as i64; // SQLiteのINTEGERに収まるようにi64に変換
-
         conn.execute(
             "INSERT INTO logs (timestamp, event_type, data, hash) VALUES (?1, ?2, ?3, ?4)",
-            params![payload.timestamp, event_type, data_json, log_hash],
+            params![payload.timestamp, event_type, data_json, payload.hash],
         )?;
 
         Ok(())
@@ -187,7 +178,7 @@ impl LogDatabase {
         // Prepare the SQL query
         // String comparison works for ISO-like dates (YYYY.MM.DD...)
         let mut stmt = conn.prepare(
-            "SELECT timestamp, data FROM logs
+            "SELECT timestamp, data, hash FROM logs
              WHERE timestamp > ?1 AND timestamp <= ?2
              ORDER BY timestamp ASC, id ASC",
         )?;
@@ -197,6 +188,7 @@ impl LogDatabase {
         let log_iter = stmt.query_map(params![start, end], |row| {
             let timestamp: String = row.get(0)?;
             let data_json: String = row.get(1)?;
+            let hash: i64 = row.get(2)?;
 
             // Deserialize JSON string back to VrcLogEvent Enum
             // Note: Since we are inside a closure returning rusqlite::Result,
@@ -204,7 +196,7 @@ impl LogDatabase {
             let event: VrcLogEvent = serde_json::from_str(&data_json)
                 .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
 
-            Ok(Payload { event, timestamp })
+            Ok(Payload { event, timestamp, hash })
         })?;
 
         // Collect results into a Vec

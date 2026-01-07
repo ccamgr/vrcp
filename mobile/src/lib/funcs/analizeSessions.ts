@@ -85,7 +85,6 @@ export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
     activePlayers.clear();
     playerIntervals.clear();
   };
-  console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
     const ts = toTime(log.timestamp);
     // @ts-ignore
@@ -141,6 +140,5 @@ export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
     closeSession(Date.now());
   }
 
-  // 新しい順に並び替え
-  return sessions.reverse();
+  return sessions;
 }

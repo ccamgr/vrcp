@@ -1,6 +1,8 @@
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use specta::Type;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::PathBuf;
@@ -16,7 +18,7 @@ use crate::modules::db::{LogDatabase, WatcherState}; // WatcherStateを追加
 // (イベント定義や正規表現など、データの「中身」に関する処理)
 // ================================================================
 
-#[derive(Clone, Serialize, Debug, Type, Event, Deserialize)]
+#[derive(Clone, Serialize, Debug, Type, Event, Deserialize, Hash)]
 #[serde(tag = "type", content = "data")]
 pub enum VrcLogEvent {
     AppStart,
@@ -48,6 +50,7 @@ pub enum VrcLogEvent {
 pub struct Payload {
     pub event: VrcLogEvent,
     pub timestamp: String,
+    pub hash: i64,
 }
 
 struct LogDefinition {
@@ -126,6 +129,13 @@ fn get_compiled_matchers() -> &'static Vec<CompiledMatcher> {
     })
 }
 
+fn gen_hash(timestamp: &str, event: &VrcLogEvent) -> i64 {
+    let mut hasher = DefaultHasher::new();
+    timestamp.hash(&mut hasher);
+    event.hash(&mut hasher);
+    hasher.finish() as i64 // SQLiteのINTEGERに収まるようにi64に変換
+}
+
 pub fn extract_timestamp(line: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
@@ -147,17 +157,16 @@ pub fn parse_log_line(line: &str) -> Option<Payload> {
 
     for matcher in get_compiled_matchers() {
         if let Some(caps) = matcher.regex.captures(line) {
-            let event_data = (matcher.factory)(&caps);
+            let event = (matcher.factory)(&caps);
             let timestamp = caps
                 .get(1)
                 .map_or("unknown", |m| m.as_str())
                 .to_string()
                 .replace(".", "-"); // normalize
 
-            return Some(Payload {
-                event: event_data,
-                timestamp,
-            });
+            let hash = gen_hash(&timestamp, &event);
+
+            return Some(Payload { event, timestamp, hash });
         }
     }
     None
@@ -235,10 +244,11 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                     "Startup: Previous session crashed (rotation). Inserting event at {}",
                     saved_state.last_timestamp
                 );
-                let crash_payload = Payload {
-                    event: VrcLogEvent::InvalidAppStop,
-                    timestamp: saved_state.last_timestamp.clone(),
-                };
+                let event = VrcLogEvent::InvalidAppStop;
+                let timestamp = saved_state.last_timestamp.clone();
+                let hash = gen_hash(&timestamp, &event);
+
+                let crash_payload = Payload {event, timestamp, hash};
                 let _ = db.insert_log(&crash_payload);
             }
             // 新しいファイルなので位置は 0 からスタート
@@ -355,10 +365,10 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                     println!("Log rotation detected!");
                     // ... (クラッシュ検知ロジックは既存のまま) ...
                     if is_app_running {
-                         let crash_payload = Payload {
-                            event: VrcLogEvent::InvalidAppStop,
-                            timestamp: last_seen_timestamp.clone(),
-                        };
+                        let event = VrcLogEvent::InvalidAppStop;
+                        let timestamp = last_seen_timestamp.clone();
+                        let hash = gen_hash(&timestamp, &event);
+                        let crash_payload = Payload {event, timestamp, hash};
                         let _ = db.insert_log(&crash_payload);
                         let _ = Payload::emit(&crash_payload, &app);
                     }

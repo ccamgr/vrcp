@@ -52,6 +52,7 @@ export type VrcLogEvent =
 export interface LogPayload {
   event: VrcLogEvent;
   timestamp: string; // "YYYY-MM-DD HH:mm:ss" 形式
+  hash: number; // ログの一意なハッシュ値
 }
 
 /**

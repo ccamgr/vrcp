@@ -141,6 +141,5 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
     closeSession(Date.now());
   }
 
-  // 新しい順に並び替え
-  return sessions.reverse();
+  return sessions;
 }
