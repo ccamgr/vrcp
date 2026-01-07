@@ -2,7 +2,7 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import ListViewPipelineMessage from "@/components/view/item-ListView/ListViewPipelineMessage";
 import { spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
-import { PipelineMessage } from "@/generated/pipline/type";
+import { PipelineMessage } from "@/generated/vrcpipline/type";
 import { useTheme } from "@react-navigation/native";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";

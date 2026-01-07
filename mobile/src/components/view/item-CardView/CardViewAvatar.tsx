@@ -1,5 +1,5 @@
 import { spacing } from "@/configs/styles";
-import { Avatar } from "@/generated/api";
+import { Avatar } from "@/generated/vrcapi";
 import React, { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import ReleaseStatusChip from "../chip-badge/ReleaseStatusChip";

@@ -1,7 +1,7 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import { spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
-import { Notification } from "@/generated/api";
+import { Notification } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";

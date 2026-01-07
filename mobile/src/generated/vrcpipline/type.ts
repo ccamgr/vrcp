@@ -1,7 +1,7 @@
 // This file is generated automatically by a script(gen-type.ts).
 // Don't modify manually!
 
-import * as _API from "../api";
+import * as _API from "../vrcapi";
 
 
 export interface PipelineRawMessage<T extends PipelineType = PipelineType> {

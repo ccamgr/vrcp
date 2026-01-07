@@ -5,7 +5,7 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getFriendRequestStatus } from "@/libs/vrchat";
-import { User, UserStatus } from "@/generated/api";
+import { User, UserStatus } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";

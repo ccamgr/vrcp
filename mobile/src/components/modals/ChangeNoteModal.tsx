@@ -4,7 +4,7 @@ import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { User, UserStatus } from "@/generated/api";
+import { User, UserStatus } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

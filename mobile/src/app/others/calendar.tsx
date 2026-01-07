@@ -11,7 +11,7 @@ import { useVRChat } from "@/contexts/VRChatContext";
 import { getDateKey, restoreDateKey } from "@/libs/date";
 import { routeToEvent } from "@/libs/route";
 import { extractErrMsg } from "@/libs/utils";
-import { CalendarEvent, PaginatedCalendarEventList } from "@/generated/api";
+import { CalendarEvent, PaginatedCalendarEventList } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { isSameMonth, set } from "date-fns";

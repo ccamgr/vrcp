@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/column-types/sqlite
-import { World } from "@/generated/api";
+import { World } from "@/generated/vrcapi";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 

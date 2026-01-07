@@ -9,7 +9,7 @@ import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/libs/funcs/calcFriendLocations";
 import { routeToInstance, routeToUser } from "@/libs/route";
 import { InstanceLike } from "@/libs/vrchat";
-import { LimitedUserFriend } from "@/generated/api";
+import { LimitedUserFriend } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, SectionList, StyleSheet, Text, View } from "react-native";

@@ -17,7 +17,7 @@ import {
   SortOption,
   UsersApi,
   WorldsApi,
-} from "@/generated/api";
+} from "@/generated/vrcapi";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";

@@ -1,5 +1,5 @@
 import { fontSize, spacing } from "@/configs/styles";
-import { LimitedUserInstance } from "@/generated/api";
+import { LimitedUserInstance } from "@/generated/vrcapi";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import BaseCardView from "./BaseCardView";

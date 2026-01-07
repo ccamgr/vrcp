@@ -2,7 +2,7 @@
 
 // "https://github.com/vrchatapi/vrchat.community/blob/main/content/docs/(guides)/websocket.mdx";
 const RAW_MDX_URL = "https://raw.githubusercontent.com/vrchatapi/vrchat.community/refs/heads/main/content/docs/(guides)/websocket.mdx";
-const OUTPUT_PATH = "src/generated/pipline/type.ts";
+const OUTPUT_PATH = "src/generated/vrcpipline/type.ts";
 
 const importName = "_API"
 

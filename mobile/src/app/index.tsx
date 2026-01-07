@@ -4,7 +4,7 @@ import { Atag } from "@/components/view/Atag";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
-import { MiscellaneousApi } from "@/generated/api";
+import { MiscellaneousApi } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useRef, useState } from "react";
 import {

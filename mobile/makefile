@@ -17,12 +17,12 @@ gen-oss:  # generate open source software notice
 .PHONY : gen-vrcapi gen-vrcpipe
 gen-vrcapi:  # generate the vrcapi types and clients from openapi spec
 # config on openapitools.json
-	@rm -rf ./src/generated/api/* ./src/generated/openapi.yaml
+	@rm -rf ./src/generated/vrcapi/* ./src/generated/openapi.yaml
 	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/generated/openapi.yaml
 	@npx @openapitools/openapi-generator-cli generate \
 		-i ./src/generated/openapi.yaml \
 		-g typescript-axios \
-		-o ./src/generated/api/ \
+		-o ./src/generated/vrcapi/ \
 		--additional-properties="useSingleRequestParameter=true"
 	@rm -f ./src/generated/openapi.yaml
 

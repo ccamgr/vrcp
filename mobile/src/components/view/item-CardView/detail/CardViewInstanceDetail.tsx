@@ -1,5 +1,5 @@
 import { spacing } from "@/configs/styles";
-import { LimitedUserInstance } from "@/generated/api";
+import { LimitedUserInstance } from "@/generated/vrcapi";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";

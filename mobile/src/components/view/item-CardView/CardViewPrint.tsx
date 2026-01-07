@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BaseCardView from "./BaseCardView";
-import { Print } from "@/generated/api";
+import { Print } from "@/generated/vrcapi";
 import { formatToDateStr } from "@/libs/date";
 
 interface Props {

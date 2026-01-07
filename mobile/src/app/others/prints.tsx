@@ -13,7 +13,7 @@ import { navigationBarHeight, spacing } from "@/configs/styles";
 import ImagePreview from "@/components/view/ImagePreview";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { OrderOption, Print, SortOption } from "@/generated/api";
+import { OrderOption, Print, SortOption } from "@/generated/vrcapi";
 import { extractErrMsg } from "@/libs/utils";
 import { useData } from "@/contexts/DataContext";
 

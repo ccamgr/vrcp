@@ -1,5 +1,5 @@
 import { extractErrMsg } from "@/libs/utils";
-import { AuthenticationApi } from "@/generated/api";
+import { AuthenticationApi } from "@/generated/vrcapi";
 import { router } from "expo-router";
 import Storage from "expo-sqlite/kv-store";
 import * as SecureStore from "expo-secure-store";

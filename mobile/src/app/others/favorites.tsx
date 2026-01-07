@@ -16,7 +16,7 @@ import {
   LimitedUserFriend,
   User,
   World,
-} from "@/generated/api";
+} from "@/generated/vrcapi";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

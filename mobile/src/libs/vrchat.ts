@@ -1,5 +1,5 @@
 import { vrcColors, vrcTexts } from "@/configs/vrchat";
-import { Avatar, AvatarPerformance, CalendarEvent, CurrentUser, FavoritedWorld, Group, GroupAccessType, Instance, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, UserState, UserStatus, World } from "@/generated/api";
+import { Avatar, AvatarPerformance, CalendarEvent, CurrentUser, FavoritedWorld, Group, GroupAccessType, Instance, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, UserState, UserStatus, World } from "@/generated/vrcapi";
 export type UserLike = LimitedUserSearch | LimitedUserFriend | LimitedUserInstance | User | CurrentUser
 export type WorldLike = LimitedWorld | FavoritedWorld | World
 export type GroupLike = LimitedGroup | Group

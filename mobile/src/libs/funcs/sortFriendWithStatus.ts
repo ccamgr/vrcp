@@ -1,4 +1,4 @@
-import { LimitedUserFriend, UserStatus } from "@/generated/api";
+import { LimitedUserFriend, UserStatus } from "@/generated/vrcapi";
 import { parseLocationString } from "../vrchat";
 
   const statusOrder = (status: UserStatus) => {

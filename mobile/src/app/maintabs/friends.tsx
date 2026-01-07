@@ -7,7 +7,7 @@ import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/libs/utils";
 import { routeToUser } from "@/libs/route";
 import { getState, parseLocationString } from "@/libs/vrchat";
-import { LimitedUserFriend, UserStatus } from "@/generated/api";
+import { LimitedUserFriend, UserStatus } from "@/generated/vrcapi";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";

@@ -8,7 +8,7 @@ import {
   parseLocationString,
   UserLike,
 } from "@/libs/vrchat";
-import { World } from "@/generated/api";
+import { World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";

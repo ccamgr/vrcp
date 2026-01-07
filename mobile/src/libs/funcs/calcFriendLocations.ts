@@ -1,4 +1,4 @@
-import { Favorite, LimitedUserFriend } from "@/generated/api";
+import { Favorite, LimitedUserFriend } from "@/generated/vrcapi";
 import { convertToLimitedUserInstance, InstanceLike, parseInstanceId, parseLocationString } from "../vrchat";
 import { sortFriendWithStatus } from "./sortFriendWithStatus";
 

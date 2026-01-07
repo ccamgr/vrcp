@@ -13,8 +13,8 @@ import {
   PrintsApi,
   UsersApi,
   WorldsApi,
-} from "@/generated/api";
-import { PipelineMessage, PipelineRawMessage } from "@/generated/pipline/type";
+} from "@/generated/vrcapi";
+import { PipelineMessage, PipelineRawMessage } from "@/generated/vrcpipline/type";
 import {
   createContext,
   ReactNode,

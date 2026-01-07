@@ -3,7 +3,7 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { User, UserStatus } from "@/generated/api";
+import { User, UserStatus } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { json } from "drizzle-orm/gel-core";

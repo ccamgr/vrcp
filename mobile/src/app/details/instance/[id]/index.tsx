@@ -21,7 +21,7 @@ import {
   UserLike,
   GroupLike,
 } from "@/libs/vrchat";
-import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/generated/api";
+import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
