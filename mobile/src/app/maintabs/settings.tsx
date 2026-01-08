@@ -11,7 +11,7 @@ import AboutModal from "@/components/features/settings/AboutModal";
 import FeedbackModal from "@/components/features/settings/FeedbackModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
-import { routeToAppearanceSettings, routeToDatabaseSettings, routeToDesktopAppSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/libs/route";
+import { routeToAppearanceSettings, routeToDatabaseSettings, routeToDesktopAppSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/lib/route";
 import SettingItemList from "@/components/features/settings/SettingItemList";
 
 interface SettingItem {

@@ -1,12 +1,12 @@
 import ReleaseStatusChip from "@/components/view/chip-badge/ReleaseStatusChip";
 import { fontSize, spacing } from "@/configs/styles";
-import { WorldLike } from "@/libs/vrchat";
+import { WorldLike } from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import BaseCardView from "../BaseCardView";
-import { routeToUser } from "@/libs/route";
+import { routeToUser } from "@/lib/route";
 import { Link } from "expo-router";
 
 interface Props {

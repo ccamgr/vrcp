@@ -1,6 +1,4 @@
-import { s } from "framer-motion/client";
-import { type Payload } from "../generated/bindings";
-import { start } from "repl";
+import { LogPayload } from "@/generated/desktopapi/type";
 
 export interface PlayerInterval {
   name: string;
@@ -21,7 +19,7 @@ export interface WorldSession {
 /**
  * ログ配列を解析し、ワールド滞在ごとのセッション情報に変換する
  */
-export function analyzeSessions(logs: Payload[]): WorldSession[] {
+export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
   const sessions: WorldSession[] = [];
 
   let me: {
@@ -87,7 +85,6 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
     activePlayers.clear();
     playerIntervals.clear();
   };
-  console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
     const ts = toTime(log.timestamp);
     // @ts-ignore
@@ -143,6 +140,5 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
     closeSession(Date.now());
   }
 
-  // 新しい順に並び替え
-  return sessions.reverse();
+  return sessions;
 }

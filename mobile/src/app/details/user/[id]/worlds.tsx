@@ -11,9 +11,9 @@ import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { FlatList } from "react-native-gesture-handler";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
-import { routeToWorld } from "@/libs/route";
+import { routeToWorld } from "@/lib/route";
 import { LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/generated/vrcapi";
-import { extractErrMsg } from "@/libs/utils";
+import { extractErrMsg } from "@/lib/utils";
 import { useLocalSearchParams } from "expo-router";
 
 export default function UserWorlds() {
@@ -23,7 +23,7 @@ export default function UserWorlds() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
-  const cardViewColumns = settings.uiOptions.layouts.cardViewColumns;
+  const cardViewColumns = settings.uiOptions_cardViewColumns;
   const NumPerReq = 50;
 
   const [worlds, setWorlds] = useState<LimitedWorld[]>([]);

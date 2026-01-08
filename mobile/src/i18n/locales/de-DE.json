@@ -1,0 +1,438 @@
+{
+  "_langDisplayName_": "Englisch (USA)",
+  "_langTag_": "en-US",
+  "app": "VRCP",
+  "common": {
+    "dateFormats": {
+      "date": "jjjj/MM/tt",
+      "dateTime": "jjjj/MM/tt HH:mm",
+      "dateTimeRange_diffDay": "{{Start, jjjj/MM/tt HH:mm}} ~ {{ende, jjjj/MM/tt HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "time": "HH: mm",
+      "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}"
+    },
+    "message": {
+      "failed_to_fetch": "{{item}} konnte nicht abgerufen werden.",
+      "failed_to_update": "{{item}} konnte nicht aktualisiert werden.",
+      "invalid": "Ungültiger Wert",
+      "loading": "Laden...",
+      "no_data": "Keine Daten verfügbar."
+    }
+  },
+  "components": {
+    "aboutModal": {
+      "button_ChangeLog": "Änderungsprotokoll",
+      "button_Licenses": "Open-Source-Lizenzen",
+      "button_privacyPolicy": "Datenschutzrichtlinie",
+      "button_termsOfUse": "Nutzungsbedingungen",
+      "innerModals": {
+        "changeLog": {
+          "format_date": "{{Datum, jjjj/MM/tt}}",
+          "format_version": "Ver {{version}}",
+          "label": "Änderungsprotokoll"
+        },
+        "licenses": {
+          "label": "Open-Source-Lizenzen",
+          "link_to_repos": "Link zu Repos ↗"
+        },
+        "privacyPolicy": {
+          "label": "Datenschutzrichtlinie"
+        },
+        "termsOfUse": {
+          "label": "Nutzungsbedingungen"
+        }
+      },
+      "label": "App-Informationen"
+    },
+    "changeAvatarModal": {
+      "button_cancel": "Stornieren",
+      "button_confirm": "Avatar ändern",
+      "confirm_text": "Sind Sie sicher, dass Sie Ihren Avatar in „{{avatarName}}“ ändern möchten?"
+    },
+    "changeBioLinksModal": {
+      "button_cancel": "Stornieren",
+      "button_save": "Bio-Links speichern",
+      "placeholder": "Link-URL hinzufügen (z. B. https://example.com)"
+    },
+    "changeBioModal": {
+      "button_cancel": "Stornieren",
+      "button_save": "Bio speichern",
+      "placeholder": "Biografie hier eingeben..."
+    },
+    "changeFavoriteModal": {
+      "button_cancel": "Stornieren",
+      "button_save": "In Favoritengruppe speichern",
+      "button_unselect": "Unfavorit"
+    },
+    "changeFriendModal": {
+      "button_cancel": "Stornieren",
+      "button_confirm_cancel": "Freundschaftsanfrage abbrechen",
+      "button_confirm_remove": "Diesen Freund entfernen",
+      "button_confirm_send": "Freundschaftsanfrage senden",
+      "confirm_text_cancel": "Sind Sie sicher, dass Sie die Freundschaftsanfrage an „{{userName}}“ abbrechen möchten?",
+      "confirm_text_remove": "Sind Sie sicher, dass Sie „{{userName}}“ von Ihren Freunden entfernen möchten?",
+      "confirm_text_send": "Sind Sie sicher, dass Sie eine Freundschaftsanfrage an „{{userName}}“ senden möchten?"
+    },
+    "changeNoteModal": {
+      "button_cancel": "Stornieren",
+      "button_save": "Notiz speichern",
+      "placeholder": "Notiz hier eingeben..."
+    },
+    "changeStatusModal": {
+      "button_cancel": "Stornieren",
+      "button_save": "Status speichern",
+      "placeholder": "Geben Sie hier den Status ein..."
+    },
+    "developmentModal": {
+      "groupLabel_debug": "debuggen",
+      "groupLabel_feature": "Entwicklungsfunktion",
+      "itemDescription_json": "Aktivieren Sie den JSON-Viewer für Detailseiten.",
+      "itemDescription_sendLogs": "Aktivieren Sie das Senden von Fehlerprotokollen an den Entwickler.",
+      "itemLabel_json": "JSON-Viewer",
+      "itemLabel_sendLogs": "Protokolle senden",
+      "label": "Entwickler"
+    },
+    "eventDetailModal": {
+      "eventTime_differentDay": "{{Start, jjjj/MM/tt HH:mm}} ~ {{ende, jjjj/MM/tt HH:mm}}",
+      "eventTime_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}"
+    },
+    "exitDialog": {
+      "button_no": "NEIN",
+      "button_yes": "Ja",
+      "message": "Möchten Sie die App wirklich beenden?"
+    },
+    "feedbackModal": {
+      "button_cancel": "Stornieren",
+      "button_send": "Feedback senden",
+      "label": "Feedback senden",
+      "placeholder_email": "Ihre E-Mail",
+      "placeholder_message": "Geben Sie hier Inhalte ein...",
+      "type_bug": "Fehlerbericht",
+      "type_feedback": "Rückmeldung",
+      "type_request": "Funktionsanfrage"
+    },
+    "jsonDataModal": {
+      "button_close": "Schließen",
+      "button_copy": "In die Zwischenablage kopieren"
+    },
+    "releaseNote": {
+      "button_close": "Schließen",
+      "label": "VRCP-Versionshinweise"
+    }
+  },
+  "pages": {
+    "analytics": {
+      "label": "Analytik",
+      "no_analytics": "Keine Analysedaten verfügbar."
+    },
+    "avatars": {
+      "label": "Meine Avatare",
+      "no_avatars": "Du hast keine Avatare."
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} Ereignis",
+      "calendar_date_event_count_other": "{{count}} Ereignisse",
+      "calendar_month_label": "{{Datum, jjjj MMMM}}",
+      "label": "Veranstaltungen",
+      "no_events": "Keine Veranstaltungen verfügbar.",
+      "selected_month_events": "Ereignisse am {{date, yyyy/MM}}",
+      "selected_month_events_day_label": "{{date, do (EEE)}}"
+    },
+    "detail_avatar": {
+      "label": "Avatar-Details",
+      "menuLabel_avatar_changeTo": "Wechseln Sie zu diesem Avatar",
+      "menuLabel_avatar_nowUsing": "Benutze jetzt diesen Avatar",
+      "menuLabel_favoriteGroup_add": "Zur Favoritengruppe hinzufügen",
+      "menuLabel_favoriteGroup_edit": "Favoritengruppe bearbeiten",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "sectionLabel_author": "Autor",
+      "sectionLabel_description": "Beschreibung",
+      "sectionLabel_info": "Info",
+      "sectionLabel_platform": "Plattform",
+      "sectionLabel_tags": "Schlagworte"
+    },
+    "detail_event": {
+      "label": "Veranstaltungsdetails",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "sectionLabel_description": "Beschreibung",
+      "sectionLabel_owner": "Eigentümer"
+    },
+    "detail_group": {
+      "label": "Gruppendetails",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "sectionLabel_info": "Info"
+    },
+    "detail_instance": {
+      "label": "Instanzdetails",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "sectionLabel_info": "Info",
+      "sectionLabel_owner": "Eigentümer",
+      "sectionLabel_platform": "Plattform",
+      "sectionLabel_tags": "Schlagworte",
+      "sectionLabel_usersInInstance": "Benutzer in der Instanz",
+      "sectionLabel_world": "Welt",
+      "section_info_ageGated": "Altersbegrenzt: {{ageGated}}",
+      "section_info_capacity": "Kapazität: {{capacity}}",
+      "section_users_more_user_count_one": "{{count}} weitere Benutzer",
+      "section_users_more_user_count_other": "{{count}} weitere Benutzer"
+    },
+    "detail_user": {
+      "label": "Benutzerdetails",
+      "menuLabel_favoriteGroup_add": "Zur Favoritengruppe hinzufügen",
+      "menuLabel_favoriteGroup_edit": "Favoritengruppe bearbeiten",
+      "menuLabel_friend_cancelRequest": "Freundschaftsanfrage abbrechen",
+      "menuLabel_friend_remove": "Freund entfernen",
+      "menuLabel_friend_sendRequest": "Freundschaftsanfrage senden",
+      "menuLabel_invite_me": "Lade mich selbst ein",
+      "menuLabel_invite_request": "Einladung anfordern",
+      "menuLabel_invite_send": "Einladung senden",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "menuLabel_note_edit": "Notiz bearbeiten",
+      "sectionLabel_badges": "Abzeichen",
+      "sectionLabel_bio": "Bio",
+      "sectionLabel_bio_links": "Links",
+      "sectionLabel_description": "Beschreibung",
+      "sectionLabel_info": "Info",
+      "sectionLabel_location": "Standort",
+      "sectionLabel_note": "Notiz",
+      "section_info_joined": "Beitrittsdatum: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "Letzte Aktivität: {{date, yyyy/MM/dd HH:mm}}",
+      "userLocation_offline": "Der Benutzer ist offline...",
+      "userLocation_private": "Der Benutzer befindet sich in einer privaten Instanz ...",
+      "userLocation_traveling": "Der Benutzer ist unterwegs...",
+      "userLocation_unknown": "Der Benutzer befindet sich an einem unbekannten Ort ..."
+    },
+    "detail_user_groups": {
+      "label": "Benutzergruppen",
+      "no_groups_found": "Für diesen Benutzer wurden keine Gruppen gefunden."
+    },
+    "detail_user_worlds": {
+      "label": "Benutzerwelten",
+      "no_worlds_found": "Für diesen Benutzer wurden keine Welten gefunden."
+    },
+    "detail_world": {
+      "label": "Weltdetails",
+      "menuLabel_favoriteGroup_add": "Zur Favoritengruppe hinzufügen",
+      "menuLabel_favoriteGroup_edit": "Favoritengruppe bearbeiten",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "no_instances": "Keine Instanzen verfügbar.",
+      "sectionLabel_author": "Autor",
+      "sectionLabel_description": "Beschreibung",
+      "sectionLabel_info": "Info",
+      "sectionLabel_platform": "Plattform",
+      "sectionLabel_tags": "Schlagworte",
+      "section_info_capacityAndRecommended": "Kapazität: {{capacity}} | \nEmpfohlen: {{recommendedCapacity}}",
+      "section_info_created": "Erstellt: {{date, yyyy/MM/dd}}",
+      "section_info_updated": "Letzte Aktualisierung: {{date, yyyy/MM/dd}}",
+      "section_info_visits": "Besuche: {{visits}}",
+      "tabLabel_info": "Info",
+      "tabLabel_instances": "Instanzen"
+    },
+    "favorites": {
+      "label": "Favoriten",
+      "no_favoritegroup_selected": "Keine Favoritengruppe ausgewählt.",
+      "tabLabel_avatars": "Avatare",
+      "tabLabel_friends": "Freunde",
+      "tabLabel_worlds": "Welten"
+    },
+    "feeds": {
+      "label": "Feeds",
+      "no_feeds": "Keine Feeds verfügbar."
+    },
+    "friendlocations": {
+      "label": "Freundesstandorte",
+      "no_friendlocations": "Keine Standorte von Freunden verfügbar.",
+      "sectionLabel_instances": "Freunde in Instanzen",
+      "sectionLabel_private": "Freunde in privaten Instanzen"
+    },
+    "friends": {
+      "label": "Freunde",
+      "tabLabel_active": "Aktiv",
+      "tabLabel_favorites": "Favoriten",
+      "tabLabel_offline": "Offline",
+      "tabLabel_online": "Online"
+    },
+    "groups": {
+      "label": "Meine Gruppen",
+      "no_groups": "Sie haben keine Gruppen."
+    },
+    "home": {
+      "events_area": "Ereignisse heute",
+      "feeds_area": "Feeds",
+      "friendLocation": {
+        "more_friends_count_one": "{{count}} weitere Freunde",
+        "more_friends_count_other": "{{count}} weitere Freunde"
+      },
+      "friendlocations_area": "Freundesstandorte",
+      "label": "Heim",
+      "no_events": "Keine Veranstaltungen verfügbar.",
+      "no_feeds": "Keine Feeds verfügbar.",
+      "no_friendlocations": "Keine Standorte von Freunden verfügbar.",
+      "see_more": "Mehr anzeigen"
+    },
+    "login": {
+      "button_links": "Sie können sich nicht anmelden?",
+      "button_links_close": "Schließen",
+      "button_login": "Login",
+      "button_tfa_close": "Schließen",
+      "button_tfa_verify": "Verifizieren",
+      "disclaimer": "VRCP ist eine inoffizielle Anwendung für VRChat. \nDiese Anwendung steht in keiner Verbindung zu VRChat Inc. oder seinen verbundenen Unternehmen und wird von diesen nicht unterstützt, gesponsert oder genehmigt.",
+      "label": "Login",
+      "linksModal_emailLinkText": "E-Mail wiederherstellen",
+      "linksModal_passwordLinkText": "Passwort zurücksetzen",
+      "linksModal_registerLinkText": "Ein Konto erstellen",
+      "linksModal_text1": "Neu bei VRChat?",
+      "linksModal_text2": "Anmeldedaten vergessen?",
+      "linksModal_title": "Haben Sie Probleme beim Anmelden?",
+      "login_failed_error": "Fehler bei der Anmeldung. \nBitte überprüfen Sie Ihre Anmeldedaten.",
+      "online_count_message": "Es sind jetzt {{count}} Benutzer online auf VRChat!",
+      "password_empty_error": "Das Passwort darf nicht leer sein.",
+      "password_placeholder": "Passwort",
+      "save_credentials": "Benutzername und Passwort speichern",
+      "tfaCode_placeholder": "Code (z. B. 123456)",
+      "tfa_disabled_error": "2FA ist deaktiviert. \nBitte überprüfen Sie Ihre Kontoeinstellungen.",
+      "tfa_failed_error": "Die 2FA-Überprüfung ist fehlgeschlagen. \nBitte versuchen Sie es erneut.",
+      "tfa_invalid_error": "Der 2FA-Code muss 6-stellig sein.",
+      "tfa_modal_text_email": "Ein 2FA-Code wurde an Ihre E-Mail-Adresse gesendet. \nBitte geben Sie es unten ein.",
+      "tfa_modal_text_totp": "Bitte geben Sie Ihren 2FA-Code aus Ihrer Authentifizierungs-App ein.",
+      "tfa_pasted": "Aus der Zwischenablage eingefügt",
+      "tfa_unknown_error": "Es ist ein unbekannter 2FA-Fehler aufgetreten. \nBitte versuchen Sie es später noch einmal.",
+      "username_empty_error": "Benutzername oder E-Mail-Adresse dürfen nicht leer sein.",
+      "username_placeholder": "Benutzername / E-Mail",
+      "welcome": "Willkommen bei VRCP!\n\nMelden Sie sich mit Ihrem VRChat-Konto an."
+    },
+    "notifications": {
+      "label": "Benachrichtigungen",
+      "no_notifications": "Keine Benachrichtigungen."
+    },
+    "others": {
+      "label": "Andere",
+      "tabLabel_analytics": "Analytik",
+      "tabLabel_events": "Veranstaltungen",
+      "tabLabel_feeds": "Feeds",
+      "tabLabel_notifications": "Benachrichtigungen"
+    },
+    "prints": {
+      "label": "Drucke",
+      "no_prints": "Sie haben keine Abdrücke."
+    },
+    "profile": {
+      "label": "Profil",
+      "menuLabel_change_status": "Status ändern",
+      "menuLabel_edit_bio": "Biografie bearbeiten",
+      "menuLabel_edit_bio_links": "Bearbeiten Sie Bio-Links",
+      "menuLabel_json": "Rohe JSON-Daten",
+      "menuLabel_route_avatars": "Avatare",
+      "menuLabel_route_current_avatar": "Aktueller Avatar",
+      "menuLabel_route_favorites": "Favoriten",
+      "menuLabel_route_groups": "Gruppen",
+      "menuLabel_route_prints": "Drucke",
+      "menuLabel_route_worlds": "Welten",
+      "sectionLabel_badges": "Abzeichen",
+      "sectionLabel_bio": "Bio",
+      "sectionLabel_bio_links": "Links",
+      "sectionLabel_info": "Info",
+      "section_info_joined": "Beitrittsdatum: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "Letzte Aktivität: {{date, yyyy/MM/dd HH:mm}}"
+    },
+    "search": {
+      "label": "Suchergebnisse",
+      "no_groups_found": "Für „{{search}}“ wurden keine Gruppen gefunden.",
+      "no_users_found": "Für „{{search}}“ wurden keine Benutzer gefunden.",
+      "no_worlds_found": "Für „{{search}}“ wurden keine Welten gefunden.",
+      "searchbox_placeholder": "Suchen Sie nach Welten, Gruppen oder Benutzern"
+    },
+    "setting_appearance": {
+      "groupLabel_app": "App",
+      "groupLabel_friends": "Freunde",
+      "innerModals": {
+        "cardViewColumns": {
+          "button_apply": "Anwenden",
+          "maybe_requireRestart": "Möglicherweise ist ein Neustart der App erforderlich\n\nwirksam werden.",
+          "option_1_columns": "1 Spalten",
+          "option_2_columns": "2 Spalten",
+          "option_3_columns": "3 Spalten"
+        },
+        "homeTabLayout": {
+          "button_apply": "Anwenden",
+          "option_events": "Veranstaltungen",
+          "option_feeds": "Feeds",
+          "option_friendLocations": "Standorte",
+          "section_bottom": "Unterer Bereich",
+          "section_separatePos": "Separate Position",
+          "section_top": "Oberer Bereich",
+          "selectedLabel_events": "Ereignisse für heute",
+          "selectedLabel_feeds": "Feeds von Freunden",
+          "selectedLabel_friendLocations": "Freundesstandorte",
+          "selectedLabel_sepPos": "Ein höherer Wert für die separate Position vergrößert den oberen Bereich."
+        },
+        "theme": {
+          "button_apply": "Anwenden",
+          "maybe_requireRestart": "Möglicherweise ist ein Neustart der App erforderlich\n\nwirksam werden.",
+          "option_dark": "Dunkel",
+          "option_light": "Licht",
+          "option_system": "System"
+        }
+      },
+      "itemDescription_cardViewColumns": "Wählen Sie die Anzahl der Spalten aus, die in Kartenansichten angezeigt werden sollen.",
+      "itemDescription_favoriteFriendsColors": "Wählen Sie das Farbthema Ihrer Lieblingsfreunde.",
+      "itemDescription_friendColor": "Wählen Sie das Farbthema Ihres Freundes.",
+      "itemDescription_homeTabLayout": "Wählen Sie aus, welche Registerkarte standardmäßig auf der Startseite angezeigt werden soll.",
+      "itemDescription_theme": "Wählen Sie ein helles oder dunkles Thema für die Anwendung.",
+      "itemLabel_cardViewColumns": "Spalten in der Kartenansicht",
+      "itemLabel_favoriteFriendsColors": "Lieblingsfarben von Freunden",
+      "itemLabel_friendColor": "Freundfarbe",
+      "itemLabel_homeTabLayout": "Layout der Registerkarte „Startseite“.",
+      "itemLabel_theme": "Thema",
+      "label": "Darstellungseinstellungen"
+    },
+    "setting_database": {
+      "button_clearCache": "Cache leeren",
+      "cache_size_and_count_one": "{{size}} MB ({{count}} Artikel)",
+      "cache_size_and_count_other": "{{size}} MB ({{count}} Elemente)",
+      "groupLabel_cache": "Cache",
+      "label": "Datenbankeinstellungen"
+    },
+    "setting_desktopapp": {
+      "label": "Desktop-App"
+    },
+    "setting_language": {
+      "description": "Wählen Sie Ihre Sprache aus",
+      "label": "Spracheinstellungen"
+    },
+    "setting_notifications": {
+      "label": "Benachrichtigungseinstellungen"
+    },
+    "settings": {
+      "groupLabel_account": "Konto",
+      "groupLabel_general": "Allgemein",
+      "groupLabel_other": "Andere",
+      "itemDescription_about": "Bewerbungsinformationen und Credits anzeigen.",
+      "itemDescription_appearance": "Passen Sie das Erscheinungsbild der Anwendungsoberfläche an.",
+      "itemDescription_database": "Verwalten Sie Datenbankeinstellungen und Speicheroptionen.",
+      "itemDescription_desktopapp": "Konfigurieren Sie spezifische Einstellungen für die Desktop-Version von VRCP.",
+      "itemDescription_development": "Greifen Sie auf Entwicklungsfunktionen und -optionen zu.",
+      "itemDescription_feedback": "Senden Sie Ihr Feedback an den Entwickler.",
+      "itemDescription_language": "Wählen Sie die Sprache für die Anwendung aus.",
+      "itemDescription_logout": "Melden Sie sich von dieser App ab.",
+      "itemDescription_notifications": "Verwalten Sie Push-Benachrichtigungen und Warnungen.",
+      "itemLabel_about": "Um",
+      "itemLabel_appearance": "Darstellungseinstellungen",
+      "itemLabel_database": "Datenbank",
+      "itemLabel_desktopapp": "Desktop-App",
+      "itemLabel_development": "Entwickler",
+      "itemLabel_feedback": "Rückmeldung",
+      "itemLabel_language": "Sprache",
+      "itemLabel_logout": "Abmelden",
+      "itemLabel_notifications": "Benachrichtigungen",
+      "label": "Einstellungen",
+      "logout_dialog_cancel": "Stornieren",
+      "logout_dialog_confirm": "Abmelden",
+      "logout_dialog_text": "Sind Sie sicher, dass Sie sich abmelden möchten?"
+    },
+    "worlds": {
+      "label": "Meine Welten",
+      "no_worlds": "Du hast keine Welten."
+    }
+  }
+}

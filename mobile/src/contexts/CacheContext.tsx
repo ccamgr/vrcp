@@ -1,4 +1,4 @@
-import { getUserAgent, omitObject } from "@/libs/utils";
+import { getUserAgent, omitObject } from "@/lib/utils";
 import {
   Avatar,
   CurrentUser,
@@ -21,7 +21,7 @@ import React, {
 import { Image, Platform } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { useVRChat } from "./VRChatContext";
-import FileWrapper from "@/libs/wrappers/fileWrapper";
+import FileWrapper from "@/lib/wrappers/fileWrapper";
 
 // Image Cache in Storage
 interface Cache<T> {

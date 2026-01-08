@@ -64,7 +64,8 @@
       "label": "その他",
       "tabLabel_feeds": "フィード",
       "tabLabel_events": "イベント",
-      "tabLabel_notifications": "通知"
+      "tabLabel_notifications": "通知",
+      "tabLabel_analytics": "分析"
     },
     "settings": {
       "label": "設定",
@@ -89,7 +90,9 @@
       "logout_dialog_confirm": "ログアウト",
       "logout_dialog_cancel": "キャンセル",
       "itemDescription_development": "開発中機能やオプションにアクセスします。",
-      "itemLabel_development": "ディベロッパー"
+      "itemLabel_development": "ディベロッパー",
+      "itemDescription_desktopapp": "VRCP のデスクトップ バージョンに固有の設定を構成します。",
+      "itemLabel_desktopapp": "デスクトップアプリ"
     },
     "setting_appearance": {
       "label": "表示設定",
@@ -324,6 +327,13 @@
     "worlds": {
       "label": "マイワールド",
       "no_worlds": "アップロードしたワールドはありません。"
+    },
+    "analytics": {
+      "label": "分析",
+      "no_analytics": "利用可能な分析データがありません。"
+    },
+    "setting_desktopapp": {
+      "label": "デスクトップアプリ"
     }
   },
   "components": {

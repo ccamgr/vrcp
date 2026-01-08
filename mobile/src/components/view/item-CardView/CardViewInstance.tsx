@@ -3,7 +3,7 @@ import { LimitedUserInstance } from "@/generated/vrcapi";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import BaseCardView from "./BaseCardView";
-import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";
+import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
 import { useCache } from "@/contexts/CacheContext";
 import UserOrGroupChip from "../chip-badge/UserOrGroupChip";
 import { LinearGradient } from 'expo-linear-gradient';

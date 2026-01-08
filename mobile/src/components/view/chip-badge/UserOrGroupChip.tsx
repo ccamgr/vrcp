@@ -1,7 +1,7 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { CachedImage } from "@/contexts/CacheContext";
-import { omitObject } from "@/libs/utils";
-import { getStatusColor, getTrustRankColor, getUserIconUrl, GroupLike, isGroupLike, UserLike } from "@/libs/vrchat";
+import { omitObject } from "@/lib/utils";
+import { getStatusColor, getTrustRankColor, getUserIconUrl, GroupLike, isGroupLike, UserLike } from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import React from "react";
 import { StyleSheet, View } from "react-native";

@@ -12,7 +12,7 @@ import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles
 import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/libs/utils";
+import { extractErrMsg } from "@/lib/utils";
 import {
   getAuthorTags,
   getTrustRankColor,
@@ -20,13 +20,13 @@ import {
   parseLocationString,
   UserLike,
   GroupLike,
-} from "@/libs/vrchat";
+} from "@/lib/vrchat";
 import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
-import { routeToGroup, routeToSearch, routeToUser, routeToWorld } from "@/libs/route";
+import { routeToGroup, routeToSearch, routeToUser, routeToWorld } from "@/lib/route";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";

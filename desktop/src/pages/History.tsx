@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { commands } from "../generated/bindings";
-import { analyzeSessions, type WorldSession } from "../lib/logAnalytics";
+import { analyzeSessions, type WorldSession } from "../lib/analyzeSessions";
 import { ChevronLeft, ChevronRight, LayoutList, BarChart3 } from "lucide-react";
 import { getLocalISODate } from "../lib/date";
 import HistoryListView from "../components/history/HistoryListView";

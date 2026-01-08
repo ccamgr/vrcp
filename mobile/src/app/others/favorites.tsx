@@ -7,8 +7,8 @@ import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { extractErrMsg } from "@/libs/utils";
-import { routeToAvatar, routeToUser, routeToWorld } from "@/libs/route";
+import { extractErrMsg } from "@/lib/utils";
+import { routeToAvatar, routeToUser, routeToWorld } from "@/lib/route";
 import {
   Avatar,
   FavoritedWorld,

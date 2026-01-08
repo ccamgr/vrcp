@@ -1,5 +1,5 @@
 import { SettingKey } from '@/contexts/SettingContext';
-import StorageWrapper from '@/libs/wrappers/storageWrapper';
+import StorageWrapper from '@/lib/wrappers/storageWrapper';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 

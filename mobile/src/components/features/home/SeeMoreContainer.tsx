@@ -1,7 +1,7 @@
 import { ButtonEx } from "@/components/CustomElements";
 import IconButton from "@/components/view/icon-components/IconButton";
 import globalStyles, { radius, spacing } from "@/configs/styles";
-import { omitObject } from "@/libs/utils";
+import { omitObject } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { vrcColors } from "@/configs/vrchat";
-import { mergeWithDefaults } from "@/libs/utils";
-import StorageWrapper from "@/libs/wrappers/storageWrapper";
+import { mergeWithDefaults } from "@/lib/utils";
+import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import { de } from "date-fns/locale";
 
 

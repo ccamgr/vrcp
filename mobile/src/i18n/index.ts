@@ -7,16 +7,16 @@ import { format, Locale } from 'date-fns';
 // Import translation files
 import enGB_translate from './locales/en-GB.json';
 import enUS_translate from './locales/en-US.json';
-import de_translate from './locales/de.json';
-import ja_translate from './locales/ja.json';
-import ko_translate from './locales/ko.json';
-import ru_translate from './locales/ru.json';
+import deDE_translate from './locales/de-DE.json';
+import jaJP_translate from './locales/ja-JP.json';
+import koKR_translate from './locales/ko-KR.json';
+import ruRU_translate from './locales/ru-RU.json';
 import zhCN_translate from './locales/zh-CN.json';
 import zhTW_translate from './locales/zh-TW.json';
 
 
 // Import date-fns locales
-import { de, enGB, enUS, ja, ko, ru, zhCN, zhHK, zhTW } from 'date-fns/locale';
+import { de, enGB, enUS, ja, ko, ru, zhCN, zhTW } from 'date-fns/locale';
 import { ResourceLanguage } from 'i18next';
 
 
@@ -32,10 +32,10 @@ const defaultLang = "en-US";
 export const translateResources: { [key: LanguageTag]: TranslateResource } = {
   "en-GB": { translation: enGB_translate, datefnsLocale: enGB },
   "en-US": { translation: enUS_translate, datefnsLocale: enUS },
-  "de": { translation: de_translate, datefnsLocale: de },
-  "ja": { translation: ja_translate, datefnsLocale: ja },
-  "ko": { translation: ko_translate, datefnsLocale: ko },
-  "ru": { translation: ru_translate, datefnsLocale: ru },
+  "de-DE": { translation: deDE_translate, datefnsLocale: de },
+  "ja-JP": { translation: jaJP_translate, datefnsLocale: ja },
+  "ko-KR": { translation: koKR_translate, datefnsLocale: ko },
+  "ru-RU": { translation: ruRU_translate, datefnsLocale: ru },
   "zh-CN": { translation: zhCN_translate, datefnsLocale: zhCN },
   "zh-TW": { translation: zhTW_translate, datefnsLocale: zhTW },
 };
@@ -51,7 +51,11 @@ export const getUserLanguage = async (): Promise<LanguageTag> => {
 const initUserLanguage = async (): Promise<LanguageTag> => {
   const storedLang = await Storage.getItemAsync(LANGUAGE_KEY);
   const deviceLang = Localization.getLocales()[0]?.languageTag;
-  return storedLang || deviceLang || defaultLang;
+  if ((storedLang || deviceLang) in translateResources) {
+    return storedLang || deviceLang;
+  } else {
+    return defaultLang;
+  }
 }
 
 

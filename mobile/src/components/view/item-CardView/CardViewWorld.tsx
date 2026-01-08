@@ -1,5 +1,5 @@
 import { fontSize, spacing } from "@/configs/styles";
-import { getPlatform, WorldLike } from "@/libs/vrchat";
+import { getPlatform, WorldLike } from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import React, { useState } from "react";

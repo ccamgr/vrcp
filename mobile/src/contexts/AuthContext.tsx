@@ -1,4 +1,4 @@
-import { extractErrMsg } from "@/libs/utils";
+import { extractErrMsg } from "@/lib/utils";
 import { AuthenticationApi } from "@/generated/vrcapi";
 import { router } from "expo-router";
 import Storage from "expo-sqlite/kv-store";
@@ -13,7 +13,7 @@ import {
   useState,
 } from "react";
 import { useVRChat } from "./VRChatContext";
-import { routeToHome, routeToIndex } from "@/libs/route";
+import { routeToHome, routeToIndex } from "@/lib/route";
 
 type AuthUser = {
   id?: string;

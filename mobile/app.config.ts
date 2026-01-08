@@ -87,6 +87,11 @@ export default ({ config }: ConfigContext) => ({
       UIBackgroundModes: ["fetch", "processing"], // for background fetch
       BGTaskSchedulerPermittedIdentifiers: ["BACKGROUND_FETCH_TASK"], // must match the task name defined in src/tasks/
       LSApplicationQueriesSchemes: ["vrcp"], // allow querying for our own scheme
+
+      NSLocalNetworkUsageDescription: "This app requires access to the local network to communicate with VRCP apps running on your PC.",
+      NSAppTransportSecurity: {
+        NSAllowsArbitraryLoads: true // allow non-HTTPS connections (for local network communication)
+      },
     },
   },
   android: {
@@ -119,10 +124,11 @@ export default ({ config }: ConfigContext) => ({
       "expo-build-properties",
       {
         android: {
-          javaMaxHeapSize: "4g" // increase max heap size for Gradle to prevent OOM errors
+          javaMaxHeapSize: "4g", // increase max heap size for Gradle to prevent OOM errors
+          usesCleartextTraffic: true, // allow non-HTTPS connections (for local network communication)
         },
         ios: {
-          useFrameworks: "static" // may need to enable new architecture
+          useFrameworks: "static", // may need to enable new architecture
         }
       }
     ],

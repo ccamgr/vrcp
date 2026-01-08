@@ -1,1 +1,438 @@
-{}
+{
+  "_langDisplayName_": "English (US)",
+  "_langTag_": "en-US",
+  "app": "VRCP",
+  "common": {
+    "dateFormats": {
+      "date": "yyyy/MM/dd",
+      "dateTime": "yyyy/MM/dd HH:mm",
+      "dateTimeRange_diffDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}",
+      "time": "HH:mm",
+      "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}"
+    },
+    "message": {
+      "failed_to_fetch": "failed to fetch {{item}}.",
+      "failed_to_update": "failed to update {{item}}.",
+      "invalid": "Invalid value",
+      "loading": "Loading...",
+      "no_data": "No data available."
+    }
+  },
+  "components": {
+    "aboutModal": {
+      "button_ChangeLog": "Change Log",
+      "button_Licenses": "Open Source Licenses",
+      "button_privacyPolicy": "Privacy Policy",
+      "button_termsOfUse": "Terms of Use",
+      "innerModals": {
+        "changeLog": {
+          "format_date": "{{date, yyyy/MM/dd}}",
+          "format_version": "Ver {{version}}",
+          "label": "Change Log"
+        },
+        "licenses": {
+          "label": "Open Source Licenses",
+          "link_to_repos": "Link to Repos ↗"
+        },
+        "privacyPolicy": {
+          "label": "Privacy Policy"
+        },
+        "termsOfUse": {
+          "label": "Terms of Use"
+        }
+      },
+      "label": "App Informations"
+    },
+    "changeAvatarModal": {
+      "button_cancel": "Cancel",
+      "button_confirm": "Change Avatar",
+      "confirm_text": "Are you sure you want to change your avatar to '{{avatarName}}'?"
+    },
+    "changeBioLinksModal": {
+      "button_cancel": "Cancel",
+      "button_save": "Save Bio Links",
+      "placeholder": "Add Link URL (e.g. https://example.com)"
+    },
+    "changeBioModal": {
+      "button_cancel": "Cancel",
+      "button_save": "Save Bio",
+      "placeholder": "Enter bio here..."
+    },
+    "changeFavoriteModal": {
+      "button_cancel": "Cancel",
+      "button_save": "Save to Favorite Group",
+      "button_unselect": "Unfavorite"
+    },
+    "changeFriendModal": {
+      "button_cancel": "Cancel",
+      "button_confirm_cancel": "Cancel Friend Request",
+      "button_confirm_remove": "Remove This Friend",
+      "button_confirm_send": "Send Friend Request",
+      "confirm_text_cancel": "Are you sure you want to cancel the friend request to '{{userName}}'?",
+      "confirm_text_remove": "Are you sure you want to remove '{{userName}}' from your friends?",
+      "confirm_text_send": "Are you sure you want to send a friend request to '{{userName}}'?"
+    },
+    "changeNoteModal": {
+      "button_cancel": "Cancel",
+      "button_save": "Save Note",
+      "placeholder": "Enter note here..."
+    },
+    "changeStatusModal": {
+      "button_cancel": "Cancel",
+      "button_save": "Save Status",
+      "placeholder": "Enter status here..."
+    },
+    "developmentModal": {
+      "groupLabel_debug": "debug",
+      "groupLabel_feature": "Developing Feature",
+      "itemDescription_json": "Enable JSON viewer for detail pages.",
+      "itemDescription_sendLogs": "Enable sending error logs to developer.",
+      "itemLabel_json": "JSON Viewer",
+      "itemLabel_sendLogs": "Send Logs",
+      "label": "Developer"
+    },
+    "eventDetailModal": {
+      "eventTime_differentDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, yyyy/MM/dd HH:mm}}",
+      "eventTime_sameDay": "{{start, yyyy/MM/dd HH:mm}} ~ {{end, HH:mm}}"
+    },
+    "exitDialog": {
+      "button_no": "No",
+      "button_yes": "Yes",
+      "message": "Are you sure you want to exit the app?"
+    },
+    "feedbackModal": {
+      "button_cancel": "Cancel",
+      "button_send": "Send Feedback",
+      "label": "Send Feedback",
+      "placeholder_email": "Your email",
+      "placeholder_message": "Enter content here...",
+      "type_bug": "Bug Report",
+      "type_feedback": "Feedback",
+      "type_request": "Feature Request"
+    },
+    "jsonDataModal": {
+      "button_close": "Close",
+      "button_copy": "Copy to Clipboard"
+    },
+    "releaseNote": {
+      "button_close": "Close",
+      "label": "VRCP Release Notes"
+    }
+  },
+  "pages": {
+    "analytics": {
+      "label": "Analytics",
+      "no_analytics": "No analytics data available."
+    },
+    "avatars": {
+      "label": "My Avatars",
+      "no_avatars": "You have no avatars."
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} event",
+      "calendar_date_event_count_other": "{{count}} events",
+      "calendar_month_label": "{{date, yyyy MMMM}}",
+      "label": "Events",
+      "no_events": "No events available.",
+      "selected_month_events": "Events on {{date, yyyy/MM}}",
+      "selected_month_events_day_label": "{{date, do (EEE)}}"
+    },
+    "detail_avatar": {
+      "label": "Avatar Details",
+      "menuLabel_avatar_changeTo": "Change to this Avatar",
+      "menuLabel_avatar_nowUsing": "Now Using This Avatar",
+      "menuLabel_favoriteGroup_add": "Add to Favorite Group",
+      "menuLabel_favoriteGroup_edit": "Edit Favorite Group",
+      "menuLabel_json": "Raw JSON Data",
+      "sectionLabel_author": "Author",
+      "sectionLabel_description": "Description",
+      "sectionLabel_info": "Info",
+      "sectionLabel_platform": "Platform",
+      "sectionLabel_tags": "Tags"
+    },
+    "detail_event": {
+      "label": "Event Details",
+      "menuLabel_json": "Raw JSON Data",
+      "sectionLabel_description": "Description",
+      "sectionLabel_owner": "Owner"
+    },
+    "detail_group": {
+      "label": "Group Details",
+      "menuLabel_json": "Raw JSON Data",
+      "sectionLabel_info": "Info"
+    },
+    "detail_instance": {
+      "label": "Instance Details",
+      "menuLabel_json": "Raw JSON Data",
+      "sectionLabel_info": "Info",
+      "sectionLabel_owner": "Owner",
+      "sectionLabel_platform": "Platform",
+      "sectionLabel_tags": "Tags",
+      "sectionLabel_usersInInstance": "Users in Instance",
+      "sectionLabel_world": "World",
+      "section_info_ageGated": "Age Gated: {{ageGated}}",
+      "section_info_capacity": "Capacity: {{capacity}}",
+      "section_users_more_user_count_one": "{{count}} more user",
+      "section_users_more_user_count_other": "{{count}} more users"
+    },
+    "detail_user": {
+      "label": "User Details",
+      "menuLabel_favoriteGroup_add": "Add to Favorite Group",
+      "menuLabel_favoriteGroup_edit": "Edit Favorite Group",
+      "menuLabel_friend_cancelRequest": "Cancel Friend Request",
+      "menuLabel_friend_remove": "Remove Friend",
+      "menuLabel_friend_sendRequest": "Send Friend Request",
+      "menuLabel_invite_me": "Invite Myself",
+      "menuLabel_invite_request": "Request Invite",
+      "menuLabel_invite_send": "Send Invite",
+      "menuLabel_json": "Raw JSON Data",
+      "menuLabel_note_edit": "Edit Note",
+      "sectionLabel_badges": "Badges",
+      "sectionLabel_bio": "Bio",
+      "sectionLabel_bio_links": "Links",
+      "sectionLabel_description": "Description",
+      "sectionLabel_info": "Info",
+      "sectionLabel_location": "Location",
+      "sectionLabel_note": "Note",
+      "section_info_joined": "Joined date: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "Last Activity: {{date, yyyy/MM/dd HH:mm}}",
+      "userLocation_offline": "the user is offline...",
+      "userLocation_private": "the user is in a private instance...",
+      "userLocation_traveling": "the user is traveling...",
+      "userLocation_unknown": "the user is in an unknown location..."
+    },
+    "detail_user_groups": {
+      "label": "User's Groups",
+      "no_groups_found": "No groups found for this user."
+    },
+    "detail_user_worlds": {
+      "label": "User's Worlds",
+      "no_worlds_found": "No worlds found for this user."
+    },
+    "detail_world": {
+      "label": "World Details",
+      "menuLabel_favoriteGroup_add": "Add to Favorite Group",
+      "menuLabel_favoriteGroup_edit": "Edit Favorite Group",
+      "menuLabel_json": "Raw JSON Data",
+      "no_instances": "No instances available.",
+      "sectionLabel_author": "Author",
+      "sectionLabel_description": "Description",
+      "sectionLabel_info": "Info",
+      "sectionLabel_platform": "Platform",
+      "sectionLabel_tags": "Tags",
+      "section_info_capacityAndRecommended": "Capacity: {{capacity}} | Recommended: {{recommendedCapacity}}",
+      "section_info_created": "Created: {{date, yyyy/MM/dd}}",
+      "section_info_updated": "Last Updated: {{date, yyyy/MM/dd}}",
+      "section_info_visits": "Visits: {{visits}}",
+      "tabLabel_info": "Info",
+      "tabLabel_instances": "Instances"
+    },
+    "favorites": {
+      "label": "Favorites",
+      "no_favoritegroup_selected": "No favorite group selected.",
+      "tabLabel_avatars": "Avatars",
+      "tabLabel_friends": "Friends",
+      "tabLabel_worlds": "Worlds"
+    },
+    "feeds": {
+      "label": "Feeds",
+      "no_feeds": "No feeds available."
+    },
+    "friendlocations": {
+      "label": "Friend Locations",
+      "no_friendlocations": "No friend locations available.",
+      "sectionLabel_instances": "Friends in Instances",
+      "sectionLabel_private": "Friends in Private Instances"
+    },
+    "friends": {
+      "label": "Friends",
+      "tabLabel_active": "Active",
+      "tabLabel_favorites": "Favorites",
+      "tabLabel_offline": "Offline",
+      "tabLabel_online": "Online"
+    },
+    "groups": {
+      "label": "My Groups",
+      "no_groups": "You have no groups."
+    },
+    "home": {
+      "events_area": "Events Today",
+      "feeds_area": "Feeds",
+      "friendLocation": {
+        "more_friends_count_one": "{{count}} more friend",
+        "more_friends_count_other": "{{count}} more friends"
+      },
+      "friendlocations_area": "Friend Locations",
+      "label": "Home",
+      "no_events": "No events available.",
+      "no_feeds": "No feeds available.",
+      "no_friendlocations": "No friend locations available.",
+      "see_more": "See More"
+    },
+    "login": {
+      "button_links": "Can't login?",
+      "button_links_close": "Close",
+      "button_login": "Login",
+      "button_tfa_close": "Close",
+      "button_tfa_verify": "Verify",
+      "disclaimer": "VRCP is an unofficial application for VRChat. This application is not affiliated with, endorsed, sponsored, or approved by VRChat Inc. or its affiliates.",
+      "label": "Login",
+      "linksModal_emailLinkText": "Recover email",
+      "linksModal_passwordLinkText": "Reset password",
+      "linksModal_registerLinkText": "Create an account",
+      "linksModal_text1": "New to VRChat?",
+      "linksModal_text2": "Forgot your credentials?",
+      "linksModal_title": "Having trouble logging in?",
+      "login_failed_error": "Login failed. Please check your credentials.",
+      "online_count_message": "There are {{count}} users online now on VRChat!",
+      "password_empty_error": "Password cannot be empty.",
+      "password_placeholder": "Password",
+      "save_credentials": "Save username and password",
+      "tfaCode_placeholder": "code (e.g. 123456)",
+      "tfa_disabled_error": "2FA is disabled. Please check your account settings.",
+      "tfa_failed_error": "2FA verification failed. Please try again.",
+      "tfa_invalid_error": "2FA code must be 6 digits.",
+      "tfa_modal_text_email": "A 2FA code has been sent to your email. Please enter it below.",
+      "tfa_modal_text_totp": "Please enter your 2FA code from your authenticator app.",
+      "tfa_pasted": "Pasted from clipboard",
+      "tfa_unknown_error": "Unknown 2FA error occurred. Please try again later.",
+      "username_empty_error": "Username or email cannot be empty.",
+      "username_placeholder": "Username / Email",
+      "welcome": "Welcome to VRCP!\nLogin with your VRChat account."
+    },
+    "notifications": {
+      "label": "Notifications",
+      "no_notifications": "No notifications."
+    },
+    "others": {
+      "label": "Others",
+      "tabLabel_analytics": "Analytics",
+      "tabLabel_events": "Events",
+      "tabLabel_feeds": "Feeds",
+      "tabLabel_notifications": "Notifications"
+    },
+    "prints": {
+      "label": "Prints",
+      "no_prints": "You have no prints."
+    },
+    "profile": {
+      "label": "Profile",
+      "menuLabel_change_status": "Change Status",
+      "menuLabel_edit_bio": "Edit Bio",
+      "menuLabel_edit_bio_links": "Edit Bio Links",
+      "menuLabel_json": "Raw JSON Data",
+      "menuLabel_route_avatars": "Avatars",
+      "menuLabel_route_current_avatar": "Current Avatar",
+      "menuLabel_route_favorites": "Favorites",
+      "menuLabel_route_groups": "Groups",
+      "menuLabel_route_prints": "Prints",
+      "menuLabel_route_worlds": "Worlds",
+      "sectionLabel_badges": "Badges",
+      "sectionLabel_bio": "Bio",
+      "sectionLabel_bio_links": "Links",
+      "sectionLabel_info": "Info",
+      "section_info_joined": "Joined date: {{date, yyyy/MM/dd}}",
+      "section_info_last_activity": "Last Activity: {{date, yyyy/MM/dd HH:mm}}"
+    },
+    "search": {
+      "label": "Search Results",
+      "no_groups_found": "No groups found for '{{search}}'.",
+      "no_users_found": "No users found for '{{search}}'.",
+      "no_worlds_found": "No worlds found for '{{search}}'.",
+      "searchbox_placeholder": "Search for worlds, groups, or users"
+    },
+    "setting_appearance": {
+      "groupLabel_app": "App",
+      "groupLabel_friends": "Friends",
+      "innerModals": {
+        "cardViewColumns": {
+          "button_apply": "Apply",
+          "maybe_requireRestart": "It may require restart app\nto take effect.",
+          "option_1_columns": "1 Columns",
+          "option_2_columns": "2 Columns",
+          "option_3_columns": "3 Columns"
+        },
+        "homeTabLayout": {
+          "button_apply": "Apply",
+          "option_events": "Events",
+          "option_feeds": "Feeds",
+          "option_friendLocations": "Locations",
+          "section_bottom": "Bottom area",
+          "section_separatePos": "Separate Position",
+          "section_top": "Top area",
+          "selectedLabel_events": "Events for Today",
+          "selectedLabel_feeds": "Feeds of Friends",
+          "selectedLabel_friendLocations": "Friend Locations",
+          "selectedLabel_sepPos": "higher separate position value makes upper area larger."
+        },
+        "theme": {
+          "button_apply": "Apply",
+          "maybe_requireRestart": "It may require restart app\nto take effect.",
+          "option_dark": "Dark",
+          "option_light": "Light",
+          "option_system": "System"
+        }
+      },
+      "itemDescription_cardViewColumns": "Select the number of columns to display in card views.",
+      "itemDescription_favoriteFriendsColors": "Select your favorite-friends color theme.",
+      "itemDescription_friendColor": "Select your friends color theme.",
+      "itemDescription_homeTabLayout": "Select which tab to show by default on the Home page.",
+      "itemDescription_theme": "Select light or dark theme for the application.",
+      "itemLabel_cardViewColumns": "Card View Columns",
+      "itemLabel_favoriteFriendsColors": "Favorite Friend Colors",
+      "itemLabel_friendColor": "Friend Color",
+      "itemLabel_homeTabLayout": "Home Tab Layout",
+      "itemLabel_theme": "Theme",
+      "label": "Appearance Settings"
+    },
+    "setting_database": {
+      "button_clearCache": "Clear Cache",
+      "cache_size_and_count_one": "{{size}} MB ({{count}} item)",
+      "cache_size_and_count_other": "{{size}} MB ({{count}} items)",
+      "groupLabel_cache": "Cache",
+      "label": "Database Settings"
+    },
+    "setting_desktopapp": {
+      "label": "Desktop App"
+    },
+    "setting_language": {
+      "description": "Select Your Language",
+      "label": "Language Settings"
+    },
+    "setting_notifications": {
+      "label": "Notification Settings"
+    },
+    "settings": {
+      "groupLabel_account": "Account",
+      "groupLabel_general": "General",
+      "groupLabel_other": "Other",
+      "itemDescription_about": "View application information and credits.",
+      "itemDescription_appearance": "Customize application UI appearance.",
+      "itemDescription_database": "Manage database settings and storage options.",
+      "itemDescription_desktopapp": "Configure settings specific to the desktop version of VRCP.",
+      "itemDescription_development": "Access development features and options.",
+      "itemDescription_feedback": "Send your feedback to the developer.",
+      "itemDescription_language": "Select the language for the application.",
+      "itemDescription_logout": "Logout from this app.",
+      "itemDescription_notifications": "Manage Push notifications and alerts.",
+      "itemLabel_about": "About",
+      "itemLabel_appearance": "Appearance Settings",
+      "itemLabel_database": "Database",
+      "itemLabel_desktopapp": "Desktop App",
+      "itemLabel_development": "Developper",
+      "itemLabel_feedback": "Feedback",
+      "itemLabel_language": "Language",
+      "itemLabel_logout": "Logout",
+      "itemLabel_notifications": "Notifications",
+      "label": "Settings",
+      "logout_dialog_cancel": "Cancel",
+      "logout_dialog_confirm": "Logout",
+      "logout_dialog_text": "Are you sure you want to logout?"
+    },
+    "worlds": {
+      "label": "My Worlds",
+      "no_worlds": "You have no worlds."
+    }
+  }
+}

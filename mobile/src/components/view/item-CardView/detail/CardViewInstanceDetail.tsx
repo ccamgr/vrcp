@@ -2,13 +2,13 @@ import { spacing } from "@/configs/styles";
 import { LimitedUserInstance } from "@/generated/vrcapi";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/libs/vrchat";
+import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
 import { useCache } from "@/contexts/CacheContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import BaseCardView from "../BaseCardView";
 import UserOrGroupChip from "../../chip-badge/UserOrGroupChip";
 import IconButton from "../../icon-components/IconButton";
-import { routeToWorld } from "@/libs/route";
+import { routeToWorld } from "@/lib/route";
 
 
 interface Props {

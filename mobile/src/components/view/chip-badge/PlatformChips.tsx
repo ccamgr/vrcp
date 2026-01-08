@@ -1,4 +1,4 @@
-import { omitObject } from "@/libs/utils";
+import { omitObject } from "@/lib/utils";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import IconSymbol from "../icon-components/IconView";
@@ -36,16 +36,16 @@ const PerformanceChip = ({ size, performance }: { size: number; performance: str
   // アイコンのほうがいいか？ (文字列としてはツールチップで？)
   return (
     <Text style={[
-      styles.performance, 
-      { 
-        fontSize: size * 0.3, 
-        marginTop: - size * 0.3, 
-        marginLeft: size * 0.3, 
-        color: theme.colors.text, 
+      styles.performance,
+      {
+        fontSize: size * 0.3,
+        marginTop: - size * 0.3,
+        marginLeft: size * 0.3,
+        color: theme.colors.text,
         backgroundColor: getChipColorbyPerformance(performance),
       }]}>
       {performance}
-    </Text> 
+    </Text>
   )
 }
 

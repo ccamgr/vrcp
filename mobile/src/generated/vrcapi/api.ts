@@ -4,7 +4,7 @@
  * VRChat API Documentation
  * ![VRChat API Banner](https://vrchatapi.github.io/assets/img/api_banner_1500x400.png)  # Welcome to the VRChat API  Before we begin, we would like to state this is a **COMMUNITY DRIVEN PROJECT**. This means that everything you read on here was written by the community itself and is **not** officially supported by VRChat. The documentation is provided \"AS IS\", and any action you take towards VRChat is completely your own responsibility.  The documentation and additional libraries SHALL ONLY be used for applications interacting with VRChat\'s API in accordance with their [Terms of Service](https://hello.vrchat.com/legal) and [Community Guidelines](https://hello.vrchat.com/community-guidelines), and MUST NOT be used for modifying the client, \"avatar ripping\", or other illegal activities. Malicious usage or spamming the API may result in account termination. Certain parts of the API are also more sensitive than others, for example moderation, so please tread extra carefully and read the warnings when present.  ![Tupper Policy on API](https://i.imgur.com/yLlW7Ok.png)  Finally, use of the API using applications other than the approved methods (website, VRChat application, Unity SDK) is not officially supported. VRChat provides no guarantee or support for external applications using the API. Access to API endpoints may break **at any time, without notice**. Therefore, please **do not ping** VRChat Staff in the VRChat Discord if you are having API problems, as they do not provide API support. We will make a best effort in keeping this documentation and associated language libraries up to date, but things might be outdated or missing. If you find that something is no longer valid, please contact us on Discord or [create an issue](https://github.com/vrchatapi/specification/issues) and tell us so we can fix it.  # Getting Started  The VRChat API can be used to programmatically retrieve or update information regarding your profile, friends, avatars, worlds and more. The API consists of two parts, \"Photon\" which is only used in-game, and the \"Web API\" which is used by both the game and the website. This documentation focuses only on the Web API.  The API is designed around the REST ideology, providing semi-simple and usually predictable URIs to access and modify objects. Requests support standard HTTP methods like GET, PUT, POST, and DELETE and standard status codes. Response bodies are always UTF-8 encoded JSON objects, unless explicitly documented otherwise.  <div class=\"callout callout-error\">   <strong>🛑 Warning! Do not touch Photon!</strong><br>   Photon is only used by the in-game client and should <b>not</b> be touched. Doing so may result in permanent account termination. </div>  <div class=\"callout callout-info\">   <strong>ℹ️ Authentication</strong><br>   Read <a href=\"#tag--authentication\">Authentication</a> for how to log in. </div>  # Using the API  For simply exploring what the API can do it is strongly recommended to download [Insomnia](https://insomnia.rest/download), a free and open-source API client that\'s great for sending requests to the API in an orderly fashion. Insomnia allows you to send data in the format that\'s required for VRChat\'s API. It is also possible to try out the API in your browser, by first logging in at [vrchat.com/home](https://vrchat.com/home/) and then going to [vrchat.com/api/1/auth/user](https://vrchat.com/api/1/auth/user), but the information will be much harder to work with.  For more permanent operation such as software development it is instead recommended to use one of the existing language SDKs. This community project maintains API libraries in several languages, which allows you to interact with the API with simple function calls rather than having to implement the HTTP protocol yourself. Most of these libraries are automatically generated from the API specification, sometimes with additional helpful wrapper code to make usage easier. This allows them to be almost automatically updated and expanded upon as soon as a new feature is introduced in the specification itself. The libraries can be found on [GitHub](https://github.com/vrchatapi) or following:  * [NodeJS (JavaScript)](https://www.npmjs.com/package/vrchat) * [Dart](https://pub.dev/packages/vrchat_dart) * [Rust](https://crates.io/crates/vrchatapi) * [C#](https://github.com/vrchatapi/vrchatapi-csharp) * [Python](https://github.com/vrchatapi/vrchatapi-python)  # Pagination  Most endpoints enforce pagination, meaning they will only return 10 entries by default, and never more than 100.<br> Using both the limit and offset parameters allows you to easily paginate through a large number of objects.  | Query Parameter | Type | Description | | ----------|--|------- | | `n` | integer  | The number of objects to return. This value often defaults to 10. Highest limit is always 100.| | `offset` | integer  | A zero-based offset from the default object sorting.|  If a request returns fewer objects than the `limit` parameter, there are no more items available to return.  # Contribution  Do you want to get involved in the documentation effort? Do you want to help improve one of the language API libraries? This project is an [OPEN Open Source Project](https://openopensource.org)! This means that individuals making significant and valuable contributions are given commit-access to the project. It also means we are very open and welcoming of new people making contributions, unlike some more guarded open-source projects.  [![Discord](https://img.shields.io/static/v1?label=vrchatapi&message=discord&color=blueviolet&style=for-the-badge)](https://discord.gg/qjZE9C9fkB)
  *
- * The version of the OpenAPI document: 1.20.3
+ * The version of the OpenAPI document: 1.20.5
  * Contact: vrchatapi.lpv0t@aries.fyi
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -84,12 +84,6 @@ export interface APIConfig {
      */
     'analysisRetryInterval': number;
     /**
-     * Public Announcements
-     * @type {Set<APIConfigAnnouncement>}
-     * @memberof APIConfig
-     */
-    'announcements': Set<APIConfigAnnouncement>;
-    /**
      * Unknown
      * @type {number}
      * @memberof APIConfig
@@ -101,6 +95,12 @@ export interface APIConfig {
      * @memberof APIConfig
      */
     'analyticsSegment_NewUI_Salt': string;
+    /**
+     * Public Announcements
+     * @type {Set<APIConfigAnnouncement>}
+     * @memberof APIConfig
+     */
+    'announcements': Set<APIConfigAnnouncement>;
     /**
      * List of supported Languages
      * @type {Array<string>}
@@ -308,6 +308,12 @@ export interface APIConfig {
      */
     'disableAvatarGating': boolean;
     /**
+     * Unknown
+     * @type {boolean}
+     * @memberof APIConfig
+     */
+    'disableCaptcha'?: boolean;
+    /**
      * Toggles if the Community Labs should be disabled
      * @type {boolean}
      * @memberof APIConfig
@@ -325,12 +331,6 @@ export interface APIConfig {
      * @memberof APIConfig
      */
     'disableEmail': boolean;
-    /**
-     * Unknown
-     * @type {boolean}
-     * @memberof APIConfig
-     */
-    'disableCaptcha'?: boolean;
     /**
      * Toggles if Analytics should be disabled.
      * @type {boolean}
@@ -531,6 +531,24 @@ export interface APIConfig {
      */
     'photonPublicKeys': Array<string>;
     /**
+     * Currently used youtube-dl.exe hash in SHA1-delimited format
+     * @type {string}
+     * @memberof APIConfig
+     */
+    'player-url-resolver-sha1': string;
+    /**
+     * Currently used youtube-dl.exe version
+     * @type {string}
+     * @memberof APIConfig
+     */
+    'player-url-resolver-version': string;
+    /**
+     * Public key, hex encoded
+     * @type {string}
+     * @memberof APIConfig
+     */
+    'publicKey': string;
+    /**
      * 
      * @type {APIConfigReportCategories}
      * @memberof APIConfig
@@ -603,17 +621,17 @@ export interface APIConfig {
      */
     'supportFormUrl': string;
     /**
-     * Unknown
-     * @type {boolean}
-     * @memberof APIConfig
-     */
-    'timekeeping': boolean;
-    /**
      * WorldID be \"offline\" on User profiles if you are not friends with that user.
      * @type {string}
      * @memberof APIConfig
      */
     'timeOutWorldId': string;
+    /**
+     * Unknown
+     * @type {boolean}
+     * @memberof APIConfig
+     */
+    'timekeeping': boolean;
     /**
      * WorldID be \"offline\" on User profiles if you are not friends with that user.
      * @type {string}
@@ -669,30 +687,6 @@ export interface APIConfig {
      */
     'viveWindowsUrl': string;
     /**
-     * List of allowed URLs that are allowed to host avatar assets
-     * @type {Array<string>}
-     * @memberof APIConfig
-     */
-    'whiteListedAssetUrls': Array<string>;
-    /**
-     * Currently used youtube-dl.exe version
-     * @type {string}
-     * @memberof APIConfig
-     */
-    'player-url-resolver-version': string;
-    /**
-     * Currently used youtube-dl.exe hash in SHA1-delimited format
-     * @type {string}
-     * @memberof APIConfig
-     */
-    'player-url-resolver-sha1': string;
-    /**
-     * Public key, hex encoded
-     * @type {string}
-     * @memberof APIConfig
-     */
-    'publicKey': string;
-    /**
      * Unknown
      * @type {number}
      * @memberof APIConfig
@@ -710,6 +704,12 @@ export interface APIConfig {
      * @memberof APIConfig
      */
     'websocketReconnectMaxDelay': number;
+    /**
+     * List of allowed URLs that are allowed to host avatar assets
+     * @type {Array<string>}
+     * @memberof APIConfig
+     */
+    'whiteListedAssetUrls': Array<string>;
 }
 /**
  * 
@@ -1011,6 +1011,12 @@ export interface APIConfigConstantsLANGUAGE {
  */
 export interface APIConfigDownloadURLList {
     /**
+     * Download link for ???
+     * @type {string}
+     * @memberof APIConfigDownloadURLList
+     */
+    'bootstrap': string;
+    /**
      * Download link for legacy SDK2
      * @type {string}
      * @memberof APIConfigDownloadURLList
@@ -1035,12 +1041,6 @@ export interface APIConfigDownloadURLList {
      * @memberof APIConfigDownloadURLList
      */
     'vcc': string;
-    /**
-     * Download link for ???
-     * @type {string}
-     * @memberof APIConfigDownloadURLList
-     */
-    'bootstrap': string;
 }
 /**
  * 
@@ -1260,13 +1260,13 @@ export interface APIConfigReportCategories {
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
-    'text': ReportCategory;
+    'sticker'?: ReportCategory;
     /**
      * 
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
-    'sticker'?: ReportCategory;
+    'text': ReportCategory;
     /**
      * 
      * @type {ReportCategory}
@@ -1594,6 +1594,12 @@ export interface APIConfigReportReasons {
 export interface APIHealth {
     /**
      * 
+     * @type {string}
+     * @memberof APIHealth
+     */
+    'buildVersionTag': string;
+    /**
+     * 
      * @type {boolean}
      * @memberof APIHealth
      */
@@ -1604,12 +1610,6 @@ export interface APIHealth {
      * @memberof APIHealth
      */
     'serverName': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof APIHealth
-     */
-    'buildVersionTag': string;
 }
 /**
  * 
@@ -1618,11 +1618,11 @@ export interface APIHealth {
  */
 export interface AccountDeletionLog {
     /**
-     * Typically \"Deletion requested\" or \"Deletion canceled\". Other messages like \"Deletion completed\" may exist, but are these are not possible to see as a regular user.
+     * Date and time of the deletion request.
      * @type {string}
      * @memberof AccountDeletionLog
      */
-    'message'?: string;
+    'dateTime'?: string;
     /**
      * When the deletion is scheduled to happen, standard is 14 days after the request.
      * @type {string}
@@ -1630,11 +1630,11 @@ export interface AccountDeletionLog {
      */
     'deletionScheduled'?: string | null;
     /**
-     * Date and time of the deletion request.
+     * Typically \"Deletion requested\" or \"Deletion canceled\". Other messages like \"Deletion completed\" may exist, but are these are not possible to see as a regular user.
      * @type {string}
      * @memberof AccountDeletionLog
      */
-    'dateTime'?: string;
+    'message'?: string;
 }
 /**
  * 
@@ -1642,12 +1642,6 @@ export interface AccountDeletionLog {
  * @interface AddFavoriteRequest
  */
 export interface AddFavoriteRequest {
-    /**
-     * 
-     * @type {FavoriteType}
-     * @memberof AddFavoriteRequest
-     */
-    'type': FavoriteType;
     /**
      * Must be either AvatarID, WorldID or UserID.
      * @type {string}
@@ -1660,6 +1654,12 @@ export interface AddFavoriteRequest {
      * @memberof AddFavoriteRequest
      */
     'tags': Array<string>;
+    /**
+     * 
+     * @type {FavoriteType}
+     * @memberof AddFavoriteRequest
+     */
+    'type': FavoriteType;
 }
 
 
@@ -1807,9 +1807,9 @@ export interface AdminUnityPackage {
  */
 
 export const AgeVerificationStatus = {
-    hidden: 'hidden',
-    verified: 'verified',
-    plus18: '18+'
+    hidden: '18+',
+    plus18: 'hidden',
+    verified: 'verified'
 } as const;
 
 export type AgeVerificationStatus = typeof AgeVerificationStatus[keyof typeof AgeVerificationStatus];
@@ -1991,6 +1991,73 @@ export interface Avatar {
      */
     'version': number;
 }
+
+
+/**
+ * 
+ * @export
+ * @interface AvatarModeration
+ */
+export interface AvatarModeration {
+    /**
+     * 
+     * @type {AvatarModerationType}
+     * @memberof AvatarModeration
+     */
+    'avatarModerationType': AvatarModerationType;
+    /**
+     * 
+     * @type {string}
+     * @memberof AvatarModeration
+     */
+    'created': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AvatarModeration
+     */
+    'targetAvatarId': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface AvatarModerationCreated
+ */
+export interface AvatarModerationCreated {
+    /**
+     * 
+     * @type {AvatarModerationType}
+     * @memberof AvatarModerationCreated
+     */
+    'avatarModerationType': AvatarModerationType;
+    /**
+     * Timestamp in milliseconds since Unix epoch
+     * @type {number}
+     * @memberof AvatarModerationCreated
+     */
+    'created': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AvatarModerationCreated
+     */
+    'targetAvatarId': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const AvatarModerationType = {
+    Block: 'block'
+} as const;
+
+export type AvatarModerationType = typeof AvatarModerationType[keyof typeof AvatarModerationType];
 
 
 /**
@@ -2246,7 +2313,7 @@ export interface CalendarEvent {
      * @type {string}
      * @memberof CalendarEvent
      */
-    'category'?: string;
+    'category': string;
     /**
      * 
      * @type {number}
@@ -2258,7 +2325,7 @@ export interface CalendarEvent {
      * @type {string}
      * @memberof CalendarEvent
      */
-    'createdAt': string;
+    'createdAt'?: string;
     /**
      * 
      * @type {string}
@@ -2270,13 +2337,13 @@ export interface CalendarEvent {
      * @type {string}
      * @memberof CalendarEvent
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof CalendarEvent
      */
-    'endsAt'?: string;
+    'endsAt': string;
     /**
      * 
      * @type {boolean}
@@ -2354,7 +2421,7 @@ export interface CalendarEvent {
      * @type {string}
      * @memberof CalendarEvent
      */
-    'startsAt'?: string;
+    'startsAt': string;
     /**
      *  
      * @type {Array<string>}
@@ -2381,16 +2448,16 @@ export interface CalendarEvent {
     'updatedAt'?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof CalendarEvent
-     */
-    'usesInstanceOverflow'?: boolean;
-    /**
-     * 
      * @type {CalendarEventUserInterest}
      * @memberof CalendarEvent
      */
     'userInterest'?: CalendarEventUserInterest;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CalendarEvent
+     */
+    'usesInstanceOverflow'?: boolean;
 }
 /**
  * 
@@ -2433,6 +2500,27 @@ export interface ChangeUserTagsRequest {
 /**
  * 
  * @export
+ * @interface CreateAvatarModerationRequest
+ */
+export interface CreateAvatarModerationRequest {
+    /**
+     * 
+     * @type {AvatarModerationType}
+     * @memberof CreateAvatarModerationRequest
+     */
+    'avatarModerationType': AvatarModerationType;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateAvatarModerationRequest
+     */
+    'targetAvatarId': string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CreateAvatarRequest
  */
 export interface CreateAvatarRequest {
@@ -2449,23 +2537,17 @@ export interface CreateAvatarRequest {
      */
     'assetVersion'?: string;
     /**
-     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
-     * @type {string}
-     * @memberof CreateAvatarRequest
-     */
-    'platform'?: string;
-    /**
      * A date and time of the pattern `M/d/yyyy h:mm:ss tt` (see C Sharp `System.DateTime`)
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'created_at'?: string;
     /**
-     * A date and time of the pattern `M/d/yyyy h:mm:ss tt` (see C Sharp `System.DateTime`)
+     * 
      * @type {string}
      * @memberof CreateAvatarRequest
      */
-    'updated_at'?: string;
+    'description'?: string;
     /**
      * 
      * @type {string}
@@ -2477,13 +2559,25 @@ export interface CreateAvatarRequest {
      * @type {string}
      * @memberof CreateAvatarRequest
      */
-    'name': string;
+    'imageUrl': string;
     /**
      * 
      * @type {string}
      * @memberof CreateAvatarRequest
      */
-    'description'?: string;
+    'name': string;
+    /**
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
+     * @type {string}
+     * @memberof CreateAvatarRequest
+     */
+    'platform'?: string;
+    /**
+     * 
+     * @type {ReleaseStatus}
+     * @memberof CreateAvatarRequest
+     */
+    'releaseStatus'?: ReleaseStatus;
     /**
      *  
      * @type {Array<string>}
@@ -2495,25 +2589,7 @@ export interface CreateAvatarRequest {
      * @type {string}
      * @memberof CreateAvatarRequest
      */
-    'imageUrl': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateAvatarRequest
-     */
     'thumbnailImageUrl'?: string;
-    /**
-     * 
-     * @type {ReleaseStatus}
-     * @memberof CreateAvatarRequest
-     */
-    'releaseStatus'?: ReleaseStatus;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateAvatarRequest
-     */
-    'version'?: number;
     /**
      * 
      * @type {string}
@@ -2526,6 +2602,18 @@ export interface CreateAvatarRequest {
      * @memberof CreateAvatarRequest
      */
     'unityVersion'?: string;
+    /**
+     * A date and time of the pattern `M/d/yyyy h:mm:ss tt` (see C Sharp `System.DateTime`)
+     * @type {string}
+     * @memberof CreateAvatarRequest
+     */
+    'updated_at'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateAvatarRequest
+     */
+    'version'?: number;
 }
 
 
@@ -2536,17 +2624,23 @@ export interface CreateAvatarRequest {
  */
 export interface CreateCalendarEventRequest {
     /**
-     * Event title
+     * 
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
-    'title': string;
+    'accessType': CreateCalendarEventRequestAccessTypeEnum;
     /**
-     * Time the event starts at
+     * 
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
-    'startsAt': string;
+    'category': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateCalendarEventRequest
+     */
+    'closeInstanceAfterEndMinutes'?: number;
     /**
      * 
      * @type {string}
@@ -2561,22 +2655,22 @@ export interface CreateCalendarEventRequest {
     'endsAt': string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateCalendarEventRequest
-     */
-    'category': string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof CreateCalendarEventRequest
-     */
-    'tags'?: Array<string>;
-    /**
-     * 
      * @type {boolean}
      * @memberof CreateCalendarEventRequest
      */
-    'isDraft'?: boolean;
+    'featured'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateCalendarEventRequest
+     */
+    'guestEarlyJoinMinutes'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateCalendarEventRequest
+     */
+    'hostEarlyJoinMinutes'?: number;
     /**
      * 
      * @type {string}
@@ -2585,10 +2679,16 @@ export interface CreateCalendarEventRequest {
     'imageId'?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof CreateCalendarEventRequest
+     */
+    'isDraft'?: boolean;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
-    'roleIds'?: Array<string>;
+    'languages'?: Array<string>;
     /**
      * 
      * @type {string}
@@ -2606,7 +2706,7 @@ export interface CreateCalendarEventRequest {
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
-    'languages'?: Array<string>;
+    'roleIds'?: Array<string>;
     /**
      * Send notification to group members.
      * @type {boolean}
@@ -2614,46 +2714,34 @@ export interface CreateCalendarEventRequest {
      */
     'sendCreationNotification': boolean;
     /**
-     * 
-     * @type {boolean}
+     * Time the event starts at
+     * @type {string}
      * @memberof CreateCalendarEventRequest
      */
-    'featured'?: boolean;
+    'startsAt': string;
     /**
      * 
-     * @type {number}
+     * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
-    'hostEarlyJoinMinutes'?: number;
+    'tags'?: Array<string>;
     /**
-     * 
-     * @type {number}
+     * Event title
+     * @type {string}
      * @memberof CreateCalendarEventRequest
      */
-    'guestEarlyJoinMinutes'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateCalendarEventRequest
-     */
-    'closeInstanceAfterEndMinutes'?: number;
+    'title': string;
     /**
      * 
      * @type {boolean}
      * @memberof CreateCalendarEventRequest
      */
     'usesInstanceOverflow'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateCalendarEventRequest
-     */
-    'accessType': CreateCalendarEventRequestAccessTypeEnum;
 }
 
 export const CreateCalendarEventRequestAccessTypeEnum = {
-    Public: 'public',
-    Group: 'group'
+    Group: 'group',
+    Public: 'public'
 } as const;
 
 export type CreateCalendarEventRequestAccessTypeEnum = typeof CreateCalendarEventRequestAccessTypeEnum[keyof typeof CreateCalendarEventRequestAccessTypeEnum];
@@ -2669,7 +2757,7 @@ export interface CreateFileRequest {
      * @type {string}
      * @memberof CreateFileRequest
      */
-    'name': string;
+    'extension': string;
     /**
      * 
      * @type {MIMEType}
@@ -2681,7 +2769,7 @@ export interface CreateFileRequest {
      * @type {string}
      * @memberof CreateFileRequest
      */
-    'extension': string;
+    'name': string;
     /**
      *  
      * @type {Array<string>}
@@ -2702,18 +2790,6 @@ export interface CreateFileVersionRequest {
      * @type {string}
      * @memberof CreateFileVersionRequest
      */
-    'signatureMd5': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateFileVersionRequest
-     */
-    'signatureSizeInBytes': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateFileVersionRequest
-     */
     'fileMd5'?: string;
     /**
      * 
@@ -2721,6 +2797,18 @@ export interface CreateFileVersionRequest {
      * @memberof CreateFileVersionRequest
      */
     'fileSizeInBytes'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateFileVersionRequest
+     */
+    'signatureMd5': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateFileVersionRequest
+     */
+    'signatureSizeInBytes': number;
 }
 /**
  * 
@@ -2728,18 +2816,6 @@ export interface CreateFileVersionRequest {
  * @interface CreateGroupAnnouncementRequest
  */
 export interface CreateGroupAnnouncementRequest {
-    /**
-     * Announcement title
-     * @type {string}
-     * @memberof CreateGroupAnnouncementRequest
-     */
-    'title': string;
-    /**
-     * Announcement text
-     * @type {string}
-     * @memberof CreateGroupAnnouncementRequest
-     */
-    'text'?: string;
     /**
      * 
      * @type {string}
@@ -2752,6 +2828,18 @@ export interface CreateGroupAnnouncementRequest {
      * @memberof CreateGroupAnnouncementRequest
      */
     'sendNotification'?: boolean;
+    /**
+     * Announcement text
+     * @type {string}
+     * @memberof CreateGroupAnnouncementRequest
+     */
+    'text'?: string;
+    /**
+     * Announcement title
+     * @type {string}
+     * @memberof CreateGroupAnnouncementRequest
+     */
+    'title': string;
 }
 /**
  * 
@@ -2759,12 +2847,6 @@ export interface CreateGroupAnnouncementRequest {
  * @interface CreateGroupGalleryRequest
  */
 export interface CreateGroupGalleryRequest {
-    /**
-     * Name of the gallery.
-     * @type {string}
-     * @memberof CreateGroupGalleryRequest
-     */
-    'name': string;
     /**
      * Description of the gallery.
      * @type {string}
@@ -2778,17 +2860,11 @@ export interface CreateGroupGalleryRequest {
      */
     'membersOnly'?: boolean;
     /**
-     *  
-     * @type {Array<string>}
+     * Name of the gallery.
+     * @type {string}
      * @memberof CreateGroupGalleryRequest
      */
-    'roleIdsToView'?: Array<string> | null;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof CreateGroupGalleryRequest
-     */
-    'roleIdsToSubmit'?: Array<string> | null;
+    'name': string;
     /**
      *  
      * @type {Array<string>}
@@ -2801,6 +2877,18 @@ export interface CreateGroupGalleryRequest {
      * @memberof CreateGroupGalleryRequest
      */
     'roleIdsToManage'?: Array<string> | null;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof CreateGroupGalleryRequest
+     */
+    'roleIdsToSubmit'?: Array<string> | null;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof CreateGroupGalleryRequest
+     */
+    'roleIdsToView'?: Array<string> | null;
 }
 /**
  * 
@@ -2809,17 +2897,17 @@ export interface CreateGroupGalleryRequest {
  */
 export interface CreateGroupInviteRequest {
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof CreateGroupInviteRequest
-     */
-    'userId': string;
-    /**
      * 
      * @type {boolean}
      * @memberof CreateGroupInviteRequest
      */
     'confirmOverrideBlock'?: boolean;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof CreateGroupInviteRequest
+     */
+    'userId': string;
 }
 /**
  * 
@@ -2828,23 +2916,17 @@ export interface CreateGroupInviteRequest {
  */
 export interface CreateGroupPostRequest {
     /**
-     * Post title
-     * @type {string}
-     * @memberof CreateGroupPostRequest
-     */
-    'title': string;
-    /**
-     * Post text
-     * @type {string}
-     * @memberof CreateGroupPostRequest
-     */
-    'text': string;
-    /**
      * 
      * @type {string}
      * @memberof CreateGroupPostRequest
      */
     'imageId'?: string;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof CreateGroupPostRequest
+     */
+    'roleIds'?: Array<string>;
     /**
      * Send notification to group members.
      * @type {boolean}
@@ -2852,11 +2934,17 @@ export interface CreateGroupPostRequest {
      */
     'sendNotification': boolean;
     /**
-     *  
-     * @type {Array<string>}
+     * Post text
+     * @type {string}
      * @memberof CreateGroupPostRequest
      */
-    'roleIds'?: Array<string>;
+    'text': string;
+    /**
+     * Post title
+     * @type {string}
+     * @memberof CreateGroupPostRequest
+     */
+    'title': string;
     /**
      * 
      * @type {GroupPostVisibility}
@@ -2877,19 +2965,19 @@ export interface CreateGroupRequest {
      * @type {string}
      * @memberof CreateGroupRequest
      */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateGroupRequest
-     */
-    'shortCode': string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreateGroupRequest
      */
     'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGroupRequest
+     */
+    'iconId'?: string | null;
     /**
      * 
      * @type {GroupJoinState}
@@ -2901,13 +2989,7 @@ export interface CreateGroupRequest {
      * @type {string}
      * @memberof CreateGroupRequest
      */
-    'iconId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateGroupRequest
-     */
-    'bannerId'?: string | null;
+    'name': string;
     /**
      * 
      * @type {GroupPrivacy}
@@ -2920,6 +3002,12 @@ export interface CreateGroupRequest {
      * @memberof CreateGroupRequest
      */
     'roleTemplate': GroupRoleTemplate;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGroupRequest
+     */
+    'shortCode': string;
 }
 
 
@@ -2934,25 +3022,25 @@ export interface CreateGroupRoleRequest {
      * @type {string}
      * @memberof CreateGroupRoleRequest
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateGroupRoleRequest
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateGroupRoleRequest
-     */
     'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGroupRoleRequest
+     */
+    'id'?: string;
     /**
      * 
      * @type {boolean}
      * @memberof CreateGroupRoleRequest
      */
     'isSelfAssignable'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGroupRoleRequest
+     */
+    'name'?: string;
     /**
      * 
      * @type {Array<GroupPermissions>}
@@ -2967,47 +3055,17 @@ export interface CreateGroupRoleRequest {
  */
 export interface CreateInstanceRequest {
     /**
-     * WorldID be \"offline\" on User profiles if you are not friends with that user.
-     * @type {string}
-     * @memberof CreateInstanceRequest
-     */
-    'worldId': string;
-    /**
-     * 
-     * @type {InstanceType}
-     * @memberof CreateInstanceRequest
-     */
-    'type': InstanceType;
-    /**
-     * 
-     * @type {InstanceRegion}
-     * @memberof CreateInstanceRequest
-     */
-    'region': InstanceRegion;
-    /**
-     * A groupId if the instance type is \"group\", null if instance type is public, or a userId otherwise
-     * @type {string}
-     * @memberof CreateInstanceRequest
-     */
-    'ownerId'?: string | null;
-    /**
-     * Group roleIds that are allowed to join if the type is \"group\" and groupAccessType is \"member\"
-     * @type {Array<string>}
-     * @memberof CreateInstanceRequest
-     */
-    'roleIds'?: Array<string>;
-    /**
-     * 
-     * @type {GroupAccessType}
-     * @memberof CreateInstanceRequest
-     */
-    'groupAccessType'?: GroupAccessType;
-    /**
      * 
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
-    'queueEnabled'?: boolean;
+    'ageGate'?: boolean;
+    /**
+     * Only applies to invite type instances to make them invite+
+     * @type {boolean}
+     * @memberof CreateInstanceRequest
+     */
+    'canRequestInvite'?: boolean;
     /**
      * The time after which users won\'t be allowed to join the instance. This doesn\'t work for public instances.
      * @type {string}
@@ -3015,11 +3073,23 @@ export interface CreateInstanceRequest {
      */
     'closedAt'?: string;
     /**
-     * Only applies to invite type instances to make them invite+
-     * @type {boolean}
+     * 
+     * @type {InstanceContentSettings}
      * @memberof CreateInstanceRequest
      */
-    'canRequestInvite'?: boolean;
+    'contentSettings'?: InstanceContentSettings;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInstanceRequest
+     */
+    'displayName'?: string | null;
+    /**
+     * 
+     * @type {GroupAccessType}
+     * @memberof CreateInstanceRequest
+     */
+    'groupAccessType'?: GroupAccessType;
     /**
      * Currently unused, but will eventually be a flag to set if the closing of the instance should kick people.
      * @type {boolean}
@@ -3031,31 +3101,49 @@ export interface CreateInstanceRequest {
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
-    'inviteOnly'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof CreateInstanceRequest
-     */
-    'ageGate'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof CreateInstanceRequest
-     */
     'instancePersistenceEnabled'?: boolean | null;
     /**
      * 
+     * @type {boolean}
+     * @memberof CreateInstanceRequest
+     */
+    'inviteOnly'?: boolean;
+    /**
+     * A groupId if the instance type is \"group\", null if instance type is public, or a userId otherwise
      * @type {string}
      * @memberof CreateInstanceRequest
      */
-    'displayName'?: string | null;
+    'ownerId'?: string | null;
     /**
      * 
-     * @type {InstanceContentSettings}
+     * @type {boolean}
      * @memberof CreateInstanceRequest
      */
-    'contentSettings'?: InstanceContentSettings;
+    'queueEnabled'?: boolean;
+    /**
+     * 
+     * @type {InstanceRegion}
+     * @memberof CreateInstanceRequest
+     */
+    'region': InstanceRegion;
+    /**
+     * Group roleIds that are allowed to join if the type is \"group\" and groupAccessType is \"member\"
+     * @type {Array<string>}
+     * @memberof CreateInstanceRequest
+     */
+    'roleIds'?: Array<string>;
+    /**
+     * 
+     * @type {InstanceType}
+     * @memberof CreateInstanceRequest
+     */
+    'type': InstanceType;
+    /**
+     * WorldID be \"offline\" on User profiles if you are not friends with that user.
+     * @type {string}
+     * @memberof CreateInstanceRequest
+     */
+    'worldId': string;
 }
 
 
@@ -3163,13 +3251,13 @@ export interface CurrentUser {
      * @type {number}
      * @memberof CurrentUser
      */
-    'acceptedTOSVersion': number;
+    'acceptedPrivacyVersion'?: number;
     /**
      * 
      * @type {number}
      * @memberof CurrentUser
      */
-    'acceptedPrivacyVersion'?: number;
+    'acceptedTOSVersion': number;
     /**
      * 
      * @type {string}
@@ -3249,17 +3337,17 @@ export interface CurrentUser {
      */
     'currentAvatarImageUrl': string;
     /**
-     * When profilePicOverride is not empty, use it instead.
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'currentAvatarThumbnailImageUrl': string;
-    /**
      * 
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'currentAvatarTags': Array<string>;
+    /**
+     * When profilePicOverride is not empty, use it instead.
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'currentAvatarThumbnailImageUrl': string;
     /**
      * 
      * @type {string}
@@ -3272,6 +3360,18 @@ export interface CurrentUser {
      * @memberof CurrentUser
      */
     'developerType': DeveloperType;
+    /**
+     * 
+     * @type {DiscordDetails}
+     * @memberof CurrentUser
+     */
+    'discordDetails'?: DiscordDetails;
+    /**
+     * https://discord.com/developers/docs/reference#snowflakes
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'discordId'?: string;
     /**
      * 
      * @type {string}
@@ -3311,28 +3411,22 @@ export interface CurrentUser {
     'friends': Array<string>;
     /**
      * 
+     * @type {object}
+     * @memberof CurrentUser
+     */
+    'googleDetails'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'googleId'?: string;
+    /**
+     * 
      * @type {boolean}
      * @memberof CurrentUser
      */
     'hasBirthday': boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof CurrentUser
-     */
-    'hideContentFilterSettings'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'userLanguage'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'userLanguageCode'?: string | null;
     /**
      * 
      * @type {boolean}
@@ -3351,6 +3445,12 @@ export interface CurrentUser {
      * @memberof CurrentUser
      */
     'hasPendingEmail': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CurrentUser
+     */
+    'hideContentFilterSettings'?: boolean;
     /**
      * WorldID be \"offline\" on User profiles if you are not friends with that user.
      * @type {string}
@@ -3425,30 +3525,6 @@ export interface CurrentUser {
     'oculusId': string;
     /**
      * 
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'googleId'?: string;
-    /**
-     * 
-     * @type {object}
-     * @memberof CurrentUser
-     */
-    'googleDetails'?: object;
-    /**
-     * 
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'picoId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CurrentUser
-     */
-    'viveId'?: string;
-    /**
-     * 
      * @type {Array<string>}
      * @memberof CurrentUser
      */
@@ -3467,16 +3543,22 @@ export interface CurrentUser {
     'pastDisplayNames': Array<PastDisplayName>;
     /**
      * 
-     * @type {CurrentUserPresence}
+     * @type {string}
      * @memberof CurrentUser
      */
-    'presence'?: CurrentUserPresence;
+    'picoId'?: string;
     /**
      * 
      * @type {Array<CurrentUserPlatformHistoryInner>}
      * @memberof CurrentUser
      */
     'platform_history'?: Array<CurrentUserPlatformHistoryInner>;
+    /**
+     * 
+     * @type {CurrentUserPresence}
+     * @memberof CurrentUser
+     */
+    'presence'?: CurrentUserPresence;
     /**
      * 
      * @type {string}
@@ -3592,12 +3674,30 @@ export interface CurrentUser {
      */
     'userIcon': string;
     /**
+     * 
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'userLanguage'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'userLanguageCode'?: string | null;
+    /**
      * -| **DEPRECATED:** VRChat API no longer return usernames of other users. [See issue by Tupper for more information](https://github.com/pypy-vrc/VRCX/issues/429).
      * @type {string}
      * @memberof CurrentUser
      * @deprecated
      */
     'username'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentUser
+     */
+    'viveId'?: string;
 }
 
 
@@ -3614,11 +3714,11 @@ export interface CurrentUserPlatformHistoryInner {
      */
     'isMobile'?: boolean;
     /**
-     * 
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof CurrentUserPlatformHistoryInner
      */
-    'platform'?: string | null;
+    'platform'?: string;
     /**
      * 
      * @type {string}
@@ -3640,22 +3740,22 @@ export interface CurrentUserPresence {
     'avatarThumbnail'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof CurrentUserPresence
      */
-    'currentAvatarTags'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CurrentUserPresence
-     */
-    'displayName'?: string;
+    'currentAvatarTags'?: Array<string>;
     /**
      * 
      * @type {string}
      * @memberof CurrentUserPresence
      */
     'debugflag'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentUserPresence
+     */
+    'displayName'?: string;
     /**
      * 
      * @type {Array<string>}
@@ -3687,11 +3787,11 @@ export interface CurrentUserPresence {
      */
     'isRejoining'?: string | null;
     /**
-     * either a Platform or an empty string
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof CurrentUserPresence
      */
-    'platform'?: string | null;
+    'platform'?: string;
     /**
      * 
      * @type {string}
@@ -3711,7 +3811,7 @@ export interface CurrentUserPresence {
      */
     'travelingToInstance'?: string | null;
     /**
-     * WorldID be \"offline\" on User profiles if you are not friends with that user.
+     * Represents a unique location, consisting of a world identifier and an instance identifier, or \"offline\" if the user is not on your friends list.
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3736,10 +3836,10 @@ export interface CurrentUserPresence {
  */
 
 export const DeveloperType = {
-    None: 'none',
-    Trusted: 'trusted',
     Internal: 'internal',
-    Moderator: 'moderator'
+    Moderator: 'moderator',
+    None: 'none',
+    Trusted: 'trusted'
 } as const;
 
 export type DeveloperType = typeof DeveloperType[keyof typeof DeveloperType];
@@ -3761,6 +3861,25 @@ export interface Disable2FAResult {
 /**
  * 
  * @export
+ * @interface DiscordDetails
+ */
+export interface DiscordDetails {
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscordDetails
+     */
+    'global_name'?: string;
+    /**
+     * https://discord.com/developers/docs/reference#snowflakes
+     * @type {string}
+     * @memberof DiscordDetails
+     */
+    'id'?: string;
+}
+/**
+ * 
+ * @export
  * @interface DynamicContentRow
  */
 export interface DynamicContentRow {
@@ -3777,7 +3896,7 @@ export interface DynamicContentRow {
      */
     'name': string;
     /**
-     * Usually \"ThisPlatformSupported\", but can also be other values such as \"all\" or platform specific identifiers.
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof DynamicContentRow
      */
@@ -3801,7 +3920,7 @@ export interface DynamicContentRow {
      */
     'sortOwnership': string;
     /**
-     * Tag to filter content for this row.
+     * Tags are a way to grant various access, assign restrictions or other kinds of metadata to various to objects such as worlds, users and avatars.  System tags starting with `system_` are granted automatically by the system, while admin tags with `admin_` are granted manually. More prefixes such as `language_ ` (to indicate that a player can speak the tagged language), and `author_tag_` (provided by a world author for search and sorting) exist as well.
      * @type {string}
      * @memberof DynamicContentRow
      */
@@ -3812,6 +3931,49 @@ export interface DynamicContentRow {
      * @memberof DynamicContentRow
      */
     'type'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface EconomyAccount
+ */
+export interface EconomyAccount {
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyAccount
+     */
+    'accountActivatedOn': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyAccount
+     */
+    'accountId': string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof EconomyAccount
+     */
+    'blocked': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof EconomyAccount
+     */
+    'canSpend': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyAccount
+     */
+    'source': string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof EconomyAccount
+     */
+    'userId': string;
 }
 /**
  * 
@@ -3935,8 +4097,8 @@ export interface FavoriteGroupLimits {
  */
 
 export const FavoriteGroupVisibility = {
-    Private: 'private',
     Friends: 'friends',
+    Private: 'private',
     Public: 'public'
 } as const;
 
@@ -3981,9 +4143,9 @@ export interface FavoriteLimits {
  */
 
 export const FavoriteType = {
-    World: 'world',
+    Avatar: 'avatar',
     Friend: 'friend',
-    Avatar: 'avatar'
+    World: 'world'
 } as const;
 
 export type FavoriteType = typeof FavoriteType[keyof typeof FavoriteType];
@@ -4018,18 +4180,6 @@ export interface FavoritedWorld {
      * @type {string}
      * @memberof FavoritedWorld
      */
-    'description': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof FavoritedWorld
-     */
-    'recommendedCapacity'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof FavoritedWorld
-     */
     'created_at': string;
     /**
      * 
@@ -4039,10 +4189,10 @@ export interface FavoritedWorld {
     'defaultContentSettings'?: InstanceContentSettings;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof FavoritedWorld
      */
-    'favorites': number;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -4057,16 +4207,16 @@ export interface FavoritedWorld {
     'favoriteId': string;
     /**
      * 
+     * @type {number}
+     * @memberof FavoritedWorld
+     */
+    'favorites': number;
+    /**
+     * 
      * @type {boolean}
      * @memberof FavoritedWorld
      */
     'featured': boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof FavoritedWorld
-     */
-    'visits'?: number;
     /**
      * 
      * @type {number}
@@ -4129,6 +4279,12 @@ export interface FavoritedWorld {
     'publicationDate': string;
     /**
      * 
+     * @type {number}
+     * @memberof FavoritedWorld
+     */
+    'recommendedCapacity'?: number;
+    /**
+     * 
      * @type {ReleaseStatus}
      * @memberof FavoritedWorld
      */
@@ -4145,6 +4301,12 @@ export interface FavoritedWorld {
      * @memberof FavoritedWorld
      */
     'thumbnailImageUrl': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof FavoritedWorld
+     */
+    'udonProducts'?: Array<string>;
     /**
      *  
      * @type {Array<UnityPackage>}
@@ -4165,16 +4327,16 @@ export interface FavoritedWorld {
     'urlList': Array<string>;
     /**
      * 
-     * @type {Array<string>}
+     * @type {number}
      * @memberof FavoritedWorld
      */
-    'udonProducts'?: Array<string>;
+    'version': number;
     /**
      * 
      * @type {number}
      * @memberof FavoritedWorld
      */
-    'version': number;
+    'visits'?: number;
 }
 
 
@@ -4648,10 +4810,10 @@ export type FileDataCategoryEnum = typeof FileDataCategoryEnum[keyof typeof File
  */
 
 export const FileStatus = {
-    Waiting: 'waiting',
     Complete: 'complete',
     None: 'none',
-    Queued: 'queued'
+    Queued: 'queued',
+    Waiting: 'waiting'
 } as const;
 
 export type FileStatus = typeof FileStatus[keyof typeof FileStatus];
@@ -4728,11 +4890,11 @@ export interface FileVersion {
  */
 export interface FileVersionUploadStatus {
     /**
-     * 
-     * @type {string}
+     * Unknown
+     * @type {Array<object>}
      * @memberof FileVersionUploadStatus
      */
-    'uploadId': string;
+    'etags': Array<object>;
     /**
      * 
      * @type {string}
@@ -4744,13 +4906,13 @@ export interface FileVersionUploadStatus {
      * @type {number}
      * @memberof FileVersionUploadStatus
      */
-    'nextPartNumber': number;
+    'maxParts': number;
     /**
      * 
      * @type {number}
      * @memberof FileVersionUploadStatus
      */
-    'maxParts': number;
+    'nextPartNumber': number;
     /**
      * 
      * @type {Array<object>}
@@ -4758,11 +4920,11 @@ export interface FileVersionUploadStatus {
      */
     'parts': Array<object>;
     /**
-     * Unknown
-     * @type {Array<object>}
+     * 
+     * @type {string}
      * @memberof FileVersionUploadStatus
      */
-    'etags': Array<object>;
+    'uploadId': string;
 }
 /**
  * 
@@ -4782,14 +4944,14 @@ export interface FinishFileDataUploadRequest {
      * @memberof FinishFileDataUploadRequest
      * @deprecated
      */
-    'nextPartNumber': string;
+    'maxParts': string;
     /**
      * Always a zero in string form, despite how many parts uploaded.
      * @type {string}
      * @memberof FinishFileDataUploadRequest
      * @deprecated
      */
-    'maxParts': string;
+    'nextPartNumber': string;
 }
 /**
  * 
@@ -4837,12 +4999,6 @@ export interface FriendStatus {
 export interface Group {
     /**
      * 
-     * @type {boolean}
-     * @memberof Group
-     */
-    'ageVerificationSlotsAvailable'?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof Group
      */
@@ -4855,6 +5011,12 @@ export interface Group {
     'ageVerificationBetaSlots'?: number;
     /**
      * 
+     * @type {boolean}
+     * @memberof Group
+     */
+    'ageVerificationSlotsAvailable'?: boolean;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof Group
      */
@@ -4864,25 +5026,19 @@ export interface Group {
      * @type {string}
      * @memberof Group
      */
-    'id'?: string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof Group
      */
-    'name'?: string;
+    'bannerUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof Group
      */
-    'shortCode'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Group
-     */
-    'discriminator'?: string;
+    'createdAt'?: string;
     /**
      * 
      * @type {string}
@@ -4894,43 +5050,13 @@ export interface Group {
      * @type {string}
      * @memberof Group
      */
-    'iconUrl'?: string | null;
+    'discriminator'?: string;
     /**
      * 
-     * @type {string}
+     * @type {Array<GroupGallery>}
      * @memberof Group
      */
-    'bannerUrl'?: string | null;
-    /**
-     * 
-     * @type {GroupPrivacy}
-     * @memberof Group
-     */
-    'privacy'?: GroupPrivacy;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof Group
-     */
-    'ownerId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Group
-     */
-    'rules'?: string | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Group
-     */
-    'links'?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Group
-     */
-    'languages'?: Array<string>;
+    'galleries'?: Array<GroupGallery>;
     /**
      * 
      * @type {string}
@@ -4942,19 +5068,13 @@ export interface Group {
      * @type {string}
      * @memberof Group
      */
-    'bannerId'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof Group
-     */
-    'memberCount'?: number;
+    'iconUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof Group
      */
-    'memberCountSyncedAt'?: string;
+    'id'?: string;
     /**
      * 
      * @type {boolean}
@@ -4972,31 +5092,7 @@ export interface Group {
      * @type {Array<string>}
      * @memberof Group
      */
-    'tags'?: Array<string>;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof Group
-     */
-    'transferTargetId'?: string;
-    /**
-     * 
-     * @type {Array<GroupGallery>}
-     * @memberof Group
-     */
-    'galleries'?: Array<GroupGallery>;
-    /**
-     * 
-     * @type {string}
-     * @memberof Group
-     */
-    'createdAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Group
-     */
-    'updatedAt'?: string;
+    'languages'?: Array<string>;
     /**
      * 
      * @type {string}
@@ -5005,10 +5101,22 @@ export interface Group {
     'lastPostCreatedAt'?: string | null;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof Group
+     */
+    'links'?: Array<string>;
+    /**
+     * 
      * @type {number}
      * @memberof Group
      */
-    'onlineMemberCount'?: number;
+    'memberCount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'memberCountSyncedAt'?: string;
     /**
      * 
      * @type {GroupMemberStatus}
@@ -5022,11 +5130,65 @@ export interface Group {
      */
     'myMember'?: GroupMyMember;
     /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Group
+     */
+    'onlineMemberCount'?: number;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Group
+     */
+    'ownerId'?: string;
+    /**
+     * 
+     * @type {GroupPrivacy}
+     * @memberof Group
+     */
+    'privacy'?: GroupPrivacy;
+    /**
      * Only returned if ?includeRoles=true is specified.
      * @type {Array<GroupRole>}
      * @memberof Group
      */
     'roles'?: Array<GroupRole> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'rules'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'shortCode'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Group
+     */
+    'tags'?: Array<string>;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Group
+     */
+    'transferTargetId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'updatedAt'?: string;
 }
 
 
@@ -5037,9 +5199,9 @@ export interface Group {
  */
 
 export const GroupAccessType = {
-    Public: 'public',
+    Members: 'members',
     Plus: 'plus',
-    Members: 'members'
+    Public: 'public'
 } as const;
 
 export type GroupAccessType = typeof GroupAccessType[keyof typeof GroupAccessType];
@@ -5052,18 +5214,6 @@ export type GroupAccessType = typeof GroupAccessType[keyof typeof GroupAccessTyp
  */
 export interface GroupAnnouncement {
     /**
-     * 
-     * @type {string}
-     * @memberof GroupAnnouncement
-     */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupAnnouncement
-     */
-    'groupId'?: string;
-    /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
      * @memberof GroupAnnouncement
@@ -5074,13 +5224,19 @@ export interface GroupAnnouncement {
      * @type {string}
      * @memberof GroupAnnouncement
      */
-    'title'?: string | null;
+    'createdAt'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof GroupAnnouncement
      */
-    'text'?: string | null;
+    'groupId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupAnnouncement
+     */
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -5098,7 +5254,13 @@ export interface GroupAnnouncement {
      * @type {string}
      * @memberof GroupAnnouncement
      */
-    'createdAt'?: string | null;
+    'text'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupAnnouncement
+     */
+    'title'?: string | null;
     /**
      * 
      * @type {string}
@@ -5117,19 +5279,7 @@ export interface GroupAuditLogEntry {
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupAuditLogEntry
-     */
-    'created_at'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupAuditLogEntry
-     */
-    'groupId'?: string;
+    'actorDisplayName'?: string;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -5141,19 +5291,13 @@ export interface GroupAuditLogEntry {
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
-    'actorDisplayName'?: string;
+    'created_at'?: string;
     /**
-     * Typically a UserID, GroupID, GroupRoleID, or Location, but could be other types of IDs.
-     * @type {string}
+     * The data associated with the event. The format of this data is dependent on the event type.
+     * @type {object}
      * @memberof GroupAuditLogEntry
      */
-    'targetId'?: string;
-    /**
-     * The type of event that occurred. This is a string that is prefixed with the type of object that the event occurred on. For example, a group role update event would be prefixed with `group.role`.
-     * @type {string}
-     * @memberof GroupAuditLogEntry
-     */
-    'eventType'?: string;
+    'data'?: object;
     /**
      * A human-readable description of the event.
      * @type {string}
@@ -5161,11 +5305,29 @@ export interface GroupAuditLogEntry {
      */
     'description'?: string;
     /**
-     * The data associated with the event. The format of this data is dependent on the event type.
-     * @type {object}
+     * The type of event that occurred. This is a string that is prefixed with the type of object that the event occurred on. For example, a group role update event would be prefixed with `group.role`.
+     * @type {string}
      * @memberof GroupAuditLogEntry
      */
-    'data'?: object;
+    'eventType'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupAuditLogEntry
+     */
+    'groupId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupAuditLogEntry
+     */
+    'id'?: string;
+    /**
+     * Typically a UserID, GroupID, GroupRoleID, or Location, but could be other types of IDs.
+     * @type {string}
+     * @memberof GroupAuditLogEntry
+     */
+    'targetId'?: string;
 }
 /**
  * 
@@ -5178,13 +5340,7 @@ export interface GroupGallery {
      * @type {string}
      * @memberof GroupGallery
      */
-    'id'?: string;
-    /**
-     * Name of the gallery.
-     * @type {string}
-     * @memberof GroupGallery
-     */
-    'name'?: string;
+    'createdAt'?: string;
     /**
      * Description of the gallery.
      * @type {string}
@@ -5192,23 +5348,23 @@ export interface GroupGallery {
      */
     'description'?: string;
     /**
+     * 
+     * @type {string}
+     * @memberof GroupGallery
+     */
+    'id'?: string;
+    /**
      * Whether the gallery is members only.
      * @type {boolean}
      * @memberof GroupGallery
      */
     'membersOnly'?: boolean;
     /**
-     *  
-     * @type {Array<string>}
+     * Name of the gallery.
+     * @type {string}
      * @memberof GroupGallery
      */
-    'roleIdsToView'?: Array<string> | null;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof GroupGallery
-     */
-    'roleIdsToSubmit'?: Array<string> | null;
+    'name'?: string;
     /**
      *  
      * @type {Array<string>}
@@ -5222,11 +5378,17 @@ export interface GroupGallery {
      */
     'roleIdsToManage'?: Array<string> | null;
     /**
-     * 
-     * @type {string}
+     *  
+     * @type {Array<string>}
      * @memberof GroupGallery
      */
-    'createdAt'?: string;
+    'roleIdsToSubmit'?: Array<string> | null;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof GroupGallery
+     */
+    'roleIdsToView'?: Array<string> | null;
     /**
      * 
      * @type {string}
@@ -5242,52 +5404,16 @@ export interface GroupGallery {
 export interface GroupGalleryImage {
     /**
      * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'groupId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'galleryId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'fileId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'imageUrl'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'createdAt'?: string;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof GroupGalleryImage
-     */
-    'submittedByUserId'?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof GroupGalleryImage
      */
     'approved'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'approvedAt'?: string;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -5299,7 +5425,43 @@ export interface GroupGalleryImage {
      * @type {string}
      * @memberof GroupGalleryImage
      */
-    'approvedAt'?: string;
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'fileId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'galleryId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'groupId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'imageUrl'?: string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof GroupGalleryImage
+     */
+    'submittedByUserId'?: string;
 }
 /**
  * 
@@ -5308,29 +5470,29 @@ export interface GroupGalleryImage {
  */
 export interface GroupInstance {
     /**
-     * 
+     * InstanceID can be \"offline\" on User profiles if you are not friends with that user and \"private\" if you are friends and user is in private instance.
      * @type {string}
      * @memberof GroupInstance
      */
     'instanceId': string;
     /**
-     * InstanceID can be \"offline\" on User profiles if you are not friends with that user and \"private\" if you are friends and user is in private instance.
+     * Represents a unique location, consisting of a world identifier and an instance identifier, or \"offline\" if the user is not on your friends list.
      * @type {string}
      * @memberof GroupInstance
      */
     'location': string;
     /**
      * 
-     * @type {World}
-     * @memberof GroupInstance
-     */
-    'world': World;
-    /**
-     * 
      * @type {number}
      * @memberof GroupInstance
      */
     'memberCount': number;
+    /**
+     * 
+     * @type {World}
+     * @memberof GroupInstance
+     */
+    'world': World;
 }
 /**
  * 
@@ -5355,8 +5517,8 @@ export type GroupJoinRequestAction = typeof GroupJoinRequestAction[keyof typeof 
 export const GroupJoinState = {
     Closed: 'closed',
     Invite: 'invite',
-    Request: 'request',
-    Open: 'open'
+    Open: 'open',
+    Request: 'request'
 } as const;
 
 export type GroupJoinState = typeof GroupJoinState[keyof typeof GroupJoinState];
@@ -5369,11 +5531,17 @@ export type GroupJoinState = typeof GroupJoinState[keyof typeof GroupJoinState];
  */
 export interface GroupLimitedMember {
     /**
-     * 
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
      * @type {string}
      * @memberof GroupLimitedMember
      */
-    'id'?: string;
+    'bannedAt'?: string | null;
+    /**
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * @type {string}
+     * @memberof GroupLimitedMember
+     */
+    'createdAt'?: string | null;
     /**
      * 
      * @type {string}
@@ -5381,47 +5549,23 @@ export interface GroupLimitedMember {
      */
     'groupId'?: string;
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * 
+     * @type {boolean}
+     * @memberof GroupLimitedMember
+     */
+    'hasJoinedFromPurchase'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof GroupLimitedMember
      */
-    'userId'?: string;
+    'id'?: string;
     /**
      * Whether the user is representing the group. This makes the group show up above the name tag in-game.
      * @type {boolean}
      * @memberof GroupLimitedMember
      */
     'isRepresenting'?: boolean;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupLimitedMember
-     */
-    'roleIds'?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupLimitedMember
-     */
-    'mRoleIds'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupLimitedMember
-     */
-    'joinedAt'?: string | null;
-    /**
-     * 
-     * @type {GroupMemberStatus}
-     * @memberof GroupLimitedMember
-     */
-    'membershipStatus'?: GroupMemberStatus;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupLimitedMember
-     */
-    'visibility'?: string;
     /**
      * 
      * @type {boolean}
@@ -5435,23 +5579,11 @@ export interface GroupLimitedMember {
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * 
      * @type {string}
      * @memberof GroupLimitedMember
      */
-    'createdAt'?: string | null;
-    /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
-     * @type {string}
-     * @memberof GroupLimitedMember
-     */
-    'bannedAt'?: string | null;
-    /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
-     * @type {string}
-     * @memberof GroupLimitedMember
-     */
-    'managerNotes'?: string | null;
+    'joinedAt'?: string | null;
     /**
      * 
      * @type {string}
@@ -5460,10 +5592,40 @@ export interface GroupLimitedMember {
     'lastPostReadAt'?: string | null;
     /**
      * 
-     * @type {boolean}
+     * @type {Array<string>}
      * @memberof GroupLimitedMember
      */
-    'hasJoinedFromPurchase'?: boolean;
+    'mRoleIds'?: Array<string>;
+    /**
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * @type {string}
+     * @memberof GroupLimitedMember
+     */
+    'managerNotes'?: string | null;
+    /**
+     * 
+     * @type {GroupMemberStatus}
+     * @memberof GroupLimitedMember
+     */
+    'membershipStatus'?: GroupMemberStatus;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GroupLimitedMember
+     */
+    'roleIds'?: Array<string>;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof GroupLimitedMember
+     */
+    'userId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupLimitedMember
+     */
+    'visibility'?: string;
 }
 
 
@@ -5486,11 +5648,17 @@ export interface GroupMember {
      */
     'acceptedById'?: string | null;
     /**
-     * 
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
      * @type {string}
      * @memberof GroupMember
      */
-    'id'?: string;
+    'bannedAt'?: string | null;
+    /**
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * @type {string}
+     * @memberof GroupMember
+     */
+    'createdAt'?: string | null;
     /**
      * 
      * @type {string}
@@ -5498,53 +5666,23 @@ export interface GroupMember {
      */
     'groupId'?: string;
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * 
+     * @type {boolean}
+     * @memberof GroupMember
+     */
+    'hasJoinedFromPurchase'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof GroupMember
      */
-    'userId'?: string;
+    'id'?: string;
     /**
      * Whether the user is representing the group. This makes the group show up above the name tag in-game.
      * @type {boolean}
      * @memberof GroupMember
      */
     'isRepresenting'?: boolean;
-    /**
-     * 
-     * @type {GroupMemberLimitedUser}
-     * @memberof GroupMember
-     */
-    'user'?: GroupMemberLimitedUser;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupMember
-     */
-    'roleIds'?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupMember
-     */
-    'mRoleIds'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMember
-     */
-    'joinedAt'?: string | null;
-    /**
-     * 
-     * @type {GroupMemberStatus}
-     * @memberof GroupMember
-     */
-    'membershipStatus'?: GroupMemberStatus;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMember
-     */
-    'visibility'?: string;
     /**
      * 
      * @type {boolean}
@@ -5558,23 +5696,11 @@ export interface GroupMember {
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * 
      * @type {string}
      * @memberof GroupMember
      */
-    'createdAt'?: string | null;
-    /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
-     * @type {string}
-     * @memberof GroupMember
-     */
-    'bannedAt'?: string | null;
-    /**
-     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
-     * @type {string}
-     * @memberof GroupMember
-     */
-    'managerNotes'?: string | null;
+    'joinedAt'?: string | null;
     /**
      * 
      * @type {string}
@@ -5583,10 +5709,46 @@ export interface GroupMember {
     'lastPostReadAt'?: string | null;
     /**
      * 
-     * @type {boolean}
+     * @type {Array<string>}
      * @memberof GroupMember
      */
-    'hasJoinedFromPurchase'?: boolean;
+    'mRoleIds'?: Array<string>;
+    /**
+     * Only visible via the /groups/:groupId/members endpoint, **not** when fetching a specific user.
+     * @type {string}
+     * @memberof GroupMember
+     */
+    'managerNotes'?: string | null;
+    /**
+     * 
+     * @type {GroupMemberStatus}
+     * @memberof GroupMember
+     */
+    'membershipStatus'?: GroupMemberStatus;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GroupMember
+     */
+    'roleIds'?: Array<string>;
+    /**
+     * 
+     * @type {GroupMemberLimitedUser}
+     * @memberof GroupMember
+     */
+    'user'?: GroupMemberLimitedUser;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof GroupMember
+     */
+    'userId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMember
+     */
+    'visibility'?: string;
 }
 
 
@@ -5597,11 +5759,17 @@ export interface GroupMember {
  */
 export interface GroupMemberLimitedUser {
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * 
+     * @type {Array<string>}
+     * @memberof GroupMemberLimitedUser
+     */
+    'currentAvatarTags'?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
-    'id'?: string;
+    'currentAvatarThumbnailImageUrl'?: string | null;
     /**
      * 
      * @type {string}
@@ -5613,13 +5781,13 @@ export interface GroupMemberLimitedUser {
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
-    'thumbnailUrl'?: string | null;
+    'iconUrl'?: string;
     /**
-     * 
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
-    'iconUrl'?: string;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -5631,13 +5799,7 @@ export interface GroupMemberLimitedUser {
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
-    'currentAvatarThumbnailImageUrl'?: string | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupMemberLimitedUser
-     */
-    'currentAvatarTags'?: Array<string>;
+    'thumbnailUrl'?: string | null;
 }
 /**
  * 
@@ -5646,11 +5808,11 @@ export interface GroupMemberLimitedUser {
  */
 
 export const GroupMemberStatus = {
+    Banned: 'banned',
     Inactive: 'inactive',
+    Invited: 'invited',
     Member: 'member',
     Requested: 'requested',
-    Invited: 'invited',
-    Banned: 'banned',
     Userblocked: 'userblocked'
 } as const;
 
@@ -5668,30 +5830,6 @@ export interface GroupMyMember {
      * @type {string}
      * @memberof GroupMyMember
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'groupId'?: string;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'userId'?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof GroupMyMember
-     */
-    'roleIds'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
     'acceptedByDisplayName'?: string | null;
     /**
      * 
@@ -5704,55 +5842,19 @@ export interface GroupMyMember {
      * @type {string}
      * @memberof GroupMyMember
      */
+    'bannedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
     'createdAt'?: string;
     /**
      * 
      * @type {string}
      * @memberof GroupMyMember
      */
-    'managerNotes'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'membershipStatus'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GroupMyMember
-     */
-    'isSubscribedToAnnouncements'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GroupMyMember
-     */
-    'isSubscribedToEventAnnouncements'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'visibility'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GroupMyMember
-     */
-    'isRepresenting'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'joinedAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupMyMember
-     */
-    'bannedAt'?: string | null;
+    'groupId'?: string;
     /**
      * 
      * @type {boolean}
@@ -5770,6 +5872,36 @@ export interface GroupMyMember {
      * @type {string}
      * @memberof GroupMyMember
      */
+    'id'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GroupMyMember
+     */
+    'isRepresenting'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GroupMyMember
+     */
+    'isSubscribedToAnnouncements'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GroupMyMember
+     */
+    'isSubscribedToEventAnnouncements'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
+    'joinedAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
     'lastPostReadAt'?: string | null;
     /**
      * 
@@ -5779,10 +5911,40 @@ export interface GroupMyMember {
     'mRoleIds'?: Array<string>;
     /**
      * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
+    'managerNotes'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
+    'membershipStatus'?: string;
+    /**
+     * 
      * @type {Array<GroupPermissions>}
      * @memberof GroupMyMember
      */
     'permissions'?: Array<GroupPermissions>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GroupMyMember
+     */
+    'roleIds'?: Array<string>;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof GroupMyMember
+     */
+    'userId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupMyMember
+     */
+    'visibility'?: string;
 }
 /**
  * A permission that can be granted to a role in a group.
@@ -5791,11 +5953,11 @@ export interface GroupMyMember {
  */
 export interface GroupPermission {
     /**
-     * The name of the permission.
-     * @type {string}
+     * Whether the user is allowed to add this permission to a role.
+     * @type {boolean}
      * @memberof GroupPermission
      */
-    'name'?: string;
+    'allowedToAdd'?: boolean;
     /**
      * The display name of the permission.
      * @type {string}
@@ -5815,11 +5977,11 @@ export interface GroupPermission {
      */
     'isManagementPermission'?: boolean;
     /**
-     * Whether the user is allowed to add this permission to a role.
-     * @type {boolean}
+     * The name of the permission.
+     * @type {string}
      * @memberof GroupPermission
      */
-    'allowedToAdd'?: boolean;
+    'name'?: string;
 }
 /**
  * 
@@ -5832,10 +5994,12 @@ export const GroupPermissions = {
     group_announcement_manage: 'group-announcement-manage',
     group_audit_view: 'group-audit-view',
     group_bans_manage: 'group-bans-manage',
+    group_calendar_manage: 'group-calendar-manage',
     group_data_manage: 'group-data-manage',
     group_default_role_manage: 'group-default-role-manage',
     group_galleries_manage: 'group-galleries-manage',
     group_instance_age_gated_create: 'group-instance-age-gated-create',
+    group_instance_calendar_link: 'group-instance-calendar-link',
     group_instance_join: 'group-instance-join',
     group_instance_manage: 'group-instance-manage',
     group_instance_moderate: 'group-instance-moderate',
@@ -5851,8 +6015,7 @@ export const GroupPermissions = {
     group_members_remove: 'group-members-remove',
     group_members_viewall: 'group-members-viewall',
     group_roles_assign: 'group-roles-assign',
-    group_roles_manage: 'group-roles-manage',
-    group_calendar_manage: 'group-calendar-manage'
+    group_roles_manage: 'group-roles-manage'
 } as const;
 
 export type GroupPermissions = typeof GroupPermissions[keyof typeof GroupPermissions];
@@ -5865,23 +6028,17 @@ export type GroupPermissions = typeof GroupPermissions[keyof typeof GroupPermiss
  */
 export interface GroupPost {
     /**
-     * 
-     * @type {string}
-     * @memberof GroupPost
-     */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupPost
-     */
-    'groupId'?: string;
-    /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
      * @memberof GroupPost
      */
     'authorId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupPost
+     */
+    'createdAt'?: string;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -5890,28 +6047,16 @@ export interface GroupPost {
     'editorId'?: string;
     /**
      * 
-     * @type {GroupPostVisibility}
+     * @type {string}
      * @memberof GroupPost
      */
-    'visibility'?: GroupPostVisibility;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof GroupPost
-     */
-    'roleId'?: Array<string>;
+    'groupId'?: string;
     /**
      * 
      * @type {string}
      * @memberof GroupPost
      */
-    'title'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupPost
-     */
-    'text'?: string;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -5925,17 +6070,35 @@ export interface GroupPost {
      */
     'imageUrl'?: string | null;
     /**
+     *  
+     * @type {Array<string>}
+     * @memberof GroupPost
+     */
+    'roleId'?: Array<string>;
+    /**
      * 
      * @type {string}
      * @memberof GroupPost
      */
-    'createdAt'?: string;
+    'text'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupPost
+     */
+    'title'?: string;
     /**
      * 
      * @type {string}
      * @memberof GroupPost
      */
     'updatedAt'?: string;
+    /**
+     * 
+     * @type {GroupPostVisibility}
+     * @memberof GroupPost
+     */
+    'visibility'?: GroupPostVisibility;
 }
 
 
@@ -5978,7 +6141,13 @@ export interface GroupRole {
      * @type {string}
      * @memberof GroupRole
      */
-    'id'?: string;
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GroupRole
+     */
+    'description'?: string;
     /**
      * 
      * @type {string}
@@ -5990,25 +6159,7 @@ export interface GroupRole {
      * @type {string}
      * @memberof GroupRole
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GroupRole
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GroupRole
-     */
-    'isSelfAssignable'?: boolean;
-    /**
-     * 
-     * @type {Array<GroupPermissions>}
-     * @memberof GroupRole
-     */
-    'permissions'?: Array<GroupPermissions>;
+    'id'?: string;
     /**
      * 
      * @type {boolean}
@@ -6020,13 +6171,13 @@ export interface GroupRole {
      * @type {boolean}
      * @memberof GroupRole
      */
-    'requiresTwoFactor'?: boolean;
+    'isSelfAssignable'?: boolean;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof GroupRole
      */
-    'requiresPurchase'?: boolean;
+    'name'?: string;
     /**
      * 
      * @type {number}
@@ -6035,10 +6186,22 @@ export interface GroupRole {
     'order'?: number;
     /**
      * 
-     * @type {string}
+     * @type {Array<GroupPermissions>}
      * @memberof GroupRole
      */
-    'createdAt'?: string;
+    'permissions'?: Array<GroupPermissions>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GroupRole
+     */
+    'requiresPurchase'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GroupRole
+     */
+    'requiresTwoFactor'?: boolean;
     /**
      * 
      * @type {string}
@@ -6104,13 +6267,13 @@ export interface GroupRoleTemplateValuesRoles {
      * @type {string}
      * @memberof GroupRoleTemplateValuesRoles
      */
-    'description'?: string;
+    'name'?: string;
     /**
      * 
      * @type {string}
      * @memberof GroupRoleTemplateValuesRoles
      */
-    'name'?: string;
+    'description'?: string;
     /**
      * 
      * @type {Array<GroupPermissions>}
@@ -6145,9 +6308,9 @@ export type GroupSearchSort = typeof GroupSearchSort[keyof typeof GroupSearchSor
  */
 
 export const GroupUserVisibility = {
-    Visible: 'visible',
+    Friends: 'friends',
     Hidden: 'hidden',
-    Friends: 'friends'
+    Visible: 'visible'
 } as const;
 
 export type GroupUserVisibility = typeof GroupUserVisibility[keyof typeof GroupUserVisibility];
@@ -6164,37 +6327,19 @@ export interface InfoPush {
      * @type {string}
      * @memberof InfoPush
      */
-    'id': string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InfoPush
-     */
-    'isEnabled': boolean;
-    /**
-     * 
-     * @type {ReleaseStatus}
-     * @memberof InfoPush
-     */
-    'releaseStatus': ReleaseStatus;
-    /**
-     * 
-     * @type {number}
-     * @memberof InfoPush
-     */
-    'priority': number;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof InfoPush
-     */
-    'tags': Array<string>;
+    'createdAt': string;
     /**
      * 
      * @type {InfoPushData}
      * @memberof InfoPush
      */
     'data': InfoPushData;
+    /**
+     * 
+     * @type {string}
+     * @memberof InfoPush
+     */
+    'endDate'?: string;
     /**
      * Unknown usage, MD5
      * @type {string}
@@ -6206,13 +6351,25 @@ export interface InfoPush {
      * @type {string}
      * @memberof InfoPush
      */
-    'createdAt': string;
+    'id': string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof InfoPush
      */
-    'updatedAt': string;
+    'isEnabled': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof InfoPush
+     */
+    'priority': number;
+    /**
+     * 
+     * @type {ReleaseStatus}
+     * @memberof InfoPush
+     */
+    'releaseStatus': ReleaseStatus;
     /**
      * 
      * @type {string}
@@ -6220,11 +6377,17 @@ export interface InfoPush {
      */
     'startDate'?: string;
     /**
+     *  
+     * @type {Array<string>}
+     * @memberof InfoPush
+     */
+    'tags': Array<string>;
+    /**
      * 
      * @type {string}
      * @memberof InfoPush
      */
-    'endDate'?: string;
+    'updatedAt': string;
 }
 
 
@@ -6234,6 +6397,12 @@ export interface InfoPush {
  * @interface InfoPushData
  */
 export interface InfoPushData {
+    /**
+     * 
+     * @type {InfoPushDataArticle}
+     * @memberof InfoPushData
+     */
+    'article'?: InfoPushDataArticle;
     /**
      * 
      * @type {DynamicContentRow}
@@ -6276,12 +6445,6 @@ export interface InfoPushData {
      * @memberof InfoPushData
      */
     'version'?: string;
-    /**
-     * 
-     * @type {InfoPushDataArticle}
-     * @memberof InfoPushData
-     */
-    'article'?: InfoPushDataArticle;
 }
 /**
  * 
@@ -6307,12 +6470,6 @@ export interface InfoPushDataArticleContent {
      * @type {string}
      * @memberof InfoPushDataArticleContent
      */
-    'text'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InfoPushDataArticleContent
-     */
     'imageUrl'?: string;
     /**
      * 
@@ -6320,6 +6477,12 @@ export interface InfoPushDataArticleContent {
      * @memberof InfoPushDataArticleContent
      */
     'onPressed'?: InfoPushDataClickable;
+    /**
+     * 
+     * @type {string}
+     * @memberof InfoPushDataArticleContent
+     */
+    'text'?: string;
 }
 /**
  * 
@@ -6328,24 +6491,24 @@ export interface InfoPushDataArticleContent {
  */
 export interface InfoPushDataClickable {
     /**
-     * 
-     * @type {string}
-     * @memberof InfoPushDataClickable
-     */
-    'command': InfoPushDataClickableCommandEnum;
-    /**
      * In case of OpenURL, this would contain the link.
      * @type {Array<string>}
      * @memberof InfoPushDataClickable
      */
     'parameters'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof InfoPushDataClickable
+     */
+    'command': InfoPushDataClickableCommandEnum;
 }
 
 export const InfoPushDataClickableCommandEnum = {
-    OpenUrl: 'OpenURL',
-    OpenVrcPlusMenu: 'OpenVRCPlusMenu',
+    CannedWorldSearch: 'CannedWorldSearch',
     OpenSafetyMenu: 'OpenSafetyMenu',
-    CannedWorldSearch: 'CannedWorldSearch'
+    OpenUrl: 'OpenURL',
+    OpenVrcPlusMenu: 'OpenVRCPlusMenu'
 } as const;
 
 export type InfoPushDataClickableCommandEnum = typeof InfoPushDataClickableCommandEnum[keyof typeof InfoPushDataClickableCommandEnum];
@@ -6421,16 +6584,28 @@ export interface Instance {
     'clientNumber': string;
     /**
      * 
+     * @type {string}
+     * @memberof Instance
+     */
+    'closedAt'?: string | null;
+    /**
+     * 
      * @type {InstanceContentSettings}
      * @memberof Instance
      */
-    'contentSettings': InstanceContentSettings;
+    'contentSettings'?: InstanceContentSettings;
     /**
      * 
      * @type {string}
      * @memberof Instance
      */
-    'displayName': string | null;
+    'displayName'?: string | null;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Instance
+     */
+    'friends'?: string;
     /**
      * 
      * @type {boolean}
@@ -6444,13 +6619,37 @@ export interface Instance {
      */
     'gameServerVersion'?: number;
     /**
+     * 
+     * @type {GroupAccessType}
+     * @memberof Instance
+     */
+    'groupAccessType'?: GroupAccessType;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Instance
+     */
+    'hardClose'?: boolean | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Instance
+     */
+    'hasCapacityForYou'?: boolean;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Instance
+     */
+    'hidden'?: string;
+    /**
      * InstanceID can be \"offline\" on User profiles if you are not friends with that user and \"private\" if you are friends and user is in private instance.
      * @type {string}
      * @memberof Instance
      */
     'id': string;
     /**
-     * 
+     * InstanceID can be \"offline\" on User profiles if you are not friends with that user and \"private\" if you are friends and user is in private instance.
      * @type {string}
      * @memberof Instance
      */
@@ -6460,9 +6659,9 @@ export interface Instance {
      * @type {string}
      * @memberof Instance
      */
-    'instancePersistenceEnabled': string | null;
+    'instancePersistenceEnabled'?: string | null;
     /**
-     * InstanceID can be \"offline\" on User profiles if you are not friends with that user and \"private\" if you are friends and user is in private instance.
+     * Represents a unique location, consisting of a world identifier and an instance identifier, or \"offline\" if the user is not on your friends list.
      * @type {string}
      * @memberof Instance
      */
@@ -6479,6 +6678,12 @@ export interface Instance {
      * @memberof Instance
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    'nonce'?: string;
     /**
      * A groupId if the instance type is \"group\", null if instance type is public, or a userId otherwise
      * @type {string}
@@ -6508,55 +6713,7 @@ export interface Instance {
      * @type {boolean}
      * @memberof Instance
      */
-    'playerPersistenceEnabled': boolean | null;
-    /**
-     * 
-     * @type {InstanceRegion}
-     * @memberof Instance
-     */
-    'region': InstanceRegion;
-    /**
-     * 
-     * @type {string}
-     * @memberof Instance
-     */
-    'secureName': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Instance
-     */
-    'shortName'?: string | null;
-    /**
-     * The tags array on Instances usually contain the language tags of the people in the instance. 
-     * @type {Array<string>}
-     * @memberof Instance
-     */
-    'tags': Array<string>;
-    /**
-     * 
-     * @type {InstanceType}
-     * @memberof Instance
-     */
-    'type': InstanceType;
-    /**
-     * WorldID be \"offline\" on User profiles if you are not friends with that user.
-     * @type {string}
-     * @memberof Instance
-     */
-    'worldId': string;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof Instance
-     */
-    'hidden'?: string;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof Instance
-     */
-    'friends'?: string;
+    'playerPersistenceEnabled'?: boolean | null;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -6583,10 +6740,28 @@ export interface Instance {
     'recommendedCapacity': number;
     /**
      * 
+     * @type {InstanceRegion}
+     * @memberof Instance
+     */
+    'region': InstanceRegion;
+    /**
+     * 
      * @type {boolean}
      * @memberof Instance
      */
     'roleRestricted'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    'secureName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    'shortName'?: string | null;
     /**
      * 
      * @type {boolean}
@@ -6594,17 +6769,23 @@ export interface Instance {
      */
     'strict': boolean;
     /**
+     * The tags array on Instances usually contain the language tags of the people in the instance. 
+     * @type {Array<string>}
+     * @memberof Instance
+     */
+    'tags': Array<string>;
+    /**
+     * 
+     * @type {InstanceType}
+     * @memberof Instance
+     */
+    'type': InstanceType;
+    /**
      * 
      * @type {number}
      * @memberof Instance
      */
     'userCount': number;
-    /**
-     * 
-     * @type {World}
-     * @memberof Instance
-     */
-    'world': World;
     /**
      * The users field is present on instances created by the requesting user.
      * @type {Array<LimitedUserInstance>}
@@ -6613,34 +6794,16 @@ export interface Instance {
     'users'?: Array<LimitedUserInstance>;
     /**
      * 
-     * @type {GroupAccessType}
+     * @type {World}
      * @memberof Instance
      */
-    'groupAccessType'?: GroupAccessType;
+    'world': World;
     /**
-     * 
-     * @type {boolean}
-     * @memberof Instance
-     */
-    'hasCapacityForYou'?: boolean;
-    /**
-     * 
+     * WorldID be \"offline\" on User profiles if you are not friends with that user.
      * @type {string}
      * @memberof Instance
      */
-    'nonce'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Instance
-     */
-    'closedAt'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Instance
-     */
-    'hardClose'?: boolean | null;
+    'worldId': string;
 }
 
 
@@ -6679,13 +6842,13 @@ export interface InstanceContentSettings {
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
-    'stickers'?: boolean;
+    'props'?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
-    'props'?: boolean;
+    'stickers'?: boolean;
 }
 /**
  * 
@@ -6719,11 +6882,11 @@ export interface InstancePlatforms {
  */
 
 export const InstanceRegion = {
-    Us: 'us',
-    Use: 'use',
     Eu: 'eu',
     Jp: 'jp',
-    Unknown: 'unknown'
+    Unknown: 'unknown',
+    Us: 'us',
+    Use: 'use'
 } as const;
 
 export type InstanceRegion = typeof InstanceRegion[keyof typeof InstanceRegion];
@@ -6755,11 +6918,11 @@ export interface InstanceShortNameResponse {
  */
 
 export const InstanceType = {
-    Public: 'public',
-    Hidden: 'hidden',
     Friends: 'friends',
+    Group: 'group',
+    Hidden: 'hidden',
     Private: 'private',
-    Group: 'group'
+    Public: 'public'
 } as const;
 
 export type InstanceType = typeof InstanceType[keyof typeof InstanceType];
@@ -6783,6 +6946,38 @@ export interface Inventory {
      * @memberof Inventory
      */
     'totalCount': number;
+}
+/**
+ * 
+ * @export
+ * @interface InventoryDefaultAttributesValue
+ */
+export interface InventoryDefaultAttributesValue {
+    /**
+     * 
+     * @type {string}
+     * @memberof InventoryDefaultAttributesValue
+     */
+    'defaultValue'?: string;
+    /**
+     * 
+     * @type {InventoryDefaultAttributesValueValidator}
+     * @memberof InventoryDefaultAttributesValue
+     */
+    'validator'?: InventoryDefaultAttributesValueValidator;
+}
+/**
+ * 
+ * @export
+ * @interface InventoryDefaultAttributesValueValidator
+ */
+export interface InventoryDefaultAttributesValueValidator {
+    /**
+     * 
+     * @type {string}
+     * @memberof InventoryDefaultAttributesValueValidator
+     */
+    'type'?: string;
 }
 /**
  * 
@@ -6872,6 +7067,41 @@ export interface InventoryDrop {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const InventoryEquipSlot = {
+    Empty: '',
+    Drone: 'drone',
+    Portal: 'portal'
+} as const;
+
+export type InventoryEquipSlot = typeof InventoryEquipSlot[keyof typeof InventoryEquipSlot];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const InventoryFlag = {
+    Archivable: 'archivable',
+    Cloneable: 'cloneable',
+    Consumable: 'consumable',
+    Equippable: 'equippable',
+    Instantiatable: 'instantiatable',
+    Trashable: 'trashable',
+    Ugc: 'ugc',
+    Unique: 'unique'
+} as const;
+
+export type InventoryFlag = typeof InventoryFlag[keyof typeof InventoryFlag];
+
+
+/**
+ * 
+ * @export
  * @interface InventoryItem
  */
 export interface InventoryItem {
@@ -6889,10 +7119,28 @@ export interface InventoryItem {
     'created_at': string;
     /**
      * 
+     * @type {{ [key: string]: InventoryDefaultAttributesValue; }}
+     * @memberof InventoryItem
+     */
+    'defaultAttributes': { [key: string]: InventoryDefaultAttributesValue; };
+    /**
+     * 
      * @type {string}
      * @memberof InventoryItem
      */
     'description': string;
+    /**
+     * 
+     * @type {InventoryEquipSlot}
+     * @memberof InventoryItem
+     */
+    'equipSlot'?: InventoryEquipSlot;
+    /**
+     * 
+     * @type {Array<InventoryEquipSlot>}
+     * @memberof InventoryItem
+     */
+    'equipSlots'?: Array<InventoryEquipSlot>;
     /**
      * 
      * @type {string}
@@ -6989,6 +7237,18 @@ export interface InventoryItem {
      * @memberof InventoryItem
      */
     'updated_at': string;
+    /**
+     * 
+     * @type {InventoryUserAttributes}
+     * @memberof InventoryItem
+     */
+    'userAttributes': InventoryUserAttributes;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InventoryItem
+     */
+    'validateUserAttributes': boolean;
 }
 
 
@@ -7000,8 +7260,10 @@ export interface InventoryItem {
 
 export const InventoryItemType = {
     Bundle: 'bundle',
-    Prop: 'prop',
+    Droneskin: 'droneskin',
     Emoji: 'emoji',
+    Portalskin: 'portalskin',
+    Prop: 'prop',
     Sticker: 'sticker'
 } as const;
 
@@ -7014,14 +7276,6 @@ export type InventoryItemType = typeof InventoryItemType[keyof typeof InventoryI
  * @interface InventoryMetadata
  */
 export interface InventoryMetadata {
-    [key: string]: any;
-
-    /**
-     * Only in bundles
-     * @type {Array<string>}
-     * @memberof InventoryMetadata
-     */
-    'inventoryItemsToInstantiate'?: Array<string>;
     /**
      * 
      * @type {boolean}
@@ -7052,6 +7306,12 @@ export interface InventoryMetadata {
      * @memberof InventoryMetadata
      */
     'imageUrl'?: string;
+    /**
+     * Only in bundles
+     * @type {Array<string>}
+     * @memberof InventoryMetadata
+     */
+    'inventoryItemsToInstantiate'?: Array<string>;
     /**
      * 
      * @type {string}
@@ -7211,6 +7471,31 @@ export interface InventoryTemplate {
 /**
  * 
  * @export
+ * @interface InventoryUserAttributes
+ */
+export interface InventoryUserAttributes {
+    /**
+     * 
+     * @type {string}
+     * @memberof InventoryUserAttributes
+     */
+    'primaryColor'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InventoryUserAttributes
+     */
+    'secondaryColor'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InventoryUserAttributes
+     */
+    'trailColor'?: string;
+}
+/**
+ * 
+ * @export
  * @interface InviteMessage
  */
 export interface InviteMessage {
@@ -7267,9 +7552,9 @@ export interface InviteMessage {
 
 export const InviteMessageType = {
     Message: 'message',
-    Response: 'response',
     Request: 'request',
-    RequestResponse: 'requestResponse'
+    RequestResponse: 'requestResponse',
+    Response: 'response'
 } as const;
 
 export type InviteMessageType = typeof InviteMessageType[keyof typeof InviteMessageType];
@@ -7412,17 +7697,17 @@ export interface JamStateChangeDates {
  */
 export interface License {
     /**
+     * 
+     * @type {LicenseAction}
+     * @memberof License
+     */
+    'forAction': LicenseAction;
+    /**
      * Either a AvatarID, LicenseGroupID, PermissionID or ProductID. This depends on the `forType` field.
      * @type {string}
      * @memberof License
      */
     'forId': string;
-    /**
-     * 
-     * @type {LicenseType}
-     * @memberof License
-     */
-    'forType': LicenseType;
     /**
      * 
      * @type {string}
@@ -7431,10 +7716,10 @@ export interface License {
     'forName': string;
     /**
      * 
-     * @type {LicenseAction}
+     * @type {LicenseType}
      * @memberof License
      */
-    'forAction': LicenseAction;
+    'forType': LicenseType;
 }
 
 
@@ -7445,8 +7730,8 @@ export interface License {
  */
 
 export const LicenseAction = {
-    Wear: 'wear',
-    Have: 'have'
+    Have: 'have',
+    Wear: 'wear'
 } as const;
 
 export type LicenseAction = typeof LicenseAction[keyof typeof LicenseAction];
@@ -7463,25 +7748,25 @@ export interface LicenseGroup {
      * @type {string}
      * @memberof LicenseGroup
      */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LicenseGroup
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LicenseGroup
-     */
     'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LicenseGroup
+     */
+    'id': string;
     /**
      * 
      * @type {Array<License>}
      * @memberof LicenseGroup
      */
     'licenses': Array<License>;
+    /**
+     * 
+     * @type {string}
+     * @memberof LicenseGroup
+     */
+    'name': string;
 }
 /**
  * 
@@ -7510,25 +7795,19 @@ export interface LimitedGroup {
      * @type {string}
      * @memberof LimitedGroup
      */
-    'id'?: string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof LimitedGroup
      */
-    'name'?: string;
+    'bannerUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof LimitedGroup
      */
-    'shortCode'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedGroup
-     */
-    'discriminator'?: string;
+    'createdAt'?: string;
     /**
      * 
      * @type {string}
@@ -7540,13 +7819,55 @@ export interface LimitedGroup {
      * @type {string}
      * @memberof LimitedGroup
      */
+    'discriminator'?: string;
+    /**
+     *  
+     * @type {Array<GroupGallery>}
+     * @memberof LimitedGroup
+     */
+    'galleries'?: Array<GroupGallery>;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedGroup
+     */
+    'iconId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedGroup
+     */
     'iconUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof LimitedGroup
      */
-    'bannerUrl'?: string | null;
+    'id'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LimitedGroup
+     */
+    'isSearchable'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof LimitedGroup
+     */
+    'memberCount'?: number;
+    /**
+     * 
+     * @type {GroupMemberStatus}
+     * @memberof LimitedGroup
+     */
+    'membershipStatus'?: GroupMemberStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedGroup
+     */
+    'name'?: string;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -7564,49 +7885,13 @@ export interface LimitedGroup {
      * @type {string}
      * @memberof LimitedGroup
      */
-    'iconId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedGroup
-     */
-    'bannerId'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof LimitedGroup
-     */
-    'memberCount'?: number;
+    'shortCode'?: string;
     /**
      *  
      * @type {Array<string>}
      * @memberof LimitedGroup
      */
     'tags'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedGroup
-     */
-    'createdAt'?: string;
-    /**
-     * 
-     * @type {GroupMemberStatus}
-     * @memberof LimitedGroup
-     */
-    'membershipStatus'?: GroupMemberStatus;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof LimitedGroup
-     */
-    'isSearchable'?: boolean;
-    /**
-     *  
-     * @type {Array<GroupGallery>}
-     * @memberof LimitedGroup
-     */
-    'galleries'?: Array<GroupGallery>;
 }
 
 
@@ -7658,19 +7943,19 @@ export interface LimitedUserFriend {
      * @type {string}
      * @memberof LimitedUserFriend
      */
-    'currentAvatarImageUrl': string;
-    /**
-     * When profilePicOverride is not empty, use it instead.
-     * @type {string}
-     * @memberof LimitedUserFriend
-     */
-    'currentAvatarThumbnailImageUrl'?: string;
+    'currentAvatarImageUrl'?: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof LimitedUserFriend
      */
     'currentAvatarTags'?: Array<string>;
+    /**
+     * When profilePicOverride is not empty, use it instead.
+     * @type {string}
+     * @memberof LimitedUserFriend
+     */
+    'currentAvatarThumbnailImageUrl'?: string;
     /**
      * 
      * @type {DeveloperType}
@@ -7697,6 +7982,12 @@ export interface LimitedUserFriend {
     'id': string;
     /**
      * 
+     * @type {string}
+     * @memberof LimitedUserFriend
+     */
+    'imageUrl': string;
+    /**
+     * 
      * @type {boolean}
      * @memberof LimitedUserFriend
      */
@@ -7706,7 +7997,19 @@ export interface LimitedUserFriend {
      * @type {string}
      * @memberof LimitedUserFriend
      */
-    'imageUrl': string;
+    'last_activity': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedUserFriend
+     */
+    'last_login': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedUserFriend
+     */
+    'last_mobile': string | null;
     /**
      * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
@@ -7719,24 +8022,6 @@ export interface LimitedUserFriend {
      * @memberof LimitedUserFriend
      */
     'location': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedUserFriend
-     */
-    'last_login': string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedUserFriend
-     */
-    'last_activity': string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedUserFriend
-     */
-    'last_mobile': string | null;
     /**
      * 
      * @type {string}
@@ -7793,19 +8078,19 @@ export interface LimitedUserGroups {
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'id'?: string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'name'?: string;
+    'bannerUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'shortCode'?: string;
+    'description'?: string;
     /**
      * 
      * @type {string}
@@ -7817,7 +8102,7 @@ export interface LimitedUserGroups {
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'description'?: string;
+    'groupId'?: string;
     /**
      * 
      * @type {string}
@@ -7835,19 +8120,13 @@ export interface LimitedUserGroups {
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'bannerId'?: string | null;
+    'id'?: string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof LimitedUserGroups
      */
-    'bannerUrl'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedUserGroups
-     */
-    'privacy'?: string;
+    'isRepresenting'?: boolean;
     /**
      * 
      * @type {string}
@@ -7855,11 +8134,11 @@ export interface LimitedUserGroups {
      */
     'lastPostCreatedAt'?: string | null;
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * 
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'ownerId'?: string;
+    'lastPostReadAt'?: string | null;
     /**
      * 
      * @type {number}
@@ -7871,19 +8150,7 @@ export interface LimitedUserGroups {
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'groupId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LimitedUserGroups
-     */
     'memberVisibility'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof LimitedUserGroups
-     */
-    'isRepresenting'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -7895,7 +8162,25 @@ export interface LimitedUserGroups {
      * @type {string}
      * @memberof LimitedUserGroups
      */
-    'lastPostReadAt'?: string | null;
+    'name'?: string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof LimitedUserGroups
+     */
+    'ownerId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedUserGroups
+     */
+    'privacy'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimitedUserGroups
+     */
+    'shortCode'?: string;
 }
 /**
  * User object received when querying your own instance
@@ -7940,17 +8225,17 @@ export interface LimitedUserInstance {
      */
     'currentAvatarImageUrl': string;
     /**
-     * When profilePicOverride is not empty, use it instead.
-     * @type {string}
-     * @memberof LimitedUserInstance
-     */
-    'currentAvatarThumbnailImageUrl': string;
-    /**
      * 
      * @type {Array<string>}
      * @memberof LimitedUserInstance
      */
     'currentAvatarTags': Array<string>;
+    /**
+     * When profilePicOverride is not empty, use it instead.
+     * @type {string}
+     * @memberof LimitedUserInstance
+     */
+    'currentAvatarThumbnailImageUrl': string;
     /**
      * 
      * @type {string}
@@ -7983,22 +8268,16 @@ export interface LimitedUserInstance {
     'id': string;
     /**
      * 
-     * @type {boolean}
-     * @memberof LimitedUserInstance
-     */
-    'isFriend': boolean;
-    /**
-     * 
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'imageUrl'?: string;
     /**
-     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
-     * @type {string}
+     * 
+     * @type {boolean}
      * @memberof LimitedUserInstance
      */
-    'last_platform': string;
+    'isFriend': boolean;
     /**
      * 
      * @type {string}
@@ -8012,7 +8291,13 @@ export interface LimitedUserInstance {
      */
     'last_mobile': string | null;
     /**
-     * 
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
+     * @type {string}
+     * @memberof LimitedUserInstance
+     */
+    'last_platform': string;
+    /**
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof LimitedUserInstance
      */
@@ -8093,17 +8378,17 @@ export interface LimitedUserSearch {
      */
     'currentAvatarImageUrl': string;
     /**
-     * When profilePicOverride is not empty, use it instead.
-     * @type {string}
-     * @memberof LimitedUserSearch
-     */
-    'currentAvatarThumbnailImageUrl': string;
-    /**
      * 
      * @type {Array<string>}
      * @memberof LimitedUserSearch
      */
     'currentAvatarTags': Array<string>;
+    /**
+     * When profilePicOverride is not empty, use it instead.
+     * @type {string}
+     * @memberof LimitedUserSearch
+     */
+    'currentAvatarThumbnailImageUrl': string;
     /**
      * 
      * @type {DeveloperType}
@@ -8199,12 +8484,6 @@ export interface LimitedWorld {
     'capacity': number;
     /**
      * 
-     * @type {number}
-     * @memberof LimitedWorld
-     */
-    'recommendedCapacity'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof LimitedWorld
      */
@@ -8221,12 +8500,6 @@ export interface LimitedWorld {
      * @memberof LimitedWorld
      */
     'favorites': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof LimitedWorld
-     */
-    'visits'?: number;
     /**
      * 
      * @type {number}
@@ -8289,6 +8562,12 @@ export interface LimitedWorld {
     'publicationDate': string;
     /**
      * 
+     * @type {number}
+     * @memberof LimitedWorld
+     */
+    'recommendedCapacity'?: number;
+    /**
+     * 
      * @type {ReleaseStatus}
      * @memberof LimitedWorld
      */
@@ -8312,6 +8591,12 @@ export interface LimitedWorld {
      */
     'thumbnailImageUrl': string;
     /**
+     * 
+     * @type {Array<string>}
+     * @memberof LimitedWorld
+     */
+    'udonProducts'?: Array<string>;
+    /**
      *  
      * @type {Array<LimitedUnityPackage>}
      * @memberof LimitedWorld
@@ -8325,10 +8610,10 @@ export interface LimitedWorld {
     'updated_at': string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {number}
      * @memberof LimitedWorld
      */
-    'udonProducts'?: Array<string>;
+    'visits'?: number;
 }
 
 
@@ -8339,20 +8624,20 @@ export interface LimitedWorld {
  */
 
 export const MIMEType = {
+    ApplicationGzip: 'application/gzip',
+    ApplicationOctetStream: 'application/octet-stream',
+    ApplicationXAvatar: 'application/x-avatar',
+    ApplicationXRsyncDelta: 'application/x-rsync-delta',
+    ApplicationXRsyncSignature: 'application/x-rsync-signature',
+    ApplicationXWorld: 'application/x-world',
+    ImageBmp: 'image/bmp',
+    ImageGif: 'image/gif',
     ImageJpeg: 'image/jpeg',
     ImageJpg: 'image/jpg',
     ImagePng: 'image/png',
-    ImageWebp: 'image/webp',
-    ImageGif: 'image/gif',
-    ImageBmp: 'image/bmp',
     ImageSvgxml: 'image/svg＋xml',
     ImageTiff: 'image/tiff',
-    ApplicationXAvatar: 'application/x-avatar',
-    ApplicationXWorld: 'application/x-world',
-    ApplicationGzip: 'application/gzip',
-    ApplicationXRsyncSignature: 'application/x-rsync-signature',
-    ApplicationXRsyncDelta: 'application/x-rsync-delta',
-    ApplicationOctetStream: 'application/octet-stream'
+    ImageWebp: 'image/webp'
 } as const;
 
 export type MIMEType = typeof MIMEType[keyof typeof MIMEType];
@@ -8388,12 +8673,6 @@ export interface ModelFile {
      * @type {string}
      * @memberof ModelFile
      */
-    'maskTag'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ModelFile
-     */
     'extension': string;
     /**
      * 
@@ -8401,6 +8680,12 @@ export interface ModelFile {
      * @memberof ModelFile
      */
     'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelFile
+     */
+    'maskTag'?: string;
     /**
      * 
      * @type {MIMEType}
@@ -8486,17 +8771,17 @@ export interface Notification {
      */
     'message': string;
     /**
-     * Not included in notification objects received from the Websocket API
-     * @type {boolean}
-     * @memberof Notification
-     */
-    'seen'?: boolean;
-    /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
      * @memberof Notification
      */
     'receiverUserId'?: string;
+    /**
+     * Not included in notification objects received from the Websocket API
+     * @type {boolean}
+     * @memberof Notification
+     */
+    'seen'?: boolean;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -8532,7 +8817,7 @@ export interface NotificationDetailInvite {
      */
     'inviteMessage'?: string;
     /**
-     * WorldID be \"offline\" on User profiles if you are not friends with that user.
+     * Represents a unique location, consisting of a world identifier and an instance identifier, or \"offline\" if the user is not on your friends list.
      * @type {string}
      * @memberof NotificationDetailInvite
      */
@@ -8570,7 +8855,7 @@ export interface NotificationDetailInviteResponse {
  */
 export interface NotificationDetailRequestInvite {
     /**
-     * TODO: Does this still exist?
+     * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof NotificationDetailRequestInvite
      */
@@ -8640,6 +8925,32 @@ export type NotificationType = typeof NotificationType[keyof typeof Notification
 
 
 /**
+ * A status response consisting of solely a string description of whether the result of an operation was ok.
+ * @export
+ * @interface OkStatus
+ */
+export interface OkStatus {
+    /**
+     * The actual status itself
+     * @type {string}
+     * @memberof OkStatus
+     */
+    'ok': string;
+}
+/**
+ * Another status response consisting of solely a string description of whether the result of an operation was ok.
+ * @export
+ * @interface OkStatus2
+ */
+export interface OkStatus2 {
+    /**
+     * The actual status itself
+     * @type {string}
+     * @memberof OkStatus2
+     */
+    'OK': string;
+}
+/**
  * 
  * @export
  * @enum {string}
@@ -8660,6 +8971,12 @@ export type OrderOption = typeof OrderOption[keyof typeof OrderOption];
  */
 export interface PaginatedCalendarEventList {
     /**
+     * Whether there are more results after this page.
+     * @type {boolean}
+     * @memberof PaginatedCalendarEventList
+     */
+    'hasNext'?: boolean;
+    /**
      *  
      * @type {Array<CalendarEvent>}
      * @memberof PaginatedCalendarEventList
@@ -8671,12 +8988,6 @@ export interface PaginatedCalendarEventList {
      * @memberof PaginatedCalendarEventList
      */
     'totalCount'?: number;
-    /**
-     * Whether there are more results after this page.
-     * @type {boolean}
-     * @memberof PaginatedCalendarEventList
-     */
-    'hasNext'?: boolean;
 }
 /**
  * 
@@ -8684,6 +8995,12 @@ export interface PaginatedCalendarEventList {
  * @interface PaginatedGroupAuditLogEntryList
  */
 export interface PaginatedGroupAuditLogEntryList {
+    /**
+     * Whether there are more results after this page.
+     * @type {boolean}
+     * @memberof PaginatedGroupAuditLogEntryList
+     */
+    'hasNext'?: boolean;
     /**
      *  
      * @type {Array<GroupAuditLogEntry>}
@@ -8696,12 +9013,6 @@ export interface PaginatedGroupAuditLogEntryList {
      * @memberof PaginatedGroupAuditLogEntryList
      */
     'totalCount'?: number;
-    /**
-     * Whether there are more results after this page.
-     * @type {boolean}
-     * @memberof PaginatedGroupAuditLogEntryList
-     */
-    'hasNext'?: boolean;
 }
 /**
  * 
@@ -8761,10 +9072,10 @@ export interface PerformanceLimiterInfo {
  */
 
 export const PerformanceRatings = {
-    None: 'None',
     Excellent: 'Excellent',
     Good: 'Good',
     Medium: 'Medium',
+    None: 'None',
     Poor: 'Poor',
     VeryPoor: 'VeryPoor'
 } as const;
@@ -8780,10 +9091,10 @@ export type PerformanceRatings = typeof PerformanceRatings[keyof typeof Performa
 export interface Permission {
     /**
      * 
-     * @type {string}
+     * @type {object}
      * @memberof Permission
      */
-    'displayName'?: string;
+    'data'?: object;
     /**
      * 
      * @type {string}
@@ -8795,19 +9106,25 @@ export interface Permission {
      * @type {string}
      * @memberof Permission
      */
+    'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Permission
+     */
     'id': string;
     /**
      * 
      * @type {string}
      * @memberof Permission
      */
-    'ownerDisplayName': string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Permission
      */
-    'name': string;
+    'ownerDisplayName': string;
     /**
      * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
      * @type {string}
@@ -8820,12 +9137,6 @@ export interface Permission {
      * @memberof Permission
      */
     'type'?: string;
-    /**
-     * 
-     * @type {object}
-     * @memberof Permission
-     */
-    'data'?: object;
 }
 /**
  * Build information for a platform
@@ -8904,12 +9215,15 @@ export interface PlayerModeration {
  */
 
 export const PlayerModerationType = {
-    Mute: 'mute',
-    Unmute: 'unmute',
     Block: 'block',
-    Unblock: 'unblock',
+    HideAvatar: 'hideAvatar',
+    InteractOff: 'interactOff',
     InteractOn: 'interactOn',
-    InteractOff: 'interactOff'
+    Mute: 'mute',
+    MuteChat: 'muteChat',
+    ShowAvatar: 'showAvatar',
+    Unmute: 'unmute',
+    UnmuteChat: 'unmuteChat'
 } as const;
 
 export type PlayerModerationType = typeof PlayerModerationType[keyof typeof PlayerModerationType];
@@ -9496,17 +9810,17 @@ export interface PropUnityPackage {
      */
     'assetVersion': number;
     /**
-     * 
-     * @type {string}
-     * @memberof PropUnityPackage
-     */
-    'propSignature': string;
-    /**
      * This can be `standalonewindows` or `android`, but can also pretty much be any random Unity verison such as `2019.2.4-801-Release` or `2019.2.2-772-Release` or even `unknownplatform`.
      * @type {string}
      * @memberof PropUnityPackage
      */
     'platform': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PropUnityPackage
+     */
+    'propSignature': string;
     /**
      * 
      * @type {string}
@@ -9527,13 +9841,13 @@ export interface PropUnityPackage {
  */
 
 export const Region = {
+    Eu: 'eu',
+    Jp: 'jp',
+    Unknown: 'unknown',
     Us: 'us',
     Use: 'use',
     Usw: 'usw',
-    Usx: 'usx',
-    Eu: 'eu',
-    Jp: 'jp',
-    Unknown: 'unknown'
+    Usx: 'usx'
 } as const;
 
 export type Region = typeof Region[keyof typeof Region];
@@ -9546,41 +9860,11 @@ export type Region = typeof Region[keyof typeof Region];
  */
 export interface RegisterUserAccountRequest {
     /**
-     * Display Name / Username (Username is a sanitized version)
-     * @type {string}
+     * The most recent version of the TOS
+     * @type {number}
      * @memberof RegisterUserAccountRequest
      */
-    'username': string;
-    /**
-     * Password
-     * @type {string}
-     * @memberof RegisterUserAccountRequest
-     */
-    'password': string;
-    /**
-     * Email address
-     * @type {string}
-     * @memberof RegisterUserAccountRequest
-     */
-    'email': string;
-    /**
-     * Birth year
-     * @type {string}
-     * @memberof RegisterUserAccountRequest
-     */
-    'year': string;
-    /**
-     * Birth month of year
-     * @type {string}
-     * @memberof RegisterUserAccountRequest
-     */
-    'month': string;
-    /**
-     * Birth day of month
-     * @type {string}
-     * @memberof RegisterUserAccountRequest
-     */
-    'day': string;
+    'acceptedTOSVersion': number;
     /**
      * Captcha code
      * @type {string}
@@ -9588,17 +9872,47 @@ export interface RegisterUserAccountRequest {
      */
     'captchaCode': string;
     /**
+     * Birth day of month
+     * @type {string}
+     * @memberof RegisterUserAccountRequest
+     */
+    'day': string;
+    /**
+     * Email address
+     * @type {string}
+     * @memberof RegisterUserAccountRequest
+     */
+    'email': string;
+    /**
+     * Birth month of year
+     * @type {string}
+     * @memberof RegisterUserAccountRequest
+     */
+    'month': string;
+    /**
+     * Password
+     * @type {string}
+     * @memberof RegisterUserAccountRequest
+     */
+    'password': string;
+    /**
      * Whether to recieve promotional emails
      * @type {boolean}
      * @memberof RegisterUserAccountRequest
      */
     'subscribe': boolean;
     /**
-     * The most recent version of the TOS
-     * @type {number}
+     * Display Name / Username (Username is a sanitized version)
+     * @type {string}
      * @memberof RegisterUserAccountRequest
      */
-    'acceptedTOSVersion': number;
+    'username': string;
+    /**
+     * Birth year
+     * @type {string}
+     * @memberof RegisterUserAccountRequest
+     */
+    'year': string;
 }
 /**
  * 
@@ -9607,10 +9921,10 @@ export interface RegisterUserAccountRequest {
  */
 
 export const ReleaseStatus = {
-    Public: 'public',
-    Private: 'private',
+    All: 'all',
     Hidden: 'hidden',
-    All: 'all'
+    Private: 'private',
+    Public: 'public'
 } as const;
 
 export type ReleaseStatus = typeof ReleaseStatus[keyof typeof ReleaseStatus];
@@ -9629,17 +9943,17 @@ export interface ReportCategory {
      */
     'description'?: string;
     /**
-     * The title of the report category
-     * @type {string}
-     * @memberof ReportCategory
-     */
-    'title'?: string;
-    /**
      * The label of the report category
      * @type {string}
      * @memberof ReportCategory
      */
     'text': string;
+    /**
+     * The title of the report category
+     * @type {string}
+     * @memberof ReportCategory
+     */
+    'title'?: string;
     /**
      * The tooltip that describes the category
      * @type {string}
@@ -9677,13 +9991,19 @@ export interface RepresentedGroup {
      * @type {string}
      * @memberof RepresentedGroup
      */
-    'name'?: string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof RepresentedGroup
      */
-    'shortCode'?: string;
+    'bannerUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RepresentedGroup
+     */
+    'description'?: string;
     /**
      * 
      * @type {string}
@@ -9695,7 +10015,7 @@ export interface RepresentedGroup {
      * @type {string}
      * @memberof RepresentedGroup
      */
-    'description'?: string;
+    'groupId'?: string;
     /**
      * 
      * @type {string}
@@ -9710,28 +10030,10 @@ export interface RepresentedGroup {
     'iconUrl'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof RepresentedGroup
      */
-    'bannerId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RepresentedGroup
-     */
-    'bannerUrl'?: string | null;
-    /**
-     * 
-     * @type {GroupPrivacy}
-     * @memberof RepresentedGroup
-     */
-    'privacy'?: GroupPrivacy;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof RepresentedGroup
-     */
-    'ownerId'?: string;
+    'isRepresenting'?: boolean;
     /**
      * 
      * @type {number}
@@ -9740,22 +10042,34 @@ export interface RepresentedGroup {
     'memberCount'?: number;
     /**
      * 
-     * @type {string}
-     * @memberof RepresentedGroup
-     */
-    'groupId'?: string;
-    /**
-     * 
      * @type {GroupUserVisibility}
      * @memberof RepresentedGroup
      */
     'memberVisibility'?: GroupUserVisibility;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof RepresentedGroup
      */
-    'isRepresenting'?: boolean;
+    'name'?: string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof RepresentedGroup
+     */
+    'ownerId'?: string;
+    /**
+     * 
+     * @type {GroupPrivacy}
+     * @memberof RepresentedGroup
+     */
+    'privacy'?: GroupPrivacy;
+    /**
+     * 
+     * @type {string}
+     * @memberof RepresentedGroup
+     */
+    'shortCode'?: string;
 }
 
 
@@ -9947,31 +10261,224 @@ export interface ServiceStatus {
 /**
  * 
  * @export
+ * @interface ShareInventoryItemDirectRequest
+ */
+export interface ShareInventoryItemDirectRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareInventoryItemDirectRequest
+     */
+    'itemId': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ShareInventoryItemDirectRequest
+     */
+    'users': Array<string>;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
 export const SortOption = {
-    Popularity: 'popularity',
-    Heat: 'heat',
-    Trust: 'trust',
-    Shuffle: 'shuffle',
-    Random: 'random',
-    Favorites: 'favorites',
-    ReportScore: 'reportScore',
-    ReportCount: 'reportCount',
-    PublicationDate: 'publicationDate',
-    LabsPublicationDate: 'labsPublicationDate',
-    Created: 'created',
     CreatedAt: '_created_at',
-    Updated: 'updated',
     UpdatedAt: '_updated_at',
-    Order: 'order',
-    Relevance: 'relevance',
+    Created: 'created',
+    Favorites: 'favorites',
+    Heat: 'heat',
+    LabsPublicationDate: 'labsPublicationDate',
     Magic: 'magic',
-    Name: 'name'
+    Name: 'name',
+    Order: 'order',
+    Popularity: 'popularity',
+    PublicationDate: 'publicationDate',
+    Random: 'random',
+    Relevance: 'relevance',
+    ReportCount: 'reportCount',
+    ReportScore: 'reportScore',
+    Shuffle: 'shuffle',
+    Trust: 'trust',
+    Updated: 'updated'
 } as const;
 
 export type SortOption = typeof SortOption[keyof typeof SortOption];
+
+
+/**
+ * 
+ * @export
+ * @interface Store
+ */
+export interface Store {
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'displayName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'groupId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'id': string;
+    /**
+     * Only for store type world and group
+     * @type {Array<string>}
+     * @memberof Store
+     */
+    'listingIds'?: Array<string>;
+    /**
+     * Only for store type world and group
+     * @type {Array<ProductListing>}
+     * @memberof Store
+     */
+    'listings'?: Array<ProductListing>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'sellerDisplayName': string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Store
+     */
+    'sellerId': string;
+    /**
+     * Only for store type house
+     * @type {Array<string>}
+     * @memberof Store
+     */
+    'shelfIds'?: Array<string>;
+    /**
+     * Only for store type house
+     * @type {Array<StoreShelf>}
+     * @memberof Store
+     */
+    'shelves'?: Array<StoreShelf>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Store
+     */
+    'storeId': string;
+    /**
+     * 
+     * @type {StoreType}
+     * @memberof Store
+     */
+    'storeType': StoreType;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Store
+     */
+    'tags': Array<string>;
+    /**
+     * WorldID be \"offline\" on User profiles if you are not friends with that user.
+     * @type {string}
+     * @memberof Store
+     */
+    'worldId'?: string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface StoreShelf
+ */
+export interface StoreShelf {
+    /**
+     * 
+     * @type {string}
+     * @memberof StoreShelf
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof StoreShelf
+     */
+    'listingIds': Array<string>;
+    /**
+     * 
+     * @type {Array<ProductListing>}
+     * @memberof StoreShelf
+     */
+    'listings'?: Array<ProductListing>;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoreShelf
+     */
+    'shelfDescription': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoreShelf
+     */
+    'shelfLayout': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoreShelf
+     */
+    'shelfTitle': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoreShelf
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const StoreType = {
+    Group: 'group',
+    House: 'house',
+    World: 'world'
+} as const;
+
+export type StoreType = typeof StoreType[keyof typeof StoreType];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const StoreView = {
+    All: 'all',
+    Draft: 'draft',
+    Preview: 'preview',
+    Public: 'public',
+    PublicPreview: 'publicPreview'
+} as const;
+
+export type StoreView = typeof StoreView[keyof typeof StoreView];
 
 
 /**
@@ -10031,28 +10538,22 @@ export interface Submission {
 export interface Subscription {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Subscription
      */
-    'id': string;
+    'amount': number;
     /**
      * 
      * @type {string}
      * @memberof Subscription
      */
-    'steamItemId': string;
+    'appleProductId'?: string;
     /**
      * 
      * @type {string}
      * @memberof Subscription
      */
-    'oculusSku'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Subscription
-     */
-    'googleProductId'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -10064,31 +10565,37 @@ export interface Subscription {
      * @type {string}
      * @memberof Subscription
      */
-    'picoSku'?: string;
+    'googleProductId'?: string;
     /**
      * 
      * @type {string}
      * @memberof Subscription
      */
-    'appleProductId'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof Subscription
-     */
-    'amount': number;
+    'id': string;
     /**
      * 
      * @type {string}
      * @memberof Subscription
      */
-    'description': string;
+    'oculusSku'?: string;
     /**
      * 
      * @type {SubscriptionPeriod}
      * @memberof Subscription
      */
     'period': SubscriptionPeriod;
+    /**
+     * 
+     * @type {string}
+     * @memberof Subscription
+     */
+    'picoSku'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Subscription
+     */
+    'steamItemId': string;
     /**
      * 
      * @type {number}
@@ -10105,10 +10612,10 @@ export interface Subscription {
  */
 
 export const SubscriptionPeriod = {
-    Hour: 'hour',
     Day: 'day',
-    Week: 'week',
+    Hour: 'hour',
     Month: 'month',
+    Week: 'week',
     Year: 'year'
 } as const;
 
@@ -10127,6 +10634,19 @@ export interface Success {
      * @memberof Success
      */
     'success'?: Response;
+}
+/**
+ * 
+ * @export
+ * @interface SuccessFlag
+ */
+export interface SuccessFlag {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SuccessFlag
+     */
+    'success': boolean;
 }
 /**
  * 
@@ -10151,13 +10671,13 @@ export interface TiliaStatus {
      * @type {string}
      * @memberof TiliaStatus
      */
-    'plannedOfflineWindowStart'?: string;
+    'plannedOfflineWindowEnd'?: string;
     /**
      * 
      * @type {string}
      * @memberof TiliaStatus
      */
-    'plannedOfflineWindowEnd'?: string;
+    'plannedOfflineWindowStart'?: string;
 }
 /**
  * 
@@ -10179,11 +10699,11 @@ export interface TiliaTOS {
  */
 export interface TokenBundle {
     /**
-     * 
-     * @type {string}
+     * price of the bundle
+     * @type {number}
      * @memberof TokenBundle
      */
-    'id': string;
+    'amount': number;
     /**
      * 
      * @type {string}
@@ -10195,7 +10715,25 @@ export interface TokenBundle {
      * @type {string}
      * @memberof TokenBundle
      */
-    'steamItemId': string;
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenBundle
+     */
+    'googleProductId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenBundle
+     */
+    'id': string;
+    /**
+     * direct url to image
+     * @type {string}
+     * @memberof TokenBundle
+     */
+    'imageUrl': string;
     /**
      * 
      * @type {string}
@@ -10207,31 +10745,13 @@ export interface TokenBundle {
      * @type {string}
      * @memberof TokenBundle
      */
-    'googleProductId'?: string;
-    /**
-     * price of the bundle
-     * @type {number}
-     * @memberof TokenBundle
-     */
-    'amount': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof TokenBundle
-     */
-    'description': string;
+    'steamItemId': string;
     /**
      * number of tokens received
      * @type {number}
      * @memberof TokenBundle
      */
     'tokens': number;
-    /**
-     * direct url to image
-     * @type {string}
-     * @memberof TokenBundle
-     */
-    'imageUrl': string;
 }
 /**
  * 
@@ -10239,60 +10759,6 @@ export interface TokenBundle {
  * @interface Transaction
  */
 export interface Transaction {
-    /**
-     * 
-     * @type {string}
-     * @memberof Transaction
-     */
-    'id': string;
-    /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof Transaction
-     */
-    'userId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Transaction
-     */
-    'userDisplayName'?: string;
-    /**
-     * 
-     * @type {TransactionStatus}
-     * @memberof Transaction
-     */
-    'status': TransactionStatus;
-    /**
-     * 
-     * @type {Subscription}
-     * @memberof Transaction
-     */
-    'subscription': Subscription;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Transaction
-     */
-    'sandbox': boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof Transaction
-     */
-    'created_at': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Transaction
-     */
-    'updated_at': string;
-    /**
-     * 
-     * @type {TransactionSteamInfo}
-     * @memberof Transaction
-     */
-    'steam'?: TransactionSteamInfo;
     /**
      * 
      * @type {TransactionAgreement}
@@ -10304,7 +10770,19 @@ export interface Transaction {
      * @type {string}
      * @memberof Transaction
      */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Transaction
+     */
     'error': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Transaction
+     */
+    'id': string;
     /**
      * 
      * @type {boolean}
@@ -10317,6 +10795,48 @@ export interface Transaction {
      * @memberof Transaction
      */
     'isTokens'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Transaction
+     */
+    'sandbox': boolean;
+    /**
+     * 
+     * @type {TransactionStatus}
+     * @memberof Transaction
+     */
+    'status': TransactionStatus;
+    /**
+     * 
+     * @type {TransactionSteamInfo}
+     * @memberof Transaction
+     */
+    'steam'?: TransactionSteamInfo;
+    /**
+     * 
+     * @type {Subscription}
+     * @memberof Transaction
+     */
+    'subscription': Subscription;
+    /**
+     * 
+     * @type {string}
+     * @memberof Transaction
+     */
+    'updated_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Transaction
+     */
+    'userDisplayName'?: string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof Transaction
+     */
+    'userId'?: string;
 }
 
 
@@ -10331,37 +10851,13 @@ export interface TransactionAgreement {
      * @type {string}
      * @memberof TransactionAgreement
      */
-    'agreementId': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof TransactionAgreement
-     */
-    'itemId': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransactionAgreement
-     */
     'agreement': string;
     /**
-     * This is NOT TransactionStatus, but whatever Steam return.
-     * @type {string}
-     * @memberof TransactionAgreement
-     */
-    'status': string;
-    /**
      * 
      * @type {string}
      * @memberof TransactionAgreement
      */
-    'period': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof TransactionAgreement
-     */
-    'frequency': number;
+    'agreementId': string;
     /**
      * 
      * @type {string}
@@ -10373,7 +10869,7 @@ export interface TransactionAgreement {
      * @type {string}
      * @memberof TransactionAgreement
      */
-    'startDate': string;
+    'currency': string;
     /**
      * 
      * @type {string}
@@ -10385,31 +10881,19 @@ export interface TransactionAgreement {
      * @type {number}
      * @memberof TransactionAgreement
      */
-    'recurringAmt': number;
+    'failedAttempts': number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof TransactionAgreement
      */
-    'currency': string;
+    'frequency': number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof TransactionAgreement
      */
-    'timeCreated': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransactionAgreement
-     */
-    'nextPayment': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransactionAgreement
-     */
-    'lastPayment': string;
+    'itemId': number;
     /**
      * 
      * @type {number}
@@ -10424,16 +10908,52 @@ export interface TransactionAgreement {
     'lastAmountVat': number;
     /**
      * 
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'lastPayment': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'nextPayment': string;
+    /**
+     * 
      * @type {number}
      * @memberof TransactionAgreement
      */
     'outstanding': number;
     /**
      * 
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'period': string;
+    /**
+     * 
      * @type {number}
      * @memberof TransactionAgreement
      */
-    'failedAttempts': number;
+    'recurringAmt': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'startDate': string;
+    /**
+     * This is NOT TransactionStatus, but whatever Steam return.
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'status': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionAgreement
+     */
+    'timeCreated': string;
 }
 /**
  * 
@@ -10443,9 +10963,9 @@ export interface TransactionAgreement {
 
 export const TransactionStatus = {
     Active: 'active',
-    Failed: 'failed',
+    Chargeback: 'chargeback',
     Expired: 'expired',
-    Chargeback: 'chargeback'
+    Failed: 'failed'
 } as const;
 
 export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
@@ -10458,23 +10978,17 @@ export type TransactionStatus = typeof TransactionStatus[keyof typeof Transactio
  */
 export interface TransactionSteamInfo {
     /**
-     * 
-     * @type {TransactionSteamWalletInfo}
+     * Steam Order ID
+     * @type {string}
      * @memberof TransactionSteamInfo
      */
-    'walletInfo': TransactionSteamWalletInfo;
+    'orderId': string;
     /**
      * Steam User ID
      * @type {string}
      * @memberof TransactionSteamInfo
      */
     'steamId': string;
-    /**
-     * Steam Order ID
-     * @type {string}
-     * @memberof TransactionSteamInfo
-     */
-    'orderId': string;
     /**
      * Empty
      * @type {string}
@@ -10487,6 +11001,12 @@ export interface TransactionSteamInfo {
      * @memberof TransactionSteamInfo
      */
     'transId': string;
+    /**
+     * 
+     * @type {TransactionSteamWalletInfo}
+     * @memberof TransactionSteamInfo
+     */
+    'walletInfo': TransactionSteamWalletInfo;
 }
 /**
  * 
@@ -10499,12 +11019,6 @@ export interface TransactionSteamWalletInfo {
      * @type {string}
      * @memberof TransactionSteamWalletInfo
      */
-    'state': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransactionSteamWalletInfo
-     */
     'country': string;
     /**
      * 
@@ -10512,6 +11026,12 @@ export interface TransactionSteamWalletInfo {
      * @memberof TransactionSteamWalletInfo
      */
     'currency': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionSteamWalletInfo
+     */
+    'state': string;
     /**
      * 
      * @type {string}
@@ -10553,16 +11073,16 @@ export interface TwoFactorEmailCode {
 export interface TwoFactorRecoveryCodes {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof TwoFactorRecoveryCodes
-     */
-    'requiresTwoFactorAuth'?: Array<string>;
-    /**
-     * 
      * @type {Array<TwoFactorRecoveryCodesOtpInner>}
      * @memberof TwoFactorRecoveryCodes
      */
     'otp'?: Array<TwoFactorRecoveryCodesOtpInner>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TwoFactorRecoveryCodes
+     */
+    'requiresTwoFactorAuth'?: Array<string>;
 }
 /**
  * 
@@ -10594,12 +11114,6 @@ export interface UnityPackage {
      * @type {string}
      * @memberof UnityPackage
      */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UnityPackage
-     */
     'assetUrl'?: string | null;
     /**
      * 
@@ -10619,6 +11133,18 @@ export interface UnityPackage {
      * @memberof UnityPackage
      */
     'created_at'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UnityPackage
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UnityPackage
+     */
+    'impostorUrl'?: string | null;
     /**
      * 
      * @type {string}
@@ -10651,6 +11177,12 @@ export interface UnityPackage {
     'pluginUrlObject'?: object;
     /**
      * 
+     * @type {string}
+     * @memberof UnityPackage
+     */
+    'scanStatus'?: string;
+    /**
+     * 
      * @type {number}
      * @memberof UnityPackage
      */
@@ -10666,25 +11198,13 @@ export interface UnityPackage {
      * @type {string}
      * @memberof UnityPackage
      */
-    'worldSignature'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UnityPackage
-     */
-    'impostorUrl'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UnityPackage
-     */
-    'scanStatus'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UnityPackage
-     */
     'variant'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UnityPackage
+     */
+    'worldSignature'?: string | null;
 }
 
 
@@ -10705,25 +11225,13 @@ export interface UpdateAvatarRequest {
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateAvatarRequest
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateAvatarRequest
-     */
     'description'?: string;
     /**
-     *  
-     * @type {Array<string>}
+     * 
+     * @type {string}
      * @memberof UpdateAvatarRequest
      */
-    'tags'?: Array<string>;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -10732,16 +11240,22 @@ export interface UpdateAvatarRequest {
     'imageUrl'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof UpdateAvatarRequest
+     */
+    'name'?: string;
+    /**
+     * 
      * @type {ReleaseStatus}
      * @memberof UpdateAvatarRequest
      */
     'releaseStatus'?: ReleaseStatus;
     /**
-     * 
-     * @type {number}
+     *  
+     * @type {Array<string>}
      * @memberof UpdateAvatarRequest
      */
-    'version'?: number;
+    'tags'?: Array<string>;
     /**
      * 
      * @type {string}
@@ -10754,6 +11268,12 @@ export interface UpdateAvatarRequest {
      * @memberof UpdateAvatarRequest
      */
     'unityVersion'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateAvatarRequest
+     */
+    'version'?: number;
 }
 
 
@@ -10764,17 +11284,17 @@ export interface UpdateAvatarRequest {
  */
 export interface UpdateCalendarEventRequest {
     /**
-     * Event title
+     * 
      * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
-    'title'?: string;
+    'category'?: string;
     /**
-     * Time the vent starts at
-     * @type {string}
+     * 
+     * @type {number}
      * @memberof UpdateCalendarEventRequest
      */
-    'startsAt'?: string;
+    'closeInstanceAfterEndMinutes'?: number;
     /**
      * 
      * @type {string}
@@ -10789,22 +11309,22 @@ export interface UpdateCalendarEventRequest {
     'endsAt'?: string;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateCalendarEventRequest
-     */
-    'category'?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UpdateCalendarEventRequest
-     */
-    'tags'?: Array<string>;
-    /**
-     * 
      * @type {boolean}
      * @memberof UpdateCalendarEventRequest
      */
-    'isDraft'?: boolean;
+    'featured'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateCalendarEventRequest
+     */
+    'guestEarlyJoinMinutes'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateCalendarEventRequest
+     */
+    'hostEarlyJoinMinutes'?: number;
     /**
      * 
      * @type {string}
@@ -10813,10 +11333,16 @@ export interface UpdateCalendarEventRequest {
     'imageId'?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof UpdateCalendarEventRequest
+     */
+    'isDraft'?: boolean;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
-    'roleIds'?: Array<string>;
+    'languages'?: Array<string>;
     /**
      * 
      * @type {string}
@@ -10834,7 +11360,7 @@ export interface UpdateCalendarEventRequest {
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
-    'languages'?: Array<string>;
+    'roleIds'?: Array<string>;
     /**
      * Send notification to group members.
      * @type {boolean}
@@ -10842,29 +11368,23 @@ export interface UpdateCalendarEventRequest {
      */
     'sendCreationNotification'?: boolean;
     /**
-     * 
-     * @type {boolean}
+     * Time the vent starts at
+     * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
-    'featured'?: boolean;
+    'startsAt'?: string;
     /**
      * 
-     * @type {number}
+     * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
-    'hostEarlyJoinMinutes'?: number;
+    'tags'?: Array<string>;
     /**
-     * 
-     * @type {number}
+     * Event title
+     * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
-    'guestEarlyJoinMinutes'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof UpdateCalendarEventRequest
-     */
-    'closeInstanceAfterEndMinutes'?: number;
+    'title'?: string;
     /**
      * 
      * @type {boolean}
@@ -10885,17 +11405,17 @@ export interface UpdateFavoriteGroupRequest {
      */
     'displayName'?: string;
     /**
-     * 
-     * @type {FavoriteGroupVisibility}
-     * @memberof UpdateFavoriteGroupRequest
-     */
-    'visibility'?: FavoriteGroupVisibility;
-    /**
      * Tags on FavoriteGroups are believed to do nothing.
      * @type {Array<string>}
      * @memberof UpdateFavoriteGroupRequest
      */
     'tags'?: Array<string>;
+    /**
+     * 
+     * @type {FavoriteGroupVisibility}
+     * @memberof UpdateFavoriteGroupRequest
+     */
+    'visibility'?: FavoriteGroupVisibility;
 }
 
 
@@ -10905,12 +11425,6 @@ export interface UpdateFavoriteGroupRequest {
  * @interface UpdateGroupGalleryRequest
  */
 export interface UpdateGroupGalleryRequest {
-    /**
-     * Name of the gallery.
-     * @type {string}
-     * @memberof UpdateGroupGalleryRequest
-     */
-    'name'?: string;
     /**
      * Description of the gallery.
      * @type {string}
@@ -10924,17 +11438,11 @@ export interface UpdateGroupGalleryRequest {
      */
     'membersOnly'?: boolean;
     /**
-     *  
-     * @type {Array<string>}
+     * Name of the gallery.
+     * @type {string}
      * @memberof UpdateGroupGalleryRequest
      */
-    'roleIdsToView'?: Array<string> | null;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof UpdateGroupGalleryRequest
-     */
-    'roleIdsToSubmit'?: Array<string> | null;
+    'name'?: string;
     /**
      *  
      * @type {Array<string>}
@@ -10947,6 +11455,18 @@ export interface UpdateGroupGalleryRequest {
      * @memberof UpdateGroupGalleryRequest
      */
     'roleIdsToManage'?: Array<string> | null;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof UpdateGroupGalleryRequest
+     */
+    'roleIdsToSubmit'?: Array<string> | null;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof UpdateGroupGalleryRequest
+     */
+    'roleIdsToView'?: Array<string> | null;
 }
 /**
  * 
@@ -10954,12 +11474,6 @@ export interface UpdateGroupGalleryRequest {
  * @interface UpdateGroupMemberRequest
  */
 export interface UpdateGroupMemberRequest {
-    /**
-     * 
-     * @type {GroupUserVisibility}
-     * @memberof UpdateGroupMemberRequest
-     */
-    'visibility'?: GroupUserVisibility;
     /**
      * 
      * @type {boolean}
@@ -10978,6 +11492,12 @@ export interface UpdateGroupMemberRequest {
      * @memberof UpdateGroupMemberRequest
      */
     'managerNotes'?: string;
+    /**
+     * 
+     * @type {GroupUserVisibility}
+     * @memberof UpdateGroupMemberRequest
+     */
+    'visibility'?: GroupUserVisibility;
 }
 
 
@@ -11005,13 +11525,7 @@ export interface UpdateGroupRequest {
      * @type {string}
      * @memberof UpdateGroupRequest
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateGroupRequest
-     */
-    'shortCode'?: string;
+    'bannerId'?: string | null;
     /**
      * 
      * @type {string}
@@ -11020,22 +11534,16 @@ export interface UpdateGroupRequest {
     'description'?: string;
     /**
      * 
-     * @type {GroupJoinState}
-     * @memberof UpdateGroupRequest
-     */
-    'joinState'?: GroupJoinState;
-    /**
-     * 
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'iconId'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {GroupJoinState}
      * @memberof UpdateGroupRequest
      */
-    'bannerId'?: string | null;
+    'joinState'?: GroupJoinState;
     /**
      * 3 letter language code
      * @type {Array<string>}
@@ -11053,7 +11561,19 @@ export interface UpdateGroupRequest {
      * @type {string}
      * @memberof UpdateGroupRequest
      */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGroupRequest
+     */
     'rules'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGroupRequest
+     */
+    'shortCode'?: string;
     /**
      *  
      * @type {Array<string>}
@@ -11074,12 +11594,6 @@ export interface UpdateGroupRoleRequest {
      * @type {string}
      * @memberof UpdateGroupRoleRequest
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateGroupRoleRequest
-     */
     'description'?: string;
     /**
      * 
@@ -11089,16 +11603,47 @@ export interface UpdateGroupRoleRequest {
     'isSelfAssignable'?: boolean;
     /**
      * 
-     * @type {Array<GroupPermissions>}
+     * @type {string}
      * @memberof UpdateGroupRoleRequest
      */
-    'permissions'?: Array<GroupPermissions>;
+    'name'?: string;
     /**
      * 
      * @type {number}
      * @memberof UpdateGroupRoleRequest
      */
     'order'?: number;
+    /**
+     * 
+     * @type {Array<GroupPermissions>}
+     * @memberof UpdateGroupRoleRequest
+     */
+    'permissions'?: Array<GroupPermissions>;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateInventoryItemRequest
+ */
+export interface UpdateInventoryItemRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateInventoryItemRequest
+     */
+    'isArchived'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateInventoryItemRequest
+     */
+    'isSeen'?: boolean;
+    /**
+     * 
+     * @type {InventoryUserAttributes}
+     * @memberof UpdateInventoryItemRequest
+     */
+    'userAttributes'?: InventoryUserAttributes;
 }
 /**
  * 
@@ -11112,6 +11657,19 @@ export interface UpdateInviteMessageRequest {
      * @memberof UpdateInviteMessageRequest
      */
     'message': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateTiliaTOSRequest
+ */
+export interface UpdateTiliaTOSRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateTiliaTOSRequest
+     */
+    'accepted': boolean;
 }
 /**
  * 
@@ -11139,17 +11697,17 @@ export interface UpdateUserBadgeRequest {
  */
 export interface UpdateUserNoteRequest {
     /**
-     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
-     * @type {string}
-     * @memberof UpdateUserNoteRequest
-     */
-    'targetUserId': string;
-    /**
      * 
      * @type {string}
      * @memberof UpdateUserNoteRequest
      */
     'note': string;
+    /**
+     * A users unique ID, usually in the form of `usr_c1644b5b-3ca4-45b4-97c6-a2a0de70d469`. Legacy players can have old IDs in the form of `8JoV9XEdpo`. The ID can never be changed.
+     * @type {string}
+     * @memberof UpdateUserNoteRequest
+     */
+    'targetUserId': string;
 }
 /**
  * 
@@ -11159,46 +11717,10 @@ export interface UpdateUserNoteRequest {
 export interface UpdateUserRequest {
     /**
      * 
-     * @type {string}
-     * @memberof UpdateUserRequest
-     */
-    'email'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UpdateUserRequest
-     */
-    'unsubscribe'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateUserRequest
-     */
-    'birthday'?: string;
-    /**
-     * 
      * @type {number}
      * @memberof UpdateUserRequest
      */
     'acceptedTOSVersion'?: number;
-    /**
-     *  
-     * @type {Array<string>}
-     * @memberof UpdateUserRequest
-     */
-    'tags'?: Array<string>;
-    /**
-     * 
-     * @type {UserStatus}
-     * @memberof UpdateUserRequest
-     */
-    'status'?: UserStatus;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateUserRequest
-     */
-    'statusDescription'?: string;
     /**
      * 
      * @type {string}
@@ -11216,19 +11738,7 @@ export interface UpdateUserRequest {
      * @type {string}
      * @memberof UpdateUserRequest
      */
-    'pronouns'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UpdateUserRequest
-     */
-    'isBoopingEnabled'?: boolean;
-    /**
-     * MUST be a valid VRChat /file/ url.
-     * @type {string}
-     * @memberof UpdateUserRequest
-     */
-    'userIcon'?: string;
+    'birthday'?: string;
     /**
      * These tags begin with `content_` and control content gating
      * @type {Array<string>}
@@ -11236,17 +11746,29 @@ export interface UpdateUserRequest {
      */
     'contentFilters'?: Array<string>;
     /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    'currentPassword'?: string;
+    /**
      * MUST specify currentPassword as well to change display name
      * @type {string}
      * @memberof UpdateUserRequest
      */
     'displayName'?: string;
     /**
-     * MUST specify currentPassword as well to revert display name
+     * 
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    'email'?: string;
+    /**
+     * 
      * @type {boolean}
      * @memberof UpdateUserRequest
      */
-    'revertDisplayName'?: boolean;
+    'isBoopingEnabled'?: boolean;
     /**
      * MUST specify currentPassword as well to change password
      * @type {string}
@@ -11258,7 +11780,43 @@ export interface UpdateUserRequest {
      * @type {string}
      * @memberof UpdateUserRequest
      */
-    'currentPassword'?: string;
+    'pronouns'?: string;
+    /**
+     * MUST specify currentPassword as well to revert display name
+     * @type {boolean}
+     * @memberof UpdateUserRequest
+     */
+    'revertDisplayName'?: boolean;
+    /**
+     * 
+     * @type {UserStatus}
+     * @memberof UpdateUserRequest
+     */
+    'status'?: UserStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    'statusDescription'?: string;
+    /**
+     *  
+     * @type {Array<string>}
+     * @memberof UpdateUserRequest
+     */
+    'tags'?: Array<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateUserRequest
+     */
+    'unsubscribe'?: boolean;
+    /**
+     * MUST be a valid VRChat /file/ url.
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    'userIcon'?: string;
 }
 
 
@@ -11398,17 +11956,17 @@ export interface User {
      */
     'currentAvatarImageUrl': string;
     /**
-     * When profilePicOverride is not empty, use it instead.
-     * @type {string}
-     * @memberof User
-     */
-    'currentAvatarThumbnailImageUrl': string;
-    /**
      * 
      * @type {Array<string>}
      * @memberof User
      */
     'currentAvatarTags': Array<string>;
+    /**
+     * When profilePicOverride is not empty, use it instead.
+     * @type {string}
+     * @memberof User
+     */
+    'currentAvatarThumbnailImageUrl': string;
     /**
      * 
      * @type {string}
@@ -11482,7 +12040,7 @@ export interface User {
      */
     'last_platform': string;
     /**
-     * WorldID be \"offline\" on User profiles if you are not friends with that user.
+     * Represents a unique location, consisting of a world identifier and an instance identifier, or \"offline\" if the user is not on your friends list.
      * @type {string}
      * @memberof User
      */
@@ -11582,23 +12140,42 @@ export interface User {
 
 
 /**
+ * 
+ * @export
+ * @interface UserCreditsEligible
+ */
+export interface UserCreditsEligible {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserCreditsEligible
+     */
+    'eligible': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserCreditsEligible
+     */
+    'reason'?: string;
+}
+/**
  * Status object representing if a queried user by username or userId exists or not. This model is primarily used by the `/auth/exists` endpoint, which in turn is used during registration. Please see the documentation on that endpoint for more information on usage.
  * @export
  * @interface UserExists
  */
 export interface UserExists {
     /**
-     * Status if a user exist with that username or userId.
-     * @type {boolean}
-     * @memberof UserExists
-     */
-    'userExists': boolean;
-    /**
      * Is the username valid?
      * @type {boolean}
      * @memberof UserExists
      */
     'nameOk'?: boolean;
+    /**
+     * Status if a user exist with that username or userId.
+     * @type {boolean}
+     * @memberof UserExists
+     */
+    'userExists': boolean;
 }
 /**
  * 
@@ -11651,6 +12228,12 @@ export interface UserNote {
 export interface UserNoteTargetUser {
     /**
      * 
+     * @type {string}
+     * @memberof UserNoteTargetUser
+     */
+    'id'?: string;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof UserNoteTargetUser
      */
@@ -11672,12 +12255,6 @@ export interface UserNoteTargetUser {
      * @type {string}
      * @memberof UserNoteTargetUser
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserNoteTargetUser
-     */
     'profilePicOverride'?: string | null;
     /**
      * 
@@ -11693,8 +12270,8 @@ export interface UserNoteTargetUser {
  */
 
 export const UserState = {
-    Offline: 'offline',
     Active: 'active',
+    Offline: 'offline',
     Online: 'online'
 } as const;
 
@@ -11709,9 +12286,9 @@ export type UserState = typeof UserState[keyof typeof UserState];
 
 export const UserStatus = {
     Active: 'active',
-    JoinMe: 'join me',
     AskMe: 'ask me',
     Busy: 'busy',
+    JoinMe: 'join me',
     Offline: 'offline'
 } as const;
 
@@ -11726,28 +12303,10 @@ export type UserStatus = typeof UserStatus[keyof typeof UserStatus];
 export interface UserSubscription {
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof UserSubscription
      */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSubscription
-     */
-    'transactionId': string;
-    /**
-     * Which \"Store\" it came from. Right now only Stores are \"Steam\" and \"Admin\".
-     * @type {string}
-     * @memberof UserSubscription
-     */
-    'store': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSubscription
-     */
-    'steamItemId'?: string;
+    'active': boolean;
     /**
      * 
      * @type {number}
@@ -11759,37 +12318,13 @@ export interface UserSubscription {
      * @type {string}
      * @memberof UserSubscription
      */
-    'description': string;
-    /**
-     * 
-     * @type {SubscriptionPeriod}
-     * @memberof UserSubscription
-     */
-    'period': SubscriptionPeriod;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserSubscription
-     */
-    'tier': number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserSubscription
-     */
-    'active': boolean;
-    /**
-     * 
-     * @type {TransactionStatus}
-     * @memberof UserSubscription
-     */
-    'status': TransactionStatus;
+    'created_at': string;
     /**
      * 
      * @type {string}
      * @memberof UserSubscription
      */
-    'starts'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -11801,19 +12336,13 @@ export interface UserSubscription {
      * @type {string}
      * @memberof UserSubscription
      */
-    'created_at': string;
+    'id': string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof UserSubscription
      */
-    'updated_at': string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UserSubscription
-     */
-    'licenseGroups': Array<string>;
+    'isBulkGift': boolean;
     /**
      * 
      * @type {boolean}
@@ -11822,13 +12351,104 @@ export interface UserSubscription {
     'isGift': boolean;
     /**
      * 
-     * @type {boolean}
+     * @type {Array<string>}
      * @memberof UserSubscription
      */
-    'isBulkGift': boolean;
+    'licenseGroups': Array<string>;
+    /**
+     * 
+     * @type {SubscriptionPeriod}
+     * @memberof UserSubscription
+     */
+    'period': SubscriptionPeriod;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSubscription
+     */
+    'starts'?: string;
+    /**
+     * 
+     * @type {TransactionStatus}
+     * @memberof UserSubscription
+     */
+    'status': TransactionStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSubscription
+     */
+    'steamItemId'?: string;
+    /**
+     * Which \"Store\" it came from. Right now only Stores are \"Steam\" and \"Admin\".
+     * @type {string}
+     * @memberof UserSubscription
+     */
+    'store': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserSubscription
+     */
+    'tier': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSubscription
+     */
+    'transactionId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSubscription
+     */
+    'updated_at': string;
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UserSubscriptionEligible
+ */
+export interface UserSubscriptionEligible {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'activeCancelledSubscription': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'giftEligible': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'nonExtendVendorWillLoseGiftTime': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'purchaseEligible': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'subscriptionEligible': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSubscriptionEligible
+     */
+    'subscriptionOnAltAccount': boolean;
+}
 /**
  * 
  * @export
@@ -11853,13 +12473,13 @@ export interface Verify2FAResult {
      * @type {boolean}
      * @memberof Verify2FAResult
      */
-    'verified': boolean;
+    'enabled'?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Verify2FAResult
      */
-    'enabled'?: boolean;
+    'verified': boolean;
 }
 /**
  * 
@@ -11904,12 +12524,6 @@ export interface World {
      * @memberof World
      */
     'capacity': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof World
-     */
-    'recommendedCapacity': number;
     /**
      * 
      * @type {string}
@@ -12026,6 +12640,12 @@ export interface World {
     'publicationDate': string;
     /**
      * 
+     * @type {number}
+     * @memberof World
+     */
+    'recommendedCapacity': number;
+    /**
+     * 
      * @type {ReleaseStatus}
      * @memberof World
      */
@@ -12048,6 +12668,12 @@ export interface World {
      * @memberof World
      */
     'thumbnailImageUrl': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof World
+     */
+    'udonProducts'?: Array<string>;
     /**
      * Empty if unauthenticated.
      * @type {Array<UnityPackage>}
@@ -12078,12 +12704,6 @@ export interface World {
      * @memberof World
      */
     'visits': number;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof World
-     */
-    'udonProducts'?: Array<string>;
 }
 
 
@@ -12253,6 +12873,90 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
+         * Globally moderates an avatar.
+         * @summary Create Global Avatar Moderation
+         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createGlobalAvatarModeration: async (createAvatarModerationRequest: CreateAvatarModerationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createAvatarModerationRequest' is not null or undefined
+            assertParamExists('createGlobalAvatarModeration', 'createAvatarModerationRequest', createAvatarModerationRequest)
+            const localVarPath = `/auth/user/avatarmoderations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createAvatarModerationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Globally unmoderates an avatar.
+         * @summary Delete Global Avatar Moderation
+         * @param {string} targetAvatarId Must be a valid avatar ID.
+         * @param {AvatarModerationType} avatarModerationType The avatar moderation type associated with the avatar.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteGlobalAvatarModeration: async (targetAvatarId: string, avatarModerationType: AvatarModerationType, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'targetAvatarId' is not null or undefined
+            assertParamExists('deleteGlobalAvatarModeration', 'targetAvatarId', targetAvatarId)
+            // verify required parameter 'avatarModerationType' is not null or undefined
+            assertParamExists('deleteGlobalAvatarModeration', 'avatarModerationType', avatarModerationType)
+            const localVarPath = `/auth/user/avatarmoderations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (targetAvatarId !== undefined) {
+                localVarQueryParameter['targetAvatarId'] = targetAvatarId;
+            }
+
+            if (avatarModerationType !== undefined) {
+                localVarQueryParameter['avatarModerationType'] = avatarModerationType;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Deletes the account with given ID. Normal users only have permission to delete their own account. Account deletion is 14 days from this request, and will be cancelled if you do an authenticated request with the account afterwards.  **VRC+ NOTE:** Despite the 14-days cooldown, any VRC+ subscription will be cancelled **immediately**.  **METHOD NOTE:** Despite this being a Delete action, the method type required is PUT.
          * @summary Delete User
          * @param {string} userId Must be a valid user ID.
@@ -12353,7 +13057,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
-         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.    > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
+         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.  > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
          * @summary Login and/or Get Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -12376,6 +13080,38 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             setBasicAuthToObject(localVarRequestOptions, configuration)
 
             // authentication twoFactorAuthCookie required
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns list of globally moderated avatars.
+         * @summary Get Global Avatar Moderations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGlobalAvatarModerations: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/user/avatarmoderations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
             // authentication authCookie required
 
@@ -12802,6 +13538,33 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Globally moderates an avatar.
+         * @summary Create Global Avatar Moderation
+         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createGlobalAvatarModeration(createAvatarModerationRequest: CreateAvatarModerationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AvatarModerationCreated>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createGlobalAvatarModeration(createAvatarModerationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.createGlobalAvatarModeration']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Globally unmoderates an avatar.
+         * @summary Delete Global Avatar Moderation
+         * @param {string} targetAvatarId Must be a valid avatar ID.
+         * @param {AvatarModerationType} avatarModerationType The avatar moderation type associated with the avatar.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteGlobalAvatarModeration(targetAvatarId: string, avatarModerationType: AvatarModerationType, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OkStatus2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteGlobalAvatarModeration(targetAvatarId, avatarModerationType, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.deleteGlobalAvatarModeration']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Deletes the account with given ID. Normal users only have permission to delete their own account. Account deletion is 14 days from this request, and will be cancelled if you do an authenticated request with the account afterwards.  **VRC+ NOTE:** Despite the 14-days cooldown, any VRC+ subscription will be cancelled **immediately**.  **METHOD NOTE:** Despite this being a Delete action, the method type required is PUT.
          * @summary Delete User
          * @param {string} userId Must be a valid user ID.
@@ -12839,7 +13602,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.    > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
+         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.  > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
          * @summary Login and/or Get Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -12848,6 +13611,18 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCurrentUser(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.getCurrentUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns list of globally moderated avatars.
+         * @summary Get Global Avatar Moderations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getGlobalAvatarModerations(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AvatarModeration>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGlobalAvatarModerations(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.getGlobalAvatarModerations']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -13018,6 +13793,26 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
             return localVarFp.confirmEmail(requestParameters.id, requestParameters.verifyEmail, options).then((request) => request(axios, basePath));
         },
         /**
+         * Globally moderates an avatar.
+         * @summary Create Global Avatar Moderation
+         * @param {AuthenticationApiCreateGlobalAvatarModerationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createGlobalAvatarModeration(requestParameters: AuthenticationApiCreateGlobalAvatarModerationRequest, options?: RawAxiosRequestConfig): AxiosPromise<AvatarModerationCreated> {
+            return localVarFp.createGlobalAvatarModeration(requestParameters.createAvatarModerationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Globally unmoderates an avatar.
+         * @summary Delete Global Avatar Moderation
+         * @param {AuthenticationApiDeleteGlobalAvatarModerationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteGlobalAvatarModeration(requestParameters: AuthenticationApiDeleteGlobalAvatarModerationRequest, options?: RawAxiosRequestConfig): AxiosPromise<OkStatus2> {
+            return localVarFp.deleteGlobalAvatarModeration(requestParameters.targetAvatarId, requestParameters.avatarModerationType, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Deletes the account with given ID. Normal users only have permission to delete their own account. Account deletion is 14 days from this request, and will be cancelled if you do an authenticated request with the account afterwards.  **VRC+ NOTE:** Despite the 14-days cooldown, any VRC+ subscription will be cancelled **immediately**.  **METHOD NOTE:** Despite this being a Delete action, the method type required is PUT.
          * @summary Delete User
          * @param {AuthenticationApiDeleteUserRequest} requestParameters Request parameters.
@@ -13046,13 +13841,22 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
             return localVarFp.enable2FA(options).then((request) => request(axios, basePath));
         },
         /**
-         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.    > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
+         * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.  > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
          * @summary Login and/or Get Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         getCurrentUser(options?: RawAxiosRequestConfig): AxiosPromise<CurrentUser> {
             return localVarFp.getCurrentUser(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns list of globally moderated avatars.
+         * @summary Get Global Avatar Moderations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGlobalAvatarModerations(options?: RawAxiosRequestConfig): AxiosPromise<Array<AvatarModeration>> {
+            return localVarFp.getGlobalAvatarModerations(options).then((request) => request(axios, basePath));
         },
         /**
          * Gets the OTP (One Time Password) recovery codes for accounts with 2FA-protection enabled.
@@ -13211,6 +14015,41 @@ export interface AuthenticationApiConfirmEmailRequest {
 }
 
 /**
+ * Request parameters for createGlobalAvatarModeration operation in AuthenticationApi.
+ * @export
+ * @interface AuthenticationApiCreateGlobalAvatarModerationRequest
+ */
+export interface AuthenticationApiCreateGlobalAvatarModerationRequest {
+    /**
+     * 
+     * @type {CreateAvatarModerationRequest}
+     * @memberof AuthenticationApiCreateGlobalAvatarModeration
+     */
+    readonly createAvatarModerationRequest: CreateAvatarModerationRequest
+}
+
+/**
+ * Request parameters for deleteGlobalAvatarModeration operation in AuthenticationApi.
+ * @export
+ * @interface AuthenticationApiDeleteGlobalAvatarModerationRequest
+ */
+export interface AuthenticationApiDeleteGlobalAvatarModerationRequest {
+    /**
+     * Must be a valid avatar ID.
+     * @type {string}
+     * @memberof AuthenticationApiDeleteGlobalAvatarModeration
+     */
+    readonly targetAvatarId: string
+
+    /**
+     * The avatar moderation type associated with the avatar.
+     * @type {AvatarModerationType}
+     * @memberof AuthenticationApiDeleteGlobalAvatarModeration
+     */
+    readonly avatarModerationType: AvatarModerationType
+}
+
+/**
  * Request parameters for deleteUser operation in AuthenticationApi.
  * @export
  * @interface AuthenticationApiDeleteUserRequest
@@ -13358,6 +14197,30 @@ export class AuthenticationApi extends BaseAPI {
     }
 
     /**
+     * Globally moderates an avatar.
+     * @summary Create Global Avatar Moderation
+     * @param {AuthenticationApiCreateGlobalAvatarModerationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public createGlobalAvatarModeration(requestParameters: AuthenticationApiCreateGlobalAvatarModerationRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).createGlobalAvatarModeration(requestParameters.createAvatarModerationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Globally unmoderates an avatar.
+     * @summary Delete Global Avatar Moderation
+     * @param {AuthenticationApiDeleteGlobalAvatarModerationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public deleteGlobalAvatarModeration(requestParameters: AuthenticationApiDeleteGlobalAvatarModerationRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).deleteGlobalAvatarModeration(requestParameters.targetAvatarId, requestParameters.avatarModerationType, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Deletes the account with given ID. Normal users only have permission to delete their own account. Account deletion is 14 days from this request, and will be cancelled if you do an authenticated request with the account afterwards.  **VRC+ NOTE:** Despite the 14-days cooldown, any VRC+ subscription will be cancelled **immediately**.  **METHOD NOTE:** Despite this being a Delete action, the method type required is PUT.
      * @summary Delete User
      * @param {AuthenticationApiDeleteUserRequest} requestParameters Request parameters.
@@ -13392,7 +14255,7 @@ export class AuthenticationApi extends BaseAPI {
     }
 
     /**
-     * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.    > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
+     * This endpoint does the following two operations:   1) Checks if you are already logged in by looking for a valid `auth` cookie. If you are have a valid auth cookie then no additional auth-related actions are taken. If you are **not** logged in then it will log you in with the `Authorization` header and set the `auth` cookie. The `auth` cookie will only be sent once.   2) If logged in, this function will also return the CurrentUser object containing detailed information about the currently logged in user.  The auth string after `Authorization: Basic {string}` is a base64-encoded string of the username and password, both individually url-encoded, and then joined with a colon.  > base64(urlencode(username):urlencode(password))  **WARNING: Session Limit:** Each authentication with login credentials counts as a separate session, out of which you have a limited amount. Make sure to save and reuse the `auth` cookie if you are often restarting the program. The provided API libraries automatically save cookies during runtime, but does not persist during restart. While it can be fine to use username/password during development, expect in production to very fast run into the rate-limit and be temporarily blocked from making new sessions until older ones expire. The exact number of simultaneous sessions is unknown/undisclosed.
      * @summary Login and/or Get Current User Info
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -13400,6 +14263,17 @@ export class AuthenticationApi extends BaseAPI {
      */
     public getCurrentUser(options?: RawAxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).getCurrentUser(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns list of globally moderated avatars.
+     * @summary Get Global Avatar Moderations
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public getGlobalAvatarModerations(options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).getGlobalAvatarModerations(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -15471,6 +16345,60 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
+         * Get a list of calendar events by search terms
+         * @summary Search for calendar events
+         * @param {string} searchTerm Search term for calendar events.
+         * @param {number} [utcOffset] The offset from UTC in hours of the client or authenticated user.
+         * @param {number} [n] The number of objects to return.
+         * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchCalendarEvents: async (searchTerm: string, utcOffset?: number, n?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'searchTerm' is not null or undefined
+            assertParamExists('searchCalendarEvents', 'searchTerm', searchTerm)
+            const localVarPath = `/calendar/search`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (searchTerm !== undefined) {
+                localVarQueryParameter['searchTerm'] = searchTerm;
+            }
+
+            if (utcOffset !== undefined) {
+                localVarQueryParameter['utcOffset'] = utcOffset;
+            }
+
+            if (n !== undefined) {
+                localVarQueryParameter['n'] = n;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Updates an event for a group on the calendar
          * @summary Update a calendar event
          * @param {string} groupId Must be a valid group ID.
@@ -15659,6 +16587,22 @@ export const CalendarApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get a list of calendar events by search terms
+         * @summary Search for calendar events
+         * @param {string} searchTerm Search term for calendar events.
+         * @param {number} [utcOffset] The offset from UTC in hours of the client or authenticated user.
+         * @param {number} [n] The number of objects to return.
+         * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchCalendarEvents(searchTerm: string, utcOffset?: number, n?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedCalendarEventList>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchCalendarEvents(searchTerm, utcOffset, n, offset, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.searchCalendarEvents']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Updates an event for a group on the calendar
          * @summary Update a calendar event
          * @param {string} groupId Must be a valid group ID.
@@ -15772,6 +16716,16 @@ export const CalendarApiFactory = function (configuration?: Configuration, baseP
          */
         getGroupCalendarEvents(requestParameters: CalendarApiGetGroupCalendarEventsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedCalendarEventList> {
             return localVarFp.getGroupCalendarEvents(requestParameters.groupId, requestParameters.date, requestParameters.n, requestParameters.offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get a list of calendar events by search terms
+         * @summary Search for calendar events
+         * @param {CalendarApiSearchCalendarEventsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchCalendarEvents(requestParameters: CalendarApiSearchCalendarEventsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedCalendarEventList> {
+            return localVarFp.searchCalendarEvents(requestParameters.searchTerm, requestParameters.utcOffset, requestParameters.n, requestParameters.offset, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates an event for a group on the calendar
@@ -16018,6 +16972,41 @@ export interface CalendarApiGetGroupCalendarEventsRequest {
 }
 
 /**
+ * Request parameters for searchCalendarEvents operation in CalendarApi.
+ * @export
+ * @interface CalendarApiSearchCalendarEventsRequest
+ */
+export interface CalendarApiSearchCalendarEventsRequest {
+    /**
+     * Search term for calendar events.
+     * @type {string}
+     * @memberof CalendarApiSearchCalendarEvents
+     */
+    readonly searchTerm: string
+
+    /**
+     * The offset from UTC in hours of the client or authenticated user.
+     * @type {number}
+     * @memberof CalendarApiSearchCalendarEvents
+     */
+    readonly utcOffset?: number
+
+    /**
+     * The number of objects to return.
+     * @type {number}
+     * @memberof CalendarApiSearchCalendarEvents
+     */
+    readonly n?: number
+
+    /**
+     * A zero-based offset from the default object sorting from where search results start.
+     * @type {number}
+     * @memberof CalendarApiSearchCalendarEvents
+     */
+    readonly offset?: number
+}
+
+/**
  * Request parameters for updateGroupCalendarEvent operation in CalendarApi.
  * @export
  * @interface CalendarApiUpdateGroupCalendarEventRequest
@@ -16161,6 +17150,18 @@ export class CalendarApi extends BaseAPI {
     }
 
     /**
+     * Get a list of calendar events by search terms
+     * @summary Search for calendar events
+     * @param {CalendarApiSearchCalendarEventsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public searchCalendarEvents(requestParameters: CalendarApiSearchCalendarEventsRequest, options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).searchCalendarEvents(requestParameters.searchTerm, requestParameters.utcOffset, requestParameters.n, requestParameters.offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Updates an event for a group on the calendar
      * @summary Update a calendar event
      * @param {CalendarApiUpdateGroupCalendarEventRequest} requestParameters Request parameters.
@@ -16181,6 +17182,38 @@ export class CalendarApi extends BaseAPI {
  */
 export const EconomyApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * Gets active licenses
+         * @summary Get Active Licenses
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveLicenses: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/economy/licenses/active`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * Gets the balance of a user
          * @summary Get Balance
@@ -16218,6 +17251,79 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Gets the balance of a user from earnings
+         * @summary Get Balance Earnings
+         * @param {string} userId Must be a valid user ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBalanceEarnings: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getBalanceEarnings', 'userId', userId)
+            const localVarPath = `/user/{userId}/balance/earnings`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get bulk gift purchases made by the user.
+         * @summary Get Bulk Gift Purchases
+         * @param {boolean} [mostRecent] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBulkGiftPurchases: async (mostRecent?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user/bulk/gift/purchases`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (mostRecent !== undefined) {
+                localVarQueryParameter['mostRecent'] = mostRecent;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get a list of all current user subscriptions.
          * @summary Get Current Subscriptions
          * @param {*} [options] Override http request option.
@@ -16225,6 +17331,42 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
          */
         getCurrentSubscriptions: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/auth/user/subscription`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets the economy account of a user
+         * @summary Get Economy Account
+         * @param {string} userId Must be a valid user ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEconomyAccount: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getEconomyAccount', 'userId', userId)
+            const localVarPath = `/user/{userId}/economy/account`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -16388,6 +17530,38 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get the most recent user subscription.
+         * @summary Get Recent Subscription
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecentSubscription: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user/subscription/recent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get a single Steam transactions by ID. This returns the exact same information as `getSteamTransactions`, so no point in using this endpoint.
          * @summary Get Steam Transaction
          * @param {string} transactionId Must be a valid transaction ID.
@@ -16444,6 +17618,104 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
             // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets a store
+         * @summary Get Store
+         * @param {string} storeId 
+         * @param {boolean} [hydrateListings] Listings fields will be populated.
+         * @param {boolean} [hydrateProducts] Products fields will be populated.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStore: async (storeId: string, hydrateListings?: boolean, hydrateProducts?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'storeId' is not null or undefined
+            assertParamExists('getStore', 'storeId', storeId)
+            const localVarPath = `/economy/store`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (storeId !== undefined) {
+                localVarQueryParameter['storeId'] = storeId;
+            }
+
+            if (hydrateListings !== undefined) {
+                localVarQueryParameter['hydrateListings'] = hydrateListings;
+            }
+
+            if (hydrateProducts !== undefined) {
+                localVarQueryParameter['hydrateProducts'] = hydrateProducts;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets the shelves for a store
+         * @summary Get Store Shelves
+         * @param {string} storeId 
+         * @param {boolean} [hydrateListings] Listings fields will be populated.
+         * @param {StoreView} [fetch] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStoreShelves: async (storeId: string, hydrateListings?: boolean, fetch?: StoreView, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'storeId' is not null or undefined
+            assertParamExists('getStoreShelves', 'storeId', storeId)
+            const localVarPath = `/economy/store/shelves`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (storeId !== undefined) {
+                localVarQueryParameter['storeId'] = storeId;
+            }
+
+            if (hydrateListings !== undefined) {
+                localVarQueryParameter['hydrateListings'] = hydrateListings;
+            }
+
+            if (fetch !== undefined) {
+                localVarQueryParameter['fetch'] = fetch;
+            }
 
 
     
@@ -16588,6 +17860,130 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Get the user\'s eligibility status for subscriptions based on available credits.
+         * @summary Get User Credits Eligiblity
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} subscriptionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserCreditsEligible: async (userId: string, subscriptionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserCreditsEligible', 'userId', userId)
+            // verify required parameter 'subscriptionId' is not null or undefined
+            assertParamExists('getUserCreditsEligible', 'subscriptionId', subscriptionId)
+            const localVarPath = `/users/{userId}/credits/eligible`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (subscriptionId !== undefined) {
+                localVarQueryParameter['subscriptionId'] = subscriptionId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get the user\'s eligibility status for subscriptions.
+         * @summary Get User Subscription Eligiblity
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} [steamId] The Steam ID of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserSubscriptionEligible: async (userId: string, steamId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserSubscriptionEligible', 'userId', userId)
+            const localVarPath = `/users/{userId}/subscription/eligible`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (steamId !== undefined) {
+                localVarQueryParameter['steamId'] = steamId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the status of the agreement of a user to the Tilia TOS
+         * @summary Update Tilia TOS Agreement Status
+         * @param {string} userId Must be a valid user ID.
+         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTiliaTos: async (userId: string, updateTiliaTOSRequest?: UpdateTiliaTOSRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('updateTiliaTos', 'userId', userId)
+            const localVarPath = `/user/{userId}/tilia/tos`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateTiliaTOSRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -16598,6 +17994,18 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
 export const EconomyApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = EconomyApiAxiosParamCreator(configuration)
     return {
+        /**
+         * Gets active licenses
+         * @summary Get Active Licenses
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getActiveLicenses(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<License>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getActiveLicenses(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getActiveLicenses']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * Gets the balance of a user
          * @summary Get Balance
@@ -16612,6 +18020,32 @@ export const EconomyApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Gets the balance of a user from earnings
+         * @summary Get Balance Earnings
+         * @param {string} userId Must be a valid user ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getBalanceEarnings(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Balance>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBalanceEarnings(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getBalanceEarnings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get bulk gift purchases made by the user.
+         * @summary Get Bulk Gift Purchases
+         * @param {boolean} [mostRecent] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getBulkGiftPurchases(mostRecent?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBulkGiftPurchases(mostRecent, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getBulkGiftPurchases']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get a list of all current user subscriptions.
          * @summary Get Current Subscriptions
          * @param {*} [options] Override http request option.
@@ -16621,6 +18055,19 @@ export const EconomyApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCurrentSubscriptions(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EconomyApi.getCurrentSubscriptions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets the economy account of a user
+         * @summary Get Economy Account
+         * @param {string} userId Must be a valid user ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEconomyAccount(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EconomyAccount>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEconomyAccount(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getEconomyAccount']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -16669,6 +18116,18 @@ export const EconomyApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get the most recent user subscription.
+         * @summary Get Recent Subscription
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRecentSubscription(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSubscription>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRecentSubscription(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getRecentSubscription']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get a single Steam transactions by ID. This returns the exact same information as `getSteamTransactions`, so no point in using this endpoint.
          * @summary Get Steam Transaction
          * @param {string} transactionId Must be a valid transaction ID.
@@ -16692,6 +18151,36 @@ export const EconomyApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getSteamTransactions(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EconomyApi.getSteamTransactions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets a store
+         * @summary Get Store
+         * @param {string} storeId 
+         * @param {boolean} [hydrateListings] Listings fields will be populated.
+         * @param {boolean} [hydrateProducts] Products fields will be populated.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStore(storeId: string, hydrateListings?: boolean, hydrateProducts?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Store>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStore(storeId, hydrateListings, hydrateProducts, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getStore']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets the shelves for a store
+         * @summary Get Store Shelves
+         * @param {string} storeId 
+         * @param {boolean} [hydrateListings] Listings fields will be populated.
+         * @param {StoreView} [fetch] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStoreShelves(storeId: string, hydrateListings?: boolean, fetch?: StoreView, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StoreShelf>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStoreShelves(storeId, hydrateListings, fetch, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getStoreShelves']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -16743,6 +18232,48 @@ export const EconomyApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['EconomyApi.getTokenBundles']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Get the user\'s eligibility status for subscriptions based on available credits.
+         * @summary Get User Credits Eligiblity
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} subscriptionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserCreditsEligible(userId: string, subscriptionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserCreditsEligible>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCreditsEligible(userId, subscriptionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getUserCreditsEligible']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get the user\'s eligibility status for subscriptions.
+         * @summary Get User Subscription Eligiblity
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} [steamId] The Steam ID of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserSubscriptionEligible(userId: string, steamId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSubscriptionEligible>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserSubscriptionEligible(userId, steamId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.getUserSubscriptionEligible']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the status of the agreement of a user to the Tilia TOS
+         * @summary Update Tilia TOS Agreement Status
+         * @param {string} userId Must be a valid user ID.
+         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateTiliaTos(userId: string, updateTiliaTOSRequest?: UpdateTiliaTOSRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateTiliaTos(userId, updateTiliaTOSRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EconomyApi.updateTiliaTos']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -16754,6 +18285,15 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = EconomyApiFp(configuration)
     return {
         /**
+         * Gets active licenses
+         * @summary Get Active Licenses
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveLicenses(options?: RawAxiosRequestConfig): AxiosPromise<Array<License>> {
+            return localVarFp.getActiveLicenses(options).then((request) => request(axios, basePath));
+        },
+        /**
          * Gets the balance of a user
          * @summary Get Balance
          * @param {EconomyApiGetBalanceRequest} requestParameters Request parameters.
@@ -16764,6 +18304,26 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getBalance(requestParameters.userId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Gets the balance of a user from earnings
+         * @summary Get Balance Earnings
+         * @param {EconomyApiGetBalanceEarningsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBalanceEarnings(requestParameters: EconomyApiGetBalanceEarningsRequest, options?: RawAxiosRequestConfig): AxiosPromise<Balance> {
+            return localVarFp.getBalanceEarnings(requestParameters.userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get bulk gift purchases made by the user.
+         * @summary Get Bulk Gift Purchases
+         * @param {EconomyApiGetBulkGiftPurchasesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBulkGiftPurchases(requestParameters: EconomyApiGetBulkGiftPurchasesRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<object>> {
+            return localVarFp.getBulkGiftPurchases(requestParameters.mostRecent, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get a list of all current user subscriptions.
          * @summary Get Current Subscriptions
          * @param {*} [options] Override http request option.
@@ -16771,6 +18331,16 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
          */
         getCurrentSubscriptions(options?: RawAxiosRequestConfig): AxiosPromise<Array<UserSubscription>> {
             return localVarFp.getCurrentSubscriptions(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets the economy account of a user
+         * @summary Get Economy Account
+         * @param {EconomyApiGetEconomyAccountRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEconomyAccount(requestParameters: EconomyApiGetEconomyAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<EconomyAccount> {
+            return localVarFp.getEconomyAccount(requestParameters.userId, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a single License Group by given ID.
@@ -16803,6 +18373,15 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getProductListings(requestParameters.userId, requestParameters.n, requestParameters.offset, requestParameters.hydrate, requestParameters.groupId, requestParameters.active, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get the most recent user subscription.
+         * @summary Get Recent Subscription
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecentSubscription(options?: RawAxiosRequestConfig): AxiosPromise<UserSubscription> {
+            return localVarFp.getRecentSubscription(options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get a single Steam transactions by ID. This returns the exact same information as `getSteamTransactions`, so no point in using this endpoint.
          * @summary Get Steam Transaction
          * @param {EconomyApiGetSteamTransactionRequest} requestParameters Request parameters.
@@ -16821,6 +18400,26 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
          */
         getSteamTransactions(options?: RawAxiosRequestConfig): AxiosPromise<Array<Transaction>> {
             return localVarFp.getSteamTransactions(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets a store
+         * @summary Get Store
+         * @param {EconomyApiGetStoreRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStore(requestParameters: EconomyApiGetStoreRequest, options?: RawAxiosRequestConfig): AxiosPromise<Store> {
+            return localVarFp.getStore(requestParameters.storeId, requestParameters.hydrateListings, requestParameters.hydrateProducts, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets the shelves for a store
+         * @summary Get Store Shelves
+         * @param {EconomyApiGetStoreShelvesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStoreShelves(requestParameters: EconomyApiGetStoreShelvesRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<StoreShelf>> {
+            return localVarFp.getStoreShelves(requestParameters.storeId, requestParameters.hydrateListings, requestParameters.fetch, options).then((request) => request(axios, basePath));
         },
         /**
          * List all existing Subscriptions. For example, \"vrchatplus-monthly\" and \"vrchatplus-yearly\".
@@ -16859,6 +18458,36 @@ export const EconomyApiFactory = function (configuration?: Configuration, basePa
         getTokenBundles(options?: RawAxiosRequestConfig): AxiosPromise<Array<TokenBundle>> {
             return localVarFp.getTokenBundles(options).then((request) => request(axios, basePath));
         },
+        /**
+         * Get the user\'s eligibility status for subscriptions based on available credits.
+         * @summary Get User Credits Eligiblity
+         * @param {EconomyApiGetUserCreditsEligibleRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserCreditsEligible(requestParameters: EconomyApiGetUserCreditsEligibleRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserCreditsEligible> {
+            return localVarFp.getUserCreditsEligible(requestParameters.userId, requestParameters.subscriptionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get the user\'s eligibility status for subscriptions.
+         * @summary Get User Subscription Eligiblity
+         * @param {EconomyApiGetUserSubscriptionEligibleRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserSubscriptionEligible(requestParameters: EconomyApiGetUserSubscriptionEligibleRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserSubscriptionEligible> {
+            return localVarFp.getUserSubscriptionEligible(requestParameters.userId, requestParameters.steamId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the status of the agreement of a user to the Tilia TOS
+         * @summary Update Tilia TOS Agreement Status
+         * @param {EconomyApiUpdateTiliaTosRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTiliaTos(requestParameters: EconomyApiUpdateTiliaTosRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.updateTiliaTos(requestParameters.userId, requestParameters.updateTiliaTOSRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -16872,6 +18501,48 @@ export interface EconomyApiGetBalanceRequest {
      * Must be a valid user ID.
      * @type {string}
      * @memberof EconomyApiGetBalance
+     */
+    readonly userId: string
+}
+
+/**
+ * Request parameters for getBalanceEarnings operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetBalanceEarningsRequest
+ */
+export interface EconomyApiGetBalanceEarningsRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof EconomyApiGetBalanceEarnings
+     */
+    readonly userId: string
+}
+
+/**
+ * Request parameters for getBulkGiftPurchases operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetBulkGiftPurchasesRequest
+ */
+export interface EconomyApiGetBulkGiftPurchasesRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof EconomyApiGetBulkGiftPurchases
+     */
+    readonly mostRecent?: boolean
+}
+
+/**
+ * Request parameters for getEconomyAccount operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetEconomyAccountRequest
+ */
+export interface EconomyApiGetEconomyAccountRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof EconomyApiGetEconomyAccount
      */
     readonly userId: string
 }
@@ -16975,6 +18646,62 @@ export interface EconomyApiGetSteamTransactionRequest {
 }
 
 /**
+ * Request parameters for getStore operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetStoreRequest
+ */
+export interface EconomyApiGetStoreRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyApiGetStore
+     */
+    readonly storeId: string
+
+    /**
+     * Listings fields will be populated.
+     * @type {boolean}
+     * @memberof EconomyApiGetStore
+     */
+    readonly hydrateListings?: boolean
+
+    /**
+     * Products fields will be populated.
+     * @type {boolean}
+     * @memberof EconomyApiGetStore
+     */
+    readonly hydrateProducts?: boolean
+}
+
+/**
+ * Request parameters for getStoreShelves operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetStoreShelvesRequest
+ */
+export interface EconomyApiGetStoreShelvesRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyApiGetStoreShelves
+     */
+    readonly storeId: string
+
+    /**
+     * Listings fields will be populated.
+     * @type {boolean}
+     * @memberof EconomyApiGetStoreShelves
+     */
+    readonly hydrateListings?: boolean
+
+    /**
+     * 
+     * @type {StoreView}
+     * @memberof EconomyApiGetStoreShelves
+     */
+    readonly fetch?: StoreView
+}
+
+/**
  * Request parameters for getTiliaTos operation in EconomyApi.
  * @export
  * @interface EconomyApiGetTiliaTosRequest
@@ -16989,12 +18716,86 @@ export interface EconomyApiGetTiliaTosRequest {
 }
 
 /**
+ * Request parameters for getUserCreditsEligible operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetUserCreditsEligibleRequest
+ */
+export interface EconomyApiGetUserCreditsEligibleRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof EconomyApiGetUserCreditsEligible
+     */
+    readonly userId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof EconomyApiGetUserCreditsEligible
+     */
+    readonly subscriptionId: string
+}
+
+/**
+ * Request parameters for getUserSubscriptionEligible operation in EconomyApi.
+ * @export
+ * @interface EconomyApiGetUserSubscriptionEligibleRequest
+ */
+export interface EconomyApiGetUserSubscriptionEligibleRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof EconomyApiGetUserSubscriptionEligible
+     */
+    readonly userId: string
+
+    /**
+     * The Steam ID of the user.
+     * @type {string}
+     * @memberof EconomyApiGetUserSubscriptionEligible
+     */
+    readonly steamId?: string
+}
+
+/**
+ * Request parameters for updateTiliaTos operation in EconomyApi.
+ * @export
+ * @interface EconomyApiUpdateTiliaTosRequest
+ */
+export interface EconomyApiUpdateTiliaTosRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof EconomyApiUpdateTiliaTos
+     */
+    readonly userId: string
+
+    /**
+     * 
+     * @type {UpdateTiliaTOSRequest}
+     * @memberof EconomyApiUpdateTiliaTos
+     */
+    readonly updateTiliaTOSRequest?: UpdateTiliaTOSRequest
+}
+
+/**
  * EconomyApi - object-oriented interface
  * @export
  * @class EconomyApi
  * @extends {BaseAPI}
  */
 export class EconomyApi extends BaseAPI {
+    /**
+     * Gets active licenses
+     * @summary Get Active Licenses
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getActiveLicenses(options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getActiveLicenses(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Gets the balance of a user
      * @summary Get Balance
@@ -17008,6 +18809,30 @@ export class EconomyApi extends BaseAPI {
     }
 
     /**
+     * Gets the balance of a user from earnings
+     * @summary Get Balance Earnings
+     * @param {EconomyApiGetBalanceEarningsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getBalanceEarnings(requestParameters: EconomyApiGetBalanceEarningsRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getBalanceEarnings(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get bulk gift purchases made by the user.
+     * @summary Get Bulk Gift Purchases
+     * @param {EconomyApiGetBulkGiftPurchasesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getBulkGiftPurchases(requestParameters: EconomyApiGetBulkGiftPurchasesRequest = {}, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getBulkGiftPurchases(requestParameters.mostRecent, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Get a list of all current user subscriptions.
      * @summary Get Current Subscriptions
      * @param {*} [options] Override http request option.
@@ -17016,6 +18841,18 @@ export class EconomyApi extends BaseAPI {
      */
     public getCurrentSubscriptions(options?: RawAxiosRequestConfig) {
         return EconomyApiFp(this.configuration).getCurrentSubscriptions(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets the economy account of a user
+     * @summary Get Economy Account
+     * @param {EconomyApiGetEconomyAccountRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getEconomyAccount(requestParameters: EconomyApiGetEconomyAccountRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getEconomyAccount(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -17055,6 +18892,17 @@ export class EconomyApi extends BaseAPI {
     }
 
     /**
+     * Get the most recent user subscription.
+     * @summary Get Recent Subscription
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getRecentSubscription(options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getRecentSubscription(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Get a single Steam transactions by ID. This returns the exact same information as `getSteamTransactions`, so no point in using this endpoint.
      * @summary Get Steam Transaction
      * @param {EconomyApiGetSteamTransactionRequest} requestParameters Request parameters.
@@ -17076,6 +18924,30 @@ export class EconomyApi extends BaseAPI {
      */
     public getSteamTransactions(options?: RawAxiosRequestConfig) {
         return EconomyApiFp(this.configuration).getSteamTransactions(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets a store
+     * @summary Get Store
+     * @param {EconomyApiGetStoreRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getStore(requestParameters: EconomyApiGetStoreRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getStore(requestParameters.storeId, requestParameters.hydrateListings, requestParameters.hydrateProducts, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets the shelves for a store
+     * @summary Get Store Shelves
+     * @param {EconomyApiGetStoreShelvesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getStoreShelves(requestParameters: EconomyApiGetStoreShelvesRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getStoreShelves(requestParameters.storeId, requestParameters.hydrateListings, requestParameters.fetch, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -17121,6 +18993,42 @@ export class EconomyApi extends BaseAPI {
      */
     public getTokenBundles(options?: RawAxiosRequestConfig) {
         return EconomyApiFp(this.configuration).getTokenBundles(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get the user\'s eligibility status for subscriptions based on available credits.
+     * @summary Get User Credits Eligiblity
+     * @param {EconomyApiGetUserCreditsEligibleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getUserCreditsEligible(requestParameters: EconomyApiGetUserCreditsEligibleRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getUserCreditsEligible(requestParameters.userId, requestParameters.subscriptionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get the user\'s eligibility status for subscriptions.
+     * @summary Get User Subscription Eligiblity
+     * @param {EconomyApiGetUserSubscriptionEligibleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public getUserSubscriptionEligible(requestParameters: EconomyApiGetUserSubscriptionEligibleRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).getUserSubscriptionEligible(requestParameters.userId, requestParameters.steamId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the status of the agreement of a user to the Tilia TOS
+     * @summary Update Tilia TOS Agreement Status
+     * @param {EconomyApiUpdateTiliaTosRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EconomyApi
+     */
+    public updateTiliaTos(requestParameters: EconomyApiUpdateTiliaTosRequest, options?: RawAxiosRequestConfig) {
+        return EconomyApiFp(this.configuration).updateTiliaTos(requestParameters.userId, requestParameters.updateTiliaTOSRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -17716,7 +19624,7 @@ export interface FavoritesApiAddFavoriteRequest {
 export interface FavoritesApiClearFavoriteGroupRequest {
     /**
      * The type of group to fetch, must be a valid FavoriteType.
-     * @type {'world' | 'friend' | 'avatar'}
+     * @type {'avatar' | 'friend' | 'world'}
      * @memberof FavoritesApiClearFavoriteGroup
      */
     readonly favoriteGroupType: ClearFavoriteGroupFavoriteGroupTypeEnum
@@ -17744,7 +19652,7 @@ export interface FavoritesApiClearFavoriteGroupRequest {
 export interface FavoritesApiGetFavoriteGroupRequest {
     /**
      * The type of group to fetch, must be a valid FavoriteType.
-     * @type {'world' | 'friend' | 'avatar'}
+     * @type {'avatar' | 'friend' | 'world'}
      * @memberof FavoritesApiGetFavoriteGroup
      */
     readonly favoriteGroupType: GetFavoriteGroupFavoriteGroupTypeEnum
@@ -17856,7 +19764,7 @@ export interface FavoritesApiRemoveFavoriteRequest {
 export interface FavoritesApiUpdateFavoriteGroupRequest {
     /**
      * The type of group to fetch, must be a valid FavoriteType.
-     * @type {'world' | 'friend' | 'avatar'}
+     * @type {'avatar' | 'friend' | 'world'}
      * @memberof FavoritesApiUpdateFavoriteGroup
      */
     readonly favoriteGroupType: UpdateFavoriteGroupFavoriteGroupTypeEnum
@@ -17990,27 +19898,27 @@ export class FavoritesApi extends BaseAPI {
  * @export
  */
 export const ClearFavoriteGroupFavoriteGroupTypeEnum = {
-    World: 'world',
+    Avatar: 'avatar',
     Friend: 'friend',
-    Avatar: 'avatar'
+    World: 'world'
 } as const;
 export type ClearFavoriteGroupFavoriteGroupTypeEnum = typeof ClearFavoriteGroupFavoriteGroupTypeEnum[keyof typeof ClearFavoriteGroupFavoriteGroupTypeEnum];
 /**
  * @export
  */
 export const GetFavoriteGroupFavoriteGroupTypeEnum = {
-    World: 'world',
+    Avatar: 'avatar',
     Friend: 'friend',
-    Avatar: 'avatar'
+    World: 'world'
 } as const;
 export type GetFavoriteGroupFavoriteGroupTypeEnum = typeof GetFavoriteGroupFavoriteGroupTypeEnum[keyof typeof GetFavoriteGroupFavoriteGroupTypeEnum];
 /**
  * @export
  */
 export const UpdateFavoriteGroupFavoriteGroupTypeEnum = {
-    World: 'world',
+    Avatar: 'avatar',
     Friend: 'friend',
-    Avatar: 'avatar'
+    World: 'world'
 } as const;
 export type UpdateFavoriteGroupFavoriteGroupTypeEnum = typeof UpdateFavoriteGroupFavoriteGroupTypeEnum[keyof typeof UpdateFavoriteGroupFavoriteGroupTypeEnum];
 
@@ -18689,14 +20597,14 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Upload gallery image, icon, emoji or sticker
          * @param {File} file The binary blob of the png file.
          * @param {string} tag Needs to be either icon, gallery, sticker, emoji, or emojianimated
+         * @param {string} [animationStyle] Animation style for sticker, required for emoji.
          * @param {number} [frames] Required for emojianimated. Total number of frames to be animated (2-64)
          * @param {number} [framesOverTime] Required for emojianimated. Animation frames per second (1-64)
-         * @param {string} [animationStyle] Animation style for sticker, required for emoji.
          * @param {string} [maskTag] Mask of the sticker, optional for emoji.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadImage: async (file: File, tag: string, frames?: number, framesOverTime?: number, animationStyle?: string, maskTag?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        uploadImage: async (file: File, tag: string, animationStyle?: string, frames?: number, framesOverTime?: number, maskTag?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'file' is not null or undefined
             assertParamExists('uploadImage', 'file', file)
             // verify required parameter 'tag' is not null or undefined
@@ -18717,12 +20625,12 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-            if (file !== undefined) { 
-                localVarFormParams.append('file', file as any);
+            if (animationStyle !== undefined) { 
+                localVarFormParams.append('animationStyle', animationStyle as any);
             }
     
-            if (tag !== undefined) { 
-                localVarFormParams.append('tag', tag as any);
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
             }
     
             if (frames !== undefined) { 
@@ -18733,12 +20641,12 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
                 localVarFormParams.append('framesOverTime', framesOverTime as any);
             }
     
-            if (animationStyle !== undefined) { 
-                localVarFormParams.append('animationStyle', animationStyle as any);
-            }
-    
             if (maskTag !== undefined) { 
                 localVarFormParams.append('maskTag', maskTag as any);
+            }
+    
+            if (tag !== undefined) { 
+                localVarFormParams.append('tag', tag as any);
             }
     
     
@@ -18994,15 +20902,15 @@ export const FilesApiFp = function(configuration?: Configuration) {
          * @summary Upload gallery image, icon, emoji or sticker
          * @param {File} file The binary blob of the png file.
          * @param {string} tag Needs to be either icon, gallery, sticker, emoji, or emojianimated
+         * @param {string} [animationStyle] Animation style for sticker, required for emoji.
          * @param {number} [frames] Required for emojianimated. Total number of frames to be animated (2-64)
          * @param {number} [framesOverTime] Required for emojianimated. Animation frames per second (1-64)
-         * @param {string} [animationStyle] Animation style for sticker, required for emoji.
          * @param {string} [maskTag] Mask of the sticker, optional for emoji.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async uploadImage(file: File, tag: string, frames?: number, framesOverTime?: number, animationStyle?: string, maskTag?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadImage(file, tag, frames, framesOverTime, animationStyle, maskTag, options);
+        async uploadImage(file: File, tag: string, animationStyle?: string, frames?: number, framesOverTime?: number, maskTag?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadImage(file, tag, animationStyle, frames, framesOverTime, maskTag, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['FilesApi.uploadImage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19185,7 +21093,7 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
          * @throws {RequiredError}
          */
         uploadImage(requestParameters: FilesApiUploadImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.uploadImage(requestParameters.file, requestParameters.tag, requestParameters.frames, requestParameters.framesOverTime, requestParameters.animationStyle, requestParameters.maskTag, options).then((request) => request(axios, basePath));
+            return localVarFp.uploadImage(requestParameters.file, requestParameters.tag, requestParameters.animationStyle, requestParameters.frames, requestParameters.framesOverTime, requestParameters.maskTag, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -19303,7 +21211,7 @@ export interface FilesApiFinishFileDataUploadRequest {
 
     /**
      * Type of file.
-     * @type {'file' | 'signature' | 'delta'}
+     * @type {'delta' | 'file' | 'signature'}
      * @memberof FilesApiFinishFileDataUpload
      */
     readonly fileType: FinishFileDataUploadFileTypeEnum
@@ -19429,7 +21337,7 @@ export interface FilesApiGetFileDataUploadStatusRequest {
 
     /**
      * Type of file.
-     * @type {'file' | 'signature' | 'delta'}
+     * @type {'delta' | 'file' | 'signature'}
      * @memberof FilesApiGetFileDataUploadStatus
      */
     readonly fileType: GetFileDataUploadStatusFileTypeEnum
@@ -19492,7 +21400,7 @@ export interface FilesApiStartFileDataUploadRequest {
 
     /**
      * Type of file.
-     * @type {'file' | 'signature' | 'delta'}
+     * @type {'delta' | 'file' | 'signature'}
      * @memberof FilesApiStartFileDataUpload
      */
     readonly fileType: StartFileDataUploadFileTypeEnum
@@ -19554,6 +21462,13 @@ export interface FilesApiUploadImageRequest {
     readonly tag: string
 
     /**
+     * Animation style for sticker, required for emoji.
+     * @type {string}
+     * @memberof FilesApiUploadImage
+     */
+    readonly animationStyle?: string
+
+    /**
      * Required for emojianimated. Total number of frames to be animated (2-64)
      * @type {number}
      * @memberof FilesApiUploadImage
@@ -19566,13 +21481,6 @@ export interface FilesApiUploadImageRequest {
      * @memberof FilesApiUploadImage
      */
     readonly framesOverTime?: number
-
-    /**
-     * Animation style for sticker, required for emoji.
-     * @type {string}
-     * @memberof FilesApiUploadImage
-     */
-    readonly animationStyle?: string
 
     /**
      * Mask of the sticker, optional for emoji.
@@ -19790,7 +21698,7 @@ export class FilesApi extends BaseAPI {
      * @memberof FilesApi
      */
     public uploadImage(requestParameters: FilesApiUploadImageRequest, options?: RawAxiosRequestConfig) {
-        return FilesApiFp(this.configuration).uploadImage(requestParameters.file, requestParameters.tag, requestParameters.frames, requestParameters.framesOverTime, requestParameters.animationStyle, requestParameters.maskTag, options).then((request) => request(this.axios, this.basePath));
+        return FilesApiFp(this.configuration).uploadImage(requestParameters.file, requestParameters.tag, requestParameters.animationStyle, requestParameters.frames, requestParameters.framesOverTime, requestParameters.maskTag, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -19798,27 +21706,27 @@ export class FilesApi extends BaseAPI {
  * @export
  */
 export const FinishFileDataUploadFileTypeEnum = {
+    Delta: 'delta',
     File: 'file',
-    Signature: 'signature',
-    Delta: 'delta'
+    Signature: 'signature'
 } as const;
 export type FinishFileDataUploadFileTypeEnum = typeof FinishFileDataUploadFileTypeEnum[keyof typeof FinishFileDataUploadFileTypeEnum];
 /**
  * @export
  */
 export const GetFileDataUploadStatusFileTypeEnum = {
+    Delta: 'delta',
     File: 'file',
-    Signature: 'signature',
-    Delta: 'delta'
+    Signature: 'signature'
 } as const;
 export type GetFileDataUploadStatusFileTypeEnum = typeof GetFileDataUploadStatusFileTypeEnum[keyof typeof GetFileDataUploadStatusFileTypeEnum];
 /**
  * @export
  */
 export const StartFileDataUploadFileTypeEnum = {
+    Delta: 'delta',
     File: 'file',
-    Signature: 'signature',
-    Delta: 'delta'
+    Signature: 'signature'
 } as const;
 export type StartFileDataUploadFileTypeEnum = typeof StartFileDataUploadFileTypeEnum[keyof typeof StartFileDataUploadFileTypeEnum];
 
@@ -21054,7 +22962,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**.  If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
+         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**. If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
          * @summary Get Group Announcement
          * @param {string} groupId Must be a valid group ID.
          * @param {*} [options] Override http request option.
@@ -22458,7 +24366,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**.  If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
+         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**. If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
          * @summary Get Group Announcement
          * @param {string} groupId Must be a valid group ID.
          * @param {*} [options] Override http request option.
@@ -23029,7 +24937,7 @@ export const GroupsApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.getGroup(requestParameters.groupId, requestParameters.includeRoles, options).then((request) => request(axios, basePath));
         },
         /**
-         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**.  If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
+         * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**. If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
          * @summary Get Group Announcement
          * @param {GroupsApiGetGroupAnnouncementsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
@@ -24543,7 +26451,7 @@ export class GroupsApi extends BaseAPI {
     }
 
     /**
-     * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**.  If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
+     * Returns the announcement for a Group. If no announcement has been made, then it returns **empty object**. If an announcement exists, then it will always return all fields except `imageId` and `imageUrl` which may be null.
      * @summary Get Group Announcement
      * @param {GroupsApiGetGroupAnnouncementsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -25029,6 +26937,48 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
+         * Returns a list of recently visited locations.
+         * @summary List Recent Locations
+         * @param {number} [n] The number of objects to return.
+         * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecentLocations: async (n?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/instances/recent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (n !== undefined) {
+                localVarQueryParameter['n'] = n;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Returns an instance short name.
          * @summary Get Instance Short Name
          * @param {string} worldId Must be a valid world ID.
@@ -25135,6 +27085,20 @@ export const InstancesApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Returns a list of recently visited locations.
+         * @summary List Recent Locations
+         * @param {number} [n] The number of objects to return.
+         * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRecentLocations(n?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRecentLocations(n, offset, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstancesApi.getRecentLocations']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Returns an instance short name.
          * @summary Get Instance Short Name
          * @param {string} worldId Must be a valid world ID.
@@ -25197,6 +27161,16 @@ export const InstancesApiFactory = function (configuration?: Configuration, base
          */
         getInstanceByShortName(requestParameters: InstancesApiGetInstanceByShortNameRequest, options?: RawAxiosRequestConfig): AxiosPromise<Instance> {
             return localVarFp.getInstanceByShortName(requestParameters.shortName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of recently visited locations.
+         * @summary List Recent Locations
+         * @param {InstancesApiGetRecentLocationsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecentLocations(requestParameters: InstancesApiGetRecentLocationsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
+            return localVarFp.getRecentLocations(requestParameters.n, requestParameters.offset, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns an instance short name.
@@ -25296,6 +27270,27 @@ export interface InstancesApiGetInstanceByShortNameRequest {
 }
 
 /**
+ * Request parameters for getRecentLocations operation in InstancesApi.
+ * @export
+ * @interface InstancesApiGetRecentLocationsRequest
+ */
+export interface InstancesApiGetRecentLocationsRequest {
+    /**
+     * The number of objects to return.
+     * @type {number}
+     * @memberof InstancesApiGetRecentLocations
+     */
+    readonly n?: number
+
+    /**
+     * A zero-based offset from the default object sorting from where search results start.
+     * @type {number}
+     * @memberof InstancesApiGetRecentLocations
+     */
+    readonly offset?: number
+}
+
+/**
  * Request parameters for getShortName operation in InstancesApi.
  * @export
  * @interface InstancesApiGetShortNameRequest
@@ -25372,6 +27367,18 @@ export class InstancesApi extends BaseAPI {
     }
 
     /**
+     * Returns a list of recently visited locations.
+     * @summary List Recent Locations
+     * @param {InstancesApiGetRecentLocationsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    public getRecentLocations(requestParameters: InstancesApiGetRecentLocationsRequest = {}, options?: RawAxiosRequestConfig) {
+        return InstancesApiFp(this.configuration).getRecentLocations(requestParameters.n, requestParameters.offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Returns an instance short name.
      * @summary Get Instance Short Name
      * @param {InstancesApiGetShortNameRequest} requestParameters Request parameters.
@@ -25393,16 +27400,59 @@ export class InstancesApi extends BaseAPI {
 export const InventoryApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Deletes an InventoryItem from the inventory of the currently logged in user.
+         * @summary Delete Own Inventory Item
+         * @param {string} inventoryItemId Must be a valid inventory item ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteOwnInventoryItem: async (inventoryItemId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inventoryItemId' is not null or undefined
+            assertParamExists('deleteOwnInventoryItem', 'inventoryItemId', inventoryItemId)
+            const localVarPath = `/inventory/{inventoryItemId}`
+                .replace(`{${"inventoryItemId"}}`, encodeURIComponent(String(inventoryItemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Returns an Inventory object.
          * @summary Get Inventory
          * @param {number} [n] The number of objects to return.
          * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
-         * @param {GetInventoryInventorySortOrderEnum} [inventorySortOrder] Sort order for inventory retrieval.
-         * @param {InventoryItemType} [inventoryItemType] Filter for inventory retrieval.
+         * @param {string} [holderId] The UserID of the owner of the inventory; defaults to the currently authenticated user.
+         * @param {InventoryEquipSlot} [equipSlot] Filter for inventory retrieval.
+         * @param {GetInventoryOrderEnum} [order] Sort order for inventory retrieval.
+         * @param {string} [tags] Filter tags for inventory retrieval (comma-separated).
+         * @param {InventoryItemType} [types] Filter for inventory retrieval.
+         * @param {InventoryFlag} [flags] Filter flags for inventory retrieval (comma-separated).
+         * @param {InventoryItemType} [notTypes] Filter out types for inventory retrieval (comma-separated).
+         * @param {InventoryFlag} [notFlags] Filter out flags for inventory retrieval (comma-separated).
+         * @param {boolean} [archived] Filter archived status for inventory retrieval.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInventory: async (n?: number, offset?: number, inventorySortOrder?: GetInventoryInventorySortOrderEnum, inventoryItemType?: InventoryItemType, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getInventory: async (n?: number, offset?: number, holderId?: string, equipSlot?: InventoryEquipSlot, order?: GetInventoryOrderEnum, tags?: string, types?: InventoryItemType, flags?: InventoryFlag, notTypes?: InventoryItemType, notFlags?: InventoryFlag, archived?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/inventory`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -25425,12 +27475,40 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
                 localVarQueryParameter['offset'] = offset;
             }
 
-            if (inventorySortOrder !== undefined) {
-                localVarQueryParameter['inventorySortOrder'] = inventorySortOrder;
+            if (holderId !== undefined) {
+                localVarQueryParameter['holderId'] = holderId;
             }
 
-            if (inventoryItemType !== undefined) {
-                localVarQueryParameter['inventoryItemType'] = inventoryItemType;
+            if (equipSlot !== undefined) {
+                localVarQueryParameter['equipSlot'] = equipSlot;
+            }
+
+            if (order !== undefined) {
+                localVarQueryParameter['order'] = order;
+            }
+
+            if (tags !== undefined) {
+                localVarQueryParameter['tags'] = tags;
+            }
+
+            if (types !== undefined) {
+                localVarQueryParameter['types'] = types;
+            }
+
+            if (flags !== undefined) {
+                localVarQueryParameter['flags'] = flags;
+            }
+
+            if (notTypes !== undefined) {
+                localVarQueryParameter['notTypes'] = notTypes;
+            }
+
+            if (notFlags !== undefined) {
+                localVarQueryParameter['notFlags'] = notFlags;
+            }
+
+            if (archived !== undefined) {
+                localVarQueryParameter['archived'] = archived;
             }
 
 
@@ -25554,6 +27632,104 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
+         * Share content directly with other users.
+         * @summary Share Inventory Item Direct
+         * @param {string} itemId Id for inventory item sharing.
+         * @param {number} duration The duration before the sharing pedestal despawns.
+         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shareInventoryItemDirect: async (itemId: string, duration: number, shareInventoryItemDirectRequest: ShareInventoryItemDirectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('shareInventoryItemDirect', 'itemId', itemId)
+            // verify required parameter 'duration' is not null or undefined
+            assertParamExists('shareInventoryItemDirect', 'duration', duration)
+            // verify required parameter 'shareInventoryItemDirectRequest' is not null or undefined
+            assertParamExists('shareInventoryItemDirect', 'shareInventoryItemDirectRequest', shareInventoryItemDirectRequest)
+            const localVarPath = `/inventory/cloning/direct`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (itemId !== undefined) {
+                localVarQueryParameter['itemId'] = itemId;
+            }
+
+            if (duration !== undefined) {
+                localVarQueryParameter['duration'] = duration;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(shareInventoryItemDirectRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns an InventorySpawn object.
+         * @summary Share Inventory Item by Pedestal
+         * @param {string} itemId Id for inventory item sharing.
+         * @param {number} duration The duration before the sharing pedestal despawns.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shareInventoryItemPedestal: async (itemId: string, duration: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('shareInventoryItemPedestal', 'itemId', itemId)
+            // verify required parameter 'duration' is not null or undefined
+            assertParamExists('shareInventoryItemPedestal', 'duration', duration)
+            const localVarPath = `/inventory/cloning/pedestal`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+            if (itemId !== undefined) {
+                localVarQueryParameter['itemId'] = itemId;
+            }
+
+            if (duration !== undefined) {
+                localVarQueryParameter['duration'] = duration;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Returns an InventorySpawn object.
          * @summary Spawn Inventory Item
          * @param {string} id Id for inventory item spawning.
@@ -25592,6 +27768,46 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Returns the modified InventoryItem object as held by the currently logged in user.
+         * @summary Update Own Inventory Item
+         * @param {string} inventoryItemId Must be a valid inventory item ID.
+         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOwnInventoryItem: async (inventoryItemId: string, updateInventoryItemRequest?: UpdateInventoryItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inventoryItemId' is not null or undefined
+            assertParamExists('updateOwnInventoryItem', 'inventoryItemId', inventoryItemId)
+            const localVarPath = `/inventory/{inventoryItemId}`
+                .replace(`{${"inventoryItemId"}}`, encodeURIComponent(String(inventoryItemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateInventoryItemRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -25603,17 +27819,37 @@ export const InventoryApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = InventoryApiAxiosParamCreator(configuration)
     return {
         /**
+         * Deletes an InventoryItem from the inventory of the currently logged in user.
+         * @summary Delete Own Inventory Item
+         * @param {string} inventoryItemId Must be a valid inventory item ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteOwnInventoryItem(inventoryItemId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessFlag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteOwnInventoryItem(inventoryItemId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryApi.deleteOwnInventoryItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Returns an Inventory object.
          * @summary Get Inventory
          * @param {number} [n] The number of objects to return.
          * @param {number} [offset] A zero-based offset from the default object sorting from where search results start.
-         * @param {GetInventoryInventorySortOrderEnum} [inventorySortOrder] Sort order for inventory retrieval.
-         * @param {InventoryItemType} [inventoryItemType] Filter for inventory retrieval.
+         * @param {string} [holderId] The UserID of the owner of the inventory; defaults to the currently authenticated user.
+         * @param {InventoryEquipSlot} [equipSlot] Filter for inventory retrieval.
+         * @param {GetInventoryOrderEnum} [order] Sort order for inventory retrieval.
+         * @param {string} [tags] Filter tags for inventory retrieval (comma-separated).
+         * @param {InventoryItemType} [types] Filter for inventory retrieval.
+         * @param {InventoryFlag} [flags] Filter flags for inventory retrieval (comma-separated).
+         * @param {InventoryItemType} [notTypes] Filter out types for inventory retrieval (comma-separated).
+         * @param {InventoryFlag} [notFlags] Filter out flags for inventory retrieval (comma-separated).
+         * @param {boolean} [archived] Filter archived status for inventory retrieval.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getInventory(n?: number, offset?: number, inventorySortOrder?: GetInventoryInventorySortOrderEnum, inventoryItemType?: InventoryItemType, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Inventory>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getInventory(n, offset, inventorySortOrder, inventoryItemType, options);
+        async getInventory(n?: number, offset?: number, holderId?: string, equipSlot?: InventoryEquipSlot, order?: GetInventoryOrderEnum, tags?: string, types?: InventoryItemType, flags?: InventoryFlag, notTypes?: InventoryItemType, notFlags?: InventoryFlag, archived?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Inventory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInventory(n, offset, holderId, equipSlot, order, tags, types, flags, notTypes, notFlags, archived, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['InventoryApi.getInventory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -25658,6 +27894,35 @@ export const InventoryApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Share content directly with other users.
+         * @summary Share Inventory Item Direct
+         * @param {string} itemId Id for inventory item sharing.
+         * @param {number} duration The duration before the sharing pedestal despawns.
+         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async shareInventoryItemDirect(itemId: string, duration: number, shareInventoryItemDirectRequest: ShareInventoryItemDirectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OkStatus>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.shareInventoryItemDirect(itemId, duration, shareInventoryItemDirectRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryApi.shareInventoryItemDirect']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns an InventorySpawn object.
+         * @summary Share Inventory Item by Pedestal
+         * @param {string} itemId Id for inventory item sharing.
+         * @param {number} duration The duration before the sharing pedestal despawns.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async shareInventoryItemPedestal(itemId: string, duration: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InventorySpawn>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.shareInventoryItemPedestal(itemId, duration, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryApi.shareInventoryItemPedestal']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Returns an InventorySpawn object.
          * @summary Spawn Inventory Item
          * @param {string} id Id for inventory item spawning.
@@ -25668,6 +27933,20 @@ export const InventoryApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.spawnInventoryItem(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['InventoryApi.spawnInventoryItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the modified InventoryItem object as held by the currently logged in user.
+         * @summary Update Own Inventory Item
+         * @param {string} inventoryItemId Must be a valid inventory item ID.
+         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateOwnInventoryItem(inventoryItemId: string, updateInventoryItemRequest?: UpdateInventoryItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InventoryItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateOwnInventoryItem(inventoryItemId, updateInventoryItemRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryApi.updateOwnInventoryItem']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -25681,6 +27960,16 @@ export const InventoryApiFactory = function (configuration?: Configuration, base
     const localVarFp = InventoryApiFp(configuration)
     return {
         /**
+         * Deletes an InventoryItem from the inventory of the currently logged in user.
+         * @summary Delete Own Inventory Item
+         * @param {InventoryApiDeleteOwnInventoryItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteOwnInventoryItem(requestParameters: InventoryApiDeleteOwnInventoryItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<SuccessFlag> {
+            return localVarFp.deleteOwnInventoryItem(requestParameters.inventoryItemId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Returns an Inventory object.
          * @summary Get Inventory
          * @param {InventoryApiGetInventoryRequest} requestParameters Request parameters.
@@ -25688,7 +27977,7 @@ export const InventoryApiFactory = function (configuration?: Configuration, base
          * @throws {RequiredError}
          */
         getInventory(requestParameters: InventoryApiGetInventoryRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Inventory> {
-            return localVarFp.getInventory(requestParameters.n, requestParameters.offset, requestParameters.inventorySortOrder, requestParameters.inventoryItemType, options).then((request) => request(axios, basePath));
+            return localVarFp.getInventory(requestParameters.n, requestParameters.offset, requestParameters.holderId, requestParameters.equipSlot, requestParameters.order, requestParameters.tags, requestParameters.types, requestParameters.flags, requestParameters.notTypes, requestParameters.notFlags, requestParameters.archived, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns a list of InventoryDrop objects.
@@ -25721,6 +28010,26 @@ export const InventoryApiFactory = function (configuration?: Configuration, base
             return localVarFp.getOwnInventoryItem(requestParameters.inventoryItemId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Share content directly with other users.
+         * @summary Share Inventory Item Direct
+         * @param {InventoryApiShareInventoryItemDirectRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shareInventoryItemDirect(requestParameters: InventoryApiShareInventoryItemDirectRequest, options?: RawAxiosRequestConfig): AxiosPromise<OkStatus> {
+            return localVarFp.shareInventoryItemDirect(requestParameters.itemId, requestParameters.duration, requestParameters.shareInventoryItemDirectRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns an InventorySpawn object.
+         * @summary Share Inventory Item by Pedestal
+         * @param {InventoryApiShareInventoryItemPedestalRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shareInventoryItemPedestal(requestParameters: InventoryApiShareInventoryItemPedestalRequest, options?: RawAxiosRequestConfig): AxiosPromise<InventorySpawn> {
+            return localVarFp.shareInventoryItemPedestal(requestParameters.itemId, requestParameters.duration, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Returns an InventorySpawn object.
          * @summary Spawn Inventory Item
          * @param {InventoryApiSpawnInventoryItemRequest} requestParameters Request parameters.
@@ -25730,8 +28039,32 @@ export const InventoryApiFactory = function (configuration?: Configuration, base
         spawnInventoryItem(requestParameters: InventoryApiSpawnInventoryItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<InventorySpawn> {
             return localVarFp.spawnInventoryItem(requestParameters.id, options).then((request) => request(axios, basePath));
         },
+        /**
+         * Returns the modified InventoryItem object as held by the currently logged in user.
+         * @summary Update Own Inventory Item
+         * @param {InventoryApiUpdateOwnInventoryItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOwnInventoryItem(requestParameters: InventoryApiUpdateOwnInventoryItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<InventoryItem> {
+            return localVarFp.updateOwnInventoryItem(requestParameters.inventoryItemId, requestParameters.updateInventoryItemRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
+
+/**
+ * Request parameters for deleteOwnInventoryItem operation in InventoryApi.
+ * @export
+ * @interface InventoryApiDeleteOwnInventoryItemRequest
+ */
+export interface InventoryApiDeleteOwnInventoryItemRequest {
+    /**
+     * Must be a valid inventory item ID.
+     * @type {string}
+     * @memberof InventoryApiDeleteOwnInventoryItem
+     */
+    readonly inventoryItemId: string
+}
 
 /**
  * Request parameters for getInventory operation in InventoryApi.
@@ -25754,18 +28087,67 @@ export interface InventoryApiGetInventoryRequest {
     readonly offset?: number
 
     /**
-     * Sort order for inventory retrieval.
-     * @type {'newest' | 'oldest'}
+     * The UserID of the owner of the inventory; defaults to the currently authenticated user.
+     * @type {string}
      * @memberof InventoryApiGetInventory
      */
-    readonly inventorySortOrder?: GetInventoryInventorySortOrderEnum
+    readonly holderId?: string
+
+    /**
+     * Filter for inventory retrieval.
+     * @type {InventoryEquipSlot}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly equipSlot?: InventoryEquipSlot
+
+    /**
+     * Sort order for inventory retrieval.
+     * @type {'newest' | 'newest_created' | 'oldest' | 'oldest_created'}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly order?: GetInventoryOrderEnum
+
+    /**
+     * Filter tags for inventory retrieval (comma-separated).
+     * @type {string}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly tags?: string
 
     /**
      * Filter for inventory retrieval.
      * @type {InventoryItemType}
      * @memberof InventoryApiGetInventory
      */
-    readonly inventoryItemType?: InventoryItemType
+    readonly types?: InventoryItemType
+
+    /**
+     * Filter flags for inventory retrieval (comma-separated).
+     * @type {InventoryFlag}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly flags?: InventoryFlag
+
+    /**
+     * Filter out types for inventory retrieval (comma-separated).
+     * @type {InventoryItemType}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly notTypes?: InventoryItemType
+
+    /**
+     * Filter out flags for inventory retrieval (comma-separated).
+     * @type {InventoryFlag}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly notFlags?: InventoryFlag
+
+    /**
+     * Filter archived status for inventory retrieval.
+     * @type {boolean}
+     * @memberof InventoryApiGetInventory
+     */
+    readonly archived?: boolean
 }
 
 /**
@@ -25811,6 +28193,55 @@ export interface InventoryApiGetOwnInventoryItemRequest {
 }
 
 /**
+ * Request parameters for shareInventoryItemDirect operation in InventoryApi.
+ * @export
+ * @interface InventoryApiShareInventoryItemDirectRequest
+ */
+export interface InventoryApiShareInventoryItemDirectRequest {
+    /**
+     * Id for inventory item sharing.
+     * @type {string}
+     * @memberof InventoryApiShareInventoryItemDirect
+     */
+    readonly itemId: string
+
+    /**
+     * The duration before the sharing pedestal despawns.
+     * @type {number}
+     * @memberof InventoryApiShareInventoryItemDirect
+     */
+    readonly duration: number
+
+    /**
+     * 
+     * @type {ShareInventoryItemDirectRequest}
+     * @memberof InventoryApiShareInventoryItemDirect
+     */
+    readonly shareInventoryItemDirectRequest: ShareInventoryItemDirectRequest
+}
+
+/**
+ * Request parameters for shareInventoryItemPedestal operation in InventoryApi.
+ * @export
+ * @interface InventoryApiShareInventoryItemPedestalRequest
+ */
+export interface InventoryApiShareInventoryItemPedestalRequest {
+    /**
+     * Id for inventory item sharing.
+     * @type {string}
+     * @memberof InventoryApiShareInventoryItemPedestal
+     */
+    readonly itemId: string
+
+    /**
+     * The duration before the sharing pedestal despawns.
+     * @type {number}
+     * @memberof InventoryApiShareInventoryItemPedestal
+     */
+    readonly duration: number
+}
+
+/**
  * Request parameters for spawnInventoryItem operation in InventoryApi.
  * @export
  * @interface InventoryApiSpawnInventoryItemRequest
@@ -25825,12 +28256,45 @@ export interface InventoryApiSpawnInventoryItemRequest {
 }
 
 /**
+ * Request parameters for updateOwnInventoryItem operation in InventoryApi.
+ * @export
+ * @interface InventoryApiUpdateOwnInventoryItemRequest
+ */
+export interface InventoryApiUpdateOwnInventoryItemRequest {
+    /**
+     * Must be a valid inventory item ID.
+     * @type {string}
+     * @memberof InventoryApiUpdateOwnInventoryItem
+     */
+    readonly inventoryItemId: string
+
+    /**
+     * 
+     * @type {UpdateInventoryItemRequest}
+     * @memberof InventoryApiUpdateOwnInventoryItem
+     */
+    readonly updateInventoryItemRequest?: UpdateInventoryItemRequest
+}
+
+/**
  * InventoryApi - object-oriented interface
  * @export
  * @class InventoryApi
  * @extends {BaseAPI}
  */
 export class InventoryApi extends BaseAPI {
+    /**
+     * Deletes an InventoryItem from the inventory of the currently logged in user.
+     * @summary Delete Own Inventory Item
+     * @param {InventoryApiDeleteOwnInventoryItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryApi
+     */
+    public deleteOwnInventoryItem(requestParameters: InventoryApiDeleteOwnInventoryItemRequest, options?: RawAxiosRequestConfig) {
+        return InventoryApiFp(this.configuration).deleteOwnInventoryItem(requestParameters.inventoryItemId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Returns an Inventory object.
      * @summary Get Inventory
@@ -25840,7 +28304,7 @@ export class InventoryApi extends BaseAPI {
      * @memberof InventoryApi
      */
     public getInventory(requestParameters: InventoryApiGetInventoryRequest = {}, options?: RawAxiosRequestConfig) {
-        return InventoryApiFp(this.configuration).getInventory(requestParameters.n, requestParameters.offset, requestParameters.inventorySortOrder, requestParameters.inventoryItemType, options).then((request) => request(this.axios, this.basePath));
+        return InventoryApiFp(this.configuration).getInventory(requestParameters.n, requestParameters.offset, requestParameters.holderId, requestParameters.equipSlot, requestParameters.order, requestParameters.tags, requestParameters.types, requestParameters.flags, requestParameters.notTypes, requestParameters.notFlags, requestParameters.archived, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -25880,6 +28344,30 @@ export class InventoryApi extends BaseAPI {
     }
 
     /**
+     * Share content directly with other users.
+     * @summary Share Inventory Item Direct
+     * @param {InventoryApiShareInventoryItemDirectRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryApi
+     */
+    public shareInventoryItemDirect(requestParameters: InventoryApiShareInventoryItemDirectRequest, options?: RawAxiosRequestConfig) {
+        return InventoryApiFp(this.configuration).shareInventoryItemDirect(requestParameters.itemId, requestParameters.duration, requestParameters.shareInventoryItemDirectRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns an InventorySpawn object.
+     * @summary Share Inventory Item by Pedestal
+     * @param {InventoryApiShareInventoryItemPedestalRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryApi
+     */
+    public shareInventoryItemPedestal(requestParameters: InventoryApiShareInventoryItemPedestalRequest, options?: RawAxiosRequestConfig) {
+        return InventoryApiFp(this.configuration).shareInventoryItemPedestal(requestParameters.itemId, requestParameters.duration, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Returns an InventorySpawn object.
      * @summary Spawn Inventory Item
      * @param {InventoryApiSpawnInventoryItemRequest} requestParameters Request parameters.
@@ -25890,16 +28378,30 @@ export class InventoryApi extends BaseAPI {
     public spawnInventoryItem(requestParameters: InventoryApiSpawnInventoryItemRequest, options?: RawAxiosRequestConfig) {
         return InventoryApiFp(this.configuration).spawnInventoryItem(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * Returns the modified InventoryItem object as held by the currently logged in user.
+     * @summary Update Own Inventory Item
+     * @param {InventoryApiUpdateOwnInventoryItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryApi
+     */
+    public updateOwnInventoryItem(requestParameters: InventoryApiUpdateOwnInventoryItemRequest, options?: RawAxiosRequestConfig) {
+        return InventoryApiFp(this.configuration).updateOwnInventoryItem(requestParameters.inventoryItemId, requestParameters.updateInventoryItemRequest, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 /**
  * @export
  */
-export const GetInventoryInventorySortOrderEnum = {
+export const GetInventoryOrderEnum = {
     Newest: 'newest',
-    Oldest: 'oldest'
+    NewestCreated: 'newest_created',
+    Oldest: 'oldest',
+    OldestCreated: 'oldest_created'
 } as const;
-export type GetInventoryInventorySortOrderEnum = typeof GetInventoryInventorySortOrderEnum[keyof typeof GetInventoryInventorySortOrderEnum];
+export type GetInventoryOrderEnum = typeof GetInventoryOrderEnum[keyof typeof GetInventoryOrderEnum];
 
 
 /**
@@ -26078,18 +28580,18 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Sends an photo invite to a user. Returns the Notification of type `invite` that was sent.
          * @summary Invite User with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {File} image The binary blob of the png file.
          * @param {InviteRequest} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        inviteUserWithPhoto: async (userId: string, image: File, data: InviteRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        inviteUserWithPhoto: async (userId: string, data: InviteRequest, image: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('inviteUserWithPhoto', 'userId', userId)
-            // verify required parameter 'image' is not null or undefined
-            assertParamExists('inviteUserWithPhoto', 'image', image)
             // verify required parameter 'data' is not null or undefined
             assertParamExists('inviteUserWithPhoto', 'data', data)
+            // verify required parameter 'image' is not null or undefined
+            assertParamExists('inviteUserWithPhoto', 'image', image)
             const localVarPath = `/invite/{userId}/photo`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -26107,12 +28609,12 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
             if (data !== undefined) { 
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
+            }
+    
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
             }
     
     
@@ -26172,18 +28674,18 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Requests with photo an invite from a user. Returns the Notification of type `requestInvite` that was sent.
          * @summary Request Invite with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {File} image The binary blob of the png file.
          * @param {RequestInviteRequest} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        requestInviteWithPhoto: async (userId: string, image: File, data: RequestInviteRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        requestInviteWithPhoto: async (userId: string, data: RequestInviteRequest, image: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('requestInviteWithPhoto', 'userId', userId)
-            // verify required parameter 'image' is not null or undefined
-            assertParamExists('requestInviteWithPhoto', 'image', image)
             // verify required parameter 'data' is not null or undefined
             assertParamExists('requestInviteWithPhoto', 'data', data)
+            // verify required parameter 'image' is not null or undefined
+            assertParamExists('requestInviteWithPhoto', 'image', image)
             const localVarPath = `/requestInvite/{userId}/photo`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -26201,12 +28703,12 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
             if (data !== undefined) { 
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
+            }
+    
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
             }
     
     
@@ -26312,18 +28814,18 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Respond with photo to an invite or invite request without accepting it. `:notificationId` is the ID of the requesting notification.  In case the notification being replied to is an invite, the `responseSlot` refers to a response message from the the `message` collection. In case the notification is an invite request, it will refer to one from the `requestResponse` collection instead.\'
          * @summary Respond Invite with photo
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {File} image The binary blob of the png file.
          * @param {InviteResponse} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        respondInviteWithPhoto: async (notificationId: string, image: File, data: InviteResponse, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        respondInviteWithPhoto: async (notificationId: string, data: InviteResponse, image: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'notificationId' is not null or undefined
             assertParamExists('respondInviteWithPhoto', 'notificationId', notificationId)
-            // verify required parameter 'image' is not null or undefined
-            assertParamExists('respondInviteWithPhoto', 'image', image)
             // verify required parameter 'data' is not null or undefined
             assertParamExists('respondInviteWithPhoto', 'data', data)
+            // verify required parameter 'image' is not null or undefined
+            assertParamExists('respondInviteWithPhoto', 'image', image)
             const localVarPath = `/invite/{notificationId}/response/photo`
                 .replace(`{${"notificationId"}}`, encodeURIComponent(String(notificationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -26341,12 +28843,12 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
             if (data !== undefined) { 
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
+            }
+    
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
             }
     
     
@@ -26481,13 +28983,13 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Sends an photo invite to a user. Returns the Notification of type `invite` that was sent.
          * @summary Invite User with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {File} image The binary blob of the png file.
          * @param {InviteRequest} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async inviteUserWithPhoto(userId: string, image: File, data: InviteRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SentNotification>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.inviteUserWithPhoto(userId, image, data, options);
+        async inviteUserWithPhoto(userId: string, data: InviteRequest, image: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SentNotification>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inviteUserWithPhoto(userId, data, image, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['InviteApi.inviteUserWithPhoto']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -26510,13 +29012,13 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Requests with photo an invite from a user. Returns the Notification of type `requestInvite` that was sent.
          * @summary Request Invite with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {File} image The binary blob of the png file.
          * @param {RequestInviteRequest} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async requestInviteWithPhoto(userId: string, image: File, data: RequestInviteRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Notification>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.requestInviteWithPhoto(userId, image, data, options);
+        async requestInviteWithPhoto(userId: string, data: RequestInviteRequest, image: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Notification>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.requestInviteWithPhoto(userId, data, image, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['InviteApi.requestInviteWithPhoto']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -26554,13 +29056,13 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Respond with photo to an invite or invite request without accepting it. `:notificationId` is the ID of the requesting notification.  In case the notification being replied to is an invite, the `responseSlot` refers to a response message from the the `message` collection. In case the notification is an invite request, it will refer to one from the `requestResponse` collection instead.\'
          * @summary Respond Invite with photo
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {File} image The binary blob of the png file.
          * @param {InviteResponse} data 
+         * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async respondInviteWithPhoto(notificationId: string, image: File, data: InviteResponse, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Notification>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.respondInviteWithPhoto(notificationId, image, data, options);
+        async respondInviteWithPhoto(notificationId: string, data: InviteResponse, image: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Notification>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.respondInviteWithPhoto(notificationId, data, image, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['InviteApi.respondInviteWithPhoto']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -26639,7 +29141,7 @@ export const InviteApiFactory = function (configuration?: Configuration, basePat
          * @throws {RequiredError}
          */
         inviteUserWithPhoto(requestParameters: InviteApiInviteUserWithPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<SentNotification> {
-            return localVarFp.inviteUserWithPhoto(requestParameters.userId, requestParameters.image, requestParameters.data, options).then((request) => request(axios, basePath));
+            return localVarFp.inviteUserWithPhoto(requestParameters.userId, requestParameters.data, requestParameters.image, options).then((request) => request(axios, basePath));
         },
         /**
          * Requests an invite from a user. Returns the Notification of type `requestInvite` that was sent.
@@ -26659,7 +29161,7 @@ export const InviteApiFactory = function (configuration?: Configuration, basePat
          * @throws {RequiredError}
          */
         requestInviteWithPhoto(requestParameters: InviteApiRequestInviteWithPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<Notification> {
-            return localVarFp.requestInviteWithPhoto(requestParameters.userId, requestParameters.image, requestParameters.data, options).then((request) => request(axios, basePath));
+            return localVarFp.requestInviteWithPhoto(requestParameters.userId, requestParameters.data, requestParameters.image, options).then((request) => request(axios, basePath));
         },
         /**
          * Resets a single Invite Message back to its original message, and then returns a list of all of them. Admin Credentials are required to update messages of other users!  Resetting a message respects the rate-limit, so it is not possible to reset within the 60 minutes countdown. Resetting it does however not set the rate-limit to 60 like when editing it. It is possible to edit it right after resetting it. Trying to edit a message before the cooldown timer expires results in a 429 \"Too Fast Error\".  Message type refers to a different collection of messages, used during different types of responses.  * `message` = Message during a normal invite * `response` = Message when replying to a message * `request` = Message when requesting an invite * `requestResponse` = Message when replying to a request for invite  The DELETE endpoint does not have/require any request body.
@@ -26689,7 +29191,7 @@ export const InviteApiFactory = function (configuration?: Configuration, basePat
          * @throws {RequiredError}
          */
         respondInviteWithPhoto(requestParameters: InviteApiRespondInviteWithPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<Notification> {
-            return localVarFp.respondInviteWithPhoto(requestParameters.notificationId, requestParameters.image, requestParameters.data, options).then((request) => request(axios, basePath));
+            return localVarFp.respondInviteWithPhoto(requestParameters.notificationId, requestParameters.data, requestParameters.image, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates a single Invite Message and then returns a list of all of them. Admin Credentials are required to update messages of other users!  Updating a message automatically sets the cooldown timer to 60 minutes. Trying to edit a message before the cooldown timer expires results in a 429 \"Too Fast Error\".  Message type refers to a different collection of messages, used during different types of responses.  * `message` = Message during a normal invite * `response` = Message when replying to a message * `request` = Message when requesting an invite * `requestResponse` = Message when replying to a request for invite
@@ -26809,18 +29311,18 @@ export interface InviteApiInviteUserWithPhotoRequest {
     readonly userId: string
 
     /**
-     * The binary blob of the png file.
-     * @type {File}
-     * @memberof InviteApiInviteUserWithPhoto
-     */
-    readonly image: File
-
-    /**
      * 
      * @type {InviteRequest}
      * @memberof InviteApiInviteUserWithPhoto
      */
     readonly data: InviteRequest
+
+    /**
+     * The binary blob of the png file.
+     * @type {File}
+     * @memberof InviteApiInviteUserWithPhoto
+     */
+    readonly image: File
 }
 
 /**
@@ -26858,18 +29360,18 @@ export interface InviteApiRequestInviteWithPhotoRequest {
     readonly userId: string
 
     /**
-     * The binary blob of the png file.
-     * @type {File}
-     * @memberof InviteApiRequestInviteWithPhoto
-     */
-    readonly image: File
-
-    /**
      * 
      * @type {RequestInviteRequest}
      * @memberof InviteApiRequestInviteWithPhoto
      */
     readonly data: RequestInviteRequest
+
+    /**
+     * The binary blob of the png file.
+     * @type {File}
+     * @memberof InviteApiRequestInviteWithPhoto
+     */
+    readonly image: File
 }
 
 /**
@@ -26935,18 +29437,18 @@ export interface InviteApiRespondInviteWithPhotoRequest {
     readonly notificationId: string
 
     /**
-     * The binary blob of the png file.
-     * @type {File}
-     * @memberof InviteApiRespondInviteWithPhoto
-     */
-    readonly image: File
-
-    /**
      * 
      * @type {InviteResponse}
      * @memberof InviteApiRespondInviteWithPhoto
      */
     readonly data: InviteResponse
+
+    /**
+     * The binary blob of the png file.
+     * @type {File}
+     * @memberof InviteApiRespondInviteWithPhoto
+     */
+    readonly image: File
 }
 
 /**
@@ -27048,7 +29550,7 @@ export class InviteApi extends BaseAPI {
      * @memberof InviteApi
      */
     public inviteUserWithPhoto(requestParameters: InviteApiInviteUserWithPhotoRequest, options?: RawAxiosRequestConfig) {
-        return InviteApiFp(this.configuration).inviteUserWithPhoto(requestParameters.userId, requestParameters.image, requestParameters.data, options).then((request) => request(this.axios, this.basePath));
+        return InviteApiFp(this.configuration).inviteUserWithPhoto(requestParameters.userId, requestParameters.data, requestParameters.image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -27072,7 +29574,7 @@ export class InviteApi extends BaseAPI {
      * @memberof InviteApi
      */
     public requestInviteWithPhoto(requestParameters: InviteApiRequestInviteWithPhotoRequest, options?: RawAxiosRequestConfig) {
-        return InviteApiFp(this.configuration).requestInviteWithPhoto(requestParameters.userId, requestParameters.image, requestParameters.data, options).then((request) => request(this.axios, this.basePath));
+        return InviteApiFp(this.configuration).requestInviteWithPhoto(requestParameters.userId, requestParameters.data, requestParameters.image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -27108,7 +29610,7 @@ export class InviteApi extends BaseAPI {
      * @memberof InviteApi
      */
     public respondInviteWithPhoto(requestParameters: InviteApiRespondInviteWithPhotoRequest, options?: RawAxiosRequestConfig) {
-        return InviteApiFp(this.configuration).respondInviteWithPhoto(requestParameters.notificationId, requestParameters.image, requestParameters.data, options).then((request) => request(this.axios, this.basePath));
+        return InviteApiFp(this.configuration).respondInviteWithPhoto(requestParameters.notificationId, requestParameters.data, requestParameters.image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -27969,7 +30471,7 @@ export const MiscellaneousApiFactory = function (configuration?: Configuration, 
 export interface MiscellaneousApiGetCSSRequest {
     /**
      * Specifies which &#x60;variant&#x60; of the site. Public is the end-user site, while &#x60;internal&#x60; is the staff-only site with special pages for moderation and management.
-     * @type {'public' | 'internal'}
+     * @type {'internal' | 'public'}
      * @memberof MiscellaneousApiGetCSS
      */
     readonly variant?: GetCSSVariantEnum
@@ -28011,7 +30513,7 @@ export interface MiscellaneousApiGetInfoPushRequest {
 export interface MiscellaneousApiGetJavaScriptRequest {
     /**
      * Specifies which &#x60;variant&#x60; of the site. Public is the end-user site, while &#x60;internal&#x60; is the staff-only site with special pages for moderation and management.
-     * @type {'public' | 'internal'}
+     * @type {'internal' | 'public'}
      * @memberof MiscellaneousApiGetJavaScript
      */
     readonly variant?: GetJavaScriptVariantEnum
@@ -28154,16 +30656,16 @@ export class MiscellaneousApi extends BaseAPI {
  * @export
  */
 export const GetCSSVariantEnum = {
-    Public: 'public',
-    Internal: 'internal'
+    Internal: 'internal',
+    Public: 'public'
 } as const;
 export type GetCSSVariantEnum = typeof GetCSSVariantEnum[keyof typeof GetCSSVariantEnum];
 /**
  * @export
  */
 export const GetJavaScriptVariantEnum = {
-    Public: 'public',
-    Internal: 'internal'
+    Internal: 'internal',
+    Public: 'public'
 } as const;
 export type GetJavaScriptVariantEnum = typeof GetJavaScriptVariantEnum[keyof typeof GetJavaScriptVariantEnum];
 
@@ -28803,12 +31305,12 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
         /**
          * Returns a list of all player moderations made by **you**.  This endpoint does not have pagination, and will return *all* results. Use query parameters to limit your query if needed.
          * @summary Search Player Moderations
-         * @param {string} [type] Must be one of PlayerModerationType, except unblock. Unblocking simply removes a block.
+         * @param {PlayerModerationType} [type] Must be one of PlayerModerationType.
          * @param {string} [targetUserId] Must be valid UserID.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPlayerModerations: async (type?: string, targetUserId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getPlayerModerations: async (type?: PlayerModerationType, targetUserId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/auth/user/playermoderations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -28943,12 +31445,12 @@ export const PlayermoderationApiFp = function(configuration?: Configuration) {
         /**
          * Returns a list of all player moderations made by **you**.  This endpoint does not have pagination, and will return *all* results. Use query parameters to limit your query if needed.
          * @summary Search Player Moderations
-         * @param {string} [type] Must be one of PlayerModerationType, except unblock. Unblocking simply removes a block.
+         * @param {PlayerModerationType} [type] Must be one of PlayerModerationType.
          * @param {string} [targetUserId] Must be valid UserID.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPlayerModerations(type?: string, targetUserId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PlayerModeration>>> {
+        async getPlayerModerations(type?: PlayerModerationType, targetUserId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PlayerModeration>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getPlayerModerations(type, targetUserId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PlayermoderationApi.getPlayerModerations']?.[localVarOperationServerIndex]?.url;
@@ -29039,11 +31541,11 @@ export const PlayermoderationApiFactory = function (configuration?: Configuratio
  */
 export interface PlayermoderationApiGetPlayerModerationsRequest {
     /**
-     * Must be one of PlayerModerationType, except unblock. Unblocking simply removes a block.
-     * @type {string}
+     * Must be one of PlayerModerationType.
+     * @type {PlayerModerationType}
      * @memberof PlayermoderationApiGetPlayerModerations
      */
-    readonly type?: string
+    readonly type?: PlayerModerationType
 
     /**
      * Must be valid UserID.
@@ -29340,12 +31842,12 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
                 localVarFormParams.append('image', image as any);
             }
     
-            if (timestamp !== undefined) { 
-                localVarFormParams.append('timestamp', timestamp as any);
-            }
-    
             if (note !== undefined) { 
                 localVarFormParams.append('note', note as any);
+            }
+    
+            if (timestamp !== undefined) { 
+                localVarFormParams.append('timestamp', timestamp as any);
             }
     
             if (worldId !== undefined) { 
@@ -30109,6 +32611,46 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
+         * Returns a list of a group\'s instances for a user
+         * @summary Get User Group Instances for a specific Group
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} groupId Must be a valid group ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserGroupInstancesForGroup: async (userId: string, groupId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserGroupInstancesForGroup', 'userId', userId)
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('getUserGroupInstancesForGroup', 'groupId', groupId)
+            const localVarPath = `/users/{userId}/instances/groups/{groupId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication authCookie required
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Returns a list of Groups the user has requested to be invited into.
          * @summary Get User Group Requests
          * @param {string} userId Must be a valid user ID.
@@ -30622,6 +33164,20 @@ export const UsersApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Returns a list of a group\'s instances for a user
+         * @summary Get User Group Instances for a specific Group
+         * @param {string} userId Must be a valid user ID.
+         * @param {string} groupId Must be a valid group ID.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserGroupInstancesForGroup(userId: string, groupId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InlineObject1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserGroupInstancesForGroup(userId, groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserGroupInstancesForGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Returns a list of Groups the user has requested to be invited into.
          * @summary Get User Group Requests
          * @param {string} userId Must be a valid user ID.
@@ -30840,6 +33396,16 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          */
         getUserGroupInstances(requestParameters: UsersApiGetUserGroupInstancesRequest, options?: RawAxiosRequestConfig): AxiosPromise<InlineObject1> {
             return localVarFp.getUserGroupInstances(requestParameters.userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of a group\'s instances for a user
+         * @summary Get User Group Instances for a specific Group
+         * @param {UsersApiGetUserGroupInstancesForGroupRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserGroupInstancesForGroup(requestParameters: UsersApiGetUserGroupInstancesForGroupRequest, options?: RawAxiosRequestConfig): AxiosPromise<InlineObject1> {
+            return localVarFp.getUserGroupInstancesForGroup(requestParameters.userId, requestParameters.groupId, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns a list of Groups the user has requested to be invited into.
@@ -31082,6 +33648,27 @@ export interface UsersApiGetUserGroupInstancesRequest {
      * @memberof UsersApiGetUserGroupInstances
      */
     readonly userId: string
+}
+
+/**
+ * Request parameters for getUserGroupInstancesForGroup operation in UsersApi.
+ * @export
+ * @interface UsersApiGetUserGroupInstancesForGroupRequest
+ */
+export interface UsersApiGetUserGroupInstancesForGroupRequest {
+    /**
+     * Must be a valid user ID.
+     * @type {string}
+     * @memberof UsersApiGetUserGroupInstancesForGroup
+     */
+    readonly userId: string
+
+    /**
+     * Must be a valid group ID.
+     * @type {string}
+     * @memberof UsersApiGetUserGroupInstancesForGroup
+     */
+    readonly groupId: string
 }
 
 /**
@@ -31371,6 +33958,18 @@ export class UsersApi extends BaseAPI {
      */
     public getUserGroupInstances(requestParameters: UsersApiGetUserGroupInstancesRequest, options?: RawAxiosRequestConfig) {
         return UsersApiFp(this.configuration).getUserGroupInstances(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a list of a group\'s instances for a user
+     * @summary Get User Group Instances for a specific Group
+     * @param {UsersApiGetUserGroupInstancesForGroupRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public getUserGroupInstancesForGroup(requestParameters: UsersApiGetUserGroupInstancesForGroupRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserGroupInstancesForGroup(requestParameters.userId, requestParameters.groupId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -31667,10 +34266,11 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {string} [maxUnityVersion] The maximum Unity version supported by the asset.
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
+         * @param {string} [noplatform] The platform the asset does not support.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getActiveWorlds: async (featured?: boolean, sort?: SortOption, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getActiveWorlds: async (featured?: boolean, sort?: SortOption, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, noplatform?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/worlds/active`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -31731,6 +34331,10 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
 
             if (platform !== undefined) {
                 localVarQueryParameter['platform'] = platform;
+            }
+
+            if (noplatform !== undefined) {
+                localVarQueryParameter['noplatform'] = noplatform;
             }
 
 
@@ -32138,11 +34742,13 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {string} [maxUnityVersion] The maximum Unity version supported by the asset.
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
+         * @param {string} [noplatform] The platform the asset does not support.
          * @param {boolean} [fuzzy] 
+         * @param {boolean} [avatarSpecific] Only search for avatar worlds.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchWorlds: async (featured?: boolean, sort?: SortOption, user?: SearchWorldsUserEnum, userId?: string, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, fuzzy?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchWorlds: async (featured?: boolean, sort?: SortOption, user?: SearchWorldsUserEnum, userId?: string, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, noplatform?: string, fuzzy?: boolean, avatarSpecific?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/worlds`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -32213,8 +34819,16 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
                 localVarQueryParameter['platform'] = platform;
             }
 
+            if (noplatform !== undefined) {
+                localVarQueryParameter['noplatform'] = noplatform;
+            }
+
             if (fuzzy !== undefined) {
                 localVarQueryParameter['fuzzy'] = fuzzy;
+            }
+
+            if (avatarSpecific !== undefined) {
+                localVarQueryParameter['avatarSpecific'] = avatarSpecific;
             }
 
 
@@ -32383,11 +34997,12 @@ export const WorldsApiFp = function(configuration?: Configuration) {
          * @param {string} [maxUnityVersion] The maximum Unity version supported by the asset.
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
+         * @param {string} [noplatform] The platform the asset does not support.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getActiveWorlds(featured?: boolean, sort?: SortOption, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LimitedWorld>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getActiveWorlds(featured, sort, n, order, offset, search, tag, notag, releaseStatus, maxUnityVersion, minUnityVersion, platform, options);
+        async getActiveWorlds(featured?: boolean, sort?: SortOption, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, noplatform?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LimitedWorld>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getActiveWorlds(featured, sort, n, order, offset, search, tag, notag, releaseStatus, maxUnityVersion, minUnityVersion, platform, noplatform, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldsApi.getActiveWorlds']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -32526,12 +35141,14 @@ export const WorldsApiFp = function(configuration?: Configuration) {
          * @param {string} [maxUnityVersion] The maximum Unity version supported by the asset.
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
+         * @param {string} [noplatform] The platform the asset does not support.
          * @param {boolean} [fuzzy] 
+         * @param {boolean} [avatarSpecific] Only search for avatar worlds.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchWorlds(featured?: boolean, sort?: SortOption, user?: SearchWorldsUserEnum, userId?: string, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, fuzzy?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LimitedWorld>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchWorlds(featured, sort, user, userId, n, order, offset, search, tag, notag, releaseStatus, maxUnityVersion, minUnityVersion, platform, fuzzy, options);
+        async searchWorlds(featured?: boolean, sort?: SortOption, user?: SearchWorldsUserEnum, userId?: string, n?: number, order?: OrderOption, offset?: number, search?: string, tag?: string, notag?: string, releaseStatus?: ReleaseStatus, maxUnityVersion?: string, minUnityVersion?: string, platform?: string, noplatform?: string, fuzzy?: boolean, avatarSpecific?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LimitedWorld>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchWorlds(featured, sort, user, userId, n, order, offset, search, tag, notag, releaseStatus, maxUnityVersion, minUnityVersion, platform, noplatform, fuzzy, avatarSpecific, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldsApi.searchWorlds']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -32621,7 +35238,7 @@ export const WorldsApiFactory = function (configuration?: Configuration, basePat
          * @throws {RequiredError}
          */
         getActiveWorlds(requestParameters: WorldsApiGetActiveWorldsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<LimitedWorld>> {
-            return localVarFp.getActiveWorlds(requestParameters.featured, requestParameters.sort, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, options).then((request) => request(axios, basePath));
+            return localVarFp.getActiveWorlds(requestParameters.featured, requestParameters.sort, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.noplatform, options).then((request) => request(axios, basePath));
         },
         /**
          * Search and list favorited worlds by query filters.
@@ -32702,7 +35319,7 @@ export const WorldsApiFactory = function (configuration?: Configuration, basePat
          * @throws {RequiredError}
          */
         searchWorlds(requestParameters: WorldsApiSearchWorldsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<LimitedWorld>> {
-            return localVarFp.searchWorlds(requestParameters.featured, requestParameters.sort, requestParameters.user, requestParameters.userId, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.fuzzy, options).then((request) => request(axios, basePath));
+            return localVarFp.searchWorlds(requestParameters.featured, requestParameters.sort, requestParameters.user, requestParameters.userId, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.noplatform, requestParameters.fuzzy, requestParameters.avatarSpecific, options).then((request) => request(axios, basePath));
         },
         /**
          * Unpublish a world.
@@ -32886,6 +35503,13 @@ export interface WorldsApiGetActiveWorldsRequest {
      * @memberof WorldsApiGetActiveWorlds
      */
     readonly platform?: string
+
+    /**
+     * The platform the asset does not support.
+     * @type {string}
+     * @memberof WorldsApiGetActiveWorlds
+     */
+    readonly noplatform?: string
 }
 
 /**
@@ -33266,11 +35890,25 @@ export interface WorldsApiSearchWorldsRequest {
     readonly platform?: string
 
     /**
+     * The platform the asset does not support.
+     * @type {string}
+     * @memberof WorldsApiSearchWorlds
+     */
+    readonly noplatform?: string
+
+    /**
      * 
      * @type {boolean}
      * @memberof WorldsApiSearchWorlds
      */
     readonly fuzzy?: boolean
+
+    /**
+     * Only search for avatar worlds.
+     * @type {boolean}
+     * @memberof WorldsApiSearchWorlds
+     */
+    readonly avatarSpecific?: boolean
 }
 
 /**
@@ -33372,7 +36010,7 @@ export class WorldsApi extends BaseAPI {
      * @memberof WorldsApi
      */
     public getActiveWorlds(requestParameters: WorldsApiGetActiveWorldsRequest = {}, options?: RawAxiosRequestConfig) {
-        return WorldsApiFp(this.configuration).getActiveWorlds(requestParameters.featured, requestParameters.sort, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, options).then((request) => request(this.axios, this.basePath));
+        return WorldsApiFp(this.configuration).getActiveWorlds(requestParameters.featured, requestParameters.sort, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.noplatform, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -33469,7 +36107,7 @@ export class WorldsApi extends BaseAPI {
      * @memberof WorldsApi
      */
     public searchWorlds(requestParameters: WorldsApiSearchWorldsRequest = {}, options?: RawAxiosRequestConfig) {
-        return WorldsApiFp(this.configuration).searchWorlds(requestParameters.featured, requestParameters.sort, requestParameters.user, requestParameters.userId, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.fuzzy, options).then((request) => request(this.axios, this.basePath));
+        return WorldsApiFp(this.configuration).searchWorlds(requestParameters.featured, requestParameters.sort, requestParameters.user, requestParameters.userId, requestParameters.n, requestParameters.order, requestParameters.offset, requestParameters.search, requestParameters.tag, requestParameters.notag, requestParameters.releaseStatus, requestParameters.maxUnityVersion, requestParameters.minUnityVersion, requestParameters.platform, requestParameters.noplatform, requestParameters.fuzzy, requestParameters.avatarSpecific, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
