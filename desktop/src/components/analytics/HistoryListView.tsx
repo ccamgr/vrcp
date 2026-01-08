@@ -2,7 +2,7 @@
 //  List View Components (Existing)
 
 import { Clock, MapPin, User } from "lucide-react";
-import { WorldSession } from "../../lib/logAnalytics";
+import { WorldSession } from "../../lib/analyzeSessions";
 
 // ============================================================================
 export default function HistoryListView({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {

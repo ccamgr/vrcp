@@ -3,10 +3,10 @@ import { commands } from "../generated/bindings";
 import { analyzeSessions, type WorldSession } from "../lib/analyzeSessions";
 import { ChevronLeft, ChevronRight, LayoutList, BarChart3 } from "lucide-react";
 import { getLocalISODate } from "../lib/date";
-import HistoryListView from "../components/history/HistoryListView";
-import HistoryTimeline from "../components/history/HistoryTimeline";
+import HistoryListView from "../components/analytics/HistoryListView";
+import HistoryTimeline from "../components/analytics/HistoryTimeline";
 
-export default function History() {
+export default function Analytics() {
   const [targetDate, setTargetDate] = useState<string>(getLocalISODate(new Date()).split('T')[0]); // YYYY-MM-DD形式
   const [sessions, setSessions] = useState<WorldSession[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

@@ -1,9 +1,18 @@
 import { useMemo, useState } from "react";
-import { WorldSession } from "../../lib/logAnalytics";
+import { WorldSession } from "../../lib/analyzeSessions";
 import { Clock, Globe, Hash, Users } from "lucide-react";
 
 // ============================================================================
+
+const LEFT_HEADER_WIDTH = 180; // px
+const MIN_HOUR_WIDTH = 90; // px per hour
+const MIN_DAY_WIDTH = 24 * MIN_HOUR_WIDTH; // 24時間分の幅
+const MIN_TOTAL_WIDTH = LEFT_HEADER_WIDTH + MIN_DAY_WIDTH + MIN_HOUR_WIDTH / 2; // header + 24.5時間分の幅 (0.25時間ずつの余白)
+const MIN_VISIBLE_DURATION_MS = 1 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
+const MIN_SESSION_WIDTH_MS = 1 * 60 * 1000; // 表示される場合に最小でもこの時間分の幅を表示する
+
 export default function HistoryTimeline({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {
+
   // ツールチップ用の状態
   const [hoveredSession, setHoveredSession] = useState<WorldSession | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -49,11 +58,11 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
     return rows;
   }, [sessions]);
 
-  // 時間軸のメモリ (30分刻み)
+  // 時間軸のメモリ (1時間刻み)
   const timeMarkers = useMemo(() => {
     const markers = [];
-    const step = 30 * 60 * 1000;
-    // 開始直後の xx:00 or xx:30 を探す
+    const step = 60 * 60 * 1000; // 1時間刻み
+    // 開始直後の xx:00
     let current = Math.ceil(timelineStart / step) * step;
     while (current < timelineEnd) {
       markers.push(current);
@@ -68,20 +77,17 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
     setMousePos({ x: e.clientX + 15, y: e.clientY + 15 });
   };
 
-  const ROW_HEIGHT = 50; // 1行の高さ
-  const HEADER_HEIGHT = 40;
-
   return (
     <div className="h-full flex flex-col bg-slate-900 overflow-hidden relative p-6">
       <div className="flex-1 overflow-auto relative border border-slate-700/50 rounded-xl bg-slate-800/30" onMouseMove={handleMouseMove}>
 
-        <div className="min-w-[800px] relative">
+        <div className="relative" style={{ minWidth: `${MIN_TOTAL_WIDTH}px` }}>
           {/* --- ヘッダー (時間軸ラベル) --- */}
-          <div className="sticky top-0 z-20 bg-slate-900/90 border-b border-slate-700 h-10 w-full flex items-end pb-1 backdrop-blur-sm">
-            <div className="z-50 sticky left-0 backdrop-blur-sm w-40 flex-shrink-0 px-4 text-xs text-slate-500 font-bold border-r border-slate-700 h-full flex items-center">
+          <div className="sticky top-0 z-20  border-b border-slate-700 h-10 w-full flex items-end pb-1 backdrop-blur-sm">
+            <div className="z-50 sticky left-0 bg-slate-900/90 backdrop-blur-sm flex-shrink-0 px-4 text-xs text-slate-500 font-bold border-r border-slate-700 h-full flex items-center" style={{ width: `${LEFT_HEADER_WIDTH}px` }}>
               Instance Name
             </div>
-            <div className="z-40 flex-1 relative h-full">
+            <div className="z-40 flex-1 relative h-full" style={{ minWidth: `${MIN_DAY_WIDTH}px` }}>
               {timeMarkers.map(time => {
                 const left = ((time - timelineStart) / totalDuration) * 100;
                 return (
@@ -99,7 +105,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
           {/* --- ボディ (グリッド & バー) --- */}
           <div className="relative">
             {/* 背景グリッド線 */}
-            <div className="absolute inset-0 left-48 z-0 pointer-events-none">
+            <div className="absolute inset-0 z-0 pointer-events-none" style={{ left: `${LEFT_HEADER_WIDTH}px` }}>
               {timeMarkers.map(time => {
                 const left = ((time - timelineStart) / totalDuration) * 100;
                 return (
@@ -110,10 +116,10 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
 
             {/* 行の描画 */}
             {instanceRows.map((row, rowIndex) => (
-              <div key={row.instanceId || rowIndex} className="flex border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors h-[50px]">
+              <div key={row.instanceId || rowIndex} className="flex border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors h-[50px]" style={{ minWidth: `${LEFT_HEADER_WIDTH + MIN_DAY_WIDTH}px` }}>
 
                 {/* 左サイドバー: ワールド名 */}
-                <div className="z-30 sticky left-0 backdrop-blur-sm w-40 flex-shrink-0 p-2 border-r border-slate-700 bg-slate-800/80 flex flex-col justify-center">
+                <div className="z-30 sticky left-0 backdrop-blur-sm flex-shrink-0 p-2 border-r border-slate-700 bg-slate-800/80 flex flex-col justify-center" style={{ width: `${LEFT_HEADER_WIDTH}px` }}>
                   <div className="text-xs font-bold text-slate-300 truncate" title={row.worldName}>
                     {row.worldName}
                   </div>
@@ -124,11 +130,14 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
                 </div>
 
                 {/* 右側: タイムラインバーエリア */}
-                <div className="flex-1 relative h-full">
+                <div className="flex-1 relative h-full" style={{ minWidth: `${MIN_DAY_WIDTH}px` }}>
                   {row.sessions.map((session, sIdx) => {
+                    if (session.durationMs < MIN_VISIBLE_DURATION_MS) {
+                      return null; // 短すぎる滞在はそもそも表示しない
+                    }
                     const left = ((session.startTime - timelineStart) / totalDuration) * 100;
                     const width = ((session.durationMs) / totalDuration) * 100;
-                    const displayWidth = Math.max(width, 0.2); // 最低幅
+                    const displayWidth = Math.max(width, (MIN_SESSION_WIDTH_MS / totalDuration) * 100); // 最低幅
 
                     return (
                       <div
