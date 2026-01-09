@@ -6,11 +6,11 @@ help:   # show this list
 	@grep -E '^[[:alnum:]_/-]+ *:.*?#.*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 # ----
 
-.PHONY : run run-tauri
-run:  # run the application (ts-front only)
-	@npm run dev
-run-tauri:  # run the tauri application (ts-front and rust-backend)
+.PHONY : run run-front
+run:  # run the tauri application (ts-front and rust-backend)
 	@npm run tauri -- dev --config src-tauri/tauri.conf.dev.json
+run-front:  # run the application (ts-front only)
+	@npm run dev
 
 .PHONY : gen-bindings
 gen-bindings:  # generate the bindings for commands-wrapper

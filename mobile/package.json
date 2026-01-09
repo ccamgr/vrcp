@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "vrcp-mobile",
   "main": "./src/index",
   "private": true,
   "version": "1.0.0",
