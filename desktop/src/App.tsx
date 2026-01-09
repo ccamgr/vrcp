@@ -3,7 +3,7 @@ import { LogProvider } from "./context/LogContext";
 import Layout from "./components/Layout";
 import Monitor from "./pages/Monitor";
 import Settings from "./pages/Settings";
-import History from "./pages/History";
+import Analytics from "./pages/Analytics";
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Monitor />} />
-            <Route path="history" element={<History />} />
+            <Route path="history" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

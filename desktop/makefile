@@ -13,8 +13,8 @@ run-front:  # run the application (ts-front only)
 	@npm run dev
 
 .PHONY : gen-bindings
-gen-bindings:  # generate the bindings for commands-wrapper
-	@cd src-tauri && cargo run --bin gen_bindings
+gen-bindings:  # generate the bindings for commands and events
+	@cd src-tauri && cargo run --example gen_bindings
 
 .PHONY : gen-icons
 gen-icons:  # generate the icons for the application, from PNG image (1024x1024)
@@ -36,6 +36,8 @@ version-bump/patch:  # generate draft of versions.json with patch bump
 
 .PHONY: lint
 lint: # lint the codebase
+	@cd src-tauri && cargo fmt --all
+	@cd src-tauri && cargo clippy --fix
 # @npx eslint . --fix
 	@npx prettier --write "**/*.tsx"
 	@echo "tsc checking..." && npx tsc --noEmit && echo "done"
