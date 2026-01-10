@@ -142,12 +142,11 @@ impl LogDatabase {
     }
     //** Logs */
     /// ログを1件保存する
-    pub fn insert_log(&self, payload: &Payload) -> DbResult<()> {
+    pub fn insert_log(&self, payload: &Payload) -> DbResult<usize> {
         let conn = self.conn.lock().unwrap();
 
         // JSON変換
         let data_json = serde_json::to_string(&payload.event)?;
-
         // イベントタイプ名を取得 (検索のためのデータであり，dataに含んでいるためここで生成)
         let event_type = format!("{:?}", payload.event)
             .split_whitespace()
@@ -157,12 +156,13 @@ impl LogDatabase {
             .replace(" {", "")
             .replace("}", "");
 
-        conn.execute(
-            "INSERT INTO logs (timestamp, event_type, data, hash) VALUES (?1, ?2, ?3, ?4)",
+        // 挿入 (hashがユニークなので重複は無視される)
+        let inserted_rows = conn.execute(
+            "INSERT OR IGNORE INTO logs (timestamp, event_type, data, hash) VALUES (?1, ?2, ?3, ?4)",
             params![payload.timestamp, event_type, data_json, payload.hash],
         )?;
 
-        Ok(())
+        Ok(inserted_rows)
     }
 
     /// Retrieve logs newer than the specified timestamp.
@@ -196,7 +196,11 @@ impl LogDatabase {
             let event: VrcLogEvent = serde_json::from_str(&data_json)
                 .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
 
-            Ok(Payload { event, timestamp, hash })
+            Ok(Payload {
+                event,
+                timestamp,
+                hash,
+            })
         })?;
 
         // Collect results into a Vec

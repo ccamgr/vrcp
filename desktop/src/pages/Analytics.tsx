@@ -29,7 +29,10 @@ export default function Analytics() {
       const result = await commands.getLogs(start, end);
 
       if (result.status === "ok") {
-        const parsedSessions = analyzeSessions(result.data);
+        const parsedSessions = analyzeSessions(result.data, {
+          start: new Date(start.replace(' ', 'T')).getTime(),
+          end: new Date(end.replace(' ', 'T')).getTime(),
+        });
         setSessions(parsedSessions);
       } else {
         console.error(result.error);

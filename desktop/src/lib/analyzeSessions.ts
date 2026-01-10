@@ -19,7 +19,7 @@ export interface WorldSession {
 /**
  * ログ配列を解析し、ワールド滞在ごとのセッション情報に変換する
  */
-export function analyzeSessions(logs: Payload[]): WorldSession[] {
+export function analyzeSessions(logs: Payload[], range?: { start: number; end: number }): WorldSession[] {
   const sessions: WorldSession[] = [];
 
   let me: {
@@ -42,6 +42,16 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
   const closeSession = (endTime: number) => {
     if (!currentSession || !currentSession.startTime) return;
     currentSession.endTime = endTime;
+
+    // range指定があれば、その範囲内に収まるように調整
+    if (range) {
+      if (currentSession.startTime < range.start) {
+        currentSession.startTime = range.start;
+      }
+      if (currentSession.endTime > range.end) {
+        currentSession.endTime = range.end;
+      }
+    }
 
     // まだ退出していないプレイヤーがいれば強制的に退出扱いにする
     activePlayers.forEach(({ name, start }, id) => {
@@ -136,9 +146,10 @@ export function analyzeSessions(logs: Payload[]): WorldSession[] {
 
   // ループ終了時にまだセッションが続いている
   // (rust側でInvalidAppStopを挿入しているので, "セッションが続く" = VRC起動中 となる)の場合、
-  // 現在時刻(または最後のログ時刻)で閉じる
+  // range.end or 現在時刻で閉じる
   if (currentSession) {
-    closeSession(Date.now());
+    const endTime = range ? Math.min(Date.now(), range.end) : Date.now();
+    closeSession(endTime);
   }
 
   return sessions;

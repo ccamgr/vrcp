@@ -2,8 +2,8 @@ use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 use std::fs::{self, File};
+use std::hash::{Hash, Hasher};
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::sync::OnceLock;
@@ -166,7 +166,11 @@ pub fn parse_log_line(line: &str) -> Option<Payload> {
 
             let hash = gen_hash(&timestamp, &event);
 
-            return Some(Payload { event, timestamp, hash });
+            return Some(Payload {
+                event,
+                timestamp,
+                hash,
+            });
         }
     }
     None
@@ -209,6 +213,17 @@ fn get_latest_log_path() -> Option<PathBuf> {
     logs.last().cloned()
 }
 
+pub fn create_invalid_app_stop_payload(last_timestamp: &str) -> Payload {
+    let event = VrcLogEvent::InvalidAppStop;
+    let timestamp = last_timestamp.to_string();
+    let hash = gen_hash(&timestamp, &event);
+    Payload {
+        event,
+        timestamp,
+        hash,
+    }
+}
+
 /// ログ監視タスクのメインループ（非同期）
 async fn watch_loop(app: AppHandle, db: LogDatabase) {
     let mut rotation_check_interval = tokio::time::interval(Duration::from_secs(5));
@@ -224,38 +239,76 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
     let mut is_app_running = false;
     let mut current_position: u64 = 0; // 現在の読み取り位置
 
-    // 前回起動時の状態復元
+    // 初回起動時に未読分を処理するロジック
     if let Ok(Some(saved_state)) = db.get_watcher_state() {
-        // パスが一致する場合のみ、前回の続きから読む
+        // パスが一致する場合 (通常再開)
         if saved_state.log_path == current_path_str && !current_path_str.is_empty() {
             println!(
                 "Resuming watcher from position: {}",
                 saved_state.last_position
             );
-
+            // 現在のファイルなら続きから読むの
+            current_position = saved_state.last_position;
             is_app_running = saved_state.is_running;
             last_seen_timestamp = saved_state.last_timestamp;
-            current_position = saved_state.last_position; // 位置を復元
-        } else if !current_path_str.is_empty() {
-            // パスが違う(ローテーション済み)の場合
-            // 前回のセッションがRunningのままならクラッシュ判定
-            if saved_state.is_running {
-                println!(
-                    "Startup: Previous session crashed (rotation). Inserting event at {}",
-                    saved_state.last_timestamp
-                );
-                let event = VrcLogEvent::InvalidAppStop;
-                let timestamp = saved_state.last_timestamp.clone();
-                let hash = gen_hash(&timestamp, &event);
+        }
+        // パスが違う (ローテーション済み) 場合 -> 古いファイルを全スキャン
+        else if !saved_state.log_path.is_empty() {
+            println!(
+                "Rotation detected. Re-scanning old log fully: {}",
+                saved_state.log_path
+            );
 
-                let crash_payload = Payload {event, timestamp, hash};
-                let _ = db.insert_log(&crash_payload);
+            let old_path = PathBuf::from(&saved_state.log_path);
+            if old_path.exists() {
+                if let Ok(file) = File::open(&old_path) {
+                    let reader = BufReader::new(file);
+
+                    // 状態をリプレイするために初期化
+                    let mut temp_is_running = false;
+                    let mut temp_last_ts = String::from("unknown");
+
+                    for line in reader.lines() {
+                        if let Ok(l) = line {
+                            if let Some(ts) = extract_timestamp(&l) {
+                                temp_last_ts = ts;
+                            }
+
+                            if let Some(payload) = parse_log_line(&l) {
+                                // 状態の追跡 (リプレイ)
+                                match payload.event {
+                                    VrcLogEvent::AppStart => temp_is_running = true,
+                                    VrcLogEvent::AppStop => temp_is_running = false,
+                                    _ => {}
+                                }
+
+                                // DBには入れるが、Frontendへのemitはしない(すでにDBに入っているものはSQLite側で無視される前提)
+                                let _ = db.insert_log(&payload);
+                            }
+                        }
+                    }
+
+                    // 全部読み終わった結果、Runningのままならクラッシュ判定でInvalidAppStopを挿入
+                    if temp_is_running {
+                        println!(
+                            "Crash detected in old log. Inserting InvalidAppStop at {}",
+                            temp_last_ts
+                        );
+                        let crash_payload = create_invalid_app_stop_payload(&temp_last_ts);
+                        let _ = db.insert_log(&crash_payload);
+                    }
+                }
+            } else {
+                println!("Old log file not found. Skipping.");
             }
-            // 新しいファイルなので位置は 0 からスタート
+
+            // 新しいファイルへ切り替え
+            println!("Switching to new log file: {:?}", current_log_path);
             current_position = 0;
+            is_app_running = false; // 新しいファイルなので初期状態はfalse
+            last_seen_timestamp = "unknown".to_string();
         }
     }
-    // 初回オープン処理
     let mut reader = match &current_log_path {
         Some(path) => {
             println!("Start watching log file: {:?}", path);
@@ -291,6 +344,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
     let mut line = String::new();
     let mut last_db_sync = Instant::now();
 
+    // メインループ
     loop {
         let mut read_success = false;
         let mut state_changed = false;

@@ -49,7 +49,10 @@ export default function Analytics() {
       if (res.status !== 200) {
         console.error("Failed to fetch logs from desktop app:", res.statusText);
       } else {
-        const analyzedSessions = analyzeSessions(res.data);
+        const analyzedSessions = analyzeSessions(res.data, {
+          start: new Date(start.replace(' ', 'T')).getTime(),
+          end: new Date(end.replace(' ', 'T')).getTime(),
+        });
         console.log(
           "Logs fetched from desktop app:",
           "\ncount:", analyzedSessions.length,
