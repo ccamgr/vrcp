@@ -15,7 +15,7 @@ export default defineConfig({
         {
           label: 'Legals',
           items: [
-            { label: '利用規約', link: '/term-of-use/' },
+            { label: '利用規約', link: '/terms-of-use/' },
             { label: 'プライバシーポリシー', link: '/privacy-policy/' },
           ],
         },
