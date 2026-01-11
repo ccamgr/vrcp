@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
-mod subcmds;
-
+mod gen_bindings;
+mod import_logs;
 // cargo run --bin vrcp_cli -- <SUBCOMMAND>
 
 #[derive(Parser)]
@@ -32,11 +32,11 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         #[cfg(debug_assertions)]
         Commands::GenBindings => {
-            subcmds::gen_bindings::gen_bindings();
+            gen_bindings::gen_bindings();
         }
 
         Commands::ImportLogs { identifier, files } => {
-            subcmds::import_logs::import_logs(identifier, files).await;
+            import_logs::import_logs(identifier, files).await;
         }
     }
     Ok(())
