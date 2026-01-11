@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { events, commands, type Payload } from "../generated/bindings";
+import { events, commands, type LogPayload } from "../generated/bindings";
 
 interface LogContextType {
-  logs: Payload[];
+  logs: LogPayload[];
   serverUrl: string;
   clearLogs: () => void;
 }
@@ -10,7 +10,7 @@ interface LogContextType {
 const LogContext = createContext<LogContextType | undefined>(undefined);
 
 export function LogProvider({ children }: { children: ReactNode }) {
-  const [logs, setLogs] = useState<Payload[]>([]);
+  const [logs, setLogs] = useState<LogPayload[]>([]);
   const [serverUrl, setServerUrl] = useState<string>("");
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export function LogProvider({ children }: { children: ReactNode }) {
     refreshUrl();
 
     // 2. ログ監視開始
-    const unlistenPromise = events.payload.listen((event) => {
+    const unlistenPromise = events.logPayload.listen((event) => {
       setLogs((prev) => [...prev, event.payload]);
     });
 
