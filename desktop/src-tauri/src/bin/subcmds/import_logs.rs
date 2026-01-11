@@ -1,83 +1,39 @@
-use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use vrcp_lib::modules::db::LogDatabase;
+use vrcp_lib::db::repositories::logs::LogsRepository;
+use vrcp_lib::db::DB;
 use vrcp_lib::modules::watcher::VrcLogEvent::{AppStart, AppStop, InvalidAppStop};
 use vrcp_lib::modules::watcher::{create_invalid_app_stop_payload, parse_log_line};
 
 /**
  * This program imports log files into the database.
  *
- * usage: cargo run --example import_logs -- <file_path...>
+ * usage: cargo test -- --ignored import_logs <file_path...>
  */
-fn usage() {
-    eprintln!("Error: invalid arguments.");
-    println!(
-        "Usage: cargo run --example import_logs -- [--identifier=<identifier>] <file_paths...>"
-    );
-    println!("example:: cargo run --example import_logs -- --identifier=cc.amgr.vrcp.desktop.dev ./logs/output_log_*.txt");
-}
-fn main() {
-    let mut files = Vec::<String>::new();
-    let mut identifier: &str = "cc.amgr.vrcp.desktop.dev";
-
-    // 1. 引数の取得
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        usage();
-        return;
-    }
-    for arg in &args[1..] {
-        if arg.starts_with("--") {
-            let parts: Vec<&str> = arg[2..].splitn(2, '=').collect();
-            if parts.len() == 2 {
-                match parts[0] {
-                    "identifier" => {
-                        identifier = parts[1];
-                    }
-                    _ => {
-                        usage();
-                        return;
-                    }
-                }
-            } else {
-                usage();
-                return;
-            }
-            continue;
-        } else {
-            files.push(arg.clone());
-        }
-    }
-
+pub async fn import_logs(identifier: String, files: Vec<String>) {
     let app_dir = dirs::data_local_dir()
         .expect("failed to resolve local data dir")
         .join(identifier);
 
     // 2. データベース接続 (アプリと同じDBを開く)
     println!("Connecting to database...");
-    let db = match LogDatabase::new(app_dir) {
-        Ok(db) => db,
-        Err(e) => {
-            eprintln!("Failed to connect DB: {}", e);
-            return;
-        }
-    };
+    let db = DB::new(app_dir).await.expect("failed to open database");
+    let log_repo = db.logs();
 
     // 3. ファイルごとの処理
     let mut total_imported = 0;
 
-    for filename in &args[1..] {
-        let path = Path::new(filename);
+    for filename in files {
+        let path = Path::new(&filename);
         if !path.exists() {
             eprintln!("File not found: {:?}", path);
             continue;
         }
 
         println!("Processing: {:?}", path);
-        match process_file(path, &db) {
+        match process_file(path, &log_repo).await {
             Ok((count, ecount)) => {
                 println!("  -> Imported {} lines. ({} skipped)", count, ecount);
                 total_imported += count;
@@ -89,10 +45,10 @@ fn main() {
     println!("Done! Total imported lines: {}", total_imported);
 }
 
-fn process_file(
+async fn process_file(
     path: &Path,
-    db: &LogDatabase,
-) -> Result<(usize, usize), Box<dyn std::error::Error>> {
+    log_repo: &LogsRepository,
+) -> Result<(i32, i32), Box<dyn std::error::Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let mut count = 0;
@@ -120,7 +76,7 @@ fn process_file(
                 }
                 _ => {}
             }
-            match db.insert_log(&payload) {
+            match log_repo.insert_log(&payload).await {
                 Ok(count_inserted) => {
                     count += count_inserted;
                     if count_inserted == 0 {
@@ -136,7 +92,7 @@ fn process_file(
     if is_running {
         println!("  -> Warning: Log ended while app was still running. (inserted InvalidAppStop)");
         let crash_payload = create_invalid_app_stop_payload(&last_timestamp);
-        match db.insert_log(&crash_payload) {
+        match log_repo.insert_log(&crash_payload).await {
             Ok(count_inserted) => {
                 count += count_inserted;
                 if count_inserted == 0 {

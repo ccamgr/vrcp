@@ -1,3 +1,5 @@
+use crate::db::repositories::settings::WatcherState;
+use crate::db::DB;
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -10,8 +12,6 @@ use std::sync::OnceLock;
 use std::time::{Duration, Instant}; // Instantを追加
 use tauri::AppHandle;
 use tauri_specta::Event;
-
-use crate::modules::db::{LogDatabase, WatcherState}; // WatcherStateを追加
 
 // ================================================================
 // Section A: Data Types & Parsing Logic
@@ -47,7 +47,7 @@ pub enum VrcLogEvent {
 }
 
 #[derive(Clone, Serialize, Deserialize, Type, Event)]
-pub struct Payload {
+pub struct LogPayload {
     pub event: VrcLogEvent,
     pub timestamp: String,
     pub hash: i64,
@@ -149,7 +149,7 @@ pub fn extract_timestamp(line: &str) -> Option<String> {
     None
 }
 /// 1行を解析してPayloadを返す
-pub fn parse_log_line(line: &str) -> Option<Payload> {
+pub fn parse_log_line(line: &str) -> Option<LogPayload> {
     let line = line.trim();
     if line.is_empty() {
         return None;
@@ -166,7 +166,7 @@ pub fn parse_log_line(line: &str) -> Option<Payload> {
 
             let hash = gen_hash(&timestamp, &event);
 
-            return Some(Payload {
+            return Some(LogPayload {
                 event,
                 timestamp,
                 hash,
@@ -213,11 +213,11 @@ fn get_latest_log_path() -> Option<PathBuf> {
     logs.last().cloned()
 }
 
-pub fn create_invalid_app_stop_payload(last_timestamp: &str) -> Payload {
+pub fn create_invalid_app_stop_payload(last_timestamp: &str) -> LogPayload {
     let event = VrcLogEvent::InvalidAppStop;
     let timestamp = last_timestamp.to_string();
     let hash = gen_hash(&timestamp, &event);
-    Payload {
+    LogPayload {
         event,
         timestamp,
         hash,
@@ -225,7 +225,7 @@ pub fn create_invalid_app_stop_payload(last_timestamp: &str) -> Payload {
 }
 
 /// ログ監視タスクのメインループ（非同期）
-async fn watch_loop(app: AppHandle, db: LogDatabase) {
+async fn watch_loop(app: AppHandle, db: DB) {
     let mut rotation_check_interval = tokio::time::interval(Duration::from_secs(5));
     let mut current_log_path = get_latest_log_path();
 
@@ -240,7 +240,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
     let mut current_position: u64 = 0; // 現在の読み取り位置
 
     // 初回起動時に未読分を処理するロジック
-    if let Ok(Some(saved_state)) = db.get_watcher_state() {
+    if let Ok(Some(saved_state)) = db.settings().get_watcher_state().await {
         // パスが一致する場合 (通常再開)
         if saved_state.log_path == current_path_str && !current_path_str.is_empty() {
             println!(
@@ -283,7 +283,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                                 }
 
                                 // DBには入れるが、Frontendへのemitはしない(すでにDBに入っているものはSQLite側で無視される前提)
-                                let _ = db.insert_log(&payload);
+                                let _ = db.logs().insert_log(&payload).await;
                             }
                         }
                     }
@@ -295,7 +295,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                             temp_last_ts
                         );
                         let crash_payload = create_invalid_app_stop_payload(&temp_last_ts);
-                        let _ = db.insert_log(&crash_payload);
+                        let _ = db.logs().insert_log(&crash_payload).await;
                     }
                 }
             } else {
@@ -379,8 +379,8 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                             _ => {}
                         }
                         // 通知 & 保存 (ここは変わらず)
-                        let _ = Payload::emit(&payload, &app);
-                        let _ = db.insert_log(&payload);
+                        let _ = LogPayload::emit(&payload, &app);
+                        let _ = db.logs().insert_log(&payload).await;
                     }
 
                     line.clear();
@@ -399,7 +399,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                     last_timestamp: last_seen_timestamp.clone(),
                     last_position: current_position, // ★現在の位置を保存
                 };
-                let _ = db.save_watcher_state(&state);
+                let _ = db.settings().save_watcher_state(&state).await;
                 last_db_sync = Instant::now();
             }
         }
@@ -422,9 +422,9 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
                         let event = VrcLogEvent::InvalidAppStop;
                         let timestamp = last_seen_timestamp.clone();
                         let hash = gen_hash(&timestamp, &event);
-                        let crash_payload = Payload {event, timestamp, hash};
-                        let _ = db.insert_log(&crash_payload);
-                        let _ = Payload::emit(&crash_payload, &app);
+                        let crash_payload = LogPayload {event, timestamp, hash};
+                        let _ = db.logs().insert_log(&crash_payload).await;
+                        let _ = LogPayload::emit(&crash_payload, &app);
                     }
 
                     current_log_path = latest.clone();
@@ -433,12 +433,12 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
 
                     // DB保存
                     if let Some(path) = &current_log_path {
-                        let _ = db.save_watcher_state(&WatcherState {
+                        let _ = db.settings().save_watcher_state(&WatcherState {
                             log_path: path.to_string_lossy().to_string(),
                             is_running: false,
                             last_timestamp: last_seen_timestamp.clone(),
                             last_position: 0, // ★0で保存
-                        });
+                        }).await;
                     }
 
                     // Reader再生成
@@ -461,7 +461,7 @@ async fn watch_loop(app: AppHandle, db: LogDatabase) {
 // ================================================================
 
 /// 監視タスクをバックグラウンドで開始する
-pub fn spawn_log_watcher(app: AppHandle, db: LogDatabase) {
+pub fn spawn_log_watcher(app: AppHandle, db: DB) {
     tauri::async_runtime::spawn(async move {
         watch_loop(app, db).await;
     });

@@ -177,10 +177,35 @@ impl LogDatabase {
 
         // Prepare the SQL query
         // String comparison works for ISO-like dates (YYYY.MM.DD...)
+        // We find the nearest AppStart before start_timestamp and nearest AppStop after end_timestamp
         let mut stmt = conn.prepare(
-            "SELECT timestamp, data, hash FROM logs
-             WHERE timestamp > ?1 AND timestamp <= ?2
-             ORDER BY timestamp ASC, id ASC",
+            r#"
+            SELECT timestamp, data, hash
+            FROM logs
+            WHERE timestamp >= (
+                -- Start検索: 指定時刻より前の直近の AppStart を探す
+                SELECT COALESCE(
+                    (SELECT timestamp FROM logs
+                     WHERE timestamp < ?1
+                       AND timestamp > datetime(?1, '-24 hours')
+                       AND event_type = 'AppStart'  -- ★ここを修正
+                     ORDER BY timestamp DESC LIMIT 1),
+                    ?1
+                )
+            )
+            AND timestamp <= (
+                -- End検索: 指定時刻より後の直近の AppStop (または InvalidAppStop) を探す
+                SELECT COALESCE(
+                    (SELECT timestamp FROM logs
+                     WHERE timestamp > ?2
+                       AND timestamp < datetime(?2, '+24 hours')
+                       AND event_type IN ('AppStop', 'InvalidAppStop') -- ★ここを修正（クラッシュも含める）
+                     ORDER BY timestamp ASC LIMIT 1),
+                    ?2
+                )
+            )
+            ORDER BY timestamp ASC, id ASC
+            "#,
         )?;
         let start = start_timestamp.unwrap_or("1970-01-01 00:00:00");
         let end = end_timestamp.unwrap_or("9999-12-31 23:59:59");

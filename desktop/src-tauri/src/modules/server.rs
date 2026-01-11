@@ -11,8 +11,9 @@ use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
 use tower_http::cors::CorsLayer;
 
-use super::db::LogDatabase;
-use super::watcher::Payload;
+use crate::db::DB;
+
+use super::watcher::LogPayload;
 
 const SERVER_PORT: u16 = 8727;
 
@@ -39,10 +40,14 @@ struct LogParams {
 
 /// Handler for GET /logs
 async fn handle_get_logs(
-    State(db): State<LogDatabase>,
+    State(db): State<DB>,
     Query(params): Query<LogParams>,
-) -> Result<Json<Vec<Payload>>, StatusCode> {
-    match db.get_logs(params.start.as_deref(), params.end.as_deref()) {
+) -> Result<Json<Vec<LogPayload>>, StatusCode> {
+    match db
+        .logs()
+        .get_session_expanded_logs(params.start.as_deref(), params.end.as_deref())
+        .await
+    {
         Ok(logs) => Ok(Json(logs)),
         Err(e) => {
             eprintln!("Failed to fetch logs from DB: {}", e);
@@ -52,10 +57,15 @@ async fn handle_get_logs(
 }
 
 /// Start the HTTP server in a background task
-pub fn spawn_server(db: LogDatabase) {
+pub fn spawn_server(db: DB) {
     tauri::async_runtime::spawn(async move {
-        let port_str = db.get_setting("port").unwrap_or(SERVER_PORT.to_string());
-        let port: u16 = port_str.parse().unwrap_or(SERVER_PORT);
+        // Read port from settings
+        let port_str = db.settings().get_setting("port").await.unwrap_or(None);
+        let port: u16 = port_str
+            .as_deref()
+            .unwrap_or(&SERVER_PORT.to_string())
+            .parse()
+            .unwrap_or(SERVER_PORT);
         // Build the application router
         let app = Router::new()
             .route("/logs", get(handle_get_logs))
@@ -73,19 +83,27 @@ pub fn spawn_server(db: LogDatabase) {
 
 #[tauri::command]
 #[specta::specta]
-pub fn get_server_url(db: tauri::State<'_, LogDatabase>) -> Result<String, String> {
+pub async fn get_server_url(db: tauri::State<'_, DB>) -> Result<String, String> {
     let ip = local_ip().map_err(|e| e.to_string())?;
 
-    let port_str = db.get_setting("port").unwrap_or(SERVER_PORT.to_string());
-    let port: u16 = port_str.parse().unwrap_or(SERVER_PORT);
+    let port_str = db
+        .settings()
+        .get_setting("port")
+        .await
+        .map_err(|e| e.to_string())?;
+    let port: u16 = port_str
+        .as_deref()
+        .unwrap_or(&SERVER_PORT.to_string())
+        .parse()
+        .unwrap_or(SERVER_PORT);
     Ok(format!("http://{}:{}", ip, port))
 }
 
 #[tauri::command]
 #[specta::specta]
-pub fn set_server_port(
+pub async fn set_server_port(
     app: tauri::AppHandle,
-    db: tauri::State<'_, LogDatabase>,
+    db: tauri::State<'_, DB>,
     port: u16,
 ) -> Result<(), String> {
     // 1. バリデーション (u16なので 0~65535 は保証されるが、0番ポートなどを弾くならここに書く)
@@ -95,7 +113,9 @@ pub fn set_server_port(
 
     // 2. DBに保存 (文字列として保存)
     // map_err で DBのエラーを文字列化してフロントエンドに返せるようにする
-    db.set_setting("port", &port.to_string())
+    db.settings()
+        .set_setting("port", &port.to_string())
+        .await
         .map_err(|e| e.to_string())?;
 
     // 3. restart
@@ -105,8 +125,16 @@ pub fn set_server_port(
 
 #[tauri::command]
 #[specta::specta]
-pub fn get_server_port(db: tauri::State<'_, LogDatabase>) -> Result<u16, String> {
-    let port_str = db.get_setting("port").unwrap_or(SERVER_PORT.to_string());
-    let port: u16 = port_str.parse().unwrap_or(SERVER_PORT);
+pub async fn get_server_port(db: tauri::State<'_, DB>) -> Result<u16, String> {
+    let port_str = db
+        .settings()
+        .get_setting("port")
+        .await
+        .map_err(|e| e.to_string())?;
+    let port: u16 = port_str
+        .as_deref()
+        .unwrap_or(&SERVER_PORT.to_string())
+        .parse()
+        .unwrap_or(SERVER_PORT);
     Ok(port)
 }

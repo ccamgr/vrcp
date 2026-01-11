@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { commands } from "../generated/bindings";
-import { analyzeSessions, type WorldSession } from "../lib/analyzeSessions";
+import { commands, SessionPayload } from "../generated/bindings";
 import { ChevronLeft, ChevronRight, LayoutList, BarChart3 } from "lucide-react";
 import { getLocalISODate } from "../lib/date";
 import HistoryListView from "../components/analytics/HistoryListView";
@@ -8,7 +7,7 @@ import HistoryTimeline from "../components/analytics/HistoryTimeline";
 
 export default function Analytics() {
   const [targetDate, setTargetDate] = useState<string>(getLocalISODate(new Date()).split('T')[0]); // YYYY-MM-DD形式
-  const [sessions, setSessions] = useState<WorldSession[]>([]);
+  const [sessions, setSessions] = useState<SessionPayload[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   // 表示モードの状態管理 (list | timeline)
@@ -26,14 +25,11 @@ export default function Analytics() {
       const start = `${dateStr} 00:00:00`;
       const end = `${dateStr} 23:59:59`;
 
-      const result = await commands.getLogs(start, end);
+      const result = await commands.getSessions(start, end);
+      // const result = await commands.getLogs(start, end);
 
       if (result.status === "ok") {
-        const parsedSessions = analyzeSessions(result.data, {
-          start: new Date(start.replace(' ', 'T')).getTime(),
-          end: new Date(end.replace(' ', 'T')).getTime(),
-        });
-        setSessions(parsedSessions);
+        setSessions(result.data);
       } else {
         console.error(result.error);
       }

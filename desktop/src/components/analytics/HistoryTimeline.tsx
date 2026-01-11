@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { WorldSession } from "../../lib/analyzeSessions";
 import { Clock, Globe, Hash, Users } from "lucide-react";
+import { SessionPayload } from "../../generated/bindings";
 
 // ============================================================================
 
@@ -9,10 +9,10 @@ const MIN_HOUR_WIDTH = 90; // px per hour
 const MIN_VISIBLE_DURATION_MS = 1 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
 const MIN_SESSION_WIDTH_MS = 1 * 60 * 1000; // 表示される場合に最小でもこの時間分の幅を表示する
 
-export default function HistoryTimeline({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {
+export default function HistoryTimeline({ sessions, targetDate }: { sessions: SessionPayload[], targetDate: string }) {
 
   // ツールチップ用の状態
-  const [hoveredSession, setHoveredSession] = useState<WorldSession | null>(null);
+  const [hoveredSession, setHoveredSession] = useState<SessionPayload | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // 1. 時間軸の計算 (Min - Max)
@@ -29,8 +29,8 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
     });
     // 前後15分の余白
     const padding = 15 * 60 * 1000;
-    const start = min - padding;
-    const end = max + padding;
+    const start = new Date(min).getTime() - padding;
+    const end = new Date(max).getTime() + padding;
     return { timelineStart: start, timelineEnd: end, totalDuration: end - start };
   }, [sessions, targetDate]);
 
@@ -38,7 +38,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
 
   // 2. インスタンスごとのグループ化 (Y軸の決定)
   const instanceRows = useMemo(() => {
-    const rows: { instanceId: string, worldName: string, sessions: WorldSession[] }[] = [];
+    const rows: { instanceId: string, worldName: string, sessions: SessionPayload[] }[] = [];
     const map = new Map<string, number>(); // instanceId -> index
 
     sessions.forEach(session => {
@@ -135,7 +135,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
                     if (session.durationMs < MIN_VISIBLE_DURATION_MS) {
                       return null; // 短すぎる滞在はそもそも表示しない
                     }
-                    const left = ((session.startTime - timelineStart) / totalDuration) * 100;
+                    const left = ((new Date(session.startTime).getTime() - timelineStart) / totalDuration) * 100;
                     const width = ((session.durationMs) / totalDuration) * 100;
                     const displayWidth = Math.max(width, (MIN_SESSION_WIDTH_MS / totalDuration) * 100); // 最低幅
 

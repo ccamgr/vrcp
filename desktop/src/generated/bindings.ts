@@ -30,7 +30,15 @@ async getServerUrl() : Promise<Result<string, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async getLogs(start: string | null, end: string | null) : Promise<Result<Payload[], string>> {
+async exportLogs(filePath: string) : Promise<Result<number, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_logs", { filePath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async getLogs(start: string | null, end: string | null) : Promise<Result<LogPayload[], string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_logs", { start, end }) };
 } catch (e) {
@@ -46,9 +54,9 @@ async deleteAllLogs() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async exportLogs(filePath: string) : Promise<Result<number, string>> {
+async getSessions(start: string | null, end: string | null) : Promise<Result<SessionPayload[], string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("export_logs", { filePath }) };
+    return { status: "ok", data: await TAURI_INVOKE("get_sessions", { start, end }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -60,10 +68,10 @@ async exportLogs(filePath: string) : Promise<Result<number, string>> {
 
 
 export const events = __makeEvents__<{
-payload: Payload,
+logPayload: LogPayload,
 vrcLogEvent: VrcLogEvent
 }>({
-payload: "payload",
+logPayload: "log-payload",
 vrcLogEvent: "vrc-log-event"
 })
 
@@ -73,7 +81,10 @@ vrcLogEvent: "vrc-log-event"
 
 /** user-defined types **/
 
-export type Payload = { event: VrcLogEvent; timestamp: string; hash: number }
+export type Interval = { start: string; end: string }
+export type LogPayload = { event: VrcLogEvent; timestamp: string; hash: number }
+export type PlayerInterval = { name: string; intervals: Interval[]; totalDurationMs: number }
+export type SessionPayload = { worldName: string; instanceId: string; startTime: string; endTime: string; durationMs: number; username: string | null; players: PlayerInterval[] }
 export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "InvalidAppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }
 
 /** tauri-specta globals **/

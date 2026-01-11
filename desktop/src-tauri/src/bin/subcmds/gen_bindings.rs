@@ -1,14 +1,13 @@
 use specta_typescript::{BigIntExportBehavior, Typescript};
 use vrcp_lib::create_specta_builder;
-
 /**
  * This test generates TypeScript bindings for the Tauri commands and events.
  * Not run in normal test runs, so it's marked with #[ignore].
  *
- * usage: cargo run --example gen_bindings
+ * usage: cargo run --bin vrcp_cli -- gen-bindings
  */
 
-fn main() {
+pub fn gen_bindings() {
     println!("🚀 Generating bindings...");
 
     let builder = create_specta_builder();

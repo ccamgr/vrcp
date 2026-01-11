@@ -14,7 +14,7 @@ run-front:  # run the application (ts-front only)
 
 .PHONY : gen-bindings
 gen-bindings:  # generate the bindings for commands and events
-	@cd src-tauri && cargo run --example gen_bindings
+	@cd src-tauri && cargo run --bin vrcp_cli -- gen-bindings
 
 .PHONY : gen-icons
 gen-icons:  # generate the icons for the application, from PNG image (1024x1024)

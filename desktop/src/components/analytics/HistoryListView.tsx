@@ -2,10 +2,10 @@
 //  List View Components (Existing)
 
 import { Clock, MapPin, User } from "lucide-react";
-import { WorldSession } from "../../lib/analyzeSessions";
+import { PlayerInterval, SessionPayload } from "../../generated/bindings";
 
 // ============================================================================
-export default function HistoryListView({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {
+export default function HistoryListView({ sessions, targetDate }: { sessions: SessionPayload[], targetDate: string }) {
   return (
     <div className="space-y-6 p-6">
       {sessions.map((session, idx) => (
@@ -15,8 +15,8 @@ export default function HistoryListView({ sessions, targetDate }: { sessions: Wo
   );
 }
 // --- 個別のワールド滞在カードコンポーネント ---
-function SessionCard({ session }: { session: WorldSession }) {
-  const formatTime = (ts: number) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function SessionCard({ session }: { session: SessionPayload }) {
+  const formatTime = (ts: string) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
 
   return (
@@ -63,7 +63,7 @@ function SessionCard({ session }: { session: WorldSession }) {
               <PlayerTimelineRow
                 key={player.name}
                 player={player}
-                sessionStart={session.startTime}
+                sessionStart={Date.parse(session.startTime)}
                 sessionDuration={session.durationMs}
               />
             ))}
@@ -79,9 +79,9 @@ function SessionCard({ session }: { session: WorldSession }) {
 }
 
 function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
-  player: any, // 型は logAnalytics からインポートしてください
+  player: PlayerInterval,
   sessionStart: number,
-  sessionDuration: number
+  sessionDuration: number,
 }) {
   const pDurationMin = Math.floor(player.totalDurationMs / 1000 / 60);
 
@@ -95,10 +95,10 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
       {/* タイムラインバーの背景 */}
       <div className="h-1.5 bg-slate-700/50 rounded-full w-full relative">
         {/* 滞在区間の描画 (複数回出入りに対応) */}
-        {player.intervals.map((interval: any, i: number) => {
+        {player.intervals.map((interval, i) => {
           // セッション開始からの経過時間(%)を計算
-          const startPercent = Math.max(0, ((interval.start - sessionStart) / sessionDuration) * 100);
-          const endPercent = Math.min(100, ((interval.end - sessionStart) / sessionDuration) * 100);
+          const startPercent = Math.max(0, ((Date.parse(interval.start) - sessionStart) / sessionDuration) * 100);
+          const endPercent = Math.min(100, ((Date.parse(interval.end) - sessionStart) / sessionDuration) * 100);
           const widthPercent = endPercent - startPercent;
 
           return (
