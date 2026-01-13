@@ -1,7 +1,15 @@
 pub mod db;
 pub mod modules;
+pub mod services;
+pub mod utils;
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
+
+pub struct Ctx {
+    db: db::DB,
+    srv: modules::server::HttpSrv,
+    watcher: tauri::async_runtime::JoinHandle<()>,
+}
 
 // ---------------------------------------------------------
 // Specta Builder
@@ -13,10 +21,10 @@ pub fn create_specta_builder() -> SpectaBuilder {
             modules::server::set_server_port,
             modules::server::get_server_port,
             modules::server::get_server_url,
-            db::repositories::logs::export_logs,
-            db::repositories::logs::get_logs,
-            db::repositories::logs::delete_all_logs,
-            db::repositories::sessions::get_sessions,
+            services::logs::export_logs,
+            services::logs::get_logs,
+            services::logs::delete_all_logs,
+            services::sessions::get_sessions,
         ])
         .events(collect_events![
             modules::watcher::LogPayload,
@@ -56,12 +64,11 @@ pub fn run() {
                 tauri::async_runtime::block_on(async move { db::DB::new(app_data_dir).await })?;
 
             app.manage(db.clone()); // グローバルステートとしてDBを登録
-            app.manage(modules::server::ServerState::new()); // グローバルステートとしてServerStateを登録
 
             // ログ監視開始
-            modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
+            let watcher = modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
             // http srv 起動
-            modules::server::spawn_server(db);
+            let srv = modules::server::HttpSrv::new(db.clone());
             // 常駐化設定
             modules::systray::setup_tray(app.handle())?;
 
@@ -77,6 +84,9 @@ pub fn run() {
                     window.set_focus()?;
                 }
             }
+
+            let ctx = Ctx { db, srv, watcher };
+            app.manage(ctx); // グローバルステートとしてCtxを登録
 
             Ok(())
         })

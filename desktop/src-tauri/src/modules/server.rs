@@ -17,14 +17,19 @@ use super::watcher::LogPayload;
 
 const SERVER_PORT: u16 = 8727;
 
-pub struct ServerState {
+pub struct HttpSrv {
     pub handle: Mutex<Option<JoinHandle<()>>>,
+    pub port: Mutex<u16>,
+    pub running: Mutex<bool>,
 }
 
-impl ServerState {
-    pub fn new() -> Self {
+impl HttpSrv {
+    pub fn new(db: DB) -> Self {
+        let handle = spawn_server(db.clone());
         Self {
-            handle: Mutex::new(None),
+            handle: Mutex::new(Some(handle)),
+            port: Mutex::new(SERVER_PORT),
+            running: Mutex::new(false),
         }
     }
 }
@@ -57,7 +62,7 @@ async fn handle_get_logs(
 }
 
 /// Start the HTTP server in a background task
-pub fn spawn_server(db: DB) {
+pub fn spawn_server(db: DB) -> JoinHandle<()> {
     tauri::async_runtime::spawn(async move {
         // Read port from settings
         let port_str = db.settings().get_setting("port").await.unwrap_or(None);
@@ -78,7 +83,7 @@ pub fn spawn_server(db: DB) {
 
         let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
         axum::serve(listener, app).await.unwrap();
-    });
+    })
 }
 
 #[tauri::command]

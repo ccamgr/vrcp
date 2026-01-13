@@ -10,6 +10,7 @@ use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::time::{Duration, Instant}; // Instantを追加
+use tauri::async_runtime::JoinHandle;
 use tauri::AppHandle;
 use tauri_specta::Event;
 
@@ -461,8 +462,8 @@ async fn watch_loop(app: AppHandle, db: DB) {
 // ================================================================
 
 /// 監視タスクをバックグラウンドで開始する
-pub fn spawn_log_watcher(app: AppHandle, db: DB) {
+pub fn spawn_log_watcher(app: AppHandle, db: DB) -> JoinHandle<()> {
     tauri::async_runtime::spawn(async move {
         watch_loop(app, db).await;
-    });
+    })
 }
