@@ -13,7 +13,7 @@ import { Platform, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo } from "react";
+import { use, useCallback, useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -27,22 +27,27 @@ SplashScreen.preventAutoHideAsync()
 
 function RootLayout() {
   const auth = useAuth();
-
-  const onLayoutRootView = useCallback(async () => {
+  useEffect(() => {
     if (!auth.isLoading) {
-      await SplashScreen.hideAsync();
+      console.log("Auth loading finished, hiding splash screen");
+      SplashScreen.hideAsync();
     }
   }, [auth.isLoading]);
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <Stack initialRouteName="index" screenOptions={{ headerShown: false, gestureEnabled: true }}>
-        <Stack.Screen name="maintabs" options={{ headerShown: false }} />
-        <Stack.Screen name="details" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: false }} />
-        <Stack.Screen name="others" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
+    <View style={{ flex: 1 }}>
+      {auth.user ? (
+        <Stack initialRouteName="maintabs" screenOptions={{ headerShown: false, gestureEnabled: true }}>
+          <Stack.Screen name="maintabs" options={{ headerShown: false }} />
+          <Stack.Screen name="details" options={{ headerShown: false }} />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="others" options={{ headerShown: false }} />
+        </Stack>
+      ) : (
+        <Stack initialRouteName="index" screenOptions={{ headerShown: false, gestureEnabled: true }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+        </Stack>
+      )}
       {/* <ConfirmAtFirstDialog /> */}
     </View>
   );
