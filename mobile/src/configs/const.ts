@@ -29,10 +29,10 @@ export const constants: AppConfig = {
   version: Constants.expoConfig?.version || "0.0.0-dev",
   contact: contact[buildProfile],
   externalLinks: {
-    vrc_register: "https://vrchat.com/home/register",
-    vrc_forgot_password: "https://vrchat.com/home/password",
-    vrc_forgot_email: "https://vrchat.com/home/forgot-email",
-    privacy_policy: "https://amgr-cc.github.io/vrcp/privacy-policy",
-    terms_of_use: "https://amgr-cc.github.io/vrcp/terms-of-use",
+    vrc_register: "https://vrchat.com/home/register/",
+    vrc_forgot_password: "https://vrchat.com/home/password/",
+    vrc_forgot_email: "https://vrchat.com/home/forgot-email/",
+    privacy_policy: "https://ccamgr.github.io/vrcp/privacy-policy/",
+    terms_of_use: "https://ccamgr.github.io/vrcp/terms-of-use/",
   }
 }
