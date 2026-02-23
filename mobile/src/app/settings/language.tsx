@@ -7,12 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 
-const langNames = Object.keys(translateResources).map((langTag) => {
-  const res = translateResources[langTag];
-  //@ts-ignore
-  const displayName = res.translation["_langDisplayName_"] as string || langTag;
-  return { langTag, displayName };
-});
+const langItems = Object.entries(translateResources);
 
 
 export default function LanguageSettings() {
@@ -40,23 +35,23 @@ export default function LanguageSettings() {
       <View style={{ padding: 16 }}>
         <Text style={[styles.label, { color: theme.colors.text }]}>{t("pages.setting_language.description")}</Text>
         <FlatList
-          data={langNames}
-          keyExtractor={(item) => item.langTag}
+          data={langItems}
+          keyExtractor={(item) => item[0]}
           renderItem={({ item }) => (
             <TouchableEx
               style={styles.languageItem}
-              onPress={() => onPress(item.langTag)}
+              onPress={() => onPress(item[0])}
             >
               <Text
                 style={[
                   styles.languageText,
                   { color:
-                    item.langTag === selectedLang ? theme.colors.primary
+                    item[0] === selectedLang ? theme.colors.primary
                     : theme.colors.text
                   }
                 ]}
               >
-                {item.displayName}
+                {item[1].name || item[0]}
               </Text>
             </TouchableEx>
           )}

@@ -1,5 +1,5 @@
 import { darkTheme, lightTheme } from "@/configs/theme";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { CacheProvider } from "@/contexts/CacheContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { DBProvider } from "@/contexts/DBContext";
@@ -9,21 +9,33 @@ import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Platform, useColorScheme } from "react-native";
+import { Platform, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
+import * as SplashScreen from 'expo-splash-screen';
 
 import '@/i18n'; // i18n 初期化
 import GlobalDrawer from "@/components/layout/GlobalDrawer";
 import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { registerBackgroundTaskAsync } from "@/tasks/bg-fetch";
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync()
+
 function RootLayout() {
+  const auth = useAuth();
+
+  const onLayoutRootView = useCallback(async () => {
+    if (!auth.isLoading) {
+      await SplashScreen.hideAsync();
+    }
+  }, [auth.isLoading]);
+
   return (
-    <>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <Stack initialRouteName="index" screenOptions={{ headerShown: false, gestureEnabled: true }}>
         <Stack.Screen name="maintabs" options={{ headerShown: false }} />
         <Stack.Screen name="details" options={{ headerShown: false }} />
@@ -32,7 +44,7 @@ function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
       {/* <ConfirmAtFirstDialog /> */}
-    </>
+    </View>
   );
 }
 

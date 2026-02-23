@@ -35,8 +35,8 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
   // 画面全体の高さ設定 (24時間をどれくらいの高さで表示するか)
   const HOUR_HEIGHT = 120;
   const DAY_HEIGHT = 24 * HOUR_HEIGHT;
-  const MIN_VISIBLE_DURATION_MS = 1 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
-  const MIN_SESSION_HEIGHT_MS = 1 * 60 * 1000; // 表示される場合に最小でもこの時間分の高さを表示する
+  const MIN_VISIBLE_DURATION_MS = 5 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
+  const MIN_SESSION_HEIGHT_MS = 10 * 60 * 1000; // 表示される場合に最小でもこの時間分の高さを表示する
 
   return (
     <View style={styles.timelineContainer}>
@@ -69,7 +69,8 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
               // 今回は単一日表示前提で計算します。
               const startRelative = Math.max(0, session.startTime - dayStart);
               const topPercent = (startRelative / totalDuration) * 100;
-              const heightPercent = (session.durationMs / totalDuration) * 100;
+              const todayDurationMs = session.durationMs + Math.min(0, session.startTime - dayStart)
+              const heightPercent = (todayDurationMs / totalDuration) * 100;
 
               // 最小高さを確保 (短すぎる滞在も見逃さないように)
               const minHeightPercent = (MIN_SESSION_HEIGHT_MS / totalDuration) * 100; // 最低1分相当

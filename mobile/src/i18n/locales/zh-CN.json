@@ -1,438 +1,438 @@
 {
-  "_langDisplayName_": "英语（美国）",
-  "_langTag_": "en-US",
   "app": "VRCP",
   "common": {
     "dateFormats": {
-      "date": "年/月/日",
-      "dateTime": "年/月/日 HH:mm",
-      "dateTimeRange_diffDay": "{{开始，yyyy/MM/dd HH:mm}} ~ {{结束，yyyy/MM/dd HH:mm}}",
-      "dateTimeRange_sameDay": "{{开始，yyyy/MM/dd HH:mm}} ~ {{结束，HH:mm}}",
-      "time": "高:毫米",
-      "timeRange": "{{开始，HH:mm}} ~ {{结束，HH:mm}}"
+      "date": "yyyy年M月d日",
+      "time": "HH:mm",
+      "dateTime": "yyyy年M月d日 HH:mm",
+      "dateTimeRange_diffDay": "{{start, yyyy年M月d日 HH:mm}} ~ {{end, yyyy年M月d日 HH:mm}}",
+      "dateTimeRange_sameDay": "{{start, yyyy年M月d日 HH:mm}} ~ {{end, HH:mm}}",
+      "timeRange": "{{start, HH:mm}} ~ {{end, HH:mm}}"
     },
     "message": {
-      "failed_to_fetch": "未能获取 {{item}}。",
-      "failed_to_update": "更新 {{item}} 失败。",
-      "invalid": "无效值",
       "loading": "加载中...",
-      "no_data": "无可用数据。"
+      "failed_to_fetch": "获取{{item}}失败．",
+      "failed_to_update": "更新{{item}}失败．",
+      "no_data": "暂无数据．",
+      "invalid": "无效值"
+    }
+  },
+  "pages": {
+    "home": {
+      "label": "主页",
+      "see_more": "查看更多",
+      "events_area": "今日活动",
+      "no_events": "暂无活动．",
+      "feeds_area": "动态",
+      "no_feeds": "暂无动态．",
+      "friendlocations_area": "好友实例",
+      "no_friendlocations": "暂无好友实例．",
+      "friendLocation": {
+        "more_friends_count_one": "+ 其他 {{count}} 位好友",
+        "more_friends_count_other": "+ 其他 {{count}} 位好友"
+      }
+    },
+    "friends": {
+      "label": "好友",
+      "tabLabel_favorites": "收藏",
+      "tabLabel_online": "在线",
+      "tabLabel_active": "活跃",
+      "tabLabel_offline": "离线"
+    },
+    "profile": {
+      "label": "个人资料",
+      "menuLabel_edit_bio": "编辑简介",
+      "menuLabel_edit_bio_links": "编辑链接",
+      "menuLabel_change_status": "更改状态",
+      "menuLabel_route_current_avatar": "当前 Avatar",
+      "menuLabel_route_favorites": "收藏",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_bio": "简介",
+      "sectionLabel_bio_links": "链接",
+      "sectionLabel_badges": "徽章",
+      "sectionLabel_info": "信息",
+      "section_info_last_activity": "最后活动: {{date, yyyy年MM月dd日 HH:mm}}",
+      "section_info_joined": "加入日期: {{date, yyyy年MM月dd日}}",
+      "menuLabel_route_avatars": "Avatar",
+      "menuLabel_route_groups": "群组",
+      "menuLabel_route_prints": "照片",
+      "menuLabel_route_worlds": "世界"
+    },
+    "others": {
+      "label": "其他",
+      "tabLabel_feeds": "动态",
+      "tabLabel_events": "活动",
+      "tabLabel_notifications": "通知",
+      "tabLabel_analytics": "分析"
+    },
+    "settings": {
+      "label": "设置",
+      "groupLabel_general": "常规",
+      "itemLabel_appearance": "外观设置",
+      "itemDescription_appearance": "自定义应用程序的 UI 外观和行为．",
+      "itemLabel_database": "数据库",
+      "itemDescription_database": "管理数据库和缓存．",
+      "itemLabel_notifications": "通知",
+      "itemDescription_notifications": "管理推送通知和警报．",
+      "itemLabel_language": "语言",
+      "itemDescription_language": "选择应用程序的语言．",
+      "groupLabel_other": "其他",
+      "itemLabel_about": "关于",
+      "itemDescription_about": "查看应用程序信息和致谢．",
+      "itemLabel_feedback": "反馈",
+      "itemDescription_feedback": "向开发者发送反馈．",
+      "groupLabel_account": "账户",
+      "itemLabel_logout": "登出",
+      "itemDescription_logout": "从该应用程序登出．",
+      "logout_dialog_text": "确定要登出吗？",
+      "logout_dialog_confirm": "登出",
+      "logout_dialog_cancel": "取消",
+      "itemDescription_development": "访问开发中的功能和选项．",
+      "itemLabel_development": "开发者",
+      "itemDescription_desktopapp": "配置 VRCP 桌面版的特定设置．",
+      "itemLabel_desktopapp": "桌面应用"
+    },
+    "setting_appearance": {
+      "label": "外观设置",
+      "groupLabel_app": "应用",
+      "itemLabel_theme": "主题",
+      "itemDescription_theme": "选择应用程序的明亮/暗黑主题．",
+      "itemLabel_homeTabLayout": "主页标签布局",
+      "itemDescription_homeTabLayout": "选择主页上默认显示的功能．",
+      "itemLabel_cardViewColumns": "卡片视图列数",
+      "itemDescription_cardViewColumns": "选择卡片视图显示的列数．",
+      "groupLabel_friends": "好友",
+      "itemLabel_friendColor": "好友颜色",
+      "itemDescription_friendColor": "选择好友的颜色主题．",
+      "itemLabel_favoriteFriendsColors": "收藏好友颜色",
+      "itemDescription_favoriteFriendsColors": "选择收藏好友的颜色主题．",
+      "innerModals": {
+        "theme": {
+          "button_apply": "应用",
+          "option_light": "明亮",
+          "option_dark": "暗黑",
+          "option_system": "跟随系统",
+          "maybe_requireRestart": "可能需要重启应用才能生效．"
+        },
+        "friendColor": {},
+        "favoriteFriendsColors": {},
+        "homeTabLayout": {
+          "button_apply": "应用",
+          "section_top": "顶部区域",
+          "section_bottom": "底部区域",
+          "section_separatePos": "分割位置",
+          "option_events": "活动",
+          "selectedLabel_events": "今日活动",
+          "option_feeds": "动态",
+          "selectedLabel_feeds": "好友动态",
+          "option_friendLocations": "实例",
+          "selectedLabel_friendLocations": "好友实例",
+          "selectedLabel_sepPos": "分割位置的值越大，\n顶部区域越大．"
+        },
+        "cardViewColumns": {
+          "button_apply": "应用",
+          "option_1_columns": "1 列",
+          "option_2_columns": "2 列",
+          "option_3_columns": "3 列",
+          "maybe_requireRestart": "可能需要重启应用才能生效．"
+        }
+      }
+    },
+    "setting_database": {
+      "label": "数据库设置",
+      "groupLabel_cache": "缓存",
+      "cache_size_and_count_one": "{{size}} MB ({{count}} 项)",
+      "cache_size_and_count_other": "{{size}} MB ({{count}} 项)",
+      "button_clearCache": "清除缓存"
+    },
+    "setting_notifications": {
+      "label": "通知设置"
+    },
+    "setting_language": {
+      "label": "语言设置",
+      "description": "请选择语言"
+    },
+    "detail_user": {
+      "label": "用户详细信息",
+      "menuLabel_friend_remove": "解除好友",
+      "menuLabel_friend_sendRequest": "发送好友请求",
+      "menuLabel_friend_cancelRequest": "取消好友请求",
+      "menuLabel_favoriteGroup_add": "添加到收藏组",
+      "menuLabel_favoriteGroup_edit": "编辑收藏组",
+      "menuLabel_note_edit": "编辑备注",
+      "menuLabel_invite_request": "请求邀请",
+      "menuLabel_invite_send": "发送邀请",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_location": "实例",
+      "sectionLabel_description": "描述",
+      "sectionLabel_note": "备注",
+      "sectionLabel_bio": "简介",
+      "sectionLabel_bio_links": "链接",
+      "sectionLabel_badges": "徽章",
+      "sectionLabel_info": "信息",
+      "section_info_last_activity": "最后活动: {{date, yyyy年M月d日 HH:mm}}",
+      "section_info_joined": "加入日期: {{date, yyyy年M月d日}}",
+      "userLocation_offline": "该用户已离线...",
+      "userLocation_private": "该用户在一个私密实例中...",
+      "userLocation_traveling": "该用户正在转移...",
+      "userLocation_unknown": "无法获取该用户的位置信息",
+      "menuLabel_invite_me": "邀请自己"
+    },
+    "detail_avatar": {
+      "label": "Avatar 详细信息",
+      "menuLabel_favoriteGroup_add": "添加到收藏组",
+      "menuLabel_favoriteGroup_edit": "编辑收藏组",
+      "menuLabel_avatar_changeTo": "切换到此 Avatar",
+      "menuLabel_avatar_nowUsing": "当前正在使用此 Avatar",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_description": "描述",
+      "sectionLabel_tags": "标签",
+      "sectionLabel_author": "作者",
+      "sectionLabel_info": "信息"
+    },
+    "detail_world": {
+      "label": "世界详细信息",
+      "tabLabel_info": "信息",
+      "tabLabel_instances": "实例",
+      "no_instances": "暂无实例．",
+      "menuLabel_favoriteGroup_add": "添加到收藏组",
+      "menuLabel_favoriteGroup_edit": "编辑收藏组",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_description": "描述",
+      "sectionLabel_tags": "标签",
+      "sectionLabel_author": "作者",
+      "sectionLabel_info": "信息",
+      "section_info_capacityAndRecommended": "容量: {{capacity}} | 推荐: {{recommendedCapacity}}",
+      "section_info_visits": "访问量: {{visits}}",
+      "section_info_updated": "最后更新: {{date, yyyy年M月d日}}",
+      "section_info_created": "发布日期: {{date, yyyy年M月d日}}"
+    },
+    "detail_instance": {
+      "label": "实例详细信息",
+      "menuLabel_json": "原始 JSON 数据",
+      "section_users_more_user_count_one": "+ 其他 {{count}} 位用户",
+      "section_users_more_user_count_other": "+ 其他 {{count}} 位用户",
+      "sectionLabel_platform": "平台",
+      "sectionLabel_tags": "标签",
+      "sectionLabel_info": "信息",
+      "section_info_capacity": "容量: {{capacity}}",
+      "section_info_ageGated": "年龄限制: {{ageGated}}",
+      "sectionLabel_owner": "所有者",
+      "sectionLabel_usersInInstance": "实例中的用户",
+      "sectionLabel_world": "世界"
+    },
+    "detail_group": {
+      "label": "群组详细信息",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_info": "信息"
+    },
+    "detail_event": {
+      "label": "活动详细信息",
+      "sectionLabel_description": "描述",
+      "menuLabel_json": "原始 JSON 数据",
+      "sectionLabel_owner": "组织者"
+    },
+    "search": {
+      "label": "搜索结果",
+      "searchbox_placeholder": "搜索世界、群组或用户",
+      "no_worlds_found": "未找到与 '{{search}}' 匹配的世界．",
+      "no_groups_found": "未找到与 '{{search}}' 匹配的群组．",
+      "no_users_found": "未找到与 '{{search}}' 匹配的用户．"
+    },
+    "calendar": {
+      "calendar_date_event_count_one": "{{count}} 个活动",
+      "calendar_date_event_count_other": "{{count}} 个活动",
+      "label": "活动",
+      "calendar_month_label": "{{date, yyyy年 M月}}",
+      "no_events": "暂无活动",
+      "selected_month_events": "{{date, yyyy年 M月}} 的活动",
+      "selected_month_events_day_label": "{{date, d日 (E)}}"
+    },
+    "favorites": {
+      "label": "收藏",
+      "tabLabel_worlds": "世界",
+      "tabLabel_friends": "好友",
+      "tabLabel_avatars": "Avatar",
+      "no_favoritegroup_selected": "未选择群组．"
+    },
+    "friendlocations": {
+      "label": "好友实例",
+      "sectionLabel_instances": "在实例中的好友",
+      "sectionLabel_private": "在私密实例中的好友",
+      "no_friendlocations": "暂无好友实例．"
+    },
+    "feeds": {
+      "label": "动态",
+      "no_feeds": "暂无动态．"
+    },
+    "notifications": {
+      "label": "通知",
+      "no_notifications": "暂无通知．"
+    },
+    "login": {
+      "label": "登录",
+      "welcome": "欢迎使用 VRCP！\n请使用您的 VRChat 账号登录．",
+      "online_count_message": "目前 VRChat 上有 {{count}} 名在线用户！",
+      "username_placeholder": "用户名 / 邮箱",
+      "username_empty_error": "用户名或邮箱不能为空．",
+      "password_placeholder": "密码",
+      "password_empty_error": "密码不能为空．",
+      "tfaCode_placeholder": "验证码 (例: 123456)",
+      "save_credentials": "保存用户名和密码",
+      "button_login": "登录",
+      "button_links": "无法登录？",
+      "tfa_modal_text_totp": "请输入验证器应用中的 2FA 验证码．",
+      "tfa_modal_text_email": "2FA 验证码已发送至您的邮箱，请输入．",
+      "button_tfa_verify": "验证",
+      "button_tfa_close": "关闭",
+      "button_links_close": "关闭",
+      "tfa_pasted": "已从剪贴板粘贴",
+      "login_failed_error": "登录失败．请检查您的输入信息．",
+      "tfa_failed_error": "2FA 验证失败．请重试．",
+      "tfa_invalid_error": "2FA 验证码必须为 6 位数字．",
+      "tfa_disabled_error": "未启用 2FA 验证．请检查您的账户设置．",
+      "tfa_unknown_error": "发生未知错误．请稍后重试．",
+      "linksModal_title": "登录遇到问题？",
+      "linksModal_text1": "第一次使用 VRChat？\n",
+      "linksModal_registerLinkText": "创建账号",
+      "linksModal_text2": "忘记密码了？\n",
+      "linksModal_passwordLinkText": "重置密码",
+      "linksModal_emailLinkText": "确认邮箱",
+      "disclaimer": "VRCP 是 VRChat 的非官方应用程序．此应用程序不隶属于 VRChat Inc. 或其附属公司，也未获得其认可、赞助或批准．"
+    },
+    "avatars": {
+      "label": "我的 Avatar",
+      "no_avatars": "您尚未上传任何 Avatar．"
+    },
+    "detail_user_groups": {
+      "label": "用户的群组",
+      "no_groups_found": "未找到该用户的群组．"
+    },
+    "detail_user_worlds": {
+      "label": "用户的世界",
+      "no_worlds_found": "未找到该用户的世界．"
+    },
+    "groups": {
+      "label": "我的群组",
+      "no_groups": "您未加入任何群组．"
+    },
+    "prints": {
+      "label": "照片",
+      "no_prints": "暂无照片．"
+    },
+    "worlds": {
+      "label": "我的世界",
+      "no_worlds": "您尚未上传任何世界．"
+    },
+    "analytics": {
+      "label": "分析",
+      "no_analytics": "暂无可用的分析数据．"
+    },
+    "setting_desktopapp": {
+      "label": "桌面应用"
     }
   },
   "components": {
-    "aboutModal": {
-      "button_ChangeLog": "变更日志",
-      "button_Licenses": "开源许可证",
-      "button_privacyPolicy": "隐私政策",
-      "button_termsOfUse": "使用条款",
-      "innerModals": {
-        "changeLog": {
-          "format_date": "{{日期，年/月/日}}",
-          "format_version": "版本{{版本}}",
-          "label": "变更日志"
-        },
-        "licenses": {
-          "label": "开源许可证",
-          "link_to_repos": "链接到存储库 ↗"
-        },
-        "privacyPolicy": {
-          "label": "隐私政策"
-        },
-        "termsOfUse": {
-          "label": "使用条款"
-        }
-      },
-      "label": "应用信息"
-    },
-    "changeAvatarModal": {
-      "button_cancel": "取消",
-      "button_confirm": "更改头像",
-      "confirm_text": "您确定要将您的头像更改为“{{avatarName}}”吗？"
-    },
-    "changeBioLinksModal": {
-      "button_cancel": "取消",
-      "button_save": "保存生物链接",
-      "placeholder": "添加链接 URL（例如 https://example.com）"
-    },
-    "changeBioModal": {
-      "button_cancel": "取消",
-      "button_save": "保存个人简介",
-      "placeholder": "在此输入个人简介..."
-    },
-    "changeFavoriteModal": {
-      "button_cancel": "取消",
-      "button_save": "保存到收藏夹组",
-      "button_unselect": "不喜欢"
-    },
-    "changeFriendModal": {
-      "button_cancel": "取消",
-      "button_confirm_cancel": "取消好友请求",
-      "button_confirm_remove": "删除此好友",
-      "button_confirm_send": "发送好友请求",
-      "confirm_text_cancel": "您确定要取消对“{{userName}}”的好友请求吗？",
-      "confirm_text_remove": "您确定要从好友中删除“{{userName}}”吗？",
-      "confirm_text_send": "您确定要向“{{userName}}”发送好友请求吗？"
-    },
-    "changeNoteModal": {
-      "button_cancel": "取消",
-      "button_save": "保存备注",
-      "placeholder": "在此输入注释..."
-    },
-    "changeStatusModal": {
-      "button_cancel": "取消",
-      "button_save": "保存状态",
-      "placeholder": "在此输入状态..."
-    },
-    "developmentModal": {
-      "groupLabel_debug": "调试",
-      "groupLabel_feature": "开发功能",
-      "itemDescription_json": "为详细信息页面启用 JSON 查看器。",
-      "itemDescription_sendLogs": "允许向开发人员发送错误日志。",
-      "itemLabel_json": "JSON查看器",
-      "itemLabel_sendLogs": "发送日志",
-      "label": "开发商"
-    },
-    "eventDetailModal": {
-      "eventTime_differentDay": "{{开始，yyyy/MM/dd HH:mm}} ~ {{结束，yyyy/MM/dd HH:mm}}",
-      "eventTime_sameDay": "{{开始，yyyy/MM/dd HH:mm}} ~ {{结束，HH:mm}}"
-    },
-    "exitDialog": {
-      "button_no": "不",
-      "button_yes": "是的",
-      "message": "您确定要退出该应用程序吗？"
-    },
-    "feedbackModal": {
-      "button_cancel": "取消",
-      "button_send": "发送反馈",
-      "label": "发送反馈",
-      "placeholder_email": "您的电子邮件",
-      "placeholder_message": "在此输入内容...",
-      "type_bug": "错误报告",
-      "type_feedback": "反馈",
-      "type_request": "功能请求"
+    "releaseNote": {
+      "label": "发行说明",
+      "button_close": "关闭"
     },
     "jsonDataModal": {
       "button_close": "关闭",
       "button_copy": "复制到剪贴板"
     },
-    "releaseNote": {
-      "button_close": "关闭",
-      "label": "VRCP 发行说明"
-    }
-  },
-  "pages": {
-    "analytics": {
-      "label": "分析",
-      "no_analytics": "没有可用的分析数据。"
+    "changeAvatarModal": {
+      "button_confirm": "更改 Avatar",
+      "button_cancel": "取消",
+      "confirm_text": "确定要将 Avatar 更改为 '{{avatarName}}' 吗？"
     },
-    "avatars": {
-      "label": "我的头像",
-      "no_avatars": "你没有头像。"
+    "changeFriendModal": {
+      "button_confirm_remove": "解除好友",
+      "button_confirm_send": "发送好友请求",
+      "button_confirm_cancel": "取消好友请求",
+      "button_cancel": "取消",
+      "confirm_text_remove": "确定要解除与 '{{userName}}' 的好友关系吗？",
+      "confirm_text_send": "确定要向 '{{userName}}' 发送好友请求吗？",
+      "confirm_text_cancel": "确定要取消向 '{{userName}}' 发送的好友请求吗？"
     },
-    "calendar": {
-      "calendar_date_event_count_one": "{{count}} 事件",
-      "calendar_date_event_count_other": "{{count}} 个事件",
-      "calendar_month_label": "{{日期，yyyy MMMM}}",
-      "label": "活动",
-      "no_events": "没有可用的活动。",
-      "selected_month_events": "{{date, yyyy/MM}} 的活动",
-      "selected_month_events_day_label": "{{日期，执行 (EEE)}}"
+    "changeNoteModal": {
+      "button_save": "保存备注",
+      "button_cancel": "取消",
+      "placeholder": "在此输入备注..."
     },
-    "detail_avatar": {
-      "label": "头像详情",
-      "menuLabel_avatar_changeTo": "换成这个头像",
-      "menuLabel_avatar_nowUsing": "现在使用这个头像",
-      "menuLabel_favoriteGroup_add": "添加到收藏夹组",
-      "menuLabel_favoriteGroup_edit": "编辑最喜欢的组",
-      "menuLabel_json": "原始 JSON 数据",
-      "sectionLabel_author": "作者",
-      "sectionLabel_description": "描述",
-      "sectionLabel_info": "信息",
-      "sectionLabel_platform": "平台",
-      "sectionLabel_tags": "标签"
+    "changeFavoriteModal": {
+      "button_save": "保存到收藏组",
+      "button_cancel": "取消",
+      "button_unselect": "取消收藏"
     },
-    "detail_event": {
-      "label": "活动详情",
-      "menuLabel_json": "原始 JSON 数据",
-      "sectionLabel_description": "描述",
-      "sectionLabel_owner": "所有者"
+    "changeBioModal": {
+      "button_save": "保存简介",
+      "button_cancel": "取消",
+      "placeholder": "在此输入简介..."
     },
-    "detail_group": {
-      "label": "团体详情",
-      "menuLabel_json": "原始 JSON 数据",
-      "sectionLabel_info": "信息"
+    "changeBioLinksModal": {
+      "button_save": "保存链接",
+      "button_cancel": "取消",
+      "placeholder": "添加 URL (例如: https://example.com)"
     },
-    "detail_instance": {
-      "label": "实例详情",
-      "menuLabel_json": "原始 JSON 数据",
-      "sectionLabel_info": "信息",
-      "sectionLabel_owner": "所有者",
-      "sectionLabel_platform": "平台",
-      "sectionLabel_tags": "标签",
-      "sectionLabel_usersInInstance": "实例中的用户",
-      "sectionLabel_world": "世界",
-      "section_info_ageGated": "年龄限制：{{ageGated}}",
-      "section_info_capacity": "容量：{{容量}}",
-      "section_users_more_user_count_one": "还有 {{count}} 个用户",
-      "section_users_more_user_count_other": "还有 {{count}} 个用户"
+    "changeStatusModal": {
+      "button_save": "保存状态",
+      "button_cancel": "取消",
+      "placeholder": "在此输入状态..."
     },
-    "detail_user": {
-      "label": "用户详细信息",
-      "menuLabel_favoriteGroup_add": "添加到收藏夹组",
-      "menuLabel_favoriteGroup_edit": "编辑最喜欢的组",
-      "menuLabel_friend_cancelRequest": "取消好友请求",
-      "menuLabel_friend_remove": "删除好友",
-      "menuLabel_friend_sendRequest": "发送好友请求",
-      "menuLabel_invite_me": "邀请我自己",
-      "menuLabel_invite_request": "请求邀请",
-      "menuLabel_invite_send": "发送邀请",
-      "sectionLabel_description": "描述",
-      "sectionLabel_info": "信息",
-      "sectionLabel_location": "地点",
-      "sectionLabel_note": "笔记",
-      "section_info_joined": "加入日期：{{date, yyyy/MM/dd}}",
-      "section_info_last_activity": "上次活动：{{date, yyyy/MM/dd HH:mm}}",
-      "userLocation_offline": "用户离线...",
-      "userLocation_private": "用户处于私有实例中...",
-      "userLocation_traveling": "用户正在旅行...",
-      "userLocation_unknown": "用户位于未知位置...",
-      "menuLabel_json": "原始 JSON 数据",
-      "menuLabel_note_edit": "编辑备注",
-      "sectionLabel_badges": "徽章",
-      "sectionLabel_bio": "简介",
-      "sectionLabel_bio_links": "链接"
+    "eventDetailModal": {
+      "eventTime_sameDay": "{{start, yyyy年MM月dd日 HH:mm}} ~ {{end, HH:mm}}",
+      "eventTime_differentDay": "{{start, yyyy年MM月dd日 HH:mm}} ~ {{end, yyyy年MM月dd日 HH:mm}}"
     },
-    "detail_user_groups": {
-      "label": "用户组",
-      "no_groups_found": "没有找到该用户的组。"
-    },
-    "detail_user_worlds": {
-      "label": "用户的世界",
-      "no_worlds_found": "没有找到该用户的世界。"
-    },
-    "detail_world": {
-      "label": "世界详情",
-      "menuLabel_favoriteGroup_add": "添加到收藏夹组",
-      "menuLabel_favoriteGroup_edit": "编辑最喜欢的组",
-      "menuLabel_json": "原始 JSON 数据",
-      "no_instances": "没有可用的实例。",
-      "sectionLabel_author": "作者",
-      "sectionLabel_description": "描述",
-      "sectionLabel_info": "信息",
-      "sectionLabel_platform": "平台",
-      "sectionLabel_tags": "标签",
-      "section_info_capacityAndRecommended": "容量：{{容量}} |\n推荐：{{推荐容量}}",
-      "section_info_created": "创建时间：{{日期，yyyy/MM/dd}}",
-      "section_info_updated": "最后更新：{{date, yyyy/MM/dd}}",
-      "section_info_visits": "访问次数：{{访问}}",
-      "tabLabel_info": "信息",
-      "tabLabel_instances": "实例"
-    },
-    "favorites": {
-      "label": "收藏夹",
-      "no_favoritegroup_selected": "没有选择最喜欢的团体。",
-      "tabLabel_avatars": "头像",
-      "tabLabel_friends": "朋友们",
-      "tabLabel_worlds": "世界赛"
-    },
-    "feeds": {
-      "label": "饲料",
-      "no_feeds": "没有可用的供稿。"
-    },
-    "friendlocations": {
-      "label": "朋友地点",
-      "no_friendlocations": "没有可用的好友位置。",
-      "sectionLabel_instances": "实例中的朋友",
-      "sectionLabel_private": "私人实例中的朋友"
-    },
-    "friends": {
-      "label": "朋友们",
-      "tabLabel_active": "积极的",
-      "tabLabel_favorites": "收藏夹",
-      "tabLabel_offline": "离线",
-      "tabLabel_online": "在线的"
-    },
-    "groups": {
-      "label": "我的群组",
-      "no_groups": "你没有组。"
-    },
-    "home": {
-      "events_area": "今日活动",
-      "feeds_area": "饲料",
-      "friendLocation": {
-        "more_friends_count_one": "还有 {{count}} 个朋友",
-        "more_friends_count_other": "还有 {{count}} 个朋友"
-      },
-      "friendlocations_area": "朋友地点",
-      "label": "家",
-      "no_events": "没有可用的活动。",
-      "no_feeds": "没有可用的供稿。",
-      "no_friendlocations": "没有可用的好友位置。",
-      "see_more": "查看更多"
-    },
-    "login": {
-      "button_links": "无法登录？",
-      "button_links_close": "关闭",
-      "button_login": "登录",
-      "button_tfa_close": "关闭",
-      "button_tfa_verify": "核实",
-      "disclaimer": "VRCP 是 VRChat 的非官方应用程序。\n此应用程序不隶属于 VRChat Inc. 或其附属公司，也不受其认可、赞助或批准。",
-      "label": "登录",
-      "linksModal_emailLinkText": "恢复电子邮件",
-      "linksModal_passwordLinkText": "重置密码",
-      "linksModal_registerLinkText": "创建一个帐户",
-      "linksModal_text1": "VRChat 新手？",
-      "linksModal_text2": "忘记了您的凭据？",
-      "linksModal_title": "登录时遇到问题？",
-      "login_failed_error": "登录失败。\n请检查您的凭据。",
-      "online_count_message": "VRChat 目前有 {{count}} 位用户在线！",
-      "password_empty_error": "密码不能为空。",
-      "password_placeholder": "密码",
-      "save_credentials": "保存用户名和密码",
-      "tfaCode_placeholder": "代码（例如 123456）",
-      "tfa_disabled_error": "2FA 已禁用。\n请检查您的帐户设置。",
-      "tfa_failed_error": "2FA 验证失败。\n请再试一次。",
-      "tfa_invalid_error": "2FA 代码必须是 6 位数字。",
-      "tfa_modal_text_email": "2FA 代码已发送至您的电子邮件。\n请在下面输入。",
-      "tfa_modal_text_totp": "请输入您的身份验证器应用程序中的 2FA 代码。",
-      "tfa_pasted": "从剪贴板粘贴",
-      "tfa_unknown_error": "发生未知 2FA 错误。\n请稍后重试。",
-      "username_empty_error": "用户名或电子邮件不能为空。",
-      "username_placeholder": "用户名/电子邮件",
-      "welcome": "欢迎来到VRCP！\n\n使用您的 VRChat 帐户登录。"
-    },
-    "notifications": {
-      "label": "通知",
-      "no_notifications": "没有通知。"
-    },
-    "others": {
-      "label": "其他的",
-      "tabLabel_analytics": "分析",
-      "tabLabel_events": "活动",
-      "tabLabel_feeds": "饲料",
-      "tabLabel_notifications": "通知"
-    },
-    "prints": {
-      "label": "印刷",
-      "no_prints": "你没有指纹。"
-    },
-    "profile": {
-      "label": "轮廓",
-      "menuLabel_change_status": "更改状态",
-      "menuLabel_edit_bio": "编辑简介",
-      "menuLabel_edit_bio_links": "编辑生物链接",
-      "menuLabel_json": "原始 JSON 数据",
-      "menuLabel_route_avatars": "头像",
-      "menuLabel_route_current_avatar": "当前头像",
-      "menuLabel_route_favorites": "收藏夹",
-      "menuLabel_route_groups": "团体",
-      "menuLabel_route_prints": "印刷",
-      "menuLabel_route_worlds": "世界赛",
-      "sectionLabel_badges": "徽章",
-      "sectionLabel_bio": "简介",
-      "sectionLabel_bio_links": "链接",
-      "sectionLabel_info": "信息",
-      "section_info_joined": "加入日期：{{date, yyyy/MM/dd}}",
-      "section_info_last_activity": "上次活动：{{date, yyyy/MM/dd HH:mm}}"
-    },
-    "search": {
-      "label": "搜索结果",
-      "no_groups_found": "未找到“{{search}}”的群组。",
-      "no_users_found": "未找到“{{search}}”的用户。",
-      "no_worlds_found": "未找到“{{search}}”的世界。",
-      "searchbox_placeholder": "搜索世界、群组或用户"
-    },
-    "setting_appearance": {
-      "groupLabel_app": "应用程序",
-      "groupLabel_friends": "朋友们",
+    "aboutModal": {
+      "label": "应用信息",
+      "button_termsOfUse": "使用条款",
+      "button_privacyPolicy": "隐私政策",
+      "button_Licenses": "开源许可证",
+      "button_ChangeLog": "更新日志",
       "innerModals": {
-        "cardViewColumns": {
-          "button_apply": "申请",
-          "maybe_requireRestart": "可能需要重新启动应用程序\n\n才能生效。",
-          "option_1_columns": "1 列",
-          "option_2_columns": "2 列",
-          "option_3_columns": "3 列"
+        "termsOfUse": {
+          "label": "使用条款"
         },
-        "homeTabLayout": {
-          "button_apply": "申请",
-          "option_events": "活动",
-          "option_feeds": "饲料",
-          "option_friendLocations": "地点",
-          "section_bottom": "底部面积",
-          "section_separatePos": "独立位置",
-          "section_top": "顶部区域",
-          "selectedLabel_events": "今天的活动",
-          "selectedLabel_feeds": "朋友的动态",
-          "selectedLabel_friendLocations": "朋友地点",
-          "selectedLabel_sepPos": "单独位置值越高，上部区域越大。"
+        "privacyPolicy": {
+          "label": "隐私政策"
         },
-        "theme": {
-          "button_apply": "申请",
-          "maybe_requireRestart": "可能需要重新启动应用程序\n\n才能生效。",
-          "option_dark": "黑暗的",
-          "option_light": "光",
-          "option_system": "系统"
+        "licenses": {
+          "label": "开源许可证",
+          "link_to_repos": "Repository ↗"
+        },
+        "changeLog": {
+          "label": "更新日志",
+          "format_version": "Ver {{version}}",
+          "format_date": "{{date, yyyy年MM月dd日}}"
         }
-      },
-      "itemDescription_cardViewColumns": "选择卡片视图中显示的列数。",
-      "itemDescription_favoriteFriendsColors": "选择您最喜欢的朋友颜色主题。",
-      "itemDescription_friendColor": "选择您朋友的颜色主题。",
-      "itemDescription_homeTabLayout": "选择默认在主页上显示的选项卡。",
-      "itemDescription_theme": "为应用程序选择浅色或深色主题。",
-      "itemLabel_cardViewColumns": "卡片视图列",
-      "itemLabel_favoriteFriendsColors": "最喜欢的朋友颜色",
-      "itemLabel_friendColor": "朋友颜色",
-      "itemLabel_homeTabLayout": "主页选项卡布局",
-      "itemLabel_theme": "主题",
-      "label": "外观设置"
+      }
     },
-    "setting_database": {
-      "button_clearCache": "清除缓存",
-      "cache_size_and_count_one": "{{size}} MB（{{count}} 项）",
-      "cache_size_and_count_other": "{{size}} MB（{{count}} 项）",
-      "groupLabel_cache": "缓存",
-      "label": "数据库设置"
+    "developmentModal": {
+      "itemDescription_json": "在详细信息页面启用 JSON 视图．",
+      "itemLabel_json": "JSON 视图",
+      "itemDescription_sendLogs": "启用向开发者发送错误日志．",
+      "itemLabel_sendLogs": "发送日志",
+      "groupLabel_feature": "开发中功能",
+      "label": "开发者",
+      "groupLabel_debug": "调试"
     },
-    "setting_desktopapp": {
-      "label": "桌面应用程序"
+    "feedbackModal": {
+      "label": "发送反馈",
+      "button_cancel": "取消",
+      "button_send": "发送",
+      "placeholder_email": "邮箱地址",
+      "placeholder_message": "在此输入内容...",
+      "type_feedback": "反馈",
+      "type_bug": "Bug 报告",
+      "type_request": "功能请求"
     },
-    "setting_language": {
-      "description": "选择您的语言",
-      "label": "语言设置"
-    },
-    "setting_notifications": {
-      "label": "通知设置"
-    },
-    "settings": {
-      "groupLabel_account": "帐户",
-      "groupLabel_general": "一般的",
-      "groupLabel_other": "其他",
-      "itemDescription_about": "查看申请信息和学分。",
-      "itemDescription_appearance": "自定义应用程序 UI 外观。",
-      "itemDescription_database": "管理数据库设置和存储选项。",
-      "itemDescription_desktopapp": "配置特定于桌面版本 VRCP 的设置。",
-      "itemDescription_development": "访问开发功能和选项。",
-      "itemDescription_feedback": "将您的反馈发送给开发人员。",
-      "itemDescription_language": "选择应用程序的语言。",
-      "itemDescription_logout": "从此应用程序注销。",
-      "itemDescription_notifications": "管理推送通知和警报。",
-      "itemLabel_about": "关于",
-      "itemLabel_appearance": "外观设置",
-      "itemLabel_database": "数据库",
-      "itemLabel_desktopapp": "桌面应用程序",
-      "itemLabel_development": "开发商",
-      "itemLabel_feedback": "反馈",
-      "itemLabel_language": "语言",
-      "itemLabel_logout": "退出",
-      "itemLabel_notifications": "通知",
-      "label": "设置",
-      "logout_dialog_cancel": "取消",
-      "logout_dialog_confirm": "退出",
-      "logout_dialog_text": "您确定要退出吗？"
-    },
-    "worlds": {
-      "label": "我的世界",
-      "no_worlds": "你没有世界。"
+    "exitDialog": {
+      "button_no": "否",
+      "button_yes": "是",
+      "message": "确定要退出应用吗？"
     }
   }
 }

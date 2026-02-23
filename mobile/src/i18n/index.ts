@@ -24,20 +24,21 @@ import { ResourceLanguage } from 'i18next';
 type LanguageTag = string
 
 interface TranslateResource extends ResourceLanguage {
+  name: string;
   datefnsLocale: Locale;
 }
 
 const LANGUAGE_KEY = 'vrcp_user_language';
 const defaultLang = "en-US";
 export const translateResources: { [key: LanguageTag]: TranslateResource } = {
-  "en-GB": { translation: enGB_translate, datefnsLocale: enGB },
-  "en-US": { translation: enUS_translate, datefnsLocale: enUS },
-  "de-DE": { translation: deDE_translate, datefnsLocale: de },
-  "ja-JP": { translation: jaJP_translate, datefnsLocale: ja },
-  "ko-KR": { translation: koKR_translate, datefnsLocale: ko },
-  "ru-RU": { translation: ruRU_translate, datefnsLocale: ru },
-  "zh-CN": { translation: zhCN_translate, datefnsLocale: zhCN },
-  "zh-TW": { translation: zhTW_translate, datefnsLocale: zhTW },
+  "en-GB": { name: 'English (UK)', translation: enGB_translate, datefnsLocale: enGB },
+  "en-US": { name: 'English (US)', translation: enUS_translate, datefnsLocale: enUS },
+  "de-DE": { name: 'Deutsch', translation: deDE_translate, datefnsLocale: de },
+  "ja-JP": { name: '日本語', translation: jaJP_translate, datefnsLocale: ja },
+  "ko-KR": { name: '한국어', translation: koKR_translate, datefnsLocale: ko },
+  "ru-RU": { name: 'Русский', translation: ruRU_translate, datefnsLocale: ru },
+  "zh-CN": { name: '简体中文', translation: zhCN_translate, datefnsLocale: zhCN },
+  "zh-TW": { name: '繁體中文', translation: zhTW_translate, datefnsLocale: zhTW },
 };
 
 
