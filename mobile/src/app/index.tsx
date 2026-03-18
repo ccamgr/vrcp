@@ -37,7 +37,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [saveSecret, setSaveSecret] = useState(false);
+  const [saveSecret, setSaveSecret] = useState(true);
   const [TFACode, setTFACode] = useState("");
   const [modeTFA, setModeTFA] = useState<"totp" | "email">("totp");
   const [openTFA, setOpenTFA] = useState(false);
@@ -124,7 +124,7 @@ export default function Login() {
   };
 
   const logoAnim = useRef(new Animated.Value(0)).current; //
-  const [ logoMsg, setLogoMsg ] = useState<string | null>(null);
+  const [logoMsg, setLogoMsg] = useState<string | null>(null);
   const onPressInLogo = () => {
     Animated.timing(logoAnim, {
       toValue: 1,
@@ -154,9 +154,9 @@ export default function Login() {
 
   return (
 
-      <GenericScreen>
-        {auth.isLoading && <LoadingIndicator absolute />}
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+    <GenericScreen>
+      {auth.isLoading && <LoadingIndicator absolute />}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.containerCentered}>
           <Pressable
             style={{
@@ -194,7 +194,7 @@ export default function Login() {
             <Text
               style={[
                 styles.header,
-                { color: theme.colors.text, marginBottom: spacing.large},
+                { color: theme.colors.text, marginBottom: spacing.large },
               ]}
             >
               {t("pages.login.welcome")}
@@ -262,92 +262,92 @@ export default function Login() {
             </ButtonEx>
           </View>
         </View>
-        </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
 
-        <View style={styles.disclaimerContainer}>
-          <Text style={{color: theme.colors.subText, fontSize: fontSize.small, textAlign: "center" }}>
-            {t("pages.login.disclaimer")}
+      <View style={styles.disclaimerContainer}>
+        <Text style={{ color: theme.colors.subText, fontSize: fontSize.small, textAlign: "center" }}>
+          {t("pages.login.disclaimer")}
+        </Text>
+      </View>
+
+      {/* 2fa modal */}
+      <GenericModal
+        title="Two-Factor Authentication"
+        buttonItems={[
+          { title: t("pages.login.button_tfa_close"), onPress: () => setOpenTFA(false) },
+          { title: t("pages.login.button_tfa_verify"), onPress: handleVerify, flex: 1 }
+        ]}
+        open={openTFA}
+        onClose={() => setOpenTFA(false)}
+      >
+        <Text style={[styles.text, { color: theme.colors.text }]}>
+          {modeTFA === "totp"
+            ? t("pages.login.tfa_modal_text_totp")
+            : t("pages.login.tfa_modal_text_email")
+          }
+        </Text>
+        <TextInput
+          ref={TFACodeRef}
+          style={[styles.input, { color: theme.colors.text }]}
+          placeholder={t("pages.login.tfaCode_placeholder")}
+          keyboardType="numeric"
+          autoComplete="one-time-code"
+          textContentType="oneTimeCode"
+          maxLength={6}
+          placeholderTextColor={theme.colors.subText}
+          value={TFACode}
+          onChangeText={setTFACode}
+          onFocus={handleAutoFillTFA}
+        />
+      </GenericModal>
+
+      {/* links to vrchat modal */}
+      <GenericModal
+        title={t("pages.login.linksModal_title")}
+        buttonItems={[{ title: t("pages.login.button_links_close"), onPress: () => setOpenLinks(false), flex: 1 }]}
+        open={openLinks}
+        onClose={() => setOpenLinks(false)}
+      >
+        <View
+          style={[
+            styles.containerVertical,
+            { padding: spacing.medium },
+          ]}
+        >
+          <Text
+            style={[
+              styles.text,
+              {
+                color: theme.colors.text,
+                fontSize: fontSize.medium,
+                marginBottom: spacing.small,
+              },
+            ]}
+          >
+            {t("pages.login.linksModal_text1")}
+            <Atag href={constants.externalLinks.vrc_register}>
+              {t("pages.login.linksModal_registerLinkText")}
+            </Atag>
+          </Text>
+          <Text
+            style={[
+              styles.text,
+              {
+                color: theme.colors.text,
+                fontSize: fontSize.medium,
+                marginBottom: spacing.small,
+              },
+            ]}
+          >
+            {t("pages.login.linksModal_text2")}
+            <Atag href={constants.externalLinks.vrc_forgot_password}>{t("pages.login.linksModal_passwordLinkText")}</Atag>
+            {" / "}
+            <Atag href={constants.externalLinks.vrc_forgot_email}>{t("pages.login.linksModal_emailLinkText")}</Atag>
           </Text>
         </View>
 
-        {/* 2fa modal */}
-        <GenericModal
-          title="Two-Factor Authentication"
-          buttonItems={[
-            { title: t("pages.login.button_tfa_close"), onPress: () => setOpenTFA(false)},
-            { title: t("pages.login.button_tfa_verify"), onPress: handleVerify, flex: 1 }
-          ]}
-          open={openTFA}
-          onClose={() => setOpenTFA(false)}
-        >
-          <Text style={[styles.text, { color: theme.colors.text }]}>
-            {modeTFA === "totp"
-              ? t("pages.login.tfa_modal_text_totp")
-              : t("pages.login.tfa_modal_text_email")
-            }
-          </Text>
-          <TextInput
-            ref={TFACodeRef}
-            style={[styles.input, { color: theme.colors.text }]}
-            placeholder={t("pages.login.tfaCode_placeholder")}
-            keyboardType="numeric"
-            autoComplete="one-time-code"
-            textContentType="oneTimeCode"
-            maxLength={6}
-            placeholderTextColor={theme.colors.subText}
-            value={TFACode}
-            onChangeText={setTFACode}
-            onFocus={handleAutoFillTFA}
-          />
-        </GenericModal>
-
-        {/* links to vrchat modal */}
-        <GenericModal
-          title={t("pages.login.linksModal_title")}
-          buttonItems={[{ title: t("pages.login.button_links_close"), onPress: () => setOpenLinks(false), flex: 1 }]}
-          open={openLinks}
-          onClose={() => setOpenLinks(false)}
-        >
-          <View
-            style={[
-              styles.containerVertical,
-              { padding: spacing.medium },
-            ]}
-          >
-            <Text
-              style={[
-                styles.text,
-                {
-                  color: theme.colors.text,
-                  fontSize: fontSize.medium,
-                  marginBottom: spacing.small,
-                },
-              ]}
-            >
-              {t("pages.login.linksModal_text1")}
-              <Atag href={constants.externalLinks.vrc_register}>
-                {t("pages.login.linksModal_registerLinkText")}
-              </Atag>
-            </Text>
-            <Text
-              style={[
-                styles.text,
-                {
-                  color: theme.colors.text,
-                  fontSize: fontSize.medium,
-                  marginBottom: spacing.small,
-                },
-              ]}
-            >
-              {t("pages.login.linksModal_text2")}
-              <Atag href={constants.externalLinks.vrc_forgot_password}>{t("pages.login.linksModal_passwordLinkText")}</Atag>
-              {" / "}
-              <Atag href={constants.externalLinks.vrc_forgot_email}>{t("pages.login.linksModal_emailLinkText")}</Atag>
-            </Text>
-          </View>
-
-        </GenericModal>
-      </GenericScreen>
+      </GenericModal>
+    </GenericScreen>
   );
 }
 

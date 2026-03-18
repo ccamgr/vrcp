@@ -40,6 +40,7 @@ interface AuthContextType {
   login: (param: LoginParam) => Promise<LoginRes>;
   logout: () => void;
   verify: (param: VerifyParam) => Promise<VerifyRes>;
+  autoLogin: () => Promise<void>;
 }
 
 const Context = createContext<AuthContextType | undefined>(undefined);
@@ -53,7 +54,7 @@ const useAuth = () => {
 const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const vrc = useVRChat();
   const [user, setUser] = useState<AuthUser | undefined>(undefined);
-  const [ isLoading, setIsLoading ] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
     setIsLoading(true);
@@ -94,7 +95,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
         if (param.saveSecret) {
           SecureStore.setItemAsync("auth_secret_username", param.username);
-          SecureStore.setItemAsync("auth_secret_password", param.password );
+          SecureStore.setItemAsync("auth_secret_password", param.password);
         } else {
           SecureStore.deleteItemAsync("auth_secret_username");
           SecureStore.deleteItemAsync("auth_secret_password");
@@ -194,64 +195,64 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     routeToIndex(); // navigate to index after logout
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const secret = await Promise.all([
-          SecureStore.getItemAsync("auth_secret_username"),
-          SecureStore.getItemAsync("auth_secret_password"),
-        ]);
-        const conf = vrc.configureAPI({
-          username: secret[0] || undefined,
-          password: secret[1] || undefined,
-        }); // configure VRChat client with past data
-        const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
-        const storedData = await Promise.all([
-          Storage.getItem("auth_user_id"),
-          Storage.getItem("auth_user_displayName"),
-          Storage.getItem("auth_user_icon"),
+  const autoLogin = async () => {
+    setIsLoading(true);
+    try {
+      const secret = await Promise.all([
+        SecureStore.getItemAsync("auth_secret_username"),
+        SecureStore.getItemAsync("auth_secret_password"),
+      ]);
+      const conf = vrc.configureAPI({
+        username: secret[0] || undefined,
+        password: secret[1] || undefined,
+      }); // configure VRChat client with past data
+      const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
+      const storedData = await Promise.all([
+        Storage.getItem("auth_user_id"),
+        Storage.getItem("auth_user_displayName"),
+        Storage.getItem("auth_user_icon"),
 
-          SecureStore.getItemAsync("auth_authCookie"),
-          SecureStore.getItemAsync("auth_2faCookie"),
-        ]);
-        const storedUser = {
-          id: storedData[0] || undefined,
-          displayName: storedData[1] || undefined,
-          icon: storedData[2] || undefined,
-        };
-        if (storedUser.id) {
-          const verified = (await api.verifyAuthToken()).data.ok;
+        SecureStore.getItemAsync("auth_authCookie"),
+        SecureStore.getItemAsync("auth_2faCookie"),
+      ]);
+      const storedUser = {
+        id: storedData[0] || undefined,
+        displayName: storedData[1] || undefined,
+        icon: storedData[2] || undefined,
+      };
+      if (storedUser.id) {
+        const verified = (await api.verifyAuthToken()).data.ok;
 
-          if (verified) {
-            const authCookie = storedData[3];
-            if (authCookie) {
-              vrc.configurePipeline(authCookie); // set auth cookie to pipeline
-            }
-            setUser(storedUser);
-            console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
-            routeToHome(); // navigate to tabs if user is logged in
-            setIsLoading(false);
-            return;
-          } else {
-            console.log("token expired.");
+        if (verified) {
+          const authCookie = storedData[3];
+          if (authCookie) {
+            vrc.configurePipeline(authCookie); // set auth cookie to pipeline
           }
+          setUser(storedUser);
+          console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
+          routeToHome(); // navigate to tabs if user is logged in
+          setIsLoading(false);
+          return;
+        } else {
+          console.log("token expired.");
         }
-        api.logout();
-        setUser(undefined); // clear user data if not logged in
-        setIsLoading(false);
-      } catch (e) {
-        console.log("Error loading auth data:", extractErrMsg(e));
-        setUser(undefined);
-        setIsLoading(false);
       }
-    };
+      api.logout();
+      setUser(undefined); // clear user data if not logged in
+      setIsLoading(false);
+    } catch (e) {
+      console.log("Error loading auth data:", extractErrMsg(e));
+      setUser(undefined);
+      setIsLoading(false);
+    }
+  };
 
-    fetchData()
+  useEffect(() => {
+    autoLogin()
   }, []);
 
   return (
-    <Context.Provider value={{ user, login, logout, verify, isLoading }}>
+    <Context.Provider value={{ user, login, logout, verify, autoLogin, isLoading }}>
       {children}
     </Context.Provider>
   );
