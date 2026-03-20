@@ -274,7 +274,7 @@
     "login": {
       "label": "ログイン",
       "welcome": "VRCPへようこそ！\nVRChatアカウントでログインしてください。",
-      "online_count_message": "現在、VRChatには {{count}} 人のオンラインユーザーがいます！",
+      "online_count_message": "いま、{{count}}人がVRChatで過ごしています！",
       "username_placeholder": "ユーザー名 / メールアドレス",
       "username_empty_error": "ユーザー名またはメールアドレスを入力してください。",
       "password_placeholder": "パスワード",

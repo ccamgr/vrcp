@@ -22,9 +22,9 @@ export default function Others() {
         }}
       >
         <MaterialTab.Screen
-          name="analytics"
-          options={{ tabBarLabel: t("pages.others.tabLabel_analytics") }}
-          component={Analytics} //
+          name="notifications"
+          options={{ tabBarLabel: t("pages.others.tabLabel_notifications") }}
+          component={Notifications} //
         />
         <MaterialTab.Screen
           name="events"
@@ -37,9 +37,9 @@ export default function Others() {
           component={Feeds} //
         />
         <MaterialTab.Screen
-          name="notifications"
-          options={{ tabBarLabel: t("pages.others.tabLabel_notifications") }}
-          component={Notifications} //
+          name="analytics"
+          options={{ tabBarLabel: t("pages.others.tabLabel_analytics") }}
+          component={Analytics} //
         />
       </MaterialTab.Navigator>
     </GenericScreen>

@@ -4,7 +4,7 @@ import { Atag } from "@/components/view/Atag";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
-import { MiscellaneousApi } from "@/generated/vrcapi";
+import { Configuration, MiscellaneousApi } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useRef, useState } from "react";
 import {
@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { ButtonEx } from "@/components/CustomElements";
 import IconButton from "@/components/view/icon-components/IconButton";
 import { constants } from "@/configs/const";
+import { getUserAgent } from "@/lib/utils";
 
 // login screen
 export default function Login() {
@@ -125,6 +126,7 @@ export default function Login() {
 
   const logoAnim = useRef(new Animated.Value(0)).current; //
   const [logoMsg, setLogoMsg] = useState<string | null>(null);
+  const logoMsgTimeoutRef = useRef<number | null>(null)
   const onPressInLogo = () => {
     Animated.timing(logoAnim, {
       toValue: 1,
@@ -139,17 +141,30 @@ export default function Login() {
       useNativeDriver: true,
     }).start();
   };
-  const onLongPressLogo = () => {
-    new MiscellaneousApi().getCurrentOnlineUsers()
+  const onPressLogo = () => {
+    const conf = new Configuration({
+      baseOptions: {
+        headers: { "User-Agent": getUserAgent() },
+      },
+    });
+    new MiscellaneousApi(conf).getCurrentOnlineUsers()
       .then((res) => {
+        console.log(res.data)
         const msg = t("pages.login.online_count_message", { count: res.data });
         setLogoMsg(msg);
-        setTimeout(() => setLogoMsg(null), 5000);
+        if (logoMsgTimeoutRef.current)  clearTimeout(logoMsgTimeoutRef.current);
+        logoMsgTimeoutRef.current = setTimeout(() => {
+          setLogoMsg(null)
+          logoMsgTimeoutRef.current = null
+        }, 3000);
       })
       .catch((err) => {
         console.log("Failed to get online users:", err);
       });
 
+  }
+  const onLongPressLogo = () => {
+    auth.autoLogin()
   };
 
   return (
@@ -158,6 +173,19 @@ export default function Login() {
       {auth.isLoading && <LoadingIndicator absolute />}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.containerCentered}>
+
+          <View style={styles.logoPopup}>
+            {logoMsg && (
+              <Text
+                style={[
+                  styles.header,
+                  { color: theme.colors.text, marginBottom: spacing.large },
+                ]}
+              >
+                {logoMsg}
+              </Text>
+            )}
+          </View>
           <Pressable
             style={{
               width: "80%",
@@ -170,7 +198,8 @@ export default function Login() {
             }}
             onPressIn={onPressInLogo}
             onPressOut={onPressOutLogo}
-            onLongPress={onLongPressLogo} // navigate to sitemap on logo press (for debug)
+            onPress={onPressLogo}
+            onLongPress={onLongPressLogo}
             delayLongPress={1000}
           >
             <Animated.Image
@@ -425,6 +454,11 @@ const styles = StyleSheet.create({
   button: {
     // padding: spacing.medium,
     borderRadius: 5,
+  },
+
+  logoPopup: {
+    position: "absolute",
+    top: "10%"
   },
 
 
