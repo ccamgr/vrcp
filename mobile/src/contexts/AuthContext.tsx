@@ -202,6 +202,12 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         SecureStore.getItemAsync("auth_secret_username"),
         SecureStore.getItemAsync("auth_secret_password"),
       ]);
+      console.log("Auto login with secret: {", secret[0], secret[1], "}");
+      if (!secret[0] || !secret[1]) {
+        console.log("No secret found for auto login");
+        setIsLoading(false);
+        return;
+      }
       const conf = vrc.configureAPI({
         username: secret[0] || undefined,
         password: secret[1] || undefined,
@@ -237,7 +243,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
           console.log("token expired.");
         }
       }
-      api.logout();
+      // api.logout(); // clear session in library just in case
       setUser(undefined); // clear user data if not logged in
       setIsLoading(false);
     } catch (e) {

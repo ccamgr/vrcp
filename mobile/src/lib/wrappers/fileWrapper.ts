@@ -8,51 +8,70 @@ const isNative = Platform.OS !== 'web';
 // if native, use expo-file-system APIs
 // if web, use localStorage or IndexedDB (not implemented yet)
 class FileWrapper {
-  static async getInfoAsync(localUri: string) {
+  static documentDirectory = isNative ? FileSystem.documentDirectory : "document/";
+  static cacheDirectory = isNative ? FileSystem.cacheDirectory : "cache/";
+
+  static async getInfoAsync(localUri: string, options?: FileSystem.InfoOptions | undefined) {
     if (isNative) {
-      return FileSystem.getInfoAsync(localUri);
+      return FileSystem.getInfoAsync(localUri, options ?? {});
     } else {
       return { exists: false } as FileSystem.FileInfo;
     }
   };
-  static async readAsStringAsync(localUri: string) {
+  static async readAsStringAsync(localUri: string, options?: FileSystem.ReadingOptions | undefined) {
     if (isNative) {
-      return FileSystem.readAsStringAsync(localUri);
+      return FileSystem.readAsStringAsync(localUri, options ?? { encoding: FileSystem.EncodingType.UTF8 });
     } else {
       return '';
     }
   };
-  static async writeAsStringAsync(localUri: string, content: string) {
+  static async writeAsStringAsync(localUri: string, content: string, options?: FileSystem.WritingOptions | undefined) {
     if (isNative) {
-      return FileSystem.writeAsStringAsync(localUri, content);
+      return FileSystem.writeAsStringAsync(localUri, content, options ?? { encoding: FileSystem.EncodingType.UTF8 });
     } else {
       return;
     }
   }
-  static async deleteAsync(localUri: string) {
+  static async deleteAsync(localUri: string, options?: FileSystem.DeletingOptions | undefined) {
     if (isNative) {
-      return FileSystem.deleteAsync(localUri, { idempotent: true });
-    } else {
-      return;
-    }
-  }
-
-  static async makeDirectoryAsync(localUri: string) {
-    if (isNative) {
-      return FileSystem.makeDirectoryAsync(localUri, { intermediates: true });
+      return FileSystem.deleteAsync(localUri, options ?? { idempotent: true });
     } else {
       return;
     }
   }
 
-  static async downloadAsync(remoteUrl: string, localUri: string, option:any) {
+  static async moveAsync(options: { from: string; to: string }) {
     if (isNative) {
-      return FileSystem.downloadAsync(remoteUrl, localUri, option);
+      return FileSystem.moveAsync(options);
+    } else {
+      return;
+    }
+  }
+
+  static async makeDirectoryAsync(localUri: string, options?: FileSystem.MakeDirectoryOptions | undefined) {
+    if (isNative) {
+      return FileSystem.makeDirectoryAsync(localUri, options ?? { intermediates: true });
+    } else {
+      return;
+    }
+  }
+
+  static async readDirectoryAsync(localUri: string) {
+    if (isNative) {
+      return FileSystem.readDirectoryAsync(localUri);
+    } else {
+      return [];
+    }
+  }
+
+  static async downloadAsync(remoteUrl: string, localUri: string, options?: FileSystem.DownloadOptions | undefined) {
+    if (isNative) {
+      return FileSystem.downloadAsync(remoteUrl, localUri, options ?? {});
     } else {
       return { uri: localUri, status: 404, headers: {}, mimeType: "application/octet-stream" } as FileSystem.FileSystemDownloadResult;
     }
   }
-  
+
   static async copyAsync(options: { from: string; to: string }) {
     if (isNative) {
       return FileSystem.copyAsync(options);
@@ -70,7 +89,7 @@ export default FileWrapper;
  * Share a file via the system's sharing capabilities.
  * @param fileUrl local file uri or remote url
  * @param fileName optional, if provided, the file will be saved/copied with this name
- * @returns 
+ * @returns
  */
 // export async function shareFile(fileUrl: string, fileName?: string) {
 //   if (!isNative) return;
@@ -108,7 +127,7 @@ export default FileWrapper;
 
 //     // 共有シートを開く
 //     await Sharing.shareAsync(uri, {
-//       dialogTitle: 'ファイルを保存または共有', 
+//       dialogTitle: 'ファイルを保存または共有',
 //       mimeType,
 //     });
 

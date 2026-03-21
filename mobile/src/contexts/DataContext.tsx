@@ -20,7 +20,7 @@ import Storage from "expo-sqlite/kv-store";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
-// Store VRCAPI Data Globally
+// Store Common VRCAPI Data Globally
 
 
 interface DataWrapper<T> {

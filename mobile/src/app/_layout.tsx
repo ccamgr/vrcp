@@ -20,7 +20,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import '@/i18n'; // i18n 初期化
 import GlobalDrawer from "@/components/layout/GlobalDrawer";
 import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
-import { registerBackgroundTaskAsync } from "@/tasks/bg-fetch";
+import { LogProvider } from "@/contexts/LogContext";
+import { registerBackgroundTaskAsync } from "@/tasks/taskregister";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
@@ -29,7 +30,6 @@ function RootLayout() {
   const auth = useAuth();
   useEffect(() => {
     if (!auth.isLoading) {
-      console.log("Auth loading finished, hiding splash screen");
       SplashScreen.hideAsync();
     }
   }, [auth.isLoading]);
@@ -60,50 +60,44 @@ export default function Root() {
   const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
 
   useEffect(() => {
-    const initTask = async () => {
-      try {
-        await registerBackgroundTaskAsync();
-        console.log('Background task registered successfully');
-      } catch (err) {
-        console.error('Failed to register background task:', err);
-      }
-    };
-
-    initTask();
+    // init tasks
+    registerBackgroundTaskAsync();
   }, []);
 
   return (
-    <SettingProvider>
-      <QueryClientProvider client={queryClient}>
-        {/* <DBProvider> */}
-        <VRChatProvider>
-          <AuthProvider>
-            <CacheProvider>
-              <DataProvider>
-                <SafeAreaProvider>
-                  {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <ThemeProvider
-                      value={theme}
-                    >
-                      <AppMenuProvider>
-                        <ToastProvider>
-                          <GlobalDrawer>
-                            <RootLayout />
-                          </GlobalDrawer>
-                          <StatusBar style="auto" />
-                        </ToastProvider>
-                      </AppMenuProvider>
-                    </ThemeProvider>
-                  </GestureHandlerRootView>
-                  {/* </SafeAreaView> */}
-                </SafeAreaProvider>
-              </DataProvider>
-            </CacheProvider>
-          </AuthProvider>
-        </VRChatProvider>
-        {/* </DBProvider> */}
-      </QueryClientProvider>
-    </SettingProvider>
+    <LogProvider>
+      <SettingProvider>
+        <QueryClientProvider client={queryClient}>
+          {/* <DBProvider> */}
+          <VRChatProvider>
+            <AuthProvider>
+              <CacheProvider>
+                <DataProvider>
+                  <SafeAreaProvider>
+                    {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                      <ThemeProvider
+                        value={theme}
+                      >
+                        <AppMenuProvider>
+                          <ToastProvider>
+                            <GlobalDrawer>
+                              <RootLayout />
+                            </GlobalDrawer>
+                            <StatusBar style="auto" />
+                          </ToastProvider>
+                        </AppMenuProvider>
+                      </ThemeProvider>
+                    </GestureHandlerRootView>
+                    {/* </SafeAreaView> */}
+                  </SafeAreaProvider>
+                </DataProvider>
+              </CacheProvider>
+            </AuthProvider>
+          </VRChatProvider>
+          {/* </DBProvider> */}
+        </QueryClientProvider>
+      </SettingProvider>
+    </LogProvider>
   );
 }

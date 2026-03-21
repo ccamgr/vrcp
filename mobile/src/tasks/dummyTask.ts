@@ -28,14 +28,3 @@ TaskManager.defineTask(TASK_NAME, async () => {
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
-
-// 登録関数
-export async function registerBackgroundTaskAsync() {
-  return BackgroundTask.registerTaskAsync(TASK_NAME, {
-    minimumInterval: 60 * 60 * 3, // 3時間 (秒)
-  });
-}
-
-export async function unregisterBackgroundTaskAsync() {
-  return BackgroundTask.unregisterTaskAsync(TASK_NAME);
-}

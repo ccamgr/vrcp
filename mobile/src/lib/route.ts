@@ -19,7 +19,7 @@ export const routeToUserGroups = (id: string) => push(`/details/user/${id}/group
 // Settings routes
 export const routeToAppearanceSettings = () => push(`/settings/appearance`);
 export const routeToDatabaseSettings = () => push(`/settings/database`);
-export const routeToNotificationSettings = () => push(`/settings/notifications`);
+export const routeToNotificationSettings = () => push(`/settings/notification`);
 export const routeToDesktopAppSettings = () => push(`/settings/desktopapp`);
 export const routeToLanguageSettings = () => push(`/settings/language`);
 

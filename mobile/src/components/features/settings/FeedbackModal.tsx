@@ -3,12 +3,13 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, spacing } from "@/configs/styles";
+import { useLog } from "@/contexts/LogContext";
 import { useToast } from "@/contexts/ToastContext";
+import { FeedbackType, sendFeedbacktoDevelopper } from "@/lib/funcs/sendFeedbackToDevelopper";
 import { useTheme } from "@react-navigation/native";
-import { it } from "date-fns/locale";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, Text, TextInput } from "react-native";
+import { Platform, StyleSheet, Text, TextInput } from "react-native";
 
 interface Props {
   open: boolean;
@@ -17,10 +18,10 @@ interface Props {
 
 const FeedbackModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
+  const { log, getRecentLogFilePath } = useLog();
   const { t } = useTranslation();
   const {showToast} = useToast();
-  const webhookUrl = process.env.EXPO_PUBLIC_DISCORD_WEBHOOK_URL;
-  const [type, setType] = useState<string>("feedback");
+  const [type, setType] = useState<FeedbackType>("bug-report");
   const [email, setEmail] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const emailRef = useRef<TextInput>(null);
@@ -32,31 +33,13 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
     if (!email) return emailRef.current?.focus();
     if (!content) return contentRef.current?.focus();
 
-    const MsgContent =
-`----------------
-**Type:** ${type}
-**Email:** ${email}
-
-**Content:**
-${content}
-----------------`
-
     try {
       setIsLoading(true);
-      const res = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: MsgContent,
-        }),
-      });
+      const logfilePath = type == "bug-report" ? getRecentLogFilePath() : null;
+      const res = await sendFeedbacktoDevelopper(type , email, content, logfilePath);
       if (res.ok) {
         showToast("success", "Thank you for your feedback!");
         setOpen(false);
-        setType("feedback");
-        setEmail("");
         setContent("");
       } else {
         showToast("error", "oops! failed to send feedback...");
@@ -83,10 +66,10 @@ ${content}
 
   const feedbackTypes: {
     label: string;
-    value: string;
+    value: FeedbackType;
   }[] = [
-    { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
     { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
+    { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
     { label: t("components.feedbackModal.type_request"), value: "request" },
   ];
 

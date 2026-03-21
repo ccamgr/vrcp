@@ -8,7 +8,6 @@ import {
   World,
 } from "@/generated/vrcapi";
 import * as Crypto from "expo-crypto";
-import * as FileSystem from "expo-file-system";
 import React, {
   createContext,
   ReactNode,
@@ -64,12 +63,11 @@ interface CacheContextType {
   avatar: CacheWrapper<Avatar, "byId">;
 }
 
-const isNative = Platform.OS !== "web";
 
 const Context = createContext<CacheContextType | undefined>(undefined);
 
 // root-directory for cache, only-use on native
-const cacheRootDir = isNative ? `${FileSystem.cacheDirectory}` : "cache";
+const cacheRootDir = FileWrapper.cacheDirectory ?? "invalid";
 
 // get local file uri from key (id or url), subDirName must end with /
 const getLocalUri = async (
@@ -153,33 +151,28 @@ const CacheProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     initTrigger.current += 1;
   };
   const getCacheInfo = async () => {
-    if (isNative) {
-      // recursively get total size and count of files in cache root-dir
-      const countFileRecursive = async (dir: string): Promise<number> => {
-        let totalCount = 0;
-        const items = await FileSystem.readDirectoryAsync(dir);
-        await Promise.all(items.map(async (item) => {
-          const itemPath = dir + item;
-          const info = await FileSystem.getInfoAsync(itemPath);
-          if (info.isDirectory) {
-            const subDirTotal = await countFileRecursive(itemPath + "/");
-            totalCount += subDirTotal;
-          } else {
-            totalCount += 1;
-          }
-        }));
-        return totalCount;
-      };
-      const rootInfo = await FileSystem.getInfoAsync(cacheRootDir);
-      const rootSize = rootInfo.exists ? rootInfo.size || 0 : 0;
-      const rootCount = rootInfo.exists
-        ? await countFileRecursive(cacheRootDir)
-        : 0;
-      return { size: rootSize, count: rootCount };
-    } else {
-      // on web, get total size and count of files in indexeddb under the cacheRootDir
-      return { size: 0, count: 0 };
-    }
+    // recursively get total size and count of files in cache root-dir
+    const countFileRecursive = async (dir: string): Promise<number> => {
+      let totalCount = 0;
+      const items = await FileWrapper.readDirectoryAsync(dir);
+      await Promise.all(items.map(async (item) => {
+        const itemPath = dir + item;
+        const info = await FileWrapper.getInfoAsync(itemPath);
+        if (info.isDirectory) {
+          const subDirTotal = await countFileRecursive(itemPath + "/");
+          totalCount += subDirTotal;
+        } else {
+          totalCount += 1;
+        }
+      }));
+      return totalCount;
+    };
+    const rootInfo = await FileWrapper.getInfoAsync(cacheRootDir);
+    const rootSize = rootInfo.exists ? rootInfo.size || 0 : 0;
+    const rootCount = rootInfo.exists
+      ? await countFileRecursive(cacheRootDir)
+      : 0;
+    return { size: rootSize, count: rootCount };
   };
 
   return (
@@ -215,21 +208,19 @@ function useCacheWrapper<T = any, M extends CacheMode = any>(
   if (opt.type !== "json") throw new Error("not-implemented cache type: " + opt.type);
 
   // initiate cache sub-directory
-  if (isNative) {
-    FileSystem.getInfoAsync(cacheRootDir + subDir)
-      .then((dirInfo) => {
-        if (!dirInfo.exists)
-          FileSystem.makeDirectoryAsync(cacheRootDir + subDir, {
-            intermediates: true,
-          });
-      })
-      .catch((error) => {
-        console.error(
-          `Error creating cache sub-dir: ${cacheRootDir + subDir}`,
-          error
-        );
-      });
-  }
+  FileWrapper.getInfoAsync(cacheRootDir + subDir)
+    .then((dirInfo) => {
+      if (!dirInfo.exists)
+        FileWrapper.makeDirectoryAsync(cacheRootDir + subDir, {
+          intermediates: true,
+        });
+    })
+    .catch((error) => {
+      console.error(
+        `Error creating cache sub-dir: ${cacheRootDir + subDir}`,
+        error
+      );
+    });
 
   const get = async (id: string, opt: CacheOption, forceFetch: boolean = false): Promise<T> => {
     const localUri = await getLocalUri(id, subDir, opt.encrypt);
