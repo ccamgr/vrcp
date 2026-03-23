@@ -24,7 +24,7 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
- * 
+ *
  * @export
  * @interface APIConfig
  */
@@ -42,7 +42,7 @@ export interface APIConfig {
      */
     'VoiceEnableReceiverLimiting': boolean;
     /**
-     * 
+     *
      * @type {APIConfigAccessLogsUrls}
      * @memberof APIConfig
      */
@@ -54,19 +54,19 @@ export interface APIConfig {
      */
     'address': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof APIConfig
      */
     'ageVerificationInviteVisible': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof APIConfig
      */
     'ageVerificationP': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof APIConfig
      */
@@ -114,7 +114,7 @@ export interface APIConfig {
      */
     'availableLanguages': Array<string>;
     /**
-     * 
+     *
      * @type {APIConfigAvatarPerfLimiter}
      * @memberof APIConfig
      */
@@ -222,7 +222,7 @@ export interface APIConfig {
      */
     'clientSentCountAllowance': number;
     /**
-     * 
+     *
      * @type {APIConfigConstants}
      * @memberof APIConfig
      */
@@ -252,13 +252,13 @@ export interface APIConfig {
      */
     'currentTOSVersion': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfig
      */
     'defaultAvatar': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfig
      */
@@ -405,7 +405,7 @@ export interface APIConfig {
      */
     'downloadLinkWindows': string;
     /**
-     * 
+     *
      * @type {APIConfigDownloadURLList}
      * @memberof APIConfig
      */
@@ -435,7 +435,7 @@ export interface APIConfig {
      */
     'economyState'?: number;
     /**
-     * 
+     *
      * @type {APIConfigEvents}
      * @memberof APIConfig
      */
@@ -489,7 +489,7 @@ export interface APIConfig {
      */
     'jobsEmail': string;
     /**
-     * 
+     *
      * @type {APIConfigMinSupportedClientBuildNumber}
      * @memberof APIConfig
      */
@@ -513,7 +513,7 @@ export interface APIConfig {
      */
     'notAllowedToSelectAvatarInPrivateWorldMessage': string;
     /**
-     * 
+     *
      * @type {APIConfigOfflineAnalysis}
      * @memberof APIConfig
      */
@@ -549,7 +549,7 @@ export interface APIConfig {
      */
     'publicKey': string;
     /**
-     * 
+     *
      * @type {APIConfigReportCategories}
      * @memberof APIConfig
      */
@@ -561,19 +561,19 @@ export interface APIConfig {
      */
     'reportFormUrl': string;
     /**
-     * 
+     *
      * @type {APIConfigReportOptions}
      * @memberof APIConfig
      */
     'reportOptions': APIConfigReportOptions;
     /**
-     * 
+     *
      * @type {APIConfigReportReasons}
      * @memberof APIConfig
      */
     'reportReasons': APIConfigReportReasons;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof APIConfig
      */
@@ -712,31 +712,31 @@ export interface APIConfig {
     'whiteListedAssetUrls': Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigAccessLogsUrls
  */
 export interface APIConfigAccessLogsUrls {
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfigAccessLogsUrls
      */
     'Default'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfigAccessLogsUrls
      */
     'Pico'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfigAccessLogsUrls
      */
     'Quest'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIConfigAccessLogsUrls
      */
@@ -762,43 +762,43 @@ export interface APIConfigAnnouncement {
     'text': string;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigAvatarPerfLimiter
  */
 export interface APIConfigAvatarPerfLimiter {
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
     'AndroidMobile': PerformanceLimiterInfo;
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
     'PC': PerformanceLimiterInfo;
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
     'Pico': PerformanceLimiterInfo;
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
     'Quest': PerformanceLimiterInfo;
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
     'XRElite': PerformanceLimiterInfo;
     /**
-     * 
+     *
      * @type {PerformanceLimiterInfo}
      * @memberof APIConfigAvatarPerfLimiter
      */
@@ -811,19 +811,19 @@ export interface APIConfigAvatarPerfLimiter {
  */
 export interface APIConfigConstants {
     /**
-     * 
+     *
      * @type {APIConfigConstantsGROUPS}
      * @memberof APIConfigConstants
      */
     'GROUPS': APIConfigConstantsGROUPS;
     /**
-     * 
+     *
      * @type {APIConfigConstantsINSTANCE}
      * @memberof APIConfigConstants
      */
     'INSTANCE': APIConfigConstantsINSTANCE;
     /**
-     * 
+     *
      * @type {APIConfigConstantsLANGUAGE}
      * @memberof APIConfigConstants
      */
@@ -903,7 +903,7 @@ export interface APIConfigConstantsGROUPS {
  */
 export interface APIConfigConstantsINSTANCE {
     /**
-     * 
+     *
      * @type {APIConfigConstantsINSTANCEPOPULATIONBRACKETS}
      * @memberof APIConfigConstantsINSTANCE
      */
@@ -916,19 +916,19 @@ export interface APIConfigConstantsINSTANCE {
  */
 export interface APIConfigConstantsINSTANCEPOPULATIONBRACKETS {
     /**
-     * 
+     *
      * @type {APIConfigConstantsINSTANCEPOPULATIONBRACKETSCROWDED}
      * @memberof APIConfigConstantsINSTANCEPOPULATIONBRACKETS
      */
     'CROWDED'?: APIConfigConstantsINSTANCEPOPULATIONBRACKETSCROWDED;
     /**
-     * 
+     *
      * @type {APIConfigConstantsINSTANCEPOPULATIONBRACKETSFEW}
      * @memberof APIConfigConstantsINSTANCEPOPULATIONBRACKETS
      */
     'FEW'?: APIConfigConstantsINSTANCEPOPULATIONBRACKETSFEW;
     /**
-     * 
+     *
      * @type {APIConfigConstantsINSTANCEPOPULATIONBRACKETSMANY}
      * @memberof APIConfigConstantsINSTANCEPOPULATIONBRACKETS
      */
@@ -1043,7 +1043,7 @@ export interface APIConfigDownloadURLList {
     'vcc': string;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigEvents
  */
@@ -1116,67 +1116,67 @@ export interface APIConfigEvents {
  */
 export interface APIConfigMinSupportedClientBuildNumber {
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'AppStore': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'Default': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'Firebase': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'FirebaseiOS': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'GooglePlay': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'PC': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'PicoStore': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'QuestAppLab': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'QuestStore': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
     'TestFlight': PlatformBuildInfo;
     /**
-     * 
+     *
      * @type {PlatformBuildInfo}
      * @memberof APIConfigMinSupportedClientBuildNumber
      */
@@ -1208,79 +1208,79 @@ export interface APIConfigOfflineAnalysis {
  */
 export interface APIConfigReportCategories {
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'avatar': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'avatarpage'?: ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'behavior': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'chat': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'emoji'?: ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'environment': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'groupstore': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'image': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'sticker'?: ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'text': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'warnings': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
     'worldimage': ReportCategory;
     /**
-     * 
+     *
      * @type {ReportCategory}
      * @memberof APIConfigReportCategories
      */
@@ -1293,155 +1293,155 @@ export interface APIConfigReportCategories {
  */
 export interface APIConfigReportOptions {
     /**
-     * 
+     *
      * @type {APIConfigReportOptionsAvatar}
      * @memberof APIConfigReportOptions
      */
     'avatar'?: APIConfigReportOptionsAvatar;
     /**
-     * 
+     *
      * @type {APIConfigReportOptionsGroup}
      * @memberof APIConfigReportOptions
      */
     'group'?: APIConfigReportOptionsGroup;
     /**
-     * 
+     *
      * @type {APIConfigReportOptionsUser}
      * @memberof APIConfigReportOptions
      */
     'user'?: APIConfigReportOptionsUser;
     /**
-     * 
+     *
      * @type {APIConfigReportOptionsWorld}
      * @memberof APIConfigReportOptions
      */
     'world'?: APIConfigReportOptionsWorld;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigReportOptionsAvatar
  */
 export interface APIConfigReportOptionsAvatar {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsAvatar
      */
     'avatar'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsAvatar
      */
     'avatarpage'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsAvatar
      */
     'warnings'?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigReportOptionsGroup
  */
 export interface APIConfigReportOptionsGroup {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsGroup
      */
     'groupstore'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsGroup
      */
     'image'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsGroup
      */
     'text'?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigReportOptionsUser
  */
 export interface APIConfigReportOptionsUser {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'behavior'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'chat'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'emoji'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'image'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'sticker'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsUser
      */
     'text'?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface APIConfigReportOptionsWorld
  */
 export interface APIConfigReportOptionsWorld {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsWorld
      */
     'environment'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsWorld
      */
     'text'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsWorld
      */
     'warnings'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsWorld
      */
     'worldimage'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof APIConfigReportOptionsWorld
      */
@@ -1454,165 +1454,165 @@ export interface APIConfigReportOptionsWorld {
  */
 export interface APIConfigReportReasons {
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'billing': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'botting': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'cancellation': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'copyright'?: ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'fraud'?: ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'gore': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'hacking': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'harassing': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'hateful': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'impersonation': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'inappropriate': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'leaking': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'malicious': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'missing': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'nudity': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'renewal': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'security': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'service': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'sexual': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'technical'?: ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'threatening': ReportReason;
     /**
-     * 
+     *
      * @type {ReportReason}
      * @memberof APIConfigReportReasons
      */
     'visuals': ReportReason;
 }
 /**
- * 
+ *
  * @export
  * @interface APIHealth
  */
 export interface APIHealth {
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIHealth
      */
     'buildVersionTag': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof APIHealth
      */
     'ok': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof APIHealth
      */
     'serverName': string;
 }
 /**
- * 
+ *
  * @export
  * @interface AccountDeletionLog
  */
@@ -1637,7 +1637,7 @@ export interface AccountDeletionLog {
     'message'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface AddFavoriteRequest
  */
@@ -1655,7 +1655,7 @@ export interface AddFavoriteRequest {
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {FavoriteType}
      * @memberof AddFavoriteRequest
      */
@@ -1664,38 +1664,38 @@ export interface AddFavoriteRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface AddGroupGalleryImageRequest
  */
 export interface AddGroupGalleryImageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AddGroupGalleryImageRequest
      */
     'fileId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface AdminAssetBundle
  */
 export interface AdminAssetBundle {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     '_created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     '_updated_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
@@ -1707,55 +1707,55 @@ export interface AdminAssetBundle {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'name': string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof AdminAssetBundle
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof AdminAssetBundle
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminAssetBundle
      */
     'unityPackageUrl': string | null;
     /**
-     * 
+     *
      * @type {Set<AdminUnityPackage>}
      * @memberof AdminAssetBundle
      */
@@ -1764,19 +1764,19 @@ export interface AdminAssetBundle {
 
 
 /**
- * 
+ *
  * @export
  * @interface AdminUnityPackage
  */
 export interface AdminUnityPackage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminUnityPackage
      */
     'assetUrl': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AdminUnityPackage
      */
@@ -1788,20 +1788,20 @@ export interface AdminUnityPackage {
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminUnityPackage
      */
     'unityVersion': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AdminUnityPackage
      */
     'variant': string;
 }
 /**
- * `verified` is obsolete.  User who have verified and are 18+ can switch to `plus18` status. 
+ * `verified` is obsolete.  User who have verified and are 18+ can switch to `plus18` status.
  * @export
  * @enum {string}
  */
@@ -1816,13 +1816,13 @@ export type AgeVerificationStatus = typeof AgeVerificationStatus[keyof typeof Ag
 
 
 /**
- * 
+ *
  * @export
  * @interface Avatar
  */
 export interface Avatar {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
@@ -1846,146 +1846,146 @@ export interface Avatar {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'description': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Avatar
      */
     'featured': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Avatar
      */
     'highestPrice'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'listingDate': string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Avatar
      */
     'lock'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Avatar
      */
     'lowestPrice'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'name': string;
     /**
-     * 
+     *
      * @type {AvatarPerformance}
      * @memberof Avatar
      */
     'performance': AvatarPerformance;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'productId'?: string;
     /**
-     * 
+     *
      * @type {Array<AvatarPublishedListingsInner>}
      * @memberof Avatar
      */
     'publishedListings'?: Array<AvatarPublishedListingsInner>;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof Avatar
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Avatar
      */
     'searchable'?: boolean;
     /**
-     * 
+     *
      * @type {AvatarStyles}
      * @memberof Avatar
      */
     'styles': AvatarStyles;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof Avatar
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'unityPackageUrl': string;
     /**
-     * 
+     *
      * @type {AvatarUnityPackageUrlObject}
      * @memberof Avatar
      * @deprecated
      */
     'unityPackageUrlObject': AvatarUnityPackageUrlObject;
     /**
-     * 
+     *
      * @type {Set<UnityPackage>}
      * @memberof Avatar
      */
     'unityPackages': Set<UnityPackage>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Avatar
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Avatar
      */
@@ -1994,25 +1994,25 @@ export interface Avatar {
 
 
 /**
- * 
+ *
  * @export
  * @interface AvatarModeration
  */
 export interface AvatarModeration {
     /**
-     * 
+     *
      * @type {AvatarModerationType}
      * @memberof AvatarModeration
      */
     'avatarModerationType': AvatarModerationType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarModeration
      */
     'created': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarModeration
      */
@@ -2021,13 +2021,13 @@ export interface AvatarModeration {
 
 
 /**
- * 
+ *
  * @export
  * @interface AvatarModerationCreated
  */
 export interface AvatarModerationCreated {
     /**
-     * 
+     *
      * @type {AvatarModerationType}
      * @memberof AvatarModerationCreated
      */
@@ -2039,7 +2039,7 @@ export interface AvatarModerationCreated {
      */
     'created': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarModerationCreated
      */
@@ -2048,7 +2048,7 @@ export interface AvatarModerationCreated {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -2061,130 +2061,130 @@ export type AvatarModerationType = typeof AvatarModerationType[keyof typeof Avat
 
 
 /**
- * 
+ *
  * @export
  * @interface AvatarPerformance
  */
 export interface AvatarPerformance {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPerformance
      */
     'android'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AvatarPerformance
      */
     'android-sort'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPerformance
      */
     'ios'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AvatarPerformance
      */
     'ios-sort'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPerformance
      */
     'standalonewindows'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AvatarPerformance
      */
     'standalonewindows-sort'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface AvatarPublishedListingsInner
  */
 export interface AvatarPublishedListingsInner {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPublishedListingsInner
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPublishedListingsInner
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPublishedListingsInner
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPublishedListingsInner
      */
     'listingId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarPublishedListingsInner
      */
     'listingType'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AvatarPublishedListingsInner
      */
     'priceTokens'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface AvatarStyle
  */
 export interface AvatarStyle {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarStyle
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarStyle
      */
     'styleName': string;
 }
 /**
- * 
+ *
  * @export
  * @interface AvatarStyles
  */
 export interface AvatarStyles {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarStyles
      */
     'primary'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarStyles
      */
     'secondary'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof AvatarStyles
      */
@@ -2197,14 +2197,14 @@ export interface AvatarStyles {
  */
 export interface AvatarUnityPackageUrlObject {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AvatarUnityPackageUrlObject
      */
     'unityPackageUrl'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface Badge
  */
@@ -2216,13 +2216,13 @@ export interface Badge {
      */
     'assignedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Badge
      */
     'badgeDescription': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Badge
      */
@@ -2234,7 +2234,7 @@ export interface Badge {
      */
     'badgeImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Badge
      */
@@ -2246,7 +2246,7 @@ export interface Badge {
      */
     'hidden'?: boolean | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Badge
      */
@@ -2259,32 +2259,32 @@ export interface Badge {
     'updatedAt'?: string | null;
 }
 /**
- * 
+ *
  * @export
  * @interface Balance
  */
 export interface Balance {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Balance
      */
     'balance': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Balance
      */
     'noTransactions'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Balance
      */
     'tiliaResponse'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface BanGroupMemberRequest
  */
@@ -2297,195 +2297,195 @@ export interface BanGroupMemberRequest {
     'userId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface CalendarEvent
  */
 export interface CalendarEvent {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'accessType': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'category': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CalendarEvent
      */
     'closeInstanceAfterEndMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'deletedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'endsAt': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CalendarEvent
      */
     'featured'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CalendarEvent
      */
     'guestEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CalendarEvent
      */
     'hostEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'imageUrl'?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CalendarEvent
      */
     'interestedUserCount'?: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CalendarEvent
      */
     'isDraft'?: boolean;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CalendarEvent
      */
     'languages'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'ownerId'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CalendarEvent
      */
     'platforms'?: Array<string>;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CalendarEvent
      */
     'roleIds'?: Array<string> | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'startsAt': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CalendarEvent
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'title': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'type'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEvent
      */
     'updatedAt'?: string;
     /**
-     * 
+     *
      * @type {CalendarEventUserInterest}
      * @memberof CalendarEvent
      */
     'userInterest'?: CalendarEventUserInterest;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CalendarEvent
      */
     'usesInstanceOverflow'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface CalendarEventUserInterest
  */
 export interface CalendarEventUserInterest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEventUserInterest
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CalendarEventUserInterest
      */
     'isFollowing'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CalendarEventUserInterest
      */
     'updatedAt'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface ChangeUserTagsRequest
  */
@@ -2498,19 +2498,19 @@ export interface ChangeUserTagsRequest {
     'tags': Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateAvatarModerationRequest
  */
 export interface CreateAvatarModerationRequest {
     /**
-     * 
+     *
      * @type {AvatarModerationType}
      * @memberof CreateAvatarModerationRequest
      */
     'avatarModerationType': AvatarModerationType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarModerationRequest
      */
@@ -2519,19 +2519,19 @@ export interface CreateAvatarModerationRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateAvatarRequest
  */
 export interface CreateAvatarRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'assetUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
@@ -2543,25 +2543,25 @@ export interface CreateAvatarRequest {
      */
     'created_at'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
@@ -2573,31 +2573,31 @@ export interface CreateAvatarRequest {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof CreateAvatarRequest
      */
     'releaseStatus'?: ReleaseStatus;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateAvatarRequest
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'thumbnailImageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
     'unityPackageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateAvatarRequest
      */
@@ -2609,7 +2609,7 @@ export interface CreateAvatarRequest {
      */
     'updated_at'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateAvatarRequest
      */
@@ -2618,31 +2618,31 @@ export interface CreateAvatarRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateCalendarEventRequest
  */
 export interface CreateCalendarEventRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
     'accessType': CreateCalendarEventRequestAccessTypeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
     'category': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateCalendarEventRequest
      */
     'closeInstanceAfterEndMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
@@ -2654,55 +2654,55 @@ export interface CreateCalendarEventRequest {
      */
     'endsAt': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateCalendarEventRequest
      */
     'featured'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateCalendarEventRequest
      */
     'guestEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateCalendarEventRequest
      */
     'hostEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateCalendarEventRequest
      */
     'isDraft'?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
     'languages'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateCalendarEventRequest
      */
     'parentId'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
     'platforms'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
@@ -2720,7 +2720,7 @@ export interface CreateCalendarEventRequest {
      */
     'startsAt': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CreateCalendarEventRequest
      */
@@ -2732,7 +2732,7 @@ export interface CreateCalendarEventRequest {
      */
     'title': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateCalendarEventRequest
      */
@@ -2747,31 +2747,31 @@ export const CreateCalendarEventRequestAccessTypeEnum = {
 export type CreateCalendarEventRequestAccessTypeEnum = typeof CreateCalendarEventRequestAccessTypeEnum[keyof typeof CreateCalendarEventRequestAccessTypeEnum];
 
 /**
- * 
+ *
  * @export
  * @interface CreateFileRequest
  */
 export interface CreateFileRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateFileRequest
      */
     'extension': string;
     /**
-     * 
+     *
      * @type {MIMEType}
      * @memberof CreateFileRequest
      */
     'mimeType': MIMEType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateFileRequest
      */
     'name': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateFileRequest
      */
@@ -2780,44 +2780,44 @@ export interface CreateFileRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateFileVersionRequest
  */
 export interface CreateFileVersionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateFileVersionRequest
      */
     'fileMd5'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateFileVersionRequest
      */
     'fileSizeInBytes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateFileVersionRequest
      */
     'signatureMd5': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateFileVersionRequest
      */
     'signatureSizeInBytes': number;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateGroupAnnouncementRequest
  */
 export interface CreateGroupAnnouncementRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupAnnouncementRequest
      */
@@ -2842,7 +2842,7 @@ export interface CreateGroupAnnouncementRequest {
     'title': string;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateGroupGalleryRequest
  */
@@ -2866,38 +2866,38 @@ export interface CreateGroupGalleryRequest {
      */
     'name': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateGroupGalleryRequest
      */
     'roleIdsToAutoApprove'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateGroupGalleryRequest
      */
     'roleIdsToManage'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateGroupGalleryRequest
      */
     'roleIdsToSubmit'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateGroupGalleryRequest
      */
     'roleIdsToView'?: Array<string> | null;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateGroupInviteRequest
  */
 export interface CreateGroupInviteRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateGroupInviteRequest
      */
@@ -2910,19 +2910,19 @@ export interface CreateGroupInviteRequest {
     'userId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateGroupPostRequest
  */
 export interface CreateGroupPostRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupPostRequest
      */
     'imageId'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateGroupPostRequest
      */
@@ -2946,7 +2946,7 @@ export interface CreateGroupPostRequest {
      */
     'title': string;
     /**
-     * 
+     *
      * @type {GroupPostVisibility}
      * @memberof CreateGroupPostRequest
      */
@@ -2955,55 +2955,55 @@ export interface CreateGroupPostRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateGroupRequest
  */
 export interface CreateGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRequest
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRequest
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {GroupJoinState}
      * @memberof CreateGroupRequest
      */
     'joinState'?: GroupJoinState;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRequest
      */
     'name': string;
     /**
-     * 
+     *
      * @type {GroupPrivacy}
      * @memberof CreateGroupRequest
      */
     'privacy'?: GroupPrivacy;
     /**
-     * 
+     *
      * @type {GroupRoleTemplate}
      * @memberof CreateGroupRequest
      */
     'roleTemplate': GroupRoleTemplate;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRequest
      */
@@ -3012,50 +3012,50 @@ export interface CreateGroupRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateGroupRoleRequest
  */
 export interface CreateGroupRoleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRoleRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRoleRequest
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateGroupRoleRequest
      */
     'isSelfAssignable'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateGroupRoleRequest
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof CreateGroupRoleRequest
      */
     'permissions'?: Array<GroupPermissions>;
 }
 /**
- * 
+ *
  * @export
  * @interface CreateInstanceRequest
  */
 export interface CreateInstanceRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
@@ -3073,19 +3073,19 @@ export interface CreateInstanceRequest {
      */
     'closedAt'?: string;
     /**
-     * 
+     *
      * @type {InstanceContentSettings}
      * @memberof CreateInstanceRequest
      */
     'contentSettings'?: InstanceContentSettings;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateInstanceRequest
      */
     'displayName'?: string | null;
     /**
-     * 
+     *
      * @type {GroupAccessType}
      * @memberof CreateInstanceRequest
      */
@@ -3097,13 +3097,13 @@ export interface CreateInstanceRequest {
      */
     'hardClose'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
     'instancePersistenceEnabled'?: boolean | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
@@ -3115,13 +3115,13 @@ export interface CreateInstanceRequest {
      */
     'ownerId'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CreateInstanceRequest
      */
     'queueEnabled'?: boolean;
     /**
-     * 
+     *
      * @type {InstanceRegion}
      * @memberof CreateInstanceRequest
      */
@@ -3133,7 +3133,7 @@ export interface CreateInstanceRequest {
      */
     'roleIds'?: Array<string>;
     /**
-     * 
+     *
      * @type {InstanceType}
      * @memberof CreateInstanceRequest
      */
@@ -3148,19 +3148,19 @@ export interface CreateInstanceRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CreateWorldRequest
  */
 export interface CreateWorldRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
     'assetUrl': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateWorldRequest
      */
@@ -3172,19 +3172,19 @@ export interface CreateWorldRequest {
      */
     'authorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
     'authorName'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CreateWorldRequest
      */
     'capacity'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
@@ -3196,13 +3196,13 @@ export interface CreateWorldRequest {
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
@@ -3214,25 +3214,25 @@ export interface CreateWorldRequest {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof CreateWorldRequest
      */
     'releaseStatus'?: ReleaseStatus;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CreateWorldRequest
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
     'unityPackageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CreateWorldRequest
      */
@@ -3241,43 +3241,43 @@ export interface CreateWorldRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface CurrentUser
  */
 export interface CurrentUser {
     /**
-     * 
+     *
      * @type {number}
      * @memberof CurrentUser
      */
     'acceptedPrivacyVersion'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CurrentUser
      */
     'acceptedTOSVersion': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'accountDeletionDate'?: string | null;
     /**
-     *  
+     *
      * @type {Array<AccountDeletionLog>}
      * @memberof CurrentUser
      */
     'accountDeletionLog'?: Array<AccountDeletionLog> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'activeFriends'?: Array<string>;
     /**
-     * 
+     *
      * @type {AgeVerificationStatus}
      * @memberof CurrentUser
      */
@@ -3289,7 +3289,7 @@ export interface CurrentUser {
      */
     'ageVerified': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
@@ -3301,19 +3301,19 @@ export interface CurrentUser {
      */
     'authToken'?: string;
     /**
-     *  
+     *
      * @type {Array<Badge>}
      * @memberof CurrentUser
      */
     'badges'?: Array<Badge>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'bio': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
@@ -3325,7 +3325,7 @@ export interface CurrentUser {
      */
     'contentFilters'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
@@ -3337,7 +3337,7 @@ export interface CurrentUser {
      */
     'currentAvatarImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
@@ -3349,19 +3349,19 @@ export interface CurrentUser {
      */
     'currentAvatarThumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'date_joined': string;
     /**
-     * 
+     *
      * @type {DeveloperType}
      * @memberof CurrentUser
      */
     'developerType': DeveloperType;
     /**
-     * 
+     *
      * @type {DiscordDetails}
      * @memberof CurrentUser
      */
@@ -3373,19 +3373,19 @@ export interface CurrentUser {
      */
     'discordId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'emailVerified': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
@@ -3398,55 +3398,55 @@ export interface CurrentUser {
      */
     'friendGroupNames': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'friendKey': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'friends': Array<string>;
     /**
-     * 
+     *
      * @type {object}
      * @memberof CurrentUser
      */
     'googleDetails'?: object;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'googleId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'hasBirthday': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'hasEmail': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'hasLoggedInFromClient': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'hasPendingEmail': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
@@ -3464,37 +3464,37 @@ export interface CurrentUser {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'isAdult': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'isBoopingEnabled'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'isFriend': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'last_activity'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'last_login': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
@@ -3506,181 +3506,181 @@ export interface CurrentUser {
      */
     'last_platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'obfuscatedEmail': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'obfuscatedPendingEmail': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'oculusId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'offlineFriends'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'onlineFriends'?: Array<string>;
     /**
-     *  
+     *
      * @type {Array<PastDisplayName>}
      * @memberof CurrentUser
      */
     'pastDisplayNames': Array<PastDisplayName>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'picoId'?: string;
     /**
-     * 
+     *
      * @type {Array<CurrentUserPlatformHistoryInner>}
      * @memberof CurrentUser
      */
     'platform_history'?: Array<CurrentUserPlatformHistoryInner>;
     /**
-     * 
+     *
      * @type {CurrentUserPresence}
      * @memberof CurrentUser
      */
     'presence'?: CurrentUserPresence;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'profilePicOverride': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'profilePicOverrideThumbnail': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'pronouns': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'pronounsHistory': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'queuedInstance'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'receiveMobileInvitations'?: boolean;
     /**
-     * 
+     *
      * @type {UserState}
      * @memberof CurrentUser
      */
     'state': UserState;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof CurrentUser
      */
     'status': UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'statusDescription': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'statusFirstTime': boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'statusHistory': Array<string>;
     /**
-     * 
+     *
      * @type {object}
      * @memberof CurrentUser
      */
     'steamDetails': object;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'steamId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUser
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'twoFactorAuthEnabled': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'twoFactorAuthEnabledDate'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUser
      */
     'unsubscribe': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'updated_at'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'userIcon': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
     'userLanguage'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
@@ -3693,7 +3693,7 @@ export interface CurrentUser {
      */
     'username'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUser
      */
@@ -3702,13 +3702,13 @@ export interface CurrentUser {
 
 
 /**
- * 
+ *
  * @export
  * @interface CurrentUserPlatformHistoryInner
  */
 export interface CurrentUserPlatformHistoryInner {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CurrentUserPlatformHistoryInner
      */
@@ -3720,44 +3720,44 @@ export interface CurrentUserPlatformHistoryInner {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPlatformHistoryInner
      */
     'recorded'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface CurrentUserPresence
  */
 export interface CurrentUserPresence {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
     'avatarThumbnail'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUserPresence
      */
     'currentAvatarTags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
     'debugflag'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof CurrentUserPresence
      */
@@ -3769,7 +3769,7 @@ export interface CurrentUserPresence {
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3781,7 +3781,7 @@ export interface CurrentUserPresence {
      */
     'instanceType'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3793,7 +3793,7 @@ export interface CurrentUserPresence {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3805,7 +3805,7 @@ export interface CurrentUserPresence {
      */
     'status'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3817,7 +3817,7 @@ export interface CurrentUserPresence {
      */
     'travelingToWorld'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CurrentUserPresence
      */
@@ -3846,26 +3846,26 @@ export type DeveloperType = typeof DeveloperType[keyof typeof DeveloperType];
 
 
 /**
- * 
+ *
  * @export
  * @interface Disable2FAResult
  */
 export interface Disable2FAResult {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Disable2FAResult
      */
     'removed': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface DiscordDetails
  */
 export interface DiscordDetails {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DiscordDetails
      */
@@ -3878,19 +3878,19 @@ export interface DiscordDetails {
     'id'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface DynamicContentRow
  */
 export interface DynamicContentRow {
     /**
-     * 
+     *
      * @type {number}
      * @memberof DynamicContentRow
      */
     'index'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DynamicContentRow
      */
@@ -3902,19 +3902,19 @@ export interface DynamicContentRow {
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DynamicContentRow
      */
     'sortHeading': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DynamicContentRow
      */
     'sortOrder': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DynamicContentRow
      */
@@ -3933,37 +3933,37 @@ export interface DynamicContentRow {
     'type'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface EconomyAccount
  */
 export interface EconomyAccount {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyAccount
      */
     'accountActivatedOn': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyAccount
      */
     'accountId': string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EconomyAccount
      */
     'blocked': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EconomyAccount
      */
     'canSpend': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyAccount
      */
@@ -3976,7 +3976,7 @@ export interface EconomyAccount {
     'userId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface Favorite
  */
@@ -3988,19 +3988,19 @@ export interface Favorite {
      */
     'favoriteId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Favorite
      */
     'id': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof Favorite
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {FavoriteType}
      * @memberof Favorite
      */
@@ -4009,31 +4009,31 @@ export interface Favorite {
 
 
 /**
- * 
+ *
  * @export
  * @interface FavoriteGroup
  */
 export interface FavoriteGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoriteGroup
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoriteGroup
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoriteGroup
      */
     'name': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoriteGroup
      */
@@ -4045,19 +4045,19 @@ export interface FavoriteGroup {
      */
     'ownerId': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof FavoriteGroup
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {FavoriteType}
      * @memberof FavoriteGroup
      */
     'type': FavoriteType;
     /**
-     * 
+     *
      * @type {FavoriteGroupVisibility}
      * @memberof FavoriteGroup
      */
@@ -4066,32 +4066,32 @@ export interface FavoriteGroup {
 
 
 /**
- * 
+ *
  * @export
  * @interface FavoriteGroupLimits
  */
 export interface FavoriteGroupLimits {
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoriteGroupLimits
      */
     'avatar': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoriteGroupLimits
      */
     'friend': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoriteGroupLimits
      */
     'world': number;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -4106,38 +4106,38 @@ export type FavoriteGroupVisibility = typeof FavoriteGroupVisibility[keyof typeo
 
 
 /**
- * 
+ *
  * @export
  * @interface FavoriteLimits
  */
 export interface FavoriteLimits {
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoriteLimits
      */
     'defaultMaxFavoriteGroups': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoriteLimits
      */
     'defaultMaxFavoritesPerGroup': number;
     /**
-     * 
+     *
      * @type {FavoriteGroupLimits}
      * @memberof FavoriteLimits
      */
     'maxFavoriteGroups': FavoriteGroupLimits;
     /**
-     * 
+     *
      * @type {FavoriteGroupLimits}
      * @memberof FavoriteLimits
      */
     'maxFavoritesPerGroup': FavoriteGroupLimits;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -4152,7 +4152,7 @@ export type FavoriteType = typeof FavoriteType[keyof typeof FavoriteType];
 
 
 /**
- * 
+ *
  * @export
  * @interface FavoritedWorld
  */
@@ -4164,61 +4164,61 @@ export interface FavoritedWorld {
      */
     'authorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'capacity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {InstanceContentSettings}
      * @memberof FavoritedWorld
      */
     'defaultContentSettings'?: InstanceContentSettings;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'favoriteGroup': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'favoriteId': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'favorites': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FavoritedWorld
      */
     'featured': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
@@ -4230,109 +4230,109 @@ export interface FavoritedWorld {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'labsPublicationDate': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'name': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'occupants': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'organization': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'popularity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'previewYoutubeId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'publicationDate': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'recommendedCapacity'?: number;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof FavoritedWorld
      */
     'releaseStatus': ReleaseStatus;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof FavoritedWorld
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof FavoritedWorld
      */
     'udonProducts'?: Array<string>;
     /**
-     *  
+     *
      * @type {Array<UnityPackage>}
      * @memberof FavoritedWorld
      */
     'unityPackages': Array<UnityPackage>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FavoritedWorld
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof FavoritedWorld
      */
     'urlList': Array<string>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
     'version': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FavoritedWorld
      */
@@ -4341,7 +4341,7 @@ export interface FavoritedWorld {
 
 
 /**
- * 
+ *
  * @export
  * @interface Feedback
  */
@@ -4353,7 +4353,7 @@ export interface Feedback {
      */
     'commenterId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
@@ -4365,430 +4365,430 @@ export interface Feedback {
      */
     'contentAuthorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'contentAuthorName': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'contentId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'contentName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'contentType': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Feedback
      */
     'contentVersion': number | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'description'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'reason': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Feedback
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Feedback
      */
     'type': string;
 }
 /**
- * 
+ *
  * @export
  * @interface FileAnalysis
  */
 export interface FileAnalysis {
     /**
-     * 
+     *
      * @type {FileAnalysisAvatarStats}
      * @memberof FileAnalysis
      */
     'avatarStats': FileAnalysisAvatarStats;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileAnalysis
      */
     'created_at'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileAnalysis
      */
     'encryptionKey'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysis
      */
     'fileSize': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileAnalysis
      */
     'performanceRating'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysis
      */
     'success': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysis
      */
     'uncompressedSize': number;
 }
 /**
- * 
+ *
  * @export
  * @interface FileAnalysisAvatarStats
  */
 export interface FileAnalysisAvatarStats {
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'animatorCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'audioSourceCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'blendShapeCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'boneCount': number;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof FileAnalysisAvatarStats
      */
     'bounds': Array<number>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'cameraCount'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'clothCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'constraintCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'constraintDepth': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'contactCount': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'customExpressions': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'customizeAnimationLayers': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'enableEyeLook': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'lightCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'lineRendererCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'lipSync': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'materialCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'materialSlotsUsed': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'meshCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'meshIndices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'meshParticleMaxPolygons': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'meshPolygons': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'meshVertices': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'particleCollisionEnabled': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'particleSystemCount': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'particleTrailsEnabled': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physBoneColliderCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physBoneCollisionCheckCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physBoneComponentCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physBoneTransformCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physicsColliders': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'physicsRigidbodies': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'skinnedMeshCount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'skinnedMeshIndices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'skinnedMeshPolygons': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'skinnedMeshVertices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalClothVertices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalIndices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalMaxParticles': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalPolygons': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalTextureUsage': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'totalVertices': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileAnalysisAvatarStats
      */
     'trailRendererCount': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FileAnalysisAvatarStats
      */
     'writeDefaultsUsed': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface FileData
  */
 export interface FileData {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileData
      */
     'category': FileDataCategoryEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileData
      */
     'fileName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileData
      */
     'md5'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileData
      */
     'sizeInBytes': number;
     /**
-     * 
+     *
      * @type {FileStatus}
      * @memberof FileData
      */
     'status': FileStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileData
      */
     'uploadId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileData
      */
@@ -4804,7 +4804,7 @@ export const FileDataCategoryEnum = {
 export type FileDataCategoryEnum = typeof FileDataCategoryEnum[keyof typeof FileDataCategoryEnum];
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -4820,26 +4820,26 @@ export type FileStatus = typeof FileStatus[keyof typeof FileStatus];
 
 
 /**
- * 
+ *
  * @export
  * @interface FileUploadURL
  */
 export interface FileUploadURL {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileUploadURL
      */
     'url': string;
 }
 /**
- * 
+ *
  * @export
  * @interface FileVersion
  */
 export interface FileVersion {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileVersion
      */
@@ -4851,25 +4851,25 @@ export interface FileVersion {
      */
     'deleted'?: boolean;
     /**
-     * 
+     *
      * @type {FileData}
      * @memberof FileVersion
      */
     'delta'?: FileData;
     /**
-     * 
+     *
      * @type {FileData}
      * @memberof FileVersion
      */
     'file'?: FileData;
     /**
-     * 
+     *
      * @type {FileData}
      * @memberof FileVersion
      */
     'signature'?: FileData;
     /**
-     * 
+     *
      * @type {FileStatus}
      * @memberof FileVersion
      */
@@ -4884,7 +4884,7 @@ export interface FileVersion {
 
 
 /**
- * 
+ *
  * @export
  * @interface FileVersionUploadStatus
  */
@@ -4896,38 +4896,38 @@ export interface FileVersionUploadStatus {
      */
     'etags': Array<object>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileVersionUploadStatus
      */
     'fileName': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileVersionUploadStatus
      */
     'maxParts': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FileVersionUploadStatus
      */
     'nextPartNumber': number;
     /**
-     * 
+     *
      * @type {Array<object>}
      * @memberof FileVersionUploadStatus
      */
     'parts': Array<object>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileVersionUploadStatus
      */
     'uploadId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface FinishFileDataUploadRequest
  */
@@ -4954,189 +4954,189 @@ export interface FinishFileDataUploadRequest {
     'nextPartNumber': string;
 }
 /**
- * 
+ *
  * @export
  * @interface FollowCalendarEventRequest
  */
 export interface FollowCalendarEventRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FollowCalendarEventRequest
      */
     'isFollowing': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface FriendStatus
  */
 export interface FriendStatus {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FriendStatus
      */
     'incomingRequest': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FriendStatus
      */
     'isFriend': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FriendStatus
      */
     'outgoingRequest': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface Group
  */
 export interface Group {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'ageVerificationBetaCode'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Group
      */
     'ageVerificationBetaSlots'?: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Group
      */
     'ageVerificationSlotsAvailable'?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Group
      */
     'badges'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'bannerUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'discriminator'?: string;
     /**
-     * 
+     *
      * @type {Array<GroupGallery>}
      * @memberof Group
      */
     'galleries'?: Array<GroupGallery>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'iconUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Group
      */
     'isVerified'?: boolean;
     /**
-     * 
+     *
      * @type {GroupJoinState}
      * @memberof Group
      */
     'joinState'?: GroupJoinState;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Group
      */
     'languages'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'lastPostCreatedAt'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Group
      */
     'links'?: Array<string>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Group
      */
     'memberCount'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'memberCountSyncedAt'?: string;
     /**
-     * 
+     *
      * @type {GroupMemberStatus}
      * @memberof Group
      */
     'membershipStatus'?: GroupMemberStatus;
     /**
-     * 
+     *
      * @type {GroupMyMember}
      * @memberof Group
      */
     'myMember'?: GroupMyMember;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Group
      */
@@ -5148,7 +5148,7 @@ export interface Group {
      */
     'ownerId'?: string;
     /**
-     * 
+     *
      * @type {GroupPrivacy}
      * @memberof Group
      */
@@ -5160,19 +5160,19 @@ export interface Group {
      */
     'roles'?: Array<GroupRole> | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'rules'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
     'shortCode'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Group
      */
@@ -5184,7 +5184,7 @@ export interface Group {
      */
     'transferTargetId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Group
      */
@@ -5208,7 +5208,7 @@ export type GroupAccessType = typeof GroupAccessType[keyof typeof GroupAccessTyp
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupAnnouncement
  */
@@ -5220,62 +5220,62 @@ export interface GroupAnnouncement {
      */
     'authorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'createdAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'imageUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'text'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'title'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAnnouncement
      */
     'updatedAt'?: string | null;
 }
 /**
- * 
+ *
  * @export
  * @interface GroupAuditLogEntry
  */
 export interface GroupAuditLogEntry {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
@@ -5287,7 +5287,7 @@ export interface GroupAuditLogEntry {
      */
     'actorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
@@ -5311,13 +5311,13 @@ export interface GroupAuditLogEntry {
      */
     'eventType'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupAuditLogEntry
      */
@@ -5330,13 +5330,13 @@ export interface GroupAuditLogEntry {
     'targetId'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface GroupGallery
  */
 export interface GroupGallery {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGallery
      */
@@ -5348,7 +5348,7 @@ export interface GroupGallery {
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGallery
      */
@@ -5366,50 +5366,50 @@ export interface GroupGallery {
      */
     'name'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof GroupGallery
      */
     'roleIdsToAutoApprove'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof GroupGallery
      */
     'roleIdsToManage'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof GroupGallery
      */
     'roleIdsToSubmit'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof GroupGallery
      */
     'roleIdsToView'?: Array<string> | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGallery
      */
     'updatedAt'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface GroupGalleryImage
  */
 export interface GroupGalleryImage {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupGalleryImage
      */
     'approved'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
@@ -5421,37 +5421,37 @@ export interface GroupGalleryImage {
      */
     'approvedByUserId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
     'fileId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
     'galleryId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupGalleryImage
      */
@@ -5464,7 +5464,7 @@ export interface GroupGalleryImage {
     'submittedByUserId'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface GroupInstance
  */
@@ -5482,20 +5482,20 @@ export interface GroupInstance {
      */
     'location': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupInstance
      */
     'memberCount': number;
     /**
-     * 
+     *
      * @type {World}
      * @memberof GroupInstance
      */
     'world': World;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -5509,7 +5509,7 @@ export type GroupJoinRequestAction = typeof GroupJoinRequestAction[keyof typeof 
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -5525,7 +5525,7 @@ export type GroupJoinState = typeof GroupJoinState[keyof typeof GroupJoinState];
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupLimitedMember
  */
@@ -5543,19 +5543,19 @@ export interface GroupLimitedMember {
      */
     'createdAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLimitedMember
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupLimitedMember
      */
     'hasJoinedFromPurchase'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLimitedMember
      */
@@ -5567,31 +5567,31 @@ export interface GroupLimitedMember {
      */
     'isRepresenting'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupLimitedMember
      */
     'isSubscribedToAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupLimitedMember
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLimitedMember
      */
     'joinedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLimitedMember
      */
     'lastPostReadAt'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupLimitedMember
      */
@@ -5603,13 +5603,13 @@ export interface GroupLimitedMember {
      */
     'managerNotes'?: string | null;
     /**
-     * 
+     *
      * @type {GroupMemberStatus}
      * @memberof GroupLimitedMember
      */
     'membershipStatus'?: GroupMemberStatus;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupLimitedMember
      */
@@ -5621,7 +5621,7 @@ export interface GroupLimitedMember {
      */
     'userId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLimitedMember
      */
@@ -5630,19 +5630,19 @@ export interface GroupLimitedMember {
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupMember
  */
 export interface GroupMember {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
     'acceptedByDisplayName'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
@@ -5660,19 +5660,19 @@ export interface GroupMember {
      */
     'createdAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMember
      */
     'hasJoinedFromPurchase'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
@@ -5684,31 +5684,31 @@ export interface GroupMember {
      */
     'isRepresenting'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMember
      */
     'isSubscribedToAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMember
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
     'joinedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
     'lastPostReadAt'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupMember
      */
@@ -5720,19 +5720,19 @@ export interface GroupMember {
      */
     'managerNotes'?: string | null;
     /**
-     * 
+     *
      * @type {GroupMemberStatus}
      * @memberof GroupMember
      */
     'membershipStatus'?: GroupMemberStatus;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupMember
      */
     'roleIds'?: Array<string>;
     /**
-     * 
+     *
      * @type {GroupMemberLimitedUser}
      * @memberof GroupMember
      */
@@ -5744,7 +5744,7 @@ export interface GroupMember {
      */
     'userId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMember
      */
@@ -5759,25 +5759,25 @@ export interface GroupMember {
  */
 export interface GroupMemberLimitedUser {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupMemberLimitedUser
      */
     'currentAvatarTags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
     'currentAvatarThumbnailImageUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
@@ -5789,20 +5789,20 @@ export interface GroupMemberLimitedUser {
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
     'profilePicOverride'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMemberLimitedUser
      */
     'thumbnailUrl'?: string | null;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -5820,115 +5820,115 @@ export type GroupMemberStatus = typeof GroupMemberStatus[keyof typeof GroupMembe
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupMyMember
  */
 export interface GroupMyMember {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'acceptedByDisplayName'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'acceptedById'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'bannedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMyMember
      */
     'has2FA'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMyMember
      */
     'hasJoinedFromPurchase'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMyMember
      */
     'isRepresenting'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMyMember
      */
     'isSubscribedToAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupMyMember
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'joinedAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'lastPostReadAt'?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupMyMember
      */
     'mRoleIds'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'managerNotes'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
     'membershipStatus'?: string;
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof GroupMyMember
      */
     'permissions'?: Array<GroupPermissions>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GroupMyMember
      */
@@ -5940,7 +5940,7 @@ export interface GroupMyMember {
      */
     'userId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupMyMember
      */
@@ -5984,7 +5984,7 @@ export interface GroupPermission {
     'name'?: string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6022,7 +6022,7 @@ export type GroupPermissions = typeof GroupPermissions[keyof typeof GroupPermiss
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupPost
  */
@@ -6034,7 +6034,7 @@ export interface GroupPost {
      */
     'authorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
@@ -6046,55 +6046,55 @@ export interface GroupPost {
      */
     'editorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'imageUrl'?: string | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof GroupPost
      */
     'roleId'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'text'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'title'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPost
      */
     'updatedAt'?: string;
     /**
-     * 
+     *
      * @type {GroupPostVisibility}
      * @memberof GroupPost
      */
@@ -6103,7 +6103,7 @@ export interface GroupPost {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6117,7 +6117,7 @@ export type GroupPostVisibility = typeof GroupPostVisibility[keyof typeof GroupP
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6131,86 +6131,86 @@ export type GroupPrivacy = typeof GroupPrivacy[keyof typeof GroupPrivacy];
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupRole
  */
 export interface GroupRole {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupRole
      */
     'isManagementRole'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupRole
      */
     'isSelfAssignable'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupRole
      */
     'order'?: number;
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof GroupRole
      */
     'permissions'?: Array<GroupPermissions>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupRole
      */
     'requiresPurchase'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupRole
      */
     'requiresTwoFactor'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRole
      */
     'updatedAt'?: string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6226,69 +6226,69 @@ export type GroupRoleTemplate = typeof GroupRoleTemplate[keyof typeof GroupRoleT
 
 
 /**
- * 
+ *
  * @export
  * @interface GroupRoleTemplateValues
  */
 export interface GroupRoleTemplateValues {
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof GroupRoleTemplateValues
      */
     'basePermissions': Array<GroupPermissions>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRoleTemplateValues
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRoleTemplateValues
      */
     'name': string;
     /**
-     * 
+     *
      * @type {GroupRoleTemplateValuesRoles}
      * @memberof GroupRoleTemplateValues
      */
     'roles': GroupRoleTemplateValuesRoles;
 }
 /**
- * 
+ *
  * @export
  * @interface GroupRoleTemplateValuesRoles
  */
 export interface GroupRoleTemplateValuesRoles {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRoleTemplateValuesRoles
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupRoleTemplateValuesRoles
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof GroupRoleTemplateValuesRoles
      */
     'basePermissions'?: Array<GroupPermissions>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GroupRoleTemplateValuesRoles
      */
     'isAddedOnJoin'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6302,7 +6302,7 @@ export type GroupSearchSort = typeof GroupSearchSort[keyof typeof GroupSearchSor
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6317,25 +6317,25 @@ export type GroupUserVisibility = typeof GroupUserVisibility[keyof typeof GroupU
 
 
 /**
- * 
+ *
  * @export
  * @interface InfoPush
  */
 export interface InfoPush {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPush
      */
     'createdAt': string;
     /**
-     * 
+     *
      * @type {InfoPushData}
      * @memberof InfoPush
      */
     'data': InfoPushData;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPush
      */
@@ -6347,43 +6347,43 @@ export interface InfoPush {
      */
     'hash': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPush
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InfoPush
      */
     'isEnabled': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InfoPush
      */
     'priority': number;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof InfoPush
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPush
      */
     'startDate'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof InfoPush
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPush
      */
@@ -6392,100 +6392,100 @@ export interface InfoPush {
 
 
 /**
- * 
+ *
  * @export
  * @interface InfoPushData
  */
 export interface InfoPushData {
     /**
-     * 
+     *
      * @type {InfoPushDataArticle}
      * @memberof InfoPushData
      */
     'article'?: InfoPushDataArticle;
     /**
-     * 
+     *
      * @type {DynamicContentRow}
      * @memberof InfoPushData
      */
     'contentList'?: DynamicContentRow;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushData
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushData
      */
     'imageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushData
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {InfoPushDataClickable}
      * @memberof InfoPushData
      */
     'onPressed'?: InfoPushDataClickable;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushData
      */
     'template'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushData
      */
     'version'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface InfoPushDataArticle
  */
 export interface InfoPushDataArticle {
     /**
-     * 
+     *
      * @type {InfoPushDataArticleContent}
      * @memberof InfoPushDataArticle
      */
     'content'?: InfoPushDataArticleContent;
 }
 /**
- * 
+ *
  * @export
  * @interface InfoPushDataArticleContent
  */
 export interface InfoPushDataArticleContent {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushDataArticleContent
      */
     'imageUrl'?: string;
     /**
-     * 
+     *
      * @type {InfoPushDataClickable}
      * @memberof InfoPushDataArticleContent
      */
     'onPressed'?: InfoPushDataClickable;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushDataArticleContent
      */
     'text'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface InfoPushDataClickable
  */
@@ -6497,7 +6497,7 @@ export interface InfoPushDataClickable {
      */
     'parameters'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InfoPushDataClickable
      */
@@ -6514,32 +6514,32 @@ export const InfoPushDataClickableCommandEnum = {
 export type InfoPushDataClickableCommandEnum = typeof InfoPushDataClickableCommandEnum[keyof typeof InfoPushDataClickableCommandEnum];
 
 /**
- * 
+ *
  * @export
  * @interface InlineObject
  */
 export interface InlineObject {
     /**
-     * 
+     *
      * @type {Array<GroupPost>}
      * @memberof InlineObject
      */
     'posts'?: Array<GroupPost>;
 }
 /**
- * 
+ *
  * @export
  * @interface InlineObject1
  */
 export interface InlineObject1 {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InlineObject1
      */
     'fetchedAt'?: string;
     /**
-     * 
+     *
      * @type {Array<Instance>}
      * @memberof InlineObject1
      */
@@ -6552,25 +6552,25 @@ export interface InlineObject1 {
  */
 export interface Instance {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'active': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'ageGate'?: boolean | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'canRequestInvite': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
@@ -6583,19 +6583,19 @@ export interface Instance {
      */
     'clientNumber': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
     'closedAt'?: string | null;
     /**
-     * 
+     *
      * @type {InstanceContentSettings}
      * @memberof Instance
      */
     'contentSettings'?: InstanceContentSettings;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
@@ -6607,31 +6607,31 @@ export interface Instance {
      */
     'friends'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'full': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
     'gameServerVersion'?: number;
     /**
-     * 
+     *
      * @type {GroupAccessType}
      * @memberof Instance
      */
     'groupAccessType'?: GroupAccessType;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'hardClose'?: boolean | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
@@ -6655,7 +6655,7 @@ export interface Instance {
      */
     'instanceId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
@@ -6667,19 +6667,19 @@ export interface Instance {
      */
     'location': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
     'n_users': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
     'name': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
@@ -6691,25 +6691,25 @@ export interface Instance {
      */
     'ownerId'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'permanent': boolean;
     /**
-     * 
+     *
      * @type {Region}
      * @memberof Instance
      */
     'photonRegion': Region;
     /**
-     * 
+     *
      * @type {InstancePlatforms}
      * @memberof Instance
      */
     'platforms': InstancePlatforms;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
@@ -6721,67 +6721,67 @@ export interface Instance {
      */
     'private'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'queueEnabled': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
     'queueSize': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
     'recommendedCapacity': number;
     /**
-     * 
+     *
      * @type {InstanceRegion}
      * @memberof Instance
      */
     'region': InstanceRegion;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'roleRestricted'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
     'secureName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Instance
      */
     'shortName'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Instance
      */
     'strict': boolean;
     /**
-     * The tags array on Instances usually contain the language tags of the people in the instance. 
+     * The tags array on Instances usually contain the language tags of the people in the instance.
      * @type {Array<string>}
      * @memberof Instance
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {InstanceType}
      * @memberof Instance
      */
     'type': InstanceType;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Instance
      */
@@ -6793,7 +6793,7 @@ export interface Instance {
      */
     'users'?: Array<LimitedUserInstance>;
     /**
-     * 
+     *
      * @type {World}
      * @memberof Instance
      */
@@ -6814,62 +6814,62 @@ export interface Instance {
  */
 export interface InstanceContentSettings {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'drones'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'emoji'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'pedestals'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'prints'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'props'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InstanceContentSettings
      */
     'stickers'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface InstancePlatforms
  */
 export interface InstancePlatforms {
     /**
-     * 
+     *
      * @type {number}
      * @memberof InstancePlatforms
      */
     'android': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InstancePlatforms
      */
     'ios'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InstancePlatforms
      */
@@ -6893,26 +6893,26 @@ export type InstanceRegion = typeof InstanceRegion[keyof typeof InstanceRegion];
 
 
 /**
- * 
+ *
  * @export
  * @interface InstanceShortNameResponse
  */
 export interface InstanceShortNameResponse {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InstanceShortNameResponse
      */
     'secureName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InstanceShortNameResponse
      */
     'shortName'?: string | null;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -6929,58 +6929,58 @@ export type InstanceType = typeof InstanceType[keyof typeof InstanceType];
 
 
 /**
- * 
+ *
  * @export
  * @interface Inventory
  */
 export interface Inventory {
     /**
-     * 
+     *
      * @type {Array<InventoryItem>}
      * @memberof Inventory
      */
     'data': Array<InventoryItem>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Inventory
      */
     'totalCount': number;
 }
 /**
- * 
+ *
  * @export
  * @interface InventoryDefaultAttributesValue
  */
 export interface InventoryDefaultAttributesValue {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDefaultAttributesValue
      */
     'defaultValue'?: string;
     /**
-     * 
+     *
      * @type {InventoryDefaultAttributesValueValidator}
      * @memberof InventoryDefaultAttributesValue
      */
     'validator'?: InventoryDefaultAttributesValueValidator;
 }
 /**
- * 
+ *
  * @export
  * @interface InventoryDefaultAttributesValueValidator
  */
 export interface InventoryDefaultAttributesValueValidator {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDefaultAttributesValueValidator
      */
     'type'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface InventoryDrop
  */
@@ -6992,80 +6992,80 @@ export interface InventoryDrop {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'dropExpiryDate': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'endDropDate': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'name': string;
     /**
-     * 
+     *
      * @type {InventoryNotificationDetails}
      * @memberof InventoryDrop
      */
     'notificationDetails': InventoryNotificationDetails;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'startDropDate': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'status': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryDrop
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'targetGroup': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryDrop
      */
     'templateIds': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryDrop
      */
     'updated_at': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7080,7 +7080,7 @@ export type InventoryEquipSlot = typeof InventoryEquipSlot[keyof typeof Inventor
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7100,55 +7100,55 @@ export type InventoryFlag = typeof InventoryFlag[keyof typeof InventoryFlag];
 
 
 /**
- * 
+ *
  * @export
  * @interface InventoryItem
  */
 export interface InventoryItem {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryItem
      */
     'collections': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {{ [key: string]: InventoryDefaultAttributesValue; }}
      * @memberof InventoryItem
      */
     'defaultAttributes': { [key: string]: InventoryDefaultAttributesValue; };
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'description': string;
     /**
-     * 
+     *
      * @type {InventoryEquipSlot}
      * @memberof InventoryItem
      */
     'equipSlot'?: InventoryEquipSlot;
     /**
-     * 
+     *
      * @type {Array<InventoryEquipSlot>}
      * @memberof InventoryItem
      */
     'equipSlots'?: Array<InventoryEquipSlot>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'expiryDate': string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryItem
      */
@@ -7160,91 +7160,91 @@ export interface InventoryItem {
      */
     'holderId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InventoryItem
      */
     'isArchived': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InventoryItem
      */
     'isSeen': boolean;
     /**
-     * 
+     *
      * @type {InventoryItemType}
      * @memberof InventoryItem
      */
     'itemType': InventoryItemType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'itemTypeLabel': string;
     /**
-     * 
+     *
      * @type {InventoryMetadata}
      * @memberof InventoryItem
      */
     'metadata': InventoryMetadata;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'name': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryItem
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'templateId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'template_created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'template_updated_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryItem
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {InventoryUserAttributes}
      * @memberof InventoryItem
      */
     'userAttributes': InventoryUserAttributes;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InventoryItem
      */
@@ -7253,7 +7253,7 @@ export interface InventoryItem {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7271,37 +7271,37 @@ export type InventoryItemType = typeof InventoryItemType[keyof typeof InventoryI
 
 
 /**
- * 
+ *
  * @export
  * @interface InventoryMetadata
  */
 export interface InventoryMetadata {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InventoryMetadata
      */
     'animated'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
     'animationStyle'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
     'assetBundleId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
     'fileId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
@@ -7313,64 +7313,64 @@ export interface InventoryMetadata {
      */
     'inventoryItemsToInstantiate'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
     'maskTag'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryMetadata
      */
     'propId'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface InventoryNotificationDetails
  */
 export interface InventoryNotificationDetails {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryNotificationDetails
      */
     'body': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryNotificationDetails
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryNotificationDetails
      */
     'title': string;
 }
 /**
- * 
+ *
  * @export
  * @interface InventorySpawn
  */
 export interface InventorySpawn {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventorySpawn
      */
     'token': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InventorySpawn
      */
     'version': number;
 }
 /**
- * 
+ *
  * @export
  * @interface InventoryTemplate
  */
@@ -7382,85 +7382,85 @@ export interface InventoryTemplate {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryTemplate
      */
     'collections': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'description': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryTemplate
      */
     'flags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {InventoryItemType}
      * @memberof InventoryTemplate
      */
     'itemType': InventoryItemType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'itemTypeLabel': string;
     /**
-     * 
+     *
      * @type {InventoryMetadata}
      * @memberof InventoryTemplate
      */
     'metadata'?: InventoryMetadata;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'name': string;
     /**
-     * 
+     *
      * @type {InventoryNotificationDetails}
      * @memberof InventoryTemplate
      */
     'notificationDetails'?: InventoryNotificationDetails;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
     'status': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof InventoryTemplate
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryTemplate
      */
@@ -7469,56 +7469,56 @@ export interface InventoryTemplate {
 
 
 /**
- * 
+ *
  * @export
  * @interface InventoryUserAttributes
  */
 export interface InventoryUserAttributes {
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryUserAttributes
      */
     'primaryColor'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryUserAttributes
      */
     'secondaryColor'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InventoryUserAttributes
      */
     'trailColor'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface InviteMessage
  */
 export interface InviteMessage {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof InviteMessage
      */
     'canBeUpdated': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InviteMessage
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InviteMessage
      */
     'message': string;
     /**
-     * 
+     *
      * @type {InviteMessageType}
      * @memberof InviteMessage
      */
@@ -7530,13 +7530,13 @@ export interface InviteMessage {
      */
     'remainingCooldownMinutes': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InviteMessage
      */
     'slot': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InviteMessage
      */
@@ -7545,7 +7545,7 @@ export interface InviteMessage {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7561,7 +7561,7 @@ export type InviteMessageType = typeof InviteMessageType[keyof typeof InviteMess
 
 
 /**
- * 
+ *
  * @export
  * @interface InviteRequest
  */
@@ -7573,51 +7573,51 @@ export interface InviteRequest {
      */
     'instanceId': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof InviteRequest
      */
     'messageSlot'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface InviteResponse
  */
 export interface InviteResponse {
     /**
-     * 
+     *
      * @type {number}
      * @memberof InviteResponse
      */
     'responseSlot': number;
 }
 /**
- * 
+ *
  * @export
  * @interface Jam
  */
 export interface Jam {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Jam
      */
     'isVisible': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
@@ -7629,75 +7629,75 @@ export interface Jam {
      */
     'state': string;
     /**
-     * 
+     *
      * @type {JamStateChangeDates}
      * @memberof Jam
      */
     'stateChangeDates': JamStateChangeDates;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
     'submissionContentGateDate': string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Jam
      */
     'submissionContentGated': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
     'title': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Jam
      */
     'updated_at': string;
 }
 /**
- * 
+ *
  * @export
  * @interface JamStateChangeDates
  */
 export interface JamStateChangeDates {
     /**
-     * 
+     *
      * @type {string}
      * @memberof JamStateChangeDates
      */
     'closed'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof JamStateChangeDates
      */
     'submissionsClosed'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof JamStateChangeDates
      */
     'submissionsOpened'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof JamStateChangeDates
      */
     'winnersSelected'?: string | null;
 }
 /**
- * 
+ *
  * @export
  * @interface License
  */
 export interface License {
     /**
-     * 
+     *
      * @type {LicenseAction}
      * @memberof License
      */
@@ -7709,13 +7709,13 @@ export interface License {
      */
     'forId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof License
      */
     'forName': string;
     /**
-     * 
+     *
      * @type {LicenseType}
      * @memberof License
      */
@@ -7724,7 +7724,7 @@ export interface License {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7738,38 +7738,38 @@ export type LicenseAction = typeof LicenseAction[keyof typeof LicenseAction];
 
 
 /**
- * 
+ *
  * @export
  * @interface LicenseGroup
  */
 export interface LicenseGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LicenseGroup
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LicenseGroup
      */
     'id': string;
     /**
-     * 
+     *
      * @type {Array<License>}
      * @memberof LicenseGroup
      */
     'licenses': Array<License>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LicenseGroup
      */
     'name': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -7785,85 +7785,85 @@ export type LicenseType = typeof LicenseType[keyof typeof LicenseType];
 
 
 /**
- * 
+ *
  * @export
  * @interface LimitedGroup
  */
 export interface LimitedGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'bannerUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'createdAt'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'discriminator'?: string;
     /**
-     *  
+     *
      * @type {Array<GroupGallery>}
      * @memberof LimitedGroup
      */
     'galleries'?: Array<GroupGallery>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'iconUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedGroup
      */
     'isSearchable'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedGroup
      */
     'memberCount'?: number;
     /**
-     * 
+     *
      * @type {GroupMemberStatus}
      * @memberof LimitedGroup
      */
     'membershipStatus'?: GroupMemberStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
@@ -7875,19 +7875,19 @@ export interface LimitedGroup {
      */
     'ownerId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'rules'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedGroup
      */
     'shortCode'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof LimitedGroup
      */
@@ -7896,13 +7896,13 @@ export interface LimitedGroup {
 
 
 /**
- * 
+ *
  * @export
  * @interface LimitedUnityPackage
  */
 export interface LimitedUnityPackage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUnityPackage
      */
@@ -7914,7 +7914,7 @@ export interface LimitedUnityPackage {
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUnityPackage
      */
@@ -7927,13 +7927,13 @@ export interface LimitedUnityPackage {
  */
 export interface LimitedUserFriend {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'bio'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof LimitedUserFriend
      */
@@ -7945,7 +7945,7 @@ export interface LimitedUserFriend {
      */
     'currentAvatarImageUrl'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LimitedUserFriend
      */
@@ -7957,19 +7957,19 @@ export interface LimitedUserFriend {
      */
     'currentAvatarThumbnailImageUrl'?: string;
     /**
-     * 
+     *
      * @type {DeveloperType}
      * @memberof LimitedUserFriend
      */
     'developerType': DeveloperType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
@@ -7981,31 +7981,31 @@ export interface LimitedUserFriend {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserFriend
      */
     'isFriend': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'last_activity': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'last_login': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
@@ -8017,37 +8017,37 @@ export interface LimitedUserFriend {
      */
     'last_platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'location': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'profilePicOverride'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
     'profilePicOverrideThumbnail'?: string;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof LimitedUserFriend
      */
     'status': UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
@@ -8059,7 +8059,7 @@ export interface LimitedUserFriend {
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserFriend
      */
@@ -8068,97 +8068,97 @@ export interface LimitedUserFriend {
 
 
 /**
- * 
+ *
  * @export
  * @interface LimitedUserGroups
  */
 export interface LimitedUserGroups {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'bannerUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'discriminator'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'iconUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserGroups
      */
     'isRepresenting'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'lastPostCreatedAt'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'lastPostReadAt'?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedUserGroups
      */
     'memberCount'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'memberVisibility'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserGroups
      */
     'mutualGroup'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
@@ -8170,13 +8170,13 @@ export interface LimitedUserGroups {
      */
     'ownerId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
     'privacy'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserGroups
      */
@@ -8189,7 +8189,7 @@ export interface LimitedUserGroups {
  */
 export interface LimitedUserInstance {
     /**
-     * 
+     *
      * @type {AgeVerificationStatus}
      * @memberof LimitedUserInstance
      */
@@ -8201,19 +8201,19 @@ export interface LimitedUserInstance {
      */
     'ageVerified': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserInstance
      */
     'allowAvatarCopying': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'bio'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof LimitedUserInstance
      */
@@ -8225,7 +8225,7 @@ export interface LimitedUserInstance {
      */
     'currentAvatarImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LimitedUserInstance
      */
@@ -8237,25 +8237,25 @@ export interface LimitedUserInstance {
      */
     'currentAvatarThumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'date_joined': string | null;
     /**
-     * 
+     *
      * @type {DeveloperType}
      * @memberof LimitedUserInstance
      */
     'developerType': DeveloperType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
@@ -8267,25 +8267,25 @@ export interface LimitedUserInstance {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'imageUrl'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserInstance
      */
     'isFriend': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'last_activity': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
@@ -8303,49 +8303,49 @@ export interface LimitedUserInstance {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'profilePicOverride'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'profilePicOverrideThumbnail'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'pronouns': string;
     /**
-     * 
+     *
      * @type {UserState}
      * @memberof LimitedUserInstance
      */
     'state': UserState;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof LimitedUserInstance
      */
     'status': UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
     'statusDescription': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LimitedUserInstance
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserInstance
      */
@@ -8360,13 +8360,13 @@ export interface LimitedUserInstance {
  */
 export interface LimitedUserSearch {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
     'bio'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof LimitedUserSearch
      */
@@ -8378,7 +8378,7 @@ export interface LimitedUserSearch {
      */
     'currentAvatarImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LimitedUserSearch
      */
@@ -8390,13 +8390,13 @@ export interface LimitedUserSearch {
      */
     'currentAvatarThumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {DeveloperType}
      * @memberof LimitedUserSearch
      */
     'developerType': DeveloperType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
@@ -8408,7 +8408,7 @@ export interface LimitedUserSearch {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LimitedUserSearch
      */
@@ -8420,25 +8420,25 @@ export interface LimitedUserSearch {
      */
     'last_platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
     'profilePicOverride'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
     'pronouns'?: string;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof LimitedUserSearch
      */
     'status': UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
@@ -8450,7 +8450,7 @@ export interface LimitedUserSearch {
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedUserSearch
      */
@@ -8459,7 +8459,7 @@ export interface LimitedUserSearch {
 
 
 /**
- * 
+ *
  * @export
  * @interface LimitedWorld
  */
@@ -8471,37 +8471,37 @@ export interface LimitedWorld {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
     'capacity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {InstanceContentSettings}
      * @memberof LimitedWorld
      */
     'defaultContentSettings'?: InstanceContentSettings;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
     'favorites': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
@@ -8513,103 +8513,103 @@ export interface LimitedWorld {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'labsPublicationDate': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'name': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
     'occupants': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'organization': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
     'popularity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'previewYoutubeId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'publicationDate': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
     'recommendedCapacity'?: number;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof LimitedWorld
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'storeId'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof LimitedWorld
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LimitedWorld
      */
     'udonProducts'?: Array<string>;
     /**
-     *  
+     *
      * @type {Array<LimitedUnityPackage>}
      * @memberof LimitedWorld
      */
     'unityPackages': Array<LimitedUnityPackage>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LimitedWorld
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LimitedWorld
      */
@@ -8618,7 +8618,7 @@ export interface LimitedWorld {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -8644,56 +8644,56 @@ export type MIMEType = typeof MIMEType[keyof typeof MIMEType];
 
 
 /**
- * 
+ *
  * @export
  * @interface ModelError
  */
 export interface ModelError {
     /**
-     * 
+     *
      * @type {Response}
      * @memberof ModelError
      */
     'error'?: Response;
 }
 /**
- * 
+ *
  * @export
  * @interface ModelFile
  */
 export interface ModelFile {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ModelFile
      */
     'animationStyle'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ModelFile
      */
     'extension': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ModelFile
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ModelFile
      */
     'maskTag'?: string;
     /**
-     * 
+     *
      * @type {MIMEType}
      * @memberof ModelFile
      */
     'mimeType': MIMEType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ModelFile
      */
@@ -8705,13 +8705,13 @@ export interface ModelFile {
      */
     'ownerId': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof ModelFile
      */
     'tags': Array<string>;
     /**
-     *  
+     *
      * @type {Set<FileVersion>}
      * @memberof ModelFile
      */
@@ -8720,7 +8720,7 @@ export interface ModelFile {
 
 
 /**
- * 
+ *
  * @export
  * @interface ModerateUserRequest
  */
@@ -8732,7 +8732,7 @@ export interface ModerateUserRequest {
      */
     'moderated': string;
     /**
-     * 
+     *
      * @type {PlayerModerationType}
      * @memberof ModerateUserRequest
      */
@@ -8741,13 +8741,13 @@ export interface ModerateUserRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface Notification
  */
 export interface Notification {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Notification
      */
@@ -8759,13 +8759,13 @@ export interface Notification {
      */
     'details': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Notification
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Notification
      */
@@ -8796,7 +8796,7 @@ export interface Notification {
      */
     'senderUsername'?: string;
     /**
-     * 
+     *
      * @type {NotificationType}
      * @memberof Notification
      */
@@ -8805,13 +8805,13 @@ export interface Notification {
 
 
 /**
- * 
+ *
  * @export
  * @interface NotificationDetailInvite
  */
 export interface NotificationDetailInvite {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationDetailInvite
      */
@@ -8823,33 +8823,33 @@ export interface NotificationDetailInvite {
      */
     'worldId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationDetailInvite
      */
     'worldName': string;
 }
 /**
- * 
+ *
  * @export
  * @interface NotificationDetailInviteResponse
  */
 export interface NotificationDetailInviteResponse {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationDetailInviteResponse
      */
     'inResponseTo': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationDetailInviteResponse
      */
     'responseMessage': string;
 }
 /**
- * 
+ *
  * @export
  * @interface NotificationDetailRequestInvite
  */
@@ -8868,13 +8868,13 @@ export interface NotificationDetailRequestInvite {
     'requestMessage'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface NotificationDetailRequestInviteResponse
  */
 export interface NotificationDetailRequestInviteResponse {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationDetailRequestInviteResponse
      */
@@ -8887,7 +8887,7 @@ export interface NotificationDetailRequestInviteResponse {
     'requestMessage'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface NotificationDetailVoteToKick
  */
@@ -8906,7 +8906,7 @@ export interface NotificationDetailVoteToKick {
     'userToKickId': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -8951,7 +8951,7 @@ export interface OkStatus2 {
     'OK': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -8965,7 +8965,7 @@ export type OrderOption = typeof OrderOption[keyof typeof OrderOption];
 
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedCalendarEventList
  */
@@ -8977,7 +8977,7 @@ export interface PaginatedCalendarEventList {
      */
     'hasNext'?: boolean;
     /**
-     *  
+     *
      * @type {Array<CalendarEvent>}
      * @memberof PaginatedCalendarEventList
      */
@@ -8990,7 +8990,7 @@ export interface PaginatedCalendarEventList {
     'totalCount'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupAuditLogEntryList
  */
@@ -9002,7 +9002,7 @@ export interface PaginatedGroupAuditLogEntryList {
      */
     'hasNext'?: boolean;
     /**
-     *  
+     *
      * @type {Array<GroupAuditLogEntry>}
      * @memberof PaginatedGroupAuditLogEntryList
      */
@@ -9015,38 +9015,38 @@ export interface PaginatedGroupAuditLogEntryList {
     'totalCount'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface PastDisplayName
  */
 export interface PastDisplayName {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PastDisplayName
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PastDisplayName
      */
     'updated_at': string;
 }
 /**
- * 
+ *
  * @export
  * @interface Pending2FAResult
  */
 export interface Pending2FAResult {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Pending2FAResult
      */
     'qrCodeDataUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Pending2FAResult
      */
@@ -9084,43 +9084,43 @@ export type PerformanceRatings = typeof PerformanceRatings[keyof typeof Performa
 
 
 /**
- * 
+ *
  * @export
  * @interface Permission
  */
 export interface Permission {
     /**
-     * 
+     *
      * @type {object}
      * @memberof Permission
      */
     'data'?: object;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     'name': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
@@ -9132,7 +9132,7 @@ export interface Permission {
      */
     'ownerId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
@@ -9158,25 +9158,25 @@ export interface PlatformBuildInfo {
     'redirectionAddress'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface PlayerModeration
  */
 export interface PlayerModeration {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlayerModeration
      */
     'created': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlayerModeration
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlayerModeration
      */
@@ -9188,7 +9188,7 @@ export interface PlayerModeration {
      */
     'sourceUserId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlayerModeration
      */
@@ -9200,7 +9200,7 @@ export interface PlayerModeration {
      */
     'targetUserId': string;
     /**
-     * 
+     *
      * @type {PlayerModerationType}
      * @memberof PlayerModeration
      */
@@ -9209,7 +9209,7 @@ export interface PlayerModeration {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -9242,31 +9242,31 @@ export interface Print {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
     'createdAt': string;
     /**
-     * 
+     *
      * @type {PrintFiles}
      * @memberof Print
      */
     'files': PrintFiles;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
@@ -9278,7 +9278,7 @@ export interface Print {
      */
     'ownerId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
@@ -9290,20 +9290,20 @@ export interface Print {
      */
     'worldId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Print
      */
     'worldName': string;
 }
 /**
- * 
+ *
  * @export
  * @interface PrintFiles
  */
 export interface PrintFiles {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PrintFiles
      */
@@ -9316,109 +9316,109 @@ export interface PrintFiles {
     'image'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface Product
  */
 export interface Product {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Product
      */
     'archived': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'created': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Product
      */
     'groupAccess'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Product
      */
     'groupAccessRemove'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'groupRoleId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'imageId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Product
      */
     'parentListings': Array<string>;
     /**
-     * 
+     *
      * @type {ProductType}
      * @memberof Product
      */
     'productType': ProductType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'sellerDisplayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'sellerId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Product
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Product
      */
     'updated': string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Product
      */
@@ -9427,187 +9427,187 @@ export interface Product {
 
 
 /**
- * 
+ *
  * @export
  * @interface ProductListing
  */
 export interface ProductListing {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'active': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'buyerRefundable': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ProductListing
      */
     'duration'?: number | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'durationType'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'groupIcon'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'groupName'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'hasAvatar': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'hasUdon': boolean;
     /**
-     * 
+     *
      * @type {Array<Product>}
      * @memberof ProductListing
      */
     'hydratedProducts'?: Array<Product>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'imageUrl'?: string | null;
     /**
-     * 
+     *
      * @type {ProductListingType}
      * @memberof ProductListing
      */
     'listingType': ProductListingType;
     /**
-     * 
+     *
      * @type {Array<ProductListingVariant>}
      * @memberof ProductListing
      */
     'listingVariants'?: Array<ProductListingVariant>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'permanent'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ProductListing
      */
     'priceTokens': number;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof ProductListing
      */
     'productIds': Array<string>;
     /**
-     * 
+     *
      * @type {ProductType}
      * @memberof ProductListing
      */
     'productType': ProductType;
     /**
-     * 
+     *
      * @type {Array<object>}
      * @memberof ProductListing
      */
     'products': Array<object>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'quantifiable'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'recurrable': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'refundable': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'sellerDisplayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListing
      */
     'sellerId': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListing
      */
     'stackable': boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof ProductListing
      */
     'storeIds': Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof ProductListing
      */
@@ -9616,7 +9616,7 @@ export interface ProductListing {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -9629,50 +9629,50 @@ export type ProductListingType = typeof ProductListingType[keyof typeof ProductL
 
 
 /**
- * 
+ *
  * @export
  * @interface ProductListingVariant
  */
 export interface ProductListingVariant {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListingVariant
      */
     'effectiveFrom'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProductListingVariant
      */
     'listingVariantId': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListingVariant
      */
     'nonRefundable': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ProductListingVariant
      */
     'quantity': number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ProductListingVariant
      */
     'sellerVariant': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ProductListingVariant
      */
     'unitPriceTokens': number;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -9687,19 +9687,19 @@ export type ProductType = typeof ProductType[keyof typeof ProductType];
 
 
 /**
- * 
+ *
  * @export
  * @interface Prop
  */
 export interface Prop {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     '_created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
@@ -9711,79 +9711,79 @@ export interface Prop {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Prop
      */
     'maxCountPerUser': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'name': string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof Prop
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Prop
      */
     'spawnType': number;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Prop
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Prop
      */
     'unityPackageUrl': string | null;
     /**
-     * 
+     *
      * @type {Set<PropUnityPackage>}
      * @memberof Prop
      */
     'unityPackages': Set<PropUnityPackage>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Prop
      */
@@ -9792,19 +9792,19 @@ export interface Prop {
 
 
 /**
- * 
+ *
  * @export
  * @interface PropUnityPackage
  */
 export interface PropUnityPackage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PropUnityPackage
      */
     'assetUrl': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PropUnityPackage
      */
@@ -9816,19 +9816,19 @@ export interface PropUnityPackage {
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PropUnityPackage
      */
     'propSignature': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PropUnityPackage
      */
     'unityVersion': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PropUnityPackage
      */
@@ -9854,7 +9854,7 @@ export type Region = typeof Region[keyof typeof Region];
 
 
 /**
- * 
+ *
  * @export
  * @interface RegisterUserAccountRequest
  */
@@ -9915,7 +9915,7 @@ export interface RegisterUserAccountRequest {
     'year': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -9981,73 +9981,73 @@ export interface ReportReason {
     'tooltip': string;
 }
 /**
- * 
+ *
  * @export
  * @interface RepresentedGroup
  */
 export interface RepresentedGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'bannerUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'discriminator'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
     'iconUrl'?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof RepresentedGroup
      */
     'isRepresenting'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof RepresentedGroup
      */
     'memberCount'?: number;
     /**
-     * 
+     *
      * @type {GroupUserVisibility}
      * @memberof RepresentedGroup
      */
     'memberVisibility'?: GroupUserVisibility;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
@@ -10059,13 +10059,13 @@ export interface RepresentedGroup {
      */
     'ownerId'?: string;
     /**
-     * 
+     *
      * @type {GroupPrivacy}
      * @memberof RepresentedGroup
      */
     'privacy'?: GroupPrivacy;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RepresentedGroup
      */
@@ -10074,26 +10074,26 @@ export interface RepresentedGroup {
 
 
 /**
- * 
+ *
  * @export
  * @interface RequestInviteRequest
  */
 export interface RequestInviteRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof RequestInviteRequest
      */
     'requestSlot'?: number;
 }
 /**
- * 
+ *
  * @export
  * @interface RespondGroupJoinRequest
  */
 export interface RespondGroupJoinRequest {
     /**
-     * 
+     *
      * @type {GroupJoinRequestAction}
      * @memberof RespondGroupJoinRequest
      */
@@ -10108,50 +10108,50 @@ export interface RespondGroupJoinRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface Response
  */
 export interface Response {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Response
      */
     'message'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Response
      */
     'status_code': number;
 }
 /**
- * 
+ *
  * @export
  * @interface SentNotification
  */
 export interface SentNotification {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SentNotification
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {object}
      * @memberof SentNotification
      */
     'details': object;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SentNotification
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SentNotification
      */
@@ -10176,7 +10176,7 @@ export interface SentNotification {
      */
     'senderUsername'?: string;
     /**
-     * 
+     *
      * @type {NotificationType}
      * @memberof SentNotification
      */
@@ -10191,7 +10191,7 @@ export interface SentNotification {
  */
 export interface ServiceQueueStats {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ServiceQueueStats
      */
@@ -10204,7 +10204,7 @@ export interface ServiceQueueStats {
  */
 export interface ServiceStatus {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ServiceStatus
      */
@@ -10216,7 +10216,7 @@ export interface ServiceStatus {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {Array<object>}
      * @memberof ServiceStatus
      */
@@ -10228,7 +10228,7 @@ export interface ServiceStatus {
      */
     'requesterUserId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ServiceStatus
      */
@@ -10252,33 +10252,33 @@ export interface ServiceStatus {
      */
     'type': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ServiceStatus
      */
     'updated_at': string;
 }
 /**
- * 
+ *
  * @export
  * @interface ShareInventoryItemDirectRequest
  */
 export interface ShareInventoryItemDirectRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ShareInventoryItemDirectRequest
      */
     'itemId': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof ShareInventoryItemDirectRequest
      */
     'users': Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -10308,31 +10308,31 @@ export type SortOption = typeof SortOption[keyof typeof SortOption];
 
 
 /**
- * 
+ *
  * @export
  * @interface Store
  */
 export interface Store {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
     'groupId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
@@ -10350,7 +10350,7 @@ export interface Store {
      */
     'listings'?: Array<ProductListing>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
@@ -10374,19 +10374,19 @@ export interface Store {
      */
     'shelves'?: Array<StoreShelf>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Store
      */
     'storeId': string;
     /**
-     * 
+     *
      * @type {StoreType}
      * @memberof Store
      */
     'storeType': StoreType;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Store
      */
@@ -10401,56 +10401,56 @@ export interface Store {
 
 
 /**
- * 
+ *
  * @export
  * @interface StoreShelf
  */
 export interface StoreShelf {
     /**
-     * 
+     *
      * @type {string}
      * @memberof StoreShelf
      */
     'id': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof StoreShelf
      */
     'listingIds': Array<string>;
     /**
-     * 
+     *
      * @type {Array<ProductListing>}
      * @memberof StoreShelf
      */
     'listings'?: Array<ProductListing>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StoreShelf
      */
     'shelfDescription': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StoreShelf
      */
     'shelfLayout': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StoreShelf
      */
     'shelfTitle': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StoreShelf
      */
     'updatedAt': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -10465,7 +10465,7 @@ export type StoreType = typeof StoreType[keyof typeof StoreType];
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -10482,7 +10482,7 @@ export type StoreView = typeof StoreView[keyof typeof StoreView];
 
 
 /**
- * 
+ *
  * @export
  * @interface Submission
  */
@@ -10494,31 +10494,31 @@ export interface Submission {
      */
     'contentId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Submission
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Submission
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Submission
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Submission
      */
     'jamId': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Submission
      */
@@ -10531,73 +10531,73 @@ export interface Submission {
     'submitterId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface Subscription
  */
 export interface Subscription {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Subscription
      */
     'amount': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'appleProductId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'googlePlanId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'googleProductId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'oculusSku'?: string;
     /**
-     * 
+     *
      * @type {SubscriptionPeriod}
      * @memberof Subscription
      */
     'period': SubscriptionPeriod;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'picoSku'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Subscription
      */
     'steamItemId': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Subscription
      */
@@ -10606,7 +10606,7 @@ export interface Subscription {
 
 
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -10623,77 +10623,77 @@ export type SubscriptionPeriod = typeof SubscriptionPeriod[keyof typeof Subscrip
 
 
 /**
- * 
+ *
  * @export
  * @interface Success
  */
 export interface Success {
     /**
-     * 
+     *
      * @type {Response}
      * @memberof Success
      */
     'success'?: Response;
 }
 /**
- * 
+ *
  * @export
  * @interface SuccessFlag
  */
 export interface SuccessFlag {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SuccessFlag
      */
     'success': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface TiliaStatus
  */
 export interface TiliaStatus {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TiliaStatus
      */
     'economyOnline': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TiliaStatus
      */
     'economyState'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TiliaStatus
      */
     'plannedOfflineWindowEnd'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TiliaStatus
      */
     'plannedOfflineWindowStart'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface TiliaTOS
  */
 export interface TiliaTOS {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TiliaTOS
      */
     'signed_tos': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface TokenBundle
  */
@@ -10705,25 +10705,25 @@ export interface TokenBundle {
      */
     'amount': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
     'appleProductId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
     'googleProductId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
@@ -10735,13 +10735,13 @@ export interface TokenBundle {
      */
     'imageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
     'oculusSku': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenBundle
      */
@@ -10754,79 +10754,79 @@ export interface TokenBundle {
     'tokens': number;
 }
 /**
- * 
+ *
  * @export
  * @interface Transaction
  */
 export interface Transaction {
     /**
-     * 
+     *
      * @type {TransactionAgreement}
      * @memberof Transaction
      */
     'agreement'?: TransactionAgreement;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Transaction
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Transaction
      */
     'error': string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Transaction
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Transaction
      */
     'isGift'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Transaction
      */
     'isTokens'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Transaction
      */
     'sandbox': boolean;
     /**
-     * 
+     *
      * @type {TransactionStatus}
      * @memberof Transaction
      */
     'status': TransactionStatus;
     /**
-     * 
+     *
      * @type {TransactionSteamInfo}
      * @memberof Transaction
      */
     'steam'?: TransactionSteamInfo;
     /**
-     * 
+     *
      * @type {Subscription}
      * @memberof Transaction
      */
     'subscription': Subscription;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Transaction
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Transaction
      */
@@ -10847,97 +10847,97 @@ export interface Transaction {
  */
 export interface TransactionAgreement {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'agreement': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'agreementId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'billingType': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'currency': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'endDate': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'failedAttempts': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'frequency': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'itemId': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'lastAmount': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'lastAmountVat': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'lastPayment': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'nextPayment': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'outstanding': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'period': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionAgreement
      */
     'recurringAmt': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
@@ -10949,14 +10949,14 @@ export interface TransactionAgreement {
      */
     'status': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionAgreement
      */
     'timeCreated': string;
 }
 /**
- * 
+ *
  * @export
  * @enum {string}
  */
@@ -10972,7 +10972,7 @@ export type TransactionStatus = typeof TransactionStatus[keyof typeof Transactio
 
 
 /**
- * 
+ *
  * @export
  * @interface TransactionSteamInfo
  */
@@ -11002,157 +11002,157 @@ export interface TransactionSteamInfo {
      */
     'transId': string;
     /**
-     * 
+     *
      * @type {TransactionSteamWalletInfo}
      * @memberof TransactionSteamInfo
      */
     'walletInfo': TransactionSteamWalletInfo;
 }
 /**
- * 
+ *
  * @export
  * @interface TransactionSteamWalletInfo
  */
 export interface TransactionSteamWalletInfo {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionSteamWalletInfo
      */
     'country': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionSteamWalletInfo
      */
     'currency': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionSteamWalletInfo
      */
     'state': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionSteamWalletInfo
      */
     'status': string;
 }
 /**
- * 
+ *
  * @export
  * @interface TwoFactorAuthCode
  */
 export interface TwoFactorAuthCode {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TwoFactorAuthCode
      */
     'code': string;
 }
 /**
- * 
+ *
  * @export
  * @interface TwoFactorEmailCode
  */
 export interface TwoFactorEmailCode {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TwoFactorEmailCode
      */
     'code': string;
 }
 /**
- * 
+ *
  * @export
  * @interface TwoFactorRecoveryCodes
  */
 export interface TwoFactorRecoveryCodes {
     /**
-     * 
+     *
      * @type {Array<TwoFactorRecoveryCodesOtpInner>}
      * @memberof TwoFactorRecoveryCodes
      */
     'otp'?: Array<TwoFactorRecoveryCodesOtpInner>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof TwoFactorRecoveryCodes
      */
     'requiresTwoFactorAuth'?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface TwoFactorRecoveryCodesOtpInner
  */
 export interface TwoFactorRecoveryCodesOtpInner {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TwoFactorRecoveryCodesOtpInner
      */
     'code': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TwoFactorRecoveryCodesOtpInner
      */
     'used': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UnityPackage
  */
 export interface UnityPackage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'assetUrl'?: string | null;
     /**
-     * 
+     *
      * @type {object}
      * @memberof UnityPackage
      */
     'assetUrlObject'?: object;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UnityPackage
      */
     'assetVersion': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'created_at'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'impostorUrl'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'impostorizerVersion'?: string;
     /**
-     * 
+     *
      * @type {PerformanceRatings}
      * @memberof UnityPackage
      */
@@ -11164,43 +11164,43 @@ export interface UnityPackage {
      */
     'platform': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'pluginUrl'?: string;
     /**
-     * 
+     *
      * @type {object}
      * @memberof UnityPackage
      */
     'pluginUrlObject'?: object;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'scanStatus'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UnityPackage
      */
     'unitySortNumber'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'unityVersion': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
     'variant'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UnityPackage
      */
@@ -11209,67 +11209,67 @@ export interface UnityPackage {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateAvatarRequest
  */
 export interface UpdateAvatarRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'assetUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'imageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof UpdateAvatarRequest
      */
     'releaseStatus'?: ReleaseStatus;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateAvatarRequest
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'unityPackageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateAvatarRequest
      */
     'unityVersion'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateAvatarRequest
      */
@@ -11278,25 +11278,25 @@ export interface UpdateAvatarRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateCalendarEventRequest
  */
 export interface UpdateCalendarEventRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
     'category'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateCalendarEventRequest
      */
     'closeInstanceAfterEndMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
@@ -11308,55 +11308,55 @@ export interface UpdateCalendarEventRequest {
      */
     'endsAt'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateCalendarEventRequest
      */
     'featured'?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateCalendarEventRequest
      */
     'guestEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateCalendarEventRequest
      */
     'hostEarlyJoinMinutes'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
     'imageId'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateCalendarEventRequest
      */
     'isDraft'?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
     'languages'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateCalendarEventRequest
      */
     'parentId'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
     'platforms'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
@@ -11374,7 +11374,7 @@ export interface UpdateCalendarEventRequest {
      */
     'startsAt'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateCalendarEventRequest
      */
@@ -11386,20 +11386,20 @@ export interface UpdateCalendarEventRequest {
      */
     'title'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateCalendarEventRequest
      */
     'usesInstanceOverflow'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateFavoriteGroupRequest
  */
 export interface UpdateFavoriteGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateFavoriteGroupRequest
      */
@@ -11411,7 +11411,7 @@ export interface UpdateFavoriteGroupRequest {
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {FavoriteGroupVisibility}
      * @memberof UpdateFavoriteGroupRequest
      */
@@ -11420,7 +11420,7 @@ export interface UpdateFavoriteGroupRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateGroupGalleryRequest
  */
@@ -11444,56 +11444,56 @@ export interface UpdateGroupGalleryRequest {
      */
     'name'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupGalleryRequest
      */
     'roleIdsToAutoApprove'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupGalleryRequest
      */
     'roleIdsToManage'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupGalleryRequest
      */
     'roleIdsToSubmit'?: Array<string> | null;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupGalleryRequest
      */
     'roleIdsToView'?: Array<string> | null;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateGroupMemberRequest
  */
 export interface UpdateGroupMemberRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateGroupMemberRequest
      */
     'isSubscribedToAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateGroupMemberRequest
      */
     'isSubscribedToEventAnnouncements'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupMemberRequest
      */
     'managerNotes'?: string;
     /**
-     * 
+     *
      * @type {GroupUserVisibility}
      * @memberof UpdateGroupMemberRequest
      */
@@ -11502,7 +11502,7 @@ export interface UpdateGroupMemberRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateGroupRepresentationRequest
  */
@@ -11515,31 +11515,31 @@ export interface UpdateGroupRepresentationRequest {
     'isRepresenting': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateGroupRequest
  */
 export interface UpdateGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'bannerId'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'iconId'?: string | null;
     /**
-     * 
+     *
      * @type {GroupJoinState}
      * @memberof UpdateGroupRequest
      */
@@ -11551,31 +11551,31 @@ export interface UpdateGroupRequest {
      */
     'languages'?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupRequest
      */
     'links'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'rules'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRequest
      */
     'shortCode'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateGroupRequest
      */
@@ -11584,120 +11584,120 @@ export interface UpdateGroupRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateGroupRoleRequest
  */
 export interface UpdateGroupRoleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRoleRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateGroupRoleRequest
      */
     'isSelfAssignable'?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateGroupRoleRequest
      */
     'name'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateGroupRoleRequest
      */
     'order'?: number;
     /**
-     * 
+     *
      * @type {Array<GroupPermissions>}
      * @memberof UpdateGroupRoleRequest
      */
     'permissions'?: Array<GroupPermissions>;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateInventoryItemRequest
  */
 export interface UpdateInventoryItemRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateInventoryItemRequest
      */
     'isArchived'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateInventoryItemRequest
      */
     'isSeen'?: boolean;
     /**
-     * 
+     *
      * @type {InventoryUserAttributes}
      * @memberof UpdateInventoryItemRequest
      */
     'userAttributes'?: InventoryUserAttributes;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateInviteMessageRequest
  */
 export interface UpdateInviteMessageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateInviteMessageRequest
      */
     'message': string;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateTiliaTOSRequest
  */
 export interface UpdateTiliaTOSRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateTiliaTOSRequest
      */
     'accepted': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateUserBadgeRequest
  */
 export interface UpdateUserBadgeRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateUserBadgeRequest
      */
     'hidden'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateUserBadgeRequest
      */
     'showcased'?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateUserNoteRequest
  */
 export interface UpdateUserNoteRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserNoteRequest
      */
@@ -11710,31 +11710,31 @@ export interface UpdateUserNoteRequest {
     'targetUserId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface UpdateUserRequest
  */
 export interface UpdateUserRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateUserRequest
      */
     'acceptedTOSVersion'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
     'bio'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UpdateUserRequest
      */
     'bioLinks'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
@@ -11746,7 +11746,7 @@ export interface UpdateUserRequest {
      */
     'contentFilters'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
@@ -11758,13 +11758,13 @@ export interface UpdateUserRequest {
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
     'email'?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateUserRequest
      */
@@ -11776,7 +11776,7 @@ export interface UpdateUserRequest {
      */
     'password'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
@@ -11788,25 +11788,25 @@ export interface UpdateUserRequest {
      */
     'revertDisplayName'?: boolean;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof UpdateUserRequest
      */
     'status'?: UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateUserRequest
      */
     'statusDescription'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateUserRequest
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UpdateUserRequest
      */
@@ -11821,19 +11821,19 @@ export interface UpdateUserRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface UpdateWorldRequest
  */
 export interface UpdateWorldRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
     'assetUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
@@ -11845,31 +11845,31 @@ export interface UpdateWorldRequest {
      */
     'authorId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
     'authorName'?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UpdateWorldRequest
      */
     'capacity'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
     'description'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
     'imageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
@@ -11881,25 +11881,25 @@ export interface UpdateWorldRequest {
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof UpdateWorldRequest
      */
     'releaseStatus'?: ReleaseStatus;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof UpdateWorldRequest
      */
     'tags'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
     'unityPackageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UpdateWorldRequest
      */
@@ -11908,13 +11908,13 @@ export interface UpdateWorldRequest {
 
 
 /**
- * 
+ *
  * @export
  * @interface User
  */
 export interface User {
     /**
-     * 
+     *
      * @type {AgeVerificationStatus}
      * @memberof User
      */
@@ -11926,25 +11926,25 @@ export interface User {
      */
     'ageVerified': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof User
      */
     'allowAvatarCopying': boolean;
     /**
-     *  
+     *
      * @type {Array<Badge>}
      * @memberof User
      */
     'badges'?: Array<Badge>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'bio': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof User
      */
@@ -11956,7 +11956,7 @@ export interface User {
      */
     'currentAvatarImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof User
      */
@@ -11968,13 +11968,13 @@ export interface User {
      */
     'currentAvatarThumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'date_joined': string;
     /**
-     * 
+     *
      * @type {DeveloperType}
      * @memberof User
      */
@@ -11986,13 +11986,13 @@ export interface User {
      */
     'displayName': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'friendKey': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
@@ -12028,7 +12028,7 @@ export interface User {
      */
     'last_login': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
@@ -12046,79 +12046,79 @@ export interface User {
      */
     'location'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'note'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'platform'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'profilePicOverride': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'profilePicOverrideThumbnail': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'pronouns': string;
     /**
-     * 
+     *
      * @type {UserState}
      * @memberof User
      */
     'state': UserState;
     /**
-     * 
+     *
      * @type {UserStatus}
      * @memberof User
      */
     'status': UserStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'statusDescription': string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof User
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'travelingToInstance'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'travelingToLocation'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
     'travelingToWorld'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof User
      */
@@ -12140,19 +12140,19 @@ export interface User {
 
 
 /**
- * 
+ *
  * @export
  * @interface UserCreditsEligible
  */
 export interface UserCreditsEligible {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserCreditsEligible
      */
     'eligible': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserCreditsEligible
      */
@@ -12178,31 +12178,31 @@ export interface UserExists {
     'userExists': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface UserNote
  */
 export interface UserNote {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNote
      */
     'createdAt': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNote
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNote
      */
     'note': string;
     /**
-     * 
+     *
      * @type {UserNoteTargetUser}
      * @memberof UserNote
      */
@@ -12221,19 +12221,19 @@ export interface UserNote {
     'userId': string;
 }
 /**
- * 
+ *
  * @export
  * @interface UserNoteTargetUser
  */
 export interface UserNoteTargetUser {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNoteTargetUser
      */
     'id'?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UserNoteTargetUser
      */
@@ -12245,19 +12245,19 @@ export interface UserNoteTargetUser {
      */
     'currentAvatarThumbnailImageUrl'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNoteTargetUser
      */
     'displayName'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNoteTargetUser
      */
     'profilePicOverride'?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserNoteTargetUser
      */
@@ -12296,85 +12296,85 @@ export type UserStatus = typeof UserStatus[keyof typeof UserStatus];
 
 
 /**
- * 
+ *
  * @export
  * @interface UserSubscription
  */
 export interface UserSubscription {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscription
      */
     'active': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserSubscription
      */
     'amount': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'description': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'expires': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'id': string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscription
      */
     'isBulkGift': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscription
      */
     'isGift': boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof UserSubscription
      */
     'licenseGroups': Array<string>;
     /**
-     * 
+     *
      * @type {SubscriptionPeriod}
      * @memberof UserSubscription
      */
     'period': SubscriptionPeriod;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'starts'?: string;
     /**
-     * 
+     *
      * @type {TransactionStatus}
      * @memberof UserSubscription
      */
     'status': TransactionStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
@@ -12386,19 +12386,19 @@ export interface UserSubscription {
      */
     'store': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserSubscription
      */
     'tier': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
     'transactionId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSubscription
      */
@@ -12407,101 +12407,101 @@ export interface UserSubscription {
 
 
 /**
- * 
+ *
  * @export
  * @interface UserSubscriptionEligible
  */
 export interface UserSubscriptionEligible {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'activeCancelledSubscription': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'giftEligible': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'nonExtendVendorWillLoseGiftTime': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'purchaseEligible': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'subscriptionEligible': boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserSubscriptionEligible
      */
     'subscriptionOnAltAccount': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface Verify2FAEmailCodeResult
  */
 export interface Verify2FAEmailCodeResult {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Verify2FAEmailCodeResult
      */
     'verified': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface Verify2FAResult
  */
 export interface Verify2FAResult {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Verify2FAResult
      */
     'enabled'?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Verify2FAResult
      */
     'verified': boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface VerifyAuthTokenResult
  */
 export interface VerifyAuthTokenResult {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof VerifyAuthTokenResult
      */
     'ok': boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof VerifyAuthTokenResult
      */
     'token': string;
 }
 /**
- * 
+ *
  * @export
  * @interface World
  */
@@ -12513,49 +12513,49 @@ export interface World {
      */
     'authorId': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'authorName': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
     'capacity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'created_at': string;
     /**
-     * 
+     *
      * @type {InstanceContentSettings}
      * @memberof World
      */
     'defaultContentSettings'?: InstanceContentSettings;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'description': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
     'favorites'?: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof World
      */
     'featured': boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
@@ -12567,7 +12567,7 @@ export interface World {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
@@ -12579,19 +12579,19 @@ export interface World {
      */
     'instances'?: Array<Array<any>>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'labsPublicationDate': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'name': string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
@@ -12603,19 +12603,19 @@ export interface World {
      */
     'occupants'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'organization': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
     'popularity': number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
@@ -12633,43 +12633,43 @@ export interface World {
      */
     'publicOccupants'?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'publicationDate': string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
     'recommendedCapacity': number;
     /**
-     * 
+     *
      * @type {ReleaseStatus}
      * @memberof World
      */
     'releaseStatus': ReleaseStatus;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'storeId'?: string;
     /**
-     *  
+     *
      * @type {Array<string>}
      * @memberof World
      */
     'tags': Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'thumbnailImageUrl': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof World
      */
@@ -12681,25 +12681,25 @@ export interface World {
      */
     'unityPackages'?: Array<UnityPackage>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof World
      */
     'updated_at': string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof World
      */
     'urlList'?: Array<string>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
     'version': number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof World
      */
@@ -12708,7 +12708,7 @@ export interface World {
 
 
 /**
- * 
+ *
  * @export
  * @interface WorldMetadata
  */
@@ -12720,20 +12720,20 @@ export interface WorldMetadata {
      */
     'id': string;
     /**
-     * 
+     *
      * @type {object}
      * @memberof WorldMetadata
      */
     'metadata': object;
 }
 /**
- * 
+ *
  * @export
  * @interface WorldPublishStatus
  */
 export interface WorldPublishStatus {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof WorldPublishStatus
      */
@@ -12768,7 +12768,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -12818,7 +12818,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -12862,7 +12862,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -12875,7 +12875,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * Globally moderates an avatar.
          * @summary Create Global Avatar Moderation
-         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest 
+         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12897,7 +12897,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -12946,7 +12946,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -12982,7 +12982,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13014,7 +13014,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13046,7 +13046,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13084,7 +13084,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13116,7 +13116,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13148,7 +13148,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13180,7 +13180,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13193,7 +13193,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * ~~Register a new user account.~~  **DEPRECATED:** Automated creation of accounts has no legitimate public third-party use case, and would be in violation of ToS §13.2: *By using the Platform, you agree not to: i. [...] use the Platform in a manner inconsistent with individual human usage* This endpoint is documented in the interest of completeness
          * @summary Register User Account
-         * @param {RegisterUserAccountRequest} registerUserAccountRequest 
+         * @param {RegisterUserAccountRequest} registerUserAccountRequest
          * @param {*} [options] Override http request option.
          * @deprecated
          * @throws {RequiredError}
@@ -13214,7 +13214,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             const localVarQueryParameter = {} as any;
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -13249,7 +13249,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13262,7 +13262,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * Finishes the login sequence with a normal 2FA-generated code for accounts with 2FA-protection enabled.
          * @summary Verify 2FA code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13284,7 +13284,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -13300,7 +13300,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * Finishes the login sequence with an 2FA email code.
          * @summary Verify 2FA email code
-         * @param {TwoFactorEmailCode} twoFactorEmailCode 
+         * @param {TwoFactorEmailCode} twoFactorEmailCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13322,7 +13322,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -13357,7 +13357,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13399,7 +13399,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -13412,7 +13412,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * Finishes sequence for enabling time-based 2FA.
          * @summary Verify Pending 2FA code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13434,7 +13434,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -13450,7 +13450,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * Finishes the login sequence with an OTP (One Time Password) recovery code for accounts with 2FA-protection enabled.
          * @summary Verify 2FA code with Recovery code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13472,7 +13472,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -13540,7 +13540,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * Globally moderates an avatar.
          * @summary Create Global Avatar Moderation
-         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest 
+         * @param {CreateAvatarModerationRequest} createAvatarModerationRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13652,7 +13652,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * ~~Register a new user account.~~  **DEPRECATED:** Automated creation of accounts has no legitimate public third-party use case, and would be in violation of ToS §13.2: *By using the Platform, you agree not to: i. [...] use the Platform in a manner inconsistent with individual human usage* This endpoint is documented in the interest of completeness
          * @summary Register User Account
-         * @param {RegisterUserAccountRequest} registerUserAccountRequest 
+         * @param {RegisterUserAccountRequest} registerUserAccountRequest
          * @param {*} [options] Override http request option.
          * @deprecated
          * @throws {RequiredError}
@@ -13678,7 +13678,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * Finishes the login sequence with a normal 2FA-generated code for accounts with 2FA-protection enabled.
          * @summary Verify 2FA code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13691,7 +13691,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * Finishes the login sequence with an 2FA email code.
          * @summary Verify 2FA email code
-         * @param {TwoFactorEmailCode} twoFactorEmailCode 
+         * @param {TwoFactorEmailCode} twoFactorEmailCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13730,7 +13730,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * Finishes sequence for enabling time-based 2FA.
          * @summary Verify Pending 2FA code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -13743,7 +13743,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * Finishes the login sequence with an OTP (One Time Password) recovery code for accounts with 2FA-protection enabled.
          * @summary Verify 2FA code with Recovery code
-         * @param {TwoFactorAuthCode} twoFactorAuthCode 
+         * @param {TwoFactorAuthCode} twoFactorAuthCode
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -14021,7 +14021,7 @@ export interface AuthenticationApiConfirmEmailRequest {
  */
 export interface AuthenticationApiCreateGlobalAvatarModerationRequest {
     /**
-     * 
+     *
      * @type {CreateAvatarModerationRequest}
      * @memberof AuthenticationApiCreateGlobalAvatarModeration
      */
@@ -14070,7 +14070,7 @@ export interface AuthenticationApiDeleteUserRequest {
  */
 export interface AuthenticationApiRegisterUserAccountRequest {
     /**
-     * 
+     *
      * @type {RegisterUserAccountRequest}
      * @memberof AuthenticationApiRegisterUserAccount
      */
@@ -14084,7 +14084,7 @@ export interface AuthenticationApiRegisterUserAccountRequest {
  */
 export interface AuthenticationApiVerify2FARequest {
     /**
-     * 
+     *
      * @type {TwoFactorAuthCode}
      * @memberof AuthenticationApiVerify2FA
      */
@@ -14098,7 +14098,7 @@ export interface AuthenticationApiVerify2FARequest {
  */
 export interface AuthenticationApiVerify2FAEmailCodeRequest {
     /**
-     * 
+     *
      * @type {TwoFactorEmailCode}
      * @memberof AuthenticationApiVerify2FAEmailCode
      */
@@ -14133,7 +14133,7 @@ export interface AuthenticationApiVerifyLoginPlaceRequest {
  */
 export interface AuthenticationApiVerifyPending2FARequest {
     /**
-     * 
+     *
      * @type {TwoFactorAuthCode}
      * @memberof AuthenticationApiVerifyPending2FA
      */
@@ -14147,7 +14147,7 @@ export interface AuthenticationApiVerifyPending2FARequest {
  */
 export interface AuthenticationApiVerifyRecoveryCodeRequest {
     /**
-     * 
+     *
      * @type {TwoFactorAuthCode}
      * @memberof AuthenticationApiVerifyRecoveryCode
      */
@@ -14405,7 +14405,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Create an avatar. It\'s possible to optionally specify a ID if you want a custom one. Attempting to create an Avatar with an already claimed ID will result in a DB error.
          * @summary Create Avatar
-         * @param {CreateAvatarRequest} [createAvatarRequest] 
+         * @param {CreateAvatarRequest} [createAvatarRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -14425,7 +14425,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -14464,7 +14464,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14500,7 +14500,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14536,7 +14536,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14572,7 +14572,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14602,7 +14602,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14699,7 +14699,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14731,7 +14731,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14773,7 +14773,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14809,7 +14809,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14906,7 +14906,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14942,7 +14942,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14979,7 +14979,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -14993,7 +14993,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
          * Update information about a specific avatar.
          * @summary Update Avatar
          * @param {string} avatarId Must be a valid avatar ID.
-         * @param {UpdateAvatarRequest} [updateAvatarRequest] 
+         * @param {UpdateAvatarRequest} [updateAvatarRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -15016,7 +15016,7 @@ export const AvatarsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -15042,7 +15042,7 @@ export const AvatarsApiFp = function(configuration?: Configuration) {
         /**
          * Create an avatar. It\'s possible to optionally specify a ID if you want a custom one. Attempting to create an Avatar with an already claimed ID will result in a DB error.
          * @summary Create Avatar
-         * @param {CreateAvatarRequest} [createAvatarRequest] 
+         * @param {CreateAvatarRequest} [createAvatarRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -15236,7 +15236,7 @@ export const AvatarsApiFp = function(configuration?: Configuration) {
          * Update information about a specific avatar.
          * @summary Update Avatar
          * @param {string} avatarId Must be a valid avatar ID.
-         * @param {UpdateAvatarRequest} [updateAvatarRequest] 
+         * @param {UpdateAvatarRequest} [updateAvatarRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -15405,7 +15405,7 @@ export const AvatarsApiFactory = function (configuration?: Configuration, basePa
  */
 export interface AvatarsApiCreateAvatarRequest {
     /**
-     * 
+     *
      * @type {CreateAvatarRequest}
      * @memberof AvatarsApiCreateAvatar
      */
@@ -15741,7 +15741,7 @@ export interface AvatarsApiUpdateAvatarRequest {
     readonly avatarId: string
 
     /**
-     * 
+     *
      * @type {UpdateAvatarRequest}
      * @memberof AvatarsApiUpdateAvatar
      */
@@ -15942,7 +15942,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
          * Creates an event for a group on the calendar
          * @summary Create a calendar event
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateCalendarEventRequest} createCalendarEventRequest 
+         * @param {CreateCalendarEventRequest} createCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -15967,7 +15967,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -16010,7 +16010,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16025,7 +16025,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
          * @summary Follow a calendar event
          * @param {string} groupId Must be a valid group ID.
          * @param {string} calendarId Must be a valid calendar ID.
-         * @param {FollowCalendarEventRequest} followCalendarEventRequest 
+         * @param {FollowCalendarEventRequest} followCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -16053,7 +16053,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -16105,7 +16105,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16154,7 +16154,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16203,7 +16203,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16243,7 +16243,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16281,7 +16281,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16334,7 +16334,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16388,7 +16388,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -16403,7 +16403,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
          * @summary Update a calendar event
          * @param {string} groupId Must be a valid group ID.
          * @param {string} calendarId Must be a valid calendar ID.
-         * @param {UpdateCalendarEventRequest} updateCalendarEventRequest 
+         * @param {UpdateCalendarEventRequest} updateCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -16431,7 +16431,7 @@ export const CalendarApiAxiosParamCreator = function (configuration?: Configurat
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -16458,7 +16458,7 @@ export const CalendarApiFp = function(configuration?: Configuration) {
          * Creates an event for a group on the calendar
          * @summary Create a calendar event
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateCalendarEventRequest} createCalendarEventRequest 
+         * @param {CreateCalendarEventRequest} createCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -16487,7 +16487,7 @@ export const CalendarApiFp = function(configuration?: Configuration) {
          * @summary Follow a calendar event
          * @param {string} groupId Must be a valid group ID.
          * @param {string} calendarId Must be a valid calendar ID.
-         * @param {FollowCalendarEventRequest} followCalendarEventRequest 
+         * @param {FollowCalendarEventRequest} followCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -16607,7 +16607,7 @@ export const CalendarApiFp = function(configuration?: Configuration) {
          * @summary Update a calendar event
          * @param {string} groupId Must be a valid group ID.
          * @param {string} calendarId Must be a valid calendar ID.
-         * @param {UpdateCalendarEventRequest} updateCalendarEventRequest 
+         * @param {UpdateCalendarEventRequest} updateCalendarEventRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -16754,7 +16754,7 @@ export interface CalendarApiCreateGroupCalendarEventRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateCalendarEventRequest}
      * @memberof CalendarApiCreateGroupCalendarEvent
      */
@@ -16803,7 +16803,7 @@ export interface CalendarApiFollowGroupCalendarEventRequest {
     readonly calendarId: string
 
     /**
-     * 
+     *
      * @type {FollowCalendarEventRequest}
      * @memberof CalendarApiFollowGroupCalendarEvent
      */
@@ -17027,7 +17027,7 @@ export interface CalendarApiUpdateGroupCalendarEventRequest {
     readonly calendarId: string
 
     /**
-     * 
+     *
      * @type {UpdateCalendarEventRequest}
      * @memberof CalendarApiUpdateGroupCalendarEvent
      */
@@ -17204,7 +17204,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17240,7 +17240,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17276,7 +17276,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17289,7 +17289,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Get bulk gift purchases made by the user.
          * @summary Get Bulk Gift Purchases
-         * @param {boolean} [mostRecent] 
+         * @param {boolean} [mostRecent]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -17313,7 +17313,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17345,7 +17345,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17381,7 +17381,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17417,7 +17417,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17458,7 +17458,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17519,7 +17519,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17551,7 +17551,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17588,7 +17588,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17620,7 +17620,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17633,7 +17633,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Gets a store
          * @summary Get Store
-         * @param {string} storeId 
+         * @param {string} storeId
          * @param {boolean} [hydrateListings] Listings fields will be populated.
          * @param {boolean} [hydrateProducts] Products fields will be populated.
          * @param {*} [options] Override http request option.
@@ -17669,7 +17669,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17682,9 +17682,9 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Gets the shelves for a store
          * @summary Get Store Shelves
-         * @param {string} storeId 
+         * @param {string} storeId
          * @param {boolean} [hydrateListings] Listings fields will be populated.
-         * @param {StoreView} [fetch] 
+         * @param {StoreView} [fetch]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -17718,7 +17718,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17750,7 +17750,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17782,7 +17782,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17818,7 +17818,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17850,7 +17850,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17864,7 +17864,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
          * Get the user\'s eligibility status for subscriptions based on available credits.
          * @summary Get User Credits Eligiblity
          * @param {string} userId Must be a valid user ID.
-         * @param {string} subscriptionId 
+         * @param {string} subscriptionId
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -17893,7 +17893,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17934,7 +17934,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -17948,7 +17948,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
          * Updates the status of the agreement of a user to the Tilia TOS
          * @summary Update Tilia TOS Agreement Status
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest] 
+         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -17971,7 +17971,7 @@ export const EconomyApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -18035,7 +18035,7 @@ export const EconomyApiFp = function(configuration?: Configuration) {
         /**
          * Get bulk gift purchases made by the user.
          * @summary Get Bulk Gift Purchases
-         * @param {boolean} [mostRecent] 
+         * @param {boolean} [mostRecent]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -18156,7 +18156,7 @@ export const EconomyApiFp = function(configuration?: Configuration) {
         /**
          * Gets a store
          * @summary Get Store
-         * @param {string} storeId 
+         * @param {string} storeId
          * @param {boolean} [hydrateListings] Listings fields will be populated.
          * @param {boolean} [hydrateProducts] Products fields will be populated.
          * @param {*} [options] Override http request option.
@@ -18171,9 +18171,9 @@ export const EconomyApiFp = function(configuration?: Configuration) {
         /**
          * Gets the shelves for a store
          * @summary Get Store Shelves
-         * @param {string} storeId 
+         * @param {string} storeId
          * @param {boolean} [hydrateListings] Listings fields will be populated.
-         * @param {StoreView} [fetch] 
+         * @param {StoreView} [fetch]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -18236,7 +18236,7 @@ export const EconomyApiFp = function(configuration?: Configuration) {
          * Get the user\'s eligibility status for subscriptions based on available credits.
          * @summary Get User Credits Eligiblity
          * @param {string} userId Must be a valid user ID.
-         * @param {string} subscriptionId 
+         * @param {string} subscriptionId
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -18264,7 +18264,7 @@ export const EconomyApiFp = function(configuration?: Configuration) {
          * Updates the status of the agreement of a user to the Tilia TOS
          * @summary Update Tilia TOS Agreement Status
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest] 
+         * @param {UpdateTiliaTOSRequest} [updateTiliaTOSRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -18526,7 +18526,7 @@ export interface EconomyApiGetBalanceEarningsRequest {
  */
 export interface EconomyApiGetBulkGiftPurchasesRequest {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EconomyApiGetBulkGiftPurchases
      */
@@ -18652,7 +18652,7 @@ export interface EconomyApiGetSteamTransactionRequest {
  */
 export interface EconomyApiGetStoreRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyApiGetStore
      */
@@ -18680,7 +18680,7 @@ export interface EconomyApiGetStoreRequest {
  */
 export interface EconomyApiGetStoreShelvesRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyApiGetStoreShelves
      */
@@ -18694,7 +18694,7 @@ export interface EconomyApiGetStoreShelvesRequest {
     readonly hydrateListings?: boolean
 
     /**
-     * 
+     *
      * @type {StoreView}
      * @memberof EconomyApiGetStoreShelves
      */
@@ -18729,7 +18729,7 @@ export interface EconomyApiGetUserCreditsEligibleRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {string}
      * @memberof EconomyApiGetUserCreditsEligible
      */
@@ -18771,7 +18771,7 @@ export interface EconomyApiUpdateTiliaTosRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {UpdateTiliaTOSRequest}
      * @memberof EconomyApiUpdateTiliaTos
      */
@@ -19043,7 +19043,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
         /**
          * Add a new favorite.  Friend groups are named `group_0` through `group_3`. Avatar and World groups are named `avatars1` to `avatars4` and `worlds1` to `worlds4`.  You cannot add people whom you are not friends with to your friends list. Destroying a friendship removes the person as favorite on both sides.
          * @summary Add Favorite
-         * @param {AddFavoriteRequest} [addFavoriteRequest] 
+         * @param {AddFavoriteRequest} [addFavoriteRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19063,7 +19063,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -19110,7 +19110,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19154,7 +19154,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19206,7 +19206,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19238,7 +19238,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19290,7 +19290,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19326,7 +19326,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -19342,7 +19342,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
          * @param {UpdateFavoriteGroupFavoriteGroupTypeEnum} favoriteGroupType The type of group to fetch, must be a valid FavoriteType.
          * @param {string} favoriteGroupName The name of the group to fetch, must be a name of a FavoriteGroup.
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateFavoriteGroupRequest} [updateFavoriteGroupRequest] 
+         * @param {UpdateFavoriteGroupRequest} [updateFavoriteGroupRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19371,7 +19371,7 @@ export const FavoritesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -19397,7 +19397,7 @@ export const FavoritesApiFp = function(configuration?: Configuration) {
         /**
          * Add a new favorite.  Friend groups are named `group_0` through `group_3`. Avatar and World groups are named `avatars1` to `avatars4` and `worlds1` to `worlds4`.  You cannot add people whom you are not friends with to your friends list. Destroying a friendship removes the person as favorite on both sides.
          * @summary Add Favorite
-         * @param {AddFavoriteRequest} [addFavoriteRequest] 
+         * @param {AddFavoriteRequest} [addFavoriteRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19500,7 +19500,7 @@ export const FavoritesApiFp = function(configuration?: Configuration) {
          * @param {UpdateFavoriteGroupFavoriteGroupTypeEnum} favoriteGroupType The type of group to fetch, must be a valid FavoriteType.
          * @param {string} favoriteGroupName The name of the group to fetch, must be a name of a FavoriteGroup.
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateFavoriteGroupRequest} [updateFavoriteGroupRequest] 
+         * @param {UpdateFavoriteGroupRequest} [updateFavoriteGroupRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19609,7 +19609,7 @@ export const FavoritesApiFactory = function (configuration?: Configuration, base
  */
 export interface FavoritesApiAddFavoriteRequest {
     /**
-     * 
+     *
      * @type {AddFavoriteRequest}
      * @memberof FavoritesApiAddFavorite
      */
@@ -19784,7 +19784,7 @@ export interface FavoritesApiUpdateFavoriteGroupRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {UpdateFavoriteGroupRequest}
      * @memberof FavoritesApiUpdateFavoriteGroup
      */
@@ -19932,7 +19932,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Creates a new File object
          * @summary Create File
-         * @param {CreateFileRequest} [createFileRequest] 
+         * @param {CreateFileRequest} [createFileRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19952,7 +19952,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -19969,7 +19969,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
          * Creates a new FileVersion. Once a Version has been created, proceed to the `/file/{fileId}/{versionId}/file/start` endpoint to start a file upload.
          * @summary Create File Version
          * @param {string} fileId Must be a valid file ID.
-         * @param {CreateFileVersionRequest} [createFileVersionRequest] 
+         * @param {CreateFileVersionRequest} [createFileVersionRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -19992,7 +19992,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -20031,7 +20031,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20071,7 +20071,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20111,7 +20111,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20156,7 +20156,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -20195,7 +20195,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20231,7 +20231,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20271,7 +20271,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20311,7 +20311,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20351,7 +20351,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20395,7 +20395,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20447,7 +20447,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20496,7 +20496,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20532,13 +20532,13 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-            if (file !== undefined) { 
+            if (file !== undefined) {
                 localVarFormParams.append('file', file as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20575,13 +20575,13 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-            if (file !== undefined) { 
+            if (file !== undefined) {
                 localVarFormParams.append('file', file as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20625,33 +20625,33 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-            if (animationStyle !== undefined) { 
+            if (animationStyle !== undefined) {
                 localVarFormParams.append('animationStyle', animationStyle as any);
             }
-    
-            if (file !== undefined) { 
+
+            if (file !== undefined) {
                 localVarFormParams.append('file', file as any);
             }
-    
-            if (frames !== undefined) { 
+
+            if (frames !== undefined) {
                 localVarFormParams.append('frames', frames as any);
             }
-    
-            if (framesOverTime !== undefined) { 
+
+            if (framesOverTime !== undefined) {
                 localVarFormParams.append('framesOverTime', framesOverTime as any);
             }
-    
-            if (maskTag !== undefined) { 
+
+            if (maskTag !== undefined) {
                 localVarFormParams.append('maskTag', maskTag as any);
             }
-    
-            if (tag !== undefined) { 
+
+            if (tag !== undefined) {
                 localVarFormParams.append('tag', tag as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -20675,7 +20675,7 @@ export const FilesApiFp = function(configuration?: Configuration) {
         /**
          * Creates a new File object
          * @summary Create File
-         * @param {CreateFileRequest} [createFileRequest] 
+         * @param {CreateFileRequest} [createFileRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -20689,7 +20689,7 @@ export const FilesApiFp = function(configuration?: Configuration) {
          * Creates a new FileVersion. Once a Version has been created, proceed to the `/file/{fileId}/{versionId}/file/start` endpoint to start a file upload.
          * @summary Create File Version
          * @param {string} fileId Must be a valid file ID.
-         * @param {CreateFileVersionRequest} [createFileVersionRequest] 
+         * @param {CreateFileVersionRequest} [createFileVersionRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -21105,7 +21105,7 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
  */
 export interface FilesApiCreateFileRequest {
     /**
-     * 
+     *
      * @type {CreateFileRequest}
      * @memberof FilesApiCreateFile
      */
@@ -21126,7 +21126,7 @@ export interface FilesApiCreateFileVersionRequest {
     readonly fileId: string
 
     /**
-     * 
+     *
      * @type {CreateFileVersionRequest}
      * @memberof FilesApiCreateFileVersion
      */
@@ -21763,7 +21763,7 @@ export const FriendsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -21799,7 +21799,7 @@ export const FriendsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -21835,7 +21835,7 @@ export const FriendsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -21882,7 +21882,7 @@ export const FriendsApiAxiosParamCreator = function (configuration?: Configurati
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -21918,7 +21918,7 @@ export const FriendsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22233,7 +22233,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Add Group Gallery Image
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupGalleryId Must be a valid group gallery ID.
-         * @param {AddGroupGalleryImageRequest} addGroupGalleryImageRequest 
+         * @param {AddGroupGalleryImageRequest} addGroupGalleryImageRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22261,7 +22261,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22308,7 +22308,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22322,7 +22322,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Create a post in a Group.
          * @summary Create a post in a Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupPostRequest} createGroupPostRequest 
+         * @param {CreateGroupPostRequest} createGroupPostRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22347,7 +22347,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22364,7 +22364,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Bans a user from a Group.
          * @summary Ban Group Member
          * @param {string} groupId Must be a valid group ID.
-         * @param {BanGroupMemberRequest} banGroupMemberRequest 
+         * @param {BanGroupMemberRequest} banGroupMemberRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22389,7 +22389,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22428,7 +22428,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22441,7 +22441,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * Creates a Group and returns a Group object. **Requires VRC+ Subscription.**
          * @summary Create Group
-         * @param {CreateGroupRequest} createGroupRequest 
+         * @param {CreateGroupRequest} createGroupRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22463,7 +22463,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22480,7 +22480,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Creates an Announcement for a Group. Warning: This will also remove all announcements. To make proper announcements, use the posts endpoint instead
          * @summary Create Group Announcement
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupAnnouncementRequest} createGroupAnnouncementRequest 
+         * @param {CreateGroupAnnouncementRequest} createGroupAnnouncementRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22505,7 +22505,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22522,7 +22522,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Creates a gallery for a Group.
          * @summary Create Group Gallery
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupGalleryRequest} createGroupGalleryRequest 
+         * @param {CreateGroupGalleryRequest} createGroupGalleryRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22547,7 +22547,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22564,7 +22564,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Sends an invite to a user to join the group.
          * @summary Invite User to Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupInviteRequest} createGroupInviteRequest 
+         * @param {CreateGroupInviteRequest} createGroupInviteRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22589,7 +22589,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22606,7 +22606,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Create a Group role.
          * @summary Create GroupRole
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupRoleRequest} createGroupRoleRequest 
+         * @param {CreateGroupRoleRequest} createGroupRoleRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -22631,7 +22631,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -22670,7 +22670,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22706,7 +22706,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22746,7 +22746,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22790,7 +22790,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22830,7 +22830,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22870,7 +22870,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22910,7 +22910,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22951,7 +22951,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -22987,7 +22987,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23062,7 +23062,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23108,7 +23108,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23163,7 +23163,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23199,7 +23199,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23245,7 +23245,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23285,7 +23285,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23341,7 +23341,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23377,7 +23377,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23428,7 +23428,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23479,7 +23479,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23511,7 +23511,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23547,7 +23547,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23583,7 +23583,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23623,7 +23623,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23659,7 +23659,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23703,7 +23703,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23718,7 +23718,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Respond Group Join request
          * @param {string} groupId Must be a valid group ID.
          * @param {string} userId Must be a valid user ID.
-         * @param {RespondGroupJoinRequest} respondGroupJoinRequest 
+         * @param {RespondGroupJoinRequest} respondGroupJoinRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -23746,7 +23746,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -23794,7 +23794,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23834,7 +23834,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -23848,7 +23848,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Updates a Group and returns it.
          * @summary Update Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {UpdateGroupRequest} [updateGroupRequest] 
+         * @param {UpdateGroupRequest} [updateGroupRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -23871,7 +23871,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -23889,7 +23889,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Update Group Gallery
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupGalleryId Must be a valid group gallery ID.
-         * @param {UpdateGroupGalleryRequest} [updateGroupGalleryRequest] 
+         * @param {UpdateGroupGalleryRequest} [updateGroupGalleryRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -23915,7 +23915,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -23933,7 +23933,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Update Group Member
          * @param {string} groupId Must be a valid group ID.
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateGroupMemberRequest} [updateGroupMemberRequest] 
+         * @param {UpdateGroupMemberRequest} [updateGroupMemberRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -23959,7 +23959,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -23977,7 +23977,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Edits a Group post
          * @param {string} groupId Must be a valid group ID.
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {CreateGroupPostRequest} createGroupPostRequest 
+         * @param {CreateGroupPostRequest} createGroupPostRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24005,7 +24005,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -24022,7 +24022,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * Updates whether the user is representing the group.  When `isRepresenting` is set to `true`, this flag will be set to `false` for all other groups
          * @summary Update Group Representation
          * @param {string} groupId Must be a valid group ID.
-         * @param {UpdateGroupRepresentationRequest} updateGroupRepresentationRequest 
+         * @param {UpdateGroupRepresentationRequest} updateGroupRepresentationRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24047,7 +24047,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -24065,7 +24065,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary Update Group Role
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupRoleId Must be a valid group role ID.
-         * @param {UpdateGroupRoleRequest} [updateGroupRoleRequest] 
+         * @param {UpdateGroupRoleRequest} [updateGroupRoleRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24091,7 +24091,7 @@ export const GroupsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -24119,7 +24119,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Add Group Gallery Image
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupGalleryId Must be a valid group gallery ID.
-         * @param {AddGroupGalleryImageRequest} addGroupGalleryImageRequest 
+         * @param {AddGroupGalleryImageRequest} addGroupGalleryImageRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24148,7 +24148,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Create a post in a Group.
          * @summary Create a post in a Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupPostRequest} createGroupPostRequest 
+         * @param {CreateGroupPostRequest} createGroupPostRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24162,7 +24162,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Bans a user from a Group.
          * @summary Ban Group Member
          * @param {string} groupId Must be a valid group ID.
-         * @param {BanGroupMemberRequest} banGroupMemberRequest 
+         * @param {BanGroupMemberRequest} banGroupMemberRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24188,7 +24188,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
         /**
          * Creates a Group and returns a Group object. **Requires VRC+ Subscription.**
          * @summary Create Group
-         * @param {CreateGroupRequest} createGroupRequest 
+         * @param {CreateGroupRequest} createGroupRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24202,7 +24202,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Creates an Announcement for a Group. Warning: This will also remove all announcements. To make proper announcements, use the posts endpoint instead
          * @summary Create Group Announcement
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupAnnouncementRequest} createGroupAnnouncementRequest 
+         * @param {CreateGroupAnnouncementRequest} createGroupAnnouncementRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24216,7 +24216,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Creates a gallery for a Group.
          * @summary Create Group Gallery
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupGalleryRequest} createGroupGalleryRequest 
+         * @param {CreateGroupGalleryRequest} createGroupGalleryRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24230,7 +24230,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Sends an invite to a user to join the group.
          * @summary Invite User to Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupInviteRequest} createGroupInviteRequest 
+         * @param {CreateGroupInviteRequest} createGroupInviteRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24244,7 +24244,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Create a Group role.
          * @summary Create GroupRole
          * @param {string} groupId Must be a valid group ID.
-         * @param {CreateGroupRoleRequest} createGroupRoleRequest 
+         * @param {CreateGroupRoleRequest} createGroupRoleRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24619,7 +24619,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Respond Group Join request
          * @param {string} groupId Must be a valid group ID.
          * @param {string} userId Must be a valid user ID.
-         * @param {RespondGroupJoinRequest} respondGroupJoinRequest 
+         * @param {RespondGroupJoinRequest} respondGroupJoinRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24662,7 +24662,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Updates a Group and returns it.
          * @summary Update Group
          * @param {string} groupId Must be a valid group ID.
-         * @param {UpdateGroupRequest} [updateGroupRequest] 
+         * @param {UpdateGroupRequest} [updateGroupRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24677,7 +24677,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Update Group Gallery
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupGalleryId Must be a valid group gallery ID.
-         * @param {UpdateGroupGalleryRequest} [updateGroupGalleryRequest] 
+         * @param {UpdateGroupGalleryRequest} [updateGroupGalleryRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24692,7 +24692,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Update Group Member
          * @param {string} groupId Must be a valid group ID.
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateGroupMemberRequest} [updateGroupMemberRequest] 
+         * @param {UpdateGroupMemberRequest} [updateGroupMemberRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24707,7 +24707,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Edits a Group post
          * @param {string} groupId Must be a valid group ID.
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {CreateGroupPostRequest} createGroupPostRequest 
+         * @param {CreateGroupPostRequest} createGroupPostRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24721,7 +24721,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * Updates whether the user is representing the group.  When `isRepresenting` is set to `true`, this flag will be set to `false` for all other groups
          * @summary Update Group Representation
          * @param {string} groupId Must be a valid group ID.
-         * @param {UpdateGroupRepresentationRequest} updateGroupRepresentationRequest 
+         * @param {UpdateGroupRepresentationRequest} updateGroupRepresentationRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -24736,7 +24736,7 @@ export const GroupsApiFp = function(configuration?: Configuration) {
          * @summary Update Group Role
          * @param {string} groupId Must be a valid group ID.
          * @param {string} groupRoleId Must be a valid group role ID.
-         * @param {UpdateGroupRoleRequest} [updateGroupRoleRequest] 
+         * @param {UpdateGroupRoleRequest} [updateGroupRoleRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -25219,7 +25219,7 @@ export interface GroupsApiAddGroupGalleryImageRequest {
     readonly groupGalleryId: string
 
     /**
-     * 
+     *
      * @type {AddGroupGalleryImageRequest}
      * @memberof GroupsApiAddGroupGalleryImage
      */
@@ -25268,7 +25268,7 @@ export interface GroupsApiAddGroupPostRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupPostRequest}
      * @memberof GroupsApiAddGroupPost
      */
@@ -25289,7 +25289,7 @@ export interface GroupsApiBanGroupMemberRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {BanGroupMemberRequest}
      * @memberof GroupsApiBanGroupMember
      */
@@ -25317,7 +25317,7 @@ export interface GroupsApiCancelGroupRequestRequest {
  */
 export interface GroupsApiCreateGroupRequest {
     /**
-     * 
+     *
      * @type {CreateGroupRequest}
      * @memberof GroupsApiCreateGroup
      */
@@ -25338,7 +25338,7 @@ export interface GroupsApiCreateGroupAnnouncementRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupAnnouncementRequest}
      * @memberof GroupsApiCreateGroupAnnouncement
      */
@@ -25359,7 +25359,7 @@ export interface GroupsApiCreateGroupGalleryRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupGalleryRequest}
      * @memberof GroupsApiCreateGroupGallery
      */
@@ -25380,7 +25380,7 @@ export interface GroupsApiCreateGroupInviteRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupInviteRequest}
      * @memberof GroupsApiCreateGroupInvite
      */
@@ -25401,7 +25401,7 @@ export interface GroupsApiCreateGroupRoleRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupRoleRequest}
      * @memberof GroupsApiCreateGroupRole
      */
@@ -26017,7 +26017,7 @@ export interface GroupsApiRespondGroupJoinRequestRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {RespondGroupJoinRequest}
      * @memberof GroupsApiRespondGroupJoinRequest
      */
@@ -26087,7 +26087,7 @@ export interface GroupsApiUpdateGroupRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {UpdateGroupRequest}
      * @memberof GroupsApiUpdateGroup
      */
@@ -26115,7 +26115,7 @@ export interface GroupsApiUpdateGroupGalleryRequest {
     readonly groupGalleryId: string
 
     /**
-     * 
+     *
      * @type {UpdateGroupGalleryRequest}
      * @memberof GroupsApiUpdateGroupGallery
      */
@@ -26143,7 +26143,7 @@ export interface GroupsApiUpdateGroupMemberRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {UpdateGroupMemberRequest}
      * @memberof GroupsApiUpdateGroupMember
      */
@@ -26171,7 +26171,7 @@ export interface GroupsApiUpdateGroupPostRequest {
     readonly notificationId: string
 
     /**
-     * 
+     *
      * @type {CreateGroupPostRequest}
      * @memberof GroupsApiUpdateGroupPost
      */
@@ -26192,7 +26192,7 @@ export interface GroupsApiUpdateGroupRepresentationRequest {
     readonly groupId: string
 
     /**
-     * 
+     *
      * @type {UpdateGroupRepresentationRequest}
      * @memberof GroupsApiUpdateGroupRepresentation
      */
@@ -26220,7 +26220,7 @@ export interface GroupsApiUpdateGroupRoleRequest {
     readonly groupRoleId: string
 
     /**
-     * 
+     *
      * @type {UpdateGroupRoleRequest}
      * @memberof GroupsApiUpdateGroupRole
      */
@@ -26812,7 +26812,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -26825,7 +26825,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
         /**
          * Create an instance
          * @summary Create Instance
-         * @param {CreateInstanceRequest} createInstanceRequest 
+         * @param {CreateInstanceRequest} createInstanceRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -26847,7 +26847,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -26890,7 +26890,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -26926,7 +26926,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -26968,7 +26968,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27008,7 +27008,7 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27047,7 +27047,7 @@ export const InstancesApiFp = function(configuration?: Configuration) {
         /**
          * Create an instance
          * @summary Create Instance
-         * @param {CreateInstanceRequest} createInstanceRequest 
+         * @param {CreateInstanceRequest} createInstanceRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -27227,7 +27227,7 @@ export interface InstancesApiCloseInstanceRequest {
  */
 export interface InstancesApiCreateInstanceRequest {
     /**
-     * 
+     *
      * @type {CreateInstanceRequest}
      * @memberof InstancesApiCreateInstance
      */
@@ -27425,7 +27425,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27512,7 +27512,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27549,7 +27549,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27585,7 +27585,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27621,7 +27621,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27636,7 +27636,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
          * @summary Share Inventory Item Direct
          * @param {string} itemId Id for inventory item sharing.
          * @param {number} duration The duration before the sharing pedestal despawns.
-         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest 
+         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -27670,7 +27670,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -27719,7 +27719,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27758,7 +27758,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -27772,7 +27772,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
          * Returns the modified InventoryItem object as held by the currently logged in user.
          * @summary Update Own Inventory Item
          * @param {string} inventoryItemId Must be a valid inventory item ID.
-         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest] 
+         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -27795,7 +27795,7 @@ export const InventoryApiAxiosParamCreator = function (configuration?: Configura
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -27898,7 +27898,7 @@ export const InventoryApiFp = function(configuration?: Configuration) {
          * @summary Share Inventory Item Direct
          * @param {string} itemId Id for inventory item sharing.
          * @param {number} duration The duration before the sharing pedestal despawns.
-         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest 
+         * @param {ShareInventoryItemDirectRequest} shareInventoryItemDirectRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -27939,7 +27939,7 @@ export const InventoryApiFp = function(configuration?: Configuration) {
          * Returns the modified InventoryItem object as held by the currently logged in user.
          * @summary Update Own Inventory Item
          * @param {string} inventoryItemId Must be a valid inventory item ID.
-         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest] 
+         * @param {UpdateInventoryItemRequest} [updateInventoryItemRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -28213,7 +28213,7 @@ export interface InventoryApiShareInventoryItemDirectRequest {
     readonly duration: number
 
     /**
-     * 
+     *
      * @type {ShareInventoryItemDirectRequest}
      * @memberof InventoryApiShareInventoryItemDirect
      */
@@ -28269,7 +28269,7 @@ export interface InventoryApiUpdateOwnInventoryItemRequest {
     readonly inventoryItemId: string
 
     /**
-     * 
+     *
      * @type {UpdateInventoryItemRequest}
      * @memberof InventoryApiUpdateOwnInventoryItem
      */
@@ -28444,7 +28444,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28484,7 +28484,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28524,7 +28524,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28563,7 +28563,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -28580,7 +28580,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Sends an photo invite to a user. Returns the Notification of type `invite` that was sent.
          * @summary Invite User with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {InviteRequest} data 
+         * @param {InviteRequest} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -28609,17 +28609,17 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (data !== undefined) { 
+            if (data !== undefined) {
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
             }
-    
-            if (image !== undefined) { 
+
+            if (image !== undefined) {
                 localVarFormParams.append('image', image as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28657,7 +28657,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -28674,7 +28674,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Requests with photo an invite from a user. Returns the Notification of type `requestInvite` that was sent.
          * @summary Request Invite with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {RequestInviteRequest} data 
+         * @param {RequestInviteRequest} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -28703,17 +28703,17 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (data !== undefined) { 
+            if (data !== undefined) {
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
             }
-    
-            if (image !== undefined) { 
+
+            if (image !== undefined) {
                 localVarFormParams.append('image', image as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28758,7 +28758,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28797,7 +28797,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -28814,7 +28814,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
          * Respond with photo to an invite or invite request without accepting it. `:notificationId` is the ID of the requesting notification.  In case the notification being replied to is an invite, the `responseSlot` refers to a response message from the the `message` collection. In case the notification is an invite request, it will refer to one from the `requestResponse` collection instead.\'
          * @summary Respond Invite with photo
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {InviteResponse} data 
+         * @param {InviteResponse} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -28843,17 +28843,17 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (data !== undefined) { 
+            if (data !== undefined) {
                 localVarFormParams.append('data', new Blob([JSON.stringify(data)], { type: "application/json", }));
             }
-    
-            if (image !== undefined) { 
+
+            if (image !== undefined) {
                 localVarFormParams.append('image', image as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -28899,7 +28899,7 @@ export const InviteApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -28983,7 +28983,7 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Sends an photo invite to a user. Returns the Notification of type `invite` that was sent.
          * @summary Invite User with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {InviteRequest} data 
+         * @param {InviteRequest} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -29012,7 +29012,7 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Requests with photo an invite from a user. Returns the Notification of type `requestInvite` that was sent.
          * @summary Request Invite with photo
          * @param {string} userId Must be a valid user ID.
-         * @param {RequestInviteRequest} data 
+         * @param {RequestInviteRequest} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -29056,7 +29056,7 @@ export const InviteApiFp = function(configuration?: Configuration) {
          * Respond with photo to an invite or invite request without accepting it. `:notificationId` is the ID of the requesting notification.  In case the notification being replied to is an invite, the `responseSlot` refers to a response message from the the `message` collection. In case the notification is an invite request, it will refer to one from the `requestResponse` collection instead.\'
          * @summary Respond Invite with photo
          * @param {string} notificationId Must be a valid notification ID.
-         * @param {InviteResponse} data 
+         * @param {InviteResponse} data
          * @param {File} image The binary blob of the png file.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -29311,7 +29311,7 @@ export interface InviteApiInviteUserWithPhotoRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {InviteRequest}
      * @memberof InviteApiInviteUserWithPhoto
      */
@@ -29360,7 +29360,7 @@ export interface InviteApiRequestInviteWithPhotoRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {RequestInviteRequest}
      * @memberof InviteApiRequestInviteWithPhoto
      */
@@ -29437,7 +29437,7 @@ export interface InviteApiRespondInviteWithPhotoRequest {
     readonly notificationId: string
 
     /**
-     * 
+     *
      * @type {InviteResponse}
      * @memberof InviteApiRespondInviteWithPhoto
      */
@@ -29660,7 +29660,7 @@ export const JamsApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -29696,7 +29696,7 @@ export const JamsApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -29733,7 +29733,7 @@ export const JamsApiAxiosParamCreator = function (configuration?: Configuration)
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -29951,7 +29951,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -29991,7 +29991,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30021,7 +30021,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30051,7 +30051,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30082,7 +30082,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30122,7 +30122,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30162,7 +30162,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30198,7 +30198,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30228,7 +30228,7 @@ export const MiscellaneousApiAxiosParamCreator = function (configuration?: Confi
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30702,7 +30702,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30734,7 +30734,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30770,7 +30770,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30806,7 +30806,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30868,7 +30868,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -30904,7 +30904,7 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31292,7 +31292,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31334,7 +31334,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31347,7 +31347,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
         /**
          * Moderate a user, e.g. unmute them or show their avatar.  Please see the [Player Moderation docs](https://vrchatapi.github.io/docs/api/#tag--playermoderation) on what playerModerations are, and how they differ from staff moderations.
          * @summary Moderate User
-         * @param {ModerateUserRequest} moderateUserRequest 
+         * @param {ModerateUserRequest} moderateUserRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -31369,7 +31369,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -31385,7 +31385,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
         /**
          * Removes a player moderation previously added through `moderateUser`. E.g if you previously have shown their avatar, but now want to reset it to default.
          * @summary Unmoderate User
-         * @param {ModerateUserRequest} moderateUserRequest 
+         * @param {ModerateUserRequest} moderateUserRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -31407,7 +31407,7 @@ export const PlayermoderationApiAxiosParamCreator = function (configuration?: Co
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -31459,7 +31459,7 @@ export const PlayermoderationApiFp = function(configuration?: Configuration) {
         /**
          * Moderate a user, e.g. unmute them or show their avatar.  Please see the [Player Moderation docs](https://vrchatapi.github.io/docs/api/#tag--playermoderation) on what playerModerations are, and how they differ from staff moderations.
          * @summary Moderate User
-         * @param {ModerateUserRequest} moderateUserRequest 
+         * @param {ModerateUserRequest} moderateUserRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -31472,7 +31472,7 @@ export const PlayermoderationApiFp = function(configuration?: Configuration) {
         /**
          * Removes a player moderation previously added through `moderateUser`. E.g if you previously have shown their avatar, but now want to reset it to default.
          * @summary Unmoderate User
-         * @param {ModerateUserRequest} moderateUserRequest 
+         * @param {ModerateUserRequest} moderateUserRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -31562,7 +31562,7 @@ export interface PlayermoderationApiGetPlayerModerationsRequest {
  */
 export interface PlayermoderationApiModerateUserRequest {
     /**
-     * 
+     *
      * @type {ModerateUserRequest}
      * @memberof PlayermoderationApiModerateUser
      */
@@ -31576,7 +31576,7 @@ export interface PlayermoderationApiModerateUserRequest {
  */
 export interface PlayermoderationApiUnmoderateUserRequest {
     /**
-     * 
+     *
      * @type {ModerateUserRequest}
      * @memberof PlayermoderationApiUnmoderateUser
      */
@@ -31672,7 +31672,7 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31713,17 +31713,17 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (image !== undefined) { 
+            if (image !== undefined) {
                 localVarFormParams.append('image', image as any);
             }
-    
-            if (note !== undefined) { 
+
+            if (note !== undefined) {
                 localVarFormParams.append('note', note as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31760,7 +31760,7 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31796,7 +31796,7 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -31838,29 +31838,29 @@ export const PrintsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-            if (image !== undefined) { 
+            if (image !== undefined) {
                 localVarFormParams.append('image', image as any);
             }
-    
-            if (note !== undefined) { 
+
+            if (note !== undefined) {
                 localVarFormParams.append('note', note as any);
             }
-    
-            if (timestamp !== undefined) { 
+
+            if (timestamp !== undefined) {
                 localVarFormParams.append('timestamp', timestamp as any);
             }
-    
-            if (worldId !== undefined) { 
+
+            if (worldId !== undefined) {
                 localVarFormParams.append('worldId', worldId as any);
             }
-    
-            if (worldName !== undefined) { 
+
+            if (worldName !== undefined) {
                 localVarFormParams.append('worldName', worldName as any);
             }
-    
-    
+
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32229,7 +32229,7 @@ export const PropsApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32331,7 +32331,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * Adds tags to the user\'s profile
          * @summary Add User Tags
          * @param {string} userId Must be a valid user ID.
-         * @param {ChangeUserTagsRequest} changeUserTagsRequest 
+         * @param {ChangeUserTagsRequest} changeUserTagsRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -32356,7 +32356,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -32399,7 +32399,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32439,7 +32439,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32475,7 +32475,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32512,7 +32512,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32564,7 +32564,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32600,7 +32600,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32640,7 +32640,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32676,7 +32676,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32712,7 +32712,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32748,7 +32748,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32790,7 +32790,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32826,7 +32826,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32840,7 +32840,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * Removes tags from the user\'s profile
          * @summary Remove User Tags
          * @param {string} userId Must be a valid user ID.
-         * @param {ChangeUserTagsRequest} changeUserTagsRequest 
+         * @param {ChangeUserTagsRequest} changeUserTagsRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -32865,7 +32865,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -32920,7 +32920,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -32935,7 +32935,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Update User Badge
          * @param {string} userId Must be a valid user ID.
          * @param {string} badgeId Must be a valid badge ID.
-         * @param {UpdateUserBadgeRequest} updateUserBadgeRequest 
+         * @param {UpdateUserBadgeRequest} updateUserBadgeRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -32963,7 +32963,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -32980,7 +32980,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * Update a users information such as the email and birthday.
          * @summary Update User Info
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateUserRequest} [updateUserRequest] 
+         * @param {UpdateUserRequest} [updateUserRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33003,7 +33003,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -33019,7 +33019,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Updates the currently authenticated user\'s note on a user
          * @summary Update User Note
-         * @param {UpdateUserNoteRequest} updateUserNoteRequest 
+         * @param {UpdateUserNoteRequest} updateUserNoteRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33041,7 +33041,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -33068,7 +33068,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * Adds tags to the user\'s profile
          * @summary Add User Tags
          * @param {string} userId Must be a valid user ID.
-         * @param {ChangeUserTagsRequest} changeUserTagsRequest 
+         * @param {ChangeUserTagsRequest} changeUserTagsRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33247,7 +33247,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * Removes tags from the user\'s profile
          * @summary Remove User Tags
          * @param {string} userId Must be a valid user ID.
-         * @param {ChangeUserTagsRequest} changeUserTagsRequest 
+         * @param {ChangeUserTagsRequest} changeUserTagsRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33278,7 +33278,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @summary Update User Badge
          * @param {string} userId Must be a valid user ID.
          * @param {string} badgeId Must be a valid badge ID.
-         * @param {UpdateUserBadgeRequest} updateUserBadgeRequest 
+         * @param {UpdateUserBadgeRequest} updateUserBadgeRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33292,7 +33292,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * Update a users information such as the email and birthday.
          * @summary Update User Info
          * @param {string} userId Must be a valid user ID.
-         * @param {UpdateUserRequest} [updateUserRequest] 
+         * @param {UpdateUserRequest} [updateUserRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33305,7 +33305,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * Updates the currently authenticated user\'s note on a user
          * @summary Update User Note
-         * @param {UpdateUserNoteRequest} updateUserNoteRequest 
+         * @param {UpdateUserNoteRequest} updateUserNoteRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -33524,7 +33524,7 @@ export interface UsersApiAddTagsRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {ChangeUserTagsRequest}
      * @memberof UsersApiAddTags
      */
@@ -33762,7 +33762,7 @@ export interface UsersApiRemoveTagsRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {ChangeUserTagsRequest}
      * @memberof UsersApiRemoveTags
      */
@@ -33825,7 +33825,7 @@ export interface UsersApiUpdateBadgeRequest {
     readonly badgeId: string
 
     /**
-     * 
+     *
      * @type {UpdateUserBadgeRequest}
      * @memberof UsersApiUpdateBadge
      */
@@ -33846,7 +33846,7 @@ export interface UsersApiUpdateUserRequest {
     readonly userId: string
 
     /**
-     * 
+     *
      * @type {UpdateUserRequest}
      * @memberof UsersApiUpdateUser
      */
@@ -33860,7 +33860,7 @@ export interface UsersApiUpdateUserRequest {
  */
 export interface UsersApiUpdateUserNoteRequest {
     /**
-     * 
+     *
      * @type {UpdateUserNoteRequest}
      * @memberof UsersApiUpdateUserNote
      */
@@ -34131,7 +34131,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34144,7 +34144,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * Create a new world. This endpoint requires `assetUrl` to be a valid File object with `.vrcw` file extension, and `imageUrl` to be a valid File object with an image file extension.
          * @summary Create World
-         * @param {CreateWorldRequest} [createWorldRequest] 
+         * @param {CreateWorldRequest} [createWorldRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -34162,7 +34162,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarQueryParameter = {} as any;
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -34205,7 +34205,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34241,7 +34241,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34338,7 +34338,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34435,7 +34435,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34532,7 +34532,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34566,7 +34566,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarQueryParameter = {} as any;
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34606,7 +34606,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34643,7 +34643,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34679,7 +34679,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34715,7 +34715,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34743,7 +34743,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
          * @param {string} [noplatform] The platform the asset does not support.
-         * @param {boolean} [fuzzy] 
+         * @param {boolean} [fuzzy]
          * @param {boolean} [avatarSpecific] Only search for avatar worlds.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -34832,7 +34832,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34868,7 +34868,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -34882,7 +34882,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
          * Update information about a specific World.
          * @summary Update World
          * @param {string} worldId Must be a valid world ID.
-         * @param {UpdateWorldRequest} [updateWorldRequest] 
+         * @param {UpdateWorldRequest} [updateWorldRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -34905,7 +34905,7 @@ export const WorldsApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication authCookie required
 
 
-    
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -34945,7 +34945,7 @@ export const WorldsApiFp = function(configuration?: Configuration) {
         /**
          * Create a new world. This endpoint requires `assetUrl` to be a valid File object with `.vrcw` file extension, and `imageUrl` to be a valid File object with an image file extension.
          * @summary Create World
-         * @param {CreateWorldRequest} [createWorldRequest] 
+         * @param {CreateWorldRequest} [createWorldRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -35142,7 +35142,7 @@ export const WorldsApiFp = function(configuration?: Configuration) {
          * @param {string} [minUnityVersion] The minimum Unity version supported by the asset.
          * @param {string} [platform] The platform the asset supports.
          * @param {string} [noplatform] The platform the asset does not support.
-         * @param {boolean} [fuzzy] 
+         * @param {boolean} [fuzzy]
          * @param {boolean} [avatarSpecific] Only search for avatar worlds.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -35170,7 +35170,7 @@ export const WorldsApiFp = function(configuration?: Configuration) {
          * Update information about a specific World.
          * @summary Update World
          * @param {string} worldId Must be a valid world ID.
-         * @param {UpdateWorldRequest} [updateWorldRequest] 
+         * @param {UpdateWorldRequest} [updateWorldRequest]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -35372,7 +35372,7 @@ export interface WorldsApiCheckUserPersistenceExistsRequest {
  */
 export interface WorldsApiCreateWorldRequest {
     /**
-     * 
+     *
      * @type {CreateWorldRequest}
      * @memberof WorldsApiCreateWorld
      */
@@ -35897,7 +35897,7 @@ export interface WorldsApiSearchWorldsRequest {
     readonly noplatform?: string
 
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof WorldsApiSearchWorlds
      */
@@ -35939,7 +35939,7 @@ export interface WorldsApiUpdateWorldRequest {
     readonly worldId: string
 
     /**
-     * 
+     *
      * @type {UpdateWorldRequest}
      * @memberof WorldsApiUpdateWorld
      */

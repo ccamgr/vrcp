@@ -5,6 +5,7 @@ import StorageWrapper from '@/lib/wrappers/storageWrapper';
 import * as SecureStore from "expo-secure-store";
 import { Configuration, Notification, NotificationsApi, OrderOption, SortOption } from '@/generated/vrcapi';
 import { getUserAgent } from '@/lib/utils';
+import { extractNotificationContent } from '@/lib/funcs/extractNotificationContent';
 
 // Must match the identifier registered in app.json (if required)
 export const TASK_NAME = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK';
@@ -72,10 +73,11 @@ TaskManager.defineTask(TASK_NAME, async () => {
     // send notification to mobile
     if (newNotifications.length > 0) {
       await Promise.all(newNotifications.map((notif) => {
+        const { title, contents } = extractNotificationContent(notif);
         Notifications.scheduleNotificationAsync({
           content: {
-            title: notif.type || "",
-            body: notif.message || "",
+            title: title || "",
+            body: contents.join("\n") || "",
             data: {
               type: "vrc_notification",
               notificationId: notif.id || "",
