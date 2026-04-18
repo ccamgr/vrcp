@@ -30,7 +30,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             services::logs::delete_all_logs,
             services::sessions::get_sessions,
             cmds::vrcapi::auth::login,
-            cmds::vrcapi::auth::logout
+            cmds::vrcapi::auth::logout,
+            cmds::vrcapi::auth::verify_2fa
         ])
         .events(collect_events![
             modules::watcher::LogPayload,

@@ -77,6 +77,14 @@ async logout() : Promise<Result<string, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async verify2fa(code: string, isEmailotp: boolean) : Promise<Result<LoginResponse, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("verify_2fa", { code, isEmailotp }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
