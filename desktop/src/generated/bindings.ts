@@ -61,6 +61,22 @@ async getSessions(start: string | null, end: string | null) : Promise<Result<Ses
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async login(username: string, password: string) : Promise<Result<LoginResponse, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("login", { username, password }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async logout() : Promise<Result<string, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("logout") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -83,6 +99,7 @@ vrcLogEvent: "vrc-log-event"
 
 export type Interval = { start: string; end: string }
 export type LogPayload = { event: VrcLogEvent; timestamp: string; hash: number }
+export type LoginResponse = { user: string | null; requires2fa: boolean; type2fa: string[] }
 export type PlayerInterval = { name: string; intervals: Interval[]; totalDurationMs: number }
 export type SessionPayload = { worldName: string; instanceId: string; startTime: string; endTime: string; durationMs: number; username: string | null; players: PlayerInterval[] }
 export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "InvalidAppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }

@@ -2,13 +2,17 @@ pub mod db;
 pub mod modules;
 pub mod services;
 pub mod utils;
+pub mod cmds;
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
+
+use crate::modules::vrcapi::VrcApiService;
 
 pub struct Ctx {
     db: db::DB,
     srv: modules::server::HttpSrv,
     watcher: tauri::async_runtime::JoinHandle<()>,
+    vrcapi: VrcApiService,
 }
 
 // ---------------------------------------------------------
@@ -25,6 +29,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             services::logs::get_logs,
             services::logs::delete_all_logs,
             services::sessions::get_sessions,
+            cmds::vrcapi::auth::login,
+            cmds::vrcapi::auth::logout
         ])
         .events(collect_events![
             modules::watcher::LogPayload,
@@ -60,10 +66,15 @@ pub fn run() {
                 .path()
                 .app_local_data_dir()
                 .expect("failed to resolve app local data dir");
+
             let db =
-                tauri::async_runtime::block_on(async move { db::DB::new(app_data_dir).await })?;
+                tauri::async_runtime::block_on(db::DB::new(app_data_dir.clone()))?;
 
             app.manage(db.clone()); // グローバルステートとしてDBを登録
+
+            // VRCAPI サービス初期化
+            let vrcapi = VrcApiService::new(app_data_dir).expect("Failed to init VrcApiService");
+            app.manage(vrcapi.clone());
 
             // ログ監視開始
             let watcher = modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
@@ -85,7 +96,7 @@ pub fn run() {
                 }
             }
 
-            let ctx = Ctx { db, srv, watcher };
+            let ctx = Ctx { db, srv, watcher, vrcapi };
             app.manage(ctx); // グローバルステートとしてCtxを登録
 
             Ok(())

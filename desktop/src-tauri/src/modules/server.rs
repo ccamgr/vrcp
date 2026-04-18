@@ -11,7 +11,7 @@ use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
 use tower_http::cors::CorsLayer;
 
-use crate::db::DB;
+use crate::{Ctx, db::DB};
 
 use super::watcher::LogPayload;
 
@@ -108,7 +108,7 @@ pub async fn get_server_url(db: tauri::State<'_, DB>) -> Result<String, String> 
 #[specta::specta]
 pub async fn set_server_port(
     app: tauri::AppHandle,
-    db: tauri::State<'_, DB>,
+    state: tauri::State<'_, Ctx>,
     port: u16,
 ) -> Result<(), String> {
     // 1. バリデーション (u16なので 0~65535 は保証されるが、0番ポートなどを弾くならここに書く)
@@ -118,7 +118,7 @@ pub async fn set_server_port(
 
     // 2. DBに保存 (文字列として保存)
     // map_err で DBのエラーを文字列化してフロントエンドに返せるようにする
-    db.settings()
+    state.db.settings()
         .set_setting("port", &port.to_string())
         .await
         .map_err(|e| e.to_string())?;
@@ -130,8 +130,8 @@ pub async fn set_server_port(
 
 #[tauri::command]
 #[specta::specta]
-pub async fn get_server_port(db: tauri::State<'_, DB>) -> Result<u16, String> {
-    let port_str = db
+pub async fn get_server_port(state: tauri::State<'_, Ctx>) -> Result<u16, String> {
+    let port_str = state.db
         .settings()
         .get_setting("port")
         .await

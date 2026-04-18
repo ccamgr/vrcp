@@ -1,3 +1,4 @@
+use crate::Ctx;
 use crate::utils::date::{to_timems, to_timestr};
 use crate::{
     db::DB,
@@ -238,14 +239,13 @@ impl SessionBuilder {
 #[tauri::command]
 #[specta::specta]
 pub async fn get_sessions(
-    db: tauri::State<'_, DB>,
+    state: tauri::State<'_, Ctx>,
     start: Option<String>,
     end: Option<String>,
 ) -> Result<Vec<SessionPayload>, String> {
     let builder = SessionBuilder::new();
 
-    let logs = db
-        .logs()
+    let logs = state.db.logs()
         .get_session_expanded_logs(start.as_deref(), end.as_deref())
         .await
         .map_err(|e| e.to_string())?;

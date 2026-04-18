@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::BufWriter;
 
+use crate::Ctx;
 use crate::db::DB;
 use crate::modules::watcher::LogPayload;
 
@@ -20,8 +21,8 @@ pub async fn get_logs(
 
 #[tauri::command]
 #[specta::specta]
-pub async fn delete_all_logs(db: tauri::State<'_, DB>) -> Result<(), String> {
-    db.logs()
+pub async fn delete_all_logs(state: tauri::State<'_, Ctx>) -> Result<(), String> {
+    state.db.logs()
         .delete_all_logs()
         .await
         .map_err(|e| e.to_string())?;
@@ -30,10 +31,9 @@ pub async fn delete_all_logs(db: tauri::State<'_, DB>) -> Result<(), String> {
 
 #[tauri::command]
 #[specta::specta]
-pub async fn export_logs(db: tauri::State<'_, DB>, file_path: String) -> Result<usize, String> {
+pub async fn export_logs(state: tauri::State<'_, Ctx>, file_path: String) -> Result<usize, String> {
     // 1. 全ログを取得 (since=None, until=None で全期間)
-    let logs = db
-        .logs()
+    let logs = state.db.logs()
         .get_session_expanded_logs(None, None)
         .await
         .map_err(|e| e.to_string())?;

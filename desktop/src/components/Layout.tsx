@@ -1,11 +1,12 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Activity, Settings, BarChart3 } from "lucide-react"; // アイコン
+import { Activity, Settings, BarChart3, Home } from "lucide-react"; // アイコン
 
 export default function Layout() {
   const location = useLocation();
 
   const navItems = [
-    { path: "/", label: "Monitor", icon: Activity },
+    { path: "/", label: "Top", icon: Home },
+    { path: "/monitor", label: "Monitor", icon: Activity },
     { path: "/history", label: "History", icon: BarChart3 },
     { path: "/settings", label: "Settings", icon: Settings },
   ];

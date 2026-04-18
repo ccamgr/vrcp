@@ -3,3 +3,4 @@
 pub mod server;
 pub mod systray;
 pub mod watcher;
+pub mod vrcapi;
