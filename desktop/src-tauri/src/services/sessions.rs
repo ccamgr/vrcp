@@ -160,8 +160,10 @@ impl SessionBuilder {
 
     // メインの処理ループ
     fn process(mut self, logs: Vec<LogPayload>) -> Vec<SessionPayload> {
+        let mut last_ts = 0;
         for log in logs {
             let ts = to_timems(&log.timestamp);
+            last_ts = ts;
 
             match log.event {
                 VrcLogEvent::Login { username, user_id } => {
@@ -224,8 +226,8 @@ impl SessionBuilder {
 
         // ループ終了後の処理
         if self.current_session.is_some() {
-            let now = chrono::Utc::now().timestamp_millis();
-            self.close_session(now);
+            let end_time = if last_ts > 0 { last_ts } else { chrono::Utc::now().timestamp_millis() };
+            self.close_session(end_time);
         }
 
         self.sessions
