@@ -30,7 +30,7 @@ impl VrcApiService {
         let cookie_store = if cookie_path.exists() {
             let file = File::open(&cookie_path).map_err(|e| e.to_string())?;
             let reader = BufReader::new(file);
-            reqwest_cookie_store::CookieStore::load_json(reader).unwrap_or_default()
+            serde_json::from_reader(reader).unwrap_or_default()
         } else {
             reqwest_cookie_store::CookieStore::default()
         };
@@ -60,7 +60,7 @@ impl VrcApiService {
         let file = File::create(&self.cookie_path).map_err(|e| e.to_string())?;
         let mut writer = BufWriter::new(file);
         let store = self.cookie_store.lock().unwrap();
-        store.save_json(&mut writer).map_err(|e| e.to_string())?;
+        serde_json::to_writer(&mut writer, &*store).map_err(|e| e.to_string())?;
         Ok(())
     }
 

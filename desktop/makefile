@@ -24,6 +24,15 @@ gen-icons:  # generate the icons for the application, from PNG image (1024x1024)
 	@rm src-tauri/icons/Square*.png src-tauri/icons/StoreLogo.png  # remove AppX/MS Store icon
 	@echo "for detail,  https://tauri.app/develop/icons/"
 
+.PHONY : migrate/up migrate/down migrate/generate  # run database migrations up
+MIGRATION_DIR = src/db/migrator
+name ?= unnamed_migration
+migrate/generate:  # create a new migration
+	@cd src-tauri && sea-orm-cli migrate generate $(name) -d $(MIGRATION_DIR)
+migrate/up:  # run database migrations up
+	@cd src-tauri && sea-orm-cli migrate up -d $(MIGRATION_DIR)
+migrate/down:  # run database migrations down
+	@cd src-tauri && sea-orm-cli migrate down -d $(MIGRATION_DIR)
 
 .PHONY : version-bump/major version-bump/minor version-bump/patch
 version-bump/major:  # generate draft of versions.json with major bump

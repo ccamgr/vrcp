@@ -1,7 +1,5 @@
 use crate::Ctx;
-use crate::utils::date::{to_timems, to_timestr};
 use crate::{
-    db::DB,
     modules::watcher::{LogPayload, VrcLogEvent},
 };
 use serde::{Deserialize, Serialize};
@@ -14,8 +12,8 @@ use std::collections::HashMap;
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
 pub struct Interval {
-    pub start: String,
-    pub end: String,
+    pub start: i64,
+    pub end: i64,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
@@ -33,9 +31,9 @@ pub struct SessionPayload {
     #[serde(rename = "instanceId")]
     pub instance_id: String,
     #[serde(rename = "startTime")]
-    pub start_time: String,
+    pub start_time: i64,
     #[serde(rename = "endTime")]
-    pub end_time: String,
+    pub end_time: i64,
     #[serde(rename = "durationMs")]
     pub duration_ms: i64,
     pub username: Option<String>,
@@ -98,8 +96,8 @@ impl SessionBuilder {
             // 1. まだ退出していないプレイヤーを強制退出扱いにする
             for (id, player) in self.active_players.drain() {
                 self.player_intervals.entry(id).or_default().push(Interval {
-                    start: to_timestr(player.start),
-                    end: to_timestr(final_end_time),
+                    start: player.start,
+                    end: final_end_time,
                 });
             }
 
@@ -115,7 +113,7 @@ impl SessionBuilder {
 
                 let total_ms: i64 = intervals
                     .iter()
-                    .map(|i| to_timems(&i.end) - to_timems(&i.start))
+                    .map(|i| i.end - i.start)
                     .sum();
 
                 // 自分のIDかどうか判定
@@ -127,10 +125,10 @@ impl SessionBuilder {
 
                 if is_me {
                     if let Some(first) = intervals.first() {
-                        session_state.start_time = to_timems(&first.start);
+                        session_state.start_time = first.start;
                     }
                     if let Some(last) = intervals.last() {
-                        final_end_time = to_timems(&last.end);
+                        final_end_time = last.end;
                     }
                 } else {
                     players.push(PlayerInterval {
@@ -149,8 +147,8 @@ impl SessionBuilder {
             self.sessions.push(SessionPayload {
                 world_name: session_state.world_name,
                 instance_id: session_state.instance_id,
-                start_time: to_timestr(session_state.start_time),
-                end_time: to_timestr(final_end_time),
+                start_time: session_state.start_time,
+                end_time: final_end_time,
                 duration_ms,
                 username: self.me.as_ref().map(|m| m.name.clone()),
                 players,
@@ -161,7 +159,6 @@ impl SessionBuilder {
     // メインの処理ループ
     fn process(mut self, logs: Vec<LogPayload>, last_logged_time: i64) -> Vec<SessionPayload> {
         for log in logs {
-            let ts = to_timems(&log.timestamp);
 
             match log.event {
                 VrcLogEvent::Login { username, user_id } => {
@@ -176,7 +173,7 @@ impl SessionBuilder {
                 VrcLogEvent::InstanceJoin { instance_id, .. } => {
                     // 前のセッションがあれば閉じる
                     if self.current_session.is_some() {
-                        self.close_session(ts);
+                        self.close_session(log.timestamp);
                     }
 
                     // 新しいセッション開始
@@ -186,7 +183,7 @@ impl SessionBuilder {
                             .take()
                             .unwrap_or("Unknown World".to_string()),
                         instance_id,
-                        start_time: ts,
+                        start_time: log.timestamp,
                     });
                 }
                 VrcLogEvent::PlayerJoin {
@@ -197,7 +194,7 @@ impl SessionBuilder {
                         self.known_player_names
                             .insert(user_id.clone(), player_name.clone());
                         self.active_players
-                            .insert(user_id, ActivePlayer { start: ts });
+                            .insert(user_id, ActivePlayer { start: log.timestamp });
                     }
                 }
                 VrcLogEvent::PlayerLeft { user_id, .. } => {
@@ -207,15 +204,15 @@ impl SessionBuilder {
                                 .entry(user_id)
                                 .or_default()
                                 .push(Interval {
-                                    start: to_timestr(player.start),
-                                    end: to_timestr(ts),
+                                    start: player.start,
+                                    end: log.timestamp,
                                 });
                         }
                     }
                 }
                 VrcLogEvent::AppStop | VrcLogEvent::InvalidAppStop => {
                     if self.current_session.is_some() {
-                        self.close_session(ts);
+                        self.close_session(log.timestamp);
                     }
                 }
                 _ => {}
@@ -239,24 +236,18 @@ impl SessionBuilder {
 #[specta::specta]
 pub async fn get_sessions(
     state: tauri::State<'_, Ctx>,
-    start: Option<String>,
-    end: Option<String>,
+    start: Option<i64>,
+    end: Option<i64>,
 ) -> Result<Vec<SessionPayload>, String> {
     let builder = SessionBuilder::new();
 
     let logs = state.db.logs()
-        .get_session_expanded_logs(start.as_deref(), end.as_deref())
+        .get_session_expanded_logs(start.as_ref(), end.as_ref())
         .await
         .map_err(|e| e.to_string())?;
 
     // WatcherState から「最後に書き込まれたログの時間」を取得
-    let mut last_logged_time = chrono::Utc::now().timestamp_millis();
-    if let Ok(Some(watcher_state)) = state.db.settings().get_watcher_state().await {
-        let ts = to_timems(&watcher_state.last_timestamp);
-        if ts > 0 {
-            last_logged_time = ts; // 例: 10時にクラッシュしていたら、10:00のタイムスタンプになる
-        }
-    }
+    let last_logged_time = state.watcher.last_seen_timestamp();
 
     Ok(builder.process(logs, last_logged_time))
 }

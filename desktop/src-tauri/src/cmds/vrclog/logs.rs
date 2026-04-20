@@ -8,12 +8,12 @@ use crate::modules::watcher::LogPayload;
 #[specta::specta]
 pub async fn get_logs(
     state: tauri::State<'_, Ctx>,
-    start: Option<String>,
-    end: Option<String>,
+    start: Option<i64>,
+    end: Option<i64>,
 ) -> Result<Vec<LogPayload>, String> {
     // db.get_logs の frontからの呼び出し
     state.db.logs()
-        .get_session_expanded_logs(start.as_deref(), end.as_deref())
+        .get_session_expanded_logs(start.as_ref(), end.as_ref())
         .await
         .map_err(|e| e.to_string())
 }

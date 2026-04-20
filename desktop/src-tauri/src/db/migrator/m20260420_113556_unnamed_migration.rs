@@ -19,7 +19,7 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Logs::Timestamp).string().not_null())
+                    .col(ColumnDef::new(Logs::Timestamp).big_integer().not_null())
                     .col(ColumnDef::new(Logs::EventType).string().not_null())
                     .col(ColumnDef::new(Logs::Data).string().not_null()) // JSON string
                     .col(

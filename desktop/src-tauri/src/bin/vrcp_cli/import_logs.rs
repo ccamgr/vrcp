@@ -55,7 +55,7 @@ async fn process_file(
     let mut ecount = 0;
 
     let mut is_running = false;
-    let mut last_timestamp = String::new();
+    let mut last_timestamp = 0i64;
     // トランザクションを使うと高速ですが、今回はシンプルに1行ずつ処理
     // 必要なら db.conn.lock().unwrap().transaction() ... を実装してください
 
@@ -66,7 +66,7 @@ async fn process_file(
         if let Some(payload) = parse_log_line(&line) {
             // チェックはDB側のUNIQUE制約(INSERT OR IGNORE等)や
             // insert_logの実装に任せる (エラーが出ても止まらないようにする)
-            last_timestamp = payload.timestamp.clone();
+            last_timestamp = payload.timestamp;
             match &payload.event {
                 AppStart { .. } => {
                     is_running = true;
@@ -91,7 +91,7 @@ async fn process_file(
     }
     if is_running {
         println!("  -> Warning: Log ended while app was still running. (inserted InvalidAppStop)");
-        let crash_payload = create_invalid_app_stop_payload(&last_timestamp);
+        let crash_payload = create_invalid_app_stop_payload(last_timestamp);
         match log_repo.insert_log(&crash_payload).await {
             Ok(count_inserted) => {
                 count += count_inserted;

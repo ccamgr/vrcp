@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLogContext } from "../context/LogContext";
 import { type VrcLogEvent } from "../generated/bindings";
+import { formatDateTime } from "../lib/date";
 
 export default function Monitor() {
   const { logs, clearLogs } = useLogContext();
@@ -44,7 +45,7 @@ export default function Monitor() {
             const { color, text } = getEventContent(log.event);
             return (
               <div key={index} className="flex mb-1 border-b border-slate-700/30 pb-1 hover:bg-slate-700/30">
-                <span className="text-slate-500 mr-4 select-none w-36 shrink-0 text-xs py-0.5">{log.timestamp}</span>
+                <span className="text-slate-500 mr-4 select-none w-36 shrink-0 text-xs py-0.5">{formatDateTime(log.timestamp)}</span>
                 <span className={`font-bold mr-3 w-28 shrink-0 text-xs py-0.5 ${color}`}>{log.event.type}</span>
                 <span className="break-all text-slate-200">{text}</span>
               </div>

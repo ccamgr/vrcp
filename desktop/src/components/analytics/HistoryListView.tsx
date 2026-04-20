@@ -3,6 +3,7 @@
 
 import { Clock, MapPin, User } from "lucide-react";
 import { PlayerInterval, SessionPayload } from "../../generated/bindings";
+import { formatTime } from "../../lib/date";
 
 // ============================================================================
 export default function HistoryListView({ sessions, targetDate }: { sessions: SessionPayload[], targetDate: string }) {
@@ -16,7 +17,6 @@ export default function HistoryListView({ sessions, targetDate }: { sessions: Se
 }
 // --- 個別のワールド滞在カードコンポーネント ---
 function SessionCard({ session }: { session: SessionPayload }) {
-  const formatTime = (ts: string) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
 
   return (
@@ -63,7 +63,7 @@ function SessionCard({ session }: { session: SessionPayload }) {
               <PlayerTimelineRow
                 key={player.name}
                 player={player}
-                sessionStart={Date.parse(session.startTime)}
+                sessionStart={session.startTime}
                 sessionDuration={session.durationMs}
               />
             ))}
@@ -97,8 +97,8 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
         {/* 滞在区間の描画 (複数回出入りに対応) */}
         {player.intervals.map((interval, i) => {
           // セッション開始からの経過時間(%)を計算
-          const startPercent = Math.max(0, ((Date.parse(interval.start) - sessionStart) / sessionDuration) * 100);
-          const endPercent = Math.min(100, ((Date.parse(interval.end) - sessionStart) / sessionDuration) * 100);
+          const startPercent = Math.max(0, ((interval.start - sessionStart) / sessionDuration) * 100);
+          const endPercent = Math.min(100, ((interval.end - sessionStart) / sessionDuration) * 100);
           const widthPercent = endPercent - startPercent;
 
           return (
@@ -109,7 +109,7 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
                 left: `${startPercent}%`,
                 width: `${widthPercent}%`,
               }}
-              title={`${new Date(interval.start).toLocaleTimeString()} - ${new Date(interval.end).toLocaleTimeString()}`}
+              title={`${formatTime(interval.start)} - ${formatTime(interval.end)}`}
             />
           );
         })}

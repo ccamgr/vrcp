@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub timestamp: String,
+    pub timestamp: i64, // Store as i64 (milliseconds since epoch)
     pub event_type: String,
     pub data: String, // JSON stored as string
     #[sea_orm(unique)]

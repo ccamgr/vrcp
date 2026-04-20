@@ -1,6 +1,7 @@
 use crate::db::schema::logs;
 use crate::modules::watcher::{LogPayload, VrcLogEvent};
-use sea_orm::*; // 既存の型をインポート
+use crate::utils::date::str_to_i64;
+use sea_orm::*;
 
 pub struct LogsRepository {
     db: DatabaseConnection,
@@ -12,7 +13,6 @@ impl LogsRepository {
     }
 
     pub async fn insert_log(&self, payload: &LogPayload) -> Result<i32, DbErr> {
-        // Event Type抽出ロジック (既存コード踏襲)
         let event_type_str = format!("{:?}", payload.event)
             .split_whitespace()
             .next()
@@ -25,15 +25,14 @@ impl LogsRepository {
             serde_json::to_string(&payload.event).map_err(|e| DbErr::Custom(e.to_string()))?;
 
         let new_log = logs::ActiveModel {
-            timestamp: Set(payload.timestamp.clone()),
+            // Directly insert the i64 timestamp
+            timestamp: Set(payload.timestamp),
             event_type: Set(event_type_str),
             data: Set(data_json),
             hash: Set(payload.hash),
             ..Default::default()
         };
 
-        // INSERT OR IGNORE は SeaORM の insert 失敗時のハンドリングで行うか、
-        // on_conflict_do_nothing を使う
         let res = logs::Entity::insert(new_log)
             .on_conflict(
                 sea_orm::sea_query::OnConflict::column(logs::Column::Hash)
@@ -49,18 +48,16 @@ impl LogsRepository {
         }
     }
 
-    /// 複雑なサブクエリを含むログ取得
     pub async fn get_session_expanded_logs(
         &self,
-        start_timestamp: Option<&str>,
-        end_timestamp: Option<&str>,
+        start_timestamp: Option<&i64>,
+        end_timestamp: Option<&i64>,
     ) -> Result<Vec<LogPayload>, DbErr> {
-        let start = start_timestamp.unwrap_or("1970-01-01 00:00:00");
-        let end = end_timestamp.unwrap_or("9999-12-31 23:59:59");
+        // Parse frontend date strings into i64. Use 0 and far-future defaults if None.
+        let start = start_timestamp.copied().unwrap_or(0);
+        let end = end_timestamp.copied().unwrap_or(253402300799000); // approx 9999-12-31
 
-        // 元のRusqliteのSQLを移植
-        // SQLx/SeaORMのプレースホルダーは '?' が使える
-        // ※値はバインド順に渡す必要があるため、start/endを複数回渡している点に注意
+        // Use direct integer math (86400000 ms = 24 hours) instead of SQLite datetime()
         let sql = r#"
             SELECT *
             FROM logs
@@ -68,7 +65,7 @@ impl LogsRepository {
                 SELECT COALESCE(
                     (SELECT timestamp FROM logs
                      WHERE timestamp < ?
-                       AND timestamp > datetime(?, '-24 hours')
+                       AND timestamp > ? - 86400000
                        AND event_type = 'AppStart'
                      ORDER BY timestamp DESC LIMIT 1),
                     ?
@@ -78,7 +75,7 @@ impl LogsRepository {
                 SELECT COALESCE(
                     (SELECT timestamp FROM logs
                      WHERE timestamp > ?
-                       AND timestamp < datetime(?, '+24 hours')
+                       AND timestamp < ? + 86400000
                        AND event_type IN ('AppStop', 'InvalidAppStop')
                      ORDER BY timestamp ASC LIMIT 1),
                     ?
@@ -87,13 +84,6 @@ impl LogsRepository {
             ORDER BY timestamp ASC, id ASC
         "#;
 
-        // パラメータバインド:
-        // 1: < ? (start)
-        // 2: datetime(?, ...) (start)
-        // 3: COALESCE(..., ?) (start)
-        // 4: > ? (end)
-        // 5: datetime(?, ...) (end)
-        // 6: COALESCE(..., ?) (end)
         let query_res = logs::Entity::find()
             .from_raw_sql(Statement::from_sql_and_values(
                 DatabaseBackend::Sqlite,
@@ -110,7 +100,6 @@ impl LogsRepository {
             .all(&self.db)
             .await?;
 
-        // Model -> Payload 変換
         let mut payloads = Vec::new();
         for row in query_res {
             let event: VrcLogEvent = serde_json::from_str(&row.data)
@@ -118,6 +107,7 @@ impl LogsRepository {
 
             payloads.push(LogPayload {
                 event,
+                // Assign i64 directly from the entity model
                 timestamp: row.timestamp,
                 hash: row.hash,
             });
@@ -127,10 +117,8 @@ impl LogsRepository {
     }
 
     pub async fn delete_all_logs(&self) -> Result<(), DbErr> {
-        // 全削除
         logs::Entity::delete_many().exec(&self.db).await?;
 
-        // VACUUM (カスタム実行)
         self.db
             .execute(Statement::from_string(
                 DatabaseBackend::Sqlite,

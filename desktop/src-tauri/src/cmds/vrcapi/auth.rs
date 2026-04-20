@@ -8,7 +8,7 @@ use vrchatapi::models::{
 };
 use specta::Type;
 
-use crate::modules::vrcapi::VrcApiService;
+use crate::Ctx;
 
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
@@ -23,8 +23,8 @@ pub struct LoginResponse {
 // Check current login status using saved cookies
 #[tauri::command]
 #[specta::specta]
-pub async fn check_auth(state: State<'_, VrcApiService>) -> Result<LoginResponse, String> {
-    let config = state.config.lock().await;
+pub async fn check_auth(state: State<'_, Ctx>) -> Result<LoginResponse, String> {
+    let config = state.vrcapi.config.lock().await;
 
     // Call API with existing cookies
     match get_current_user(&config).await {
@@ -53,9 +53,9 @@ pub async fn check_auth(state: State<'_, VrcApiService>) -> Result<LoginResponse
 pub async fn login(
     username: String,
     password: String,
-    state: State<'_, VrcApiService>
+    state: State<'_, Ctx>
 ) -> Result<LoginResponse, String> {
-    let mut config = state.config.lock().await;
+    let mut config = state.vrcapi.config.lock().await;
 
     // Set Basic Auth credentials
     config.basic_auth = Some((username, Some(password)));
@@ -69,7 +69,7 @@ pub async fn login(
     match result {
         Ok(response) => {
             // Save cookies because auth state changed (either success or partial success for 2FA)
-            if let Err(save_err) = state.save_cookies() {
+            if let Err(save_err) = state.vrcapi.save_cookies() {
                 eprintln!("Failed to save cookies: {}", save_err);
             }
 
@@ -103,9 +103,9 @@ pub async fn login(
 pub async fn verify_2fa(
     code: String,
     is_emailotp: bool,
-    state: State<'_, VrcApiService>
+    state: State<'_, Ctx>
 ) -> Result<LoginResponse, String> {
-    let config = state.config.lock().await;
+    let config = state.vrcapi.config.lock().await;
 
     // 1. Verify code based on the type and get the boolean result
     let verified = if is_emailotp {
@@ -124,7 +124,7 @@ pub async fn verify_2fa(
     }
 
     // 3. Common success logic: save cookies and fetch user
-    if let Err(save_err) = state.save_cookies() {
+    if let Err(save_err) = state.vrcapi.save_cookies() {
         eprintln!("Failed to save cookies: {}", save_err);
     }
 
@@ -147,8 +147,8 @@ pub async fn verify_2fa(
 // Logout by clearing cookies and optionally calling the API to invalidate the session server-side
 #[tauri::command]
 #[specta::specta]
-pub async fn logout(state: State<'_, VrcApiService>) -> Result<String, String> {
-    let config = state.config.lock().await;
+pub async fn logout(state: State<'_, Ctx>) -> Result<String, String> {
+    let config = state.vrcapi.config.lock().await;
 
     // 1. サーバー側のセッションを破棄 (VRChat APIの /logout を叩く)
     // ※ 既にセッションが切れていたりオフラインだったりしてエラーになることもありますが、
@@ -156,7 +156,7 @@ pub async fn logout(state: State<'_, VrcApiService>) -> Result<String, String> {
     let _ = vrc_logout(&config).await;
 
     // 2. ローカルのクッキーをクリアしてディスクに反映
-    match state.clear_cookies() {
+    match state.vrcapi.clear_cookies() {
         Ok(_) => Ok("Logged out successfully".to_string()),
         Err(e) => Err(format!("Failed to clear local cookies: {}", e))
     }

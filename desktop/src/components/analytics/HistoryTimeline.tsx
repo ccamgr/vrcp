@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Clock, Globe, Hash, Users } from "lucide-react";
 import { SessionPayload } from "../../generated/bindings";
+import { formatTime } from "../../lib/date";
 
 // ============================================================================
 
@@ -93,7 +94,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
                 return (
                   <div key={time} className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center" style={{ left: `${left}%` }}>
                     <span className="text-[10px] text-slate-400 font-mono mb-1">
-                      {new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {formatTime(time)}
                     </span>
                     <div className="h-1.5 w-px bg-slate-600"></div>
                   </div>
@@ -187,7 +188,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
               </div>
               <div className="flex items-center gap-1 text-slate-300">
                 <Clock size={10} />
-                {new Date(hoveredSession.startTime).toLocaleTimeString()} - {new Date(hoveredSession.endTime).toLocaleTimeString()}
+                {formatTime(hoveredSession.startTime)} - {formatTime(hoveredSession.endTime)}
                 <span className="bg-slate-800 px-1 rounded ml-1">
                   {Math.floor(hoveredSession.durationMs / 1000 / 60)} min
                 </span>

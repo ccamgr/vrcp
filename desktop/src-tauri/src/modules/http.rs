@@ -4,7 +4,6 @@ use axum::{
     routing::get,
     Json, Router,
 };
-use local_ip_address::local_ip;
 use serde::Deserialize;
 use std::net::SocketAddr;
 use std::sync::Mutex;
@@ -39,8 +38,8 @@ impl HttpSrv {
 struct LogParams {
     /// Get logs occurred after this timestamp.
     /// Optional: if missing, returns all logs (or you can set a default limit).
-    start: Option<String>,
-    end: Option<String>,
+    start: Option<i64>,
+    end: Option<i64>,
 }
 
 /// Handler for GET /logs
@@ -50,7 +49,7 @@ async fn handle_get_logs(
 ) -> Result<Json<Vec<LogPayload>>, StatusCode> {
     match db
         .logs()
-        .get_session_expanded_logs(params.start.as_deref(), params.end.as_deref())
+        .get_session_expanded_logs(params.start.as_ref(), params.end.as_ref())
         .await
     {
         Ok(logs) => Ok(Json(logs)),
