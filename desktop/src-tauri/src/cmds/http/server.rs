@@ -1,7 +1,7 @@
 
 
 use local_ip_address::local_ip;
-use crate::{Ctx, modules::http::SERVER_PORT};
+use crate::Ctx;
 
 #[tauri::command]
 #[specta::specta]
@@ -15,7 +15,6 @@ pub async fn get_server_url(state: tauri::State<'_, Ctx>) -> Result<String, Stri
 #[tauri::command]
 #[specta::specta]
 pub async fn set_server_port(
-    app: tauri::AppHandle,
     state: tauri::State<'_, Ctx>,
     port: u16,
 ) -> Result<(), String> {
