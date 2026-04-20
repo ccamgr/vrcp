@@ -13,6 +13,27 @@ use std::time::{Duration, Instant}; // Instantを追加
 use tauri::async_runtime::JoinHandle;
 use tauri::AppHandle;
 use tauri_specta::Event;
+use std::sync::{Arc, RwLock};
+
+#[derive(Clone, Debug)]
+pub struct WatcherStatus {
+    pub is_app_running: bool,
+    pub last_seen_timestamp: String,
+}
+
+pub struct Watcher {
+    pub handle: JoinHandle<()>,
+    pub status: Arc<RwLock<WatcherStatus>>,
+}
+impl Watcher {
+    pub fn is_app_running(&self) -> bool {
+        self.status.read().map(|s| s.is_app_running).unwrap_or(false)
+    }
+
+    pub fn last_seen_timestamp(&self) -> String {
+        self.status.read().map(|s| s.last_seen_timestamp.clone()).unwrap_or_else(|_| "unknown".to_string())
+    }
+}
 
 // ================================================================
 // Section A: Data Types & Parsing Logic
@@ -226,7 +247,7 @@ pub fn create_invalid_app_stop_payload(last_timestamp: &str) -> LogPayload {
 }
 
 /// ログ監視タスクのメインループ（非同期）
-async fn watch_loop(app: AppHandle, db: DB) {
+async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherStatus>>) {
     let mut rotation_check_interval = tokio::time::interval(Duration::from_secs(5));
     let mut current_log_path = get_latest_log_path();
 
@@ -383,7 +404,11 @@ async fn watch_loop(app: AppHandle, db: DB) {
                         let _ = LogPayload::emit(&payload, &app);
                         let _ = db.logs().insert_log(&payload).await;
                     }
-
+                    // 状態の共有 (Arc<RwLock>を介して書き込む)
+                    if let Ok(mut status) = shared_status.write() {
+                        status.is_app_running = is_app_running;
+                        status.last_seen_timestamp = last_seen_timestamp.clone();
+                    }
                     line.clear();
                     read_success = true;
                 }
@@ -431,6 +456,12 @@ async fn watch_loop(app: AppHandle, db: DB) {
                     current_log_path = latest.clone();
                     is_app_running = false;
                     current_position = 0; // ★新しいファイルなので位置をリセット
+                    // 状態の共有 (Arc<RwLock>を介して書き込む)
+                    if let Ok(mut status) = shared_status.write() {
+                        status.is_app_running = is_app_running;
+                        status.last_seen_timestamp = last_seen_timestamp.clone();
+                    }
+
 
                     // DB保存
                     if let Some(path) = &current_log_path {
@@ -462,8 +493,16 @@ async fn watch_loop(app: AppHandle, db: DB) {
 // ================================================================
 
 /// 監視タスクをバックグラウンドで開始する
-pub fn spawn_log_watcher(app: AppHandle, db: DB) -> JoinHandle<()> {
-    tauri::async_runtime::spawn(async move {
-        watch_loop(app, db).await;
-    })
+pub fn spawn_log_watcher(app: AppHandle, db: DB) -> Watcher {
+    let shared_status = Arc::new(RwLock::new(WatcherStatus {
+        is_app_running: false,
+        last_seen_timestamp: "unknown".to_string(),
+    }));
+
+    Watcher {
+        handle: tauri::async_runtime::spawn(
+            watch_loop(app, db, Arc::clone(&shared_status))
+        ),
+        status: shared_status
+    }
 }

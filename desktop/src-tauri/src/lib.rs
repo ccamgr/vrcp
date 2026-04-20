@@ -1,6 +1,5 @@
 pub mod db;
 pub mod modules;
-pub mod services;
 pub mod utils;
 pub mod cmds;
 use tauri::Manager;
@@ -10,8 +9,8 @@ use crate::modules::vrcapi::VrcApiService;
 
 pub struct Ctx {
     db: db::DB,
-    srv: modules::server::HttpSrv,
-    watcher: tauri::async_runtime::JoinHandle<()>,
+    srv: modules::HttpSrv,
+    watcher: modules::Watcher,
     vrcapi: VrcApiService,
 }
 
@@ -22,13 +21,13 @@ pub struct Ctx {
 pub fn create_specta_builder() -> SpectaBuilder {
     SpectaBuilder::new()
         .commands(collect_commands![
-            modules::server::set_server_port,
-            modules::server::get_server_port,
-            modules::server::get_server_url,
-            services::logs::export_logs,
-            services::logs::get_logs,
-            services::logs::delete_all_logs,
-            services::sessions::get_sessions,
+            cmds::http::server::set_server_port,
+            cmds::http::server::get_server_port,
+            cmds::http::server::get_server_url,
+            cmds::vrclog::logs::export_logs,
+            cmds::vrclog::logs::get_logs,
+            cmds::vrclog::logs::delete_all_logs,
+            cmds::vrclog::sessions::get_sessions,
             cmds::vrcapi::auth::login,
             cmds::vrcapi::auth::logout,
             cmds::vrcapi::auth::verify_2fa
@@ -80,7 +79,7 @@ pub fn run() {
             // ログ監視開始
             let watcher = modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
             // http srv 起動
-            let srv = modules::server::HttpSrv::new(db.clone());
+            let srv = modules::http::HttpSrv::new(db.clone());
             // 常駐化設定
             modules::systray::setup_tray(app.handle())?;
 

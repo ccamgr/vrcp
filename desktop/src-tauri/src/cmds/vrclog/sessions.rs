@@ -160,10 +160,8 @@ impl SessionBuilder {
 
     // メインの処理ループ
     fn process(mut self, logs: Vec<LogPayload>, last_logged_time: i64) -> Vec<SessionPayload> {
-        let mut last_ts = 0;
         for log in logs {
             let ts = to_timems(&log.timestamp);
-            last_ts = ts;
 
             match log.event {
                 VrcLogEvent::Login { username, user_id } => {
@@ -259,8 +257,6 @@ pub async fn get_sessions(
             last_logged_time = ts; // 例: 10時にクラッシュしていたら、10:00のタイムスタンプになる
         }
     }
-
-    let query_end_time = end.as_deref().map(|e| to_timems(e));
 
     Ok(builder.process(logs, last_logged_time))
 }

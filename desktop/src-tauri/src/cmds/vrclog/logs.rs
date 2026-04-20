@@ -2,18 +2,17 @@ use std::fs::File;
 use std::io::BufWriter;
 
 use crate::Ctx;
-use crate::db::DB;
 use crate::modules::watcher::LogPayload;
 
 #[tauri::command]
 #[specta::specta]
 pub async fn get_logs(
-    db: tauri::State<'_, DB>,
+    state: tauri::State<'_, Ctx>,
     start: Option<String>,
     end: Option<String>,
 ) -> Result<Vec<LogPayload>, String> {
     // db.get_logs の frontからの呼び出し
-    db.logs()
+    state.db.logs()
         .get_session_expanded_logs(start.as_deref(), end.as_deref())
         .await
         .map_err(|e| e.to_string())
