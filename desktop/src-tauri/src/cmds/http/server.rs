@@ -8,16 +8,7 @@ use crate::{Ctx, modules::http::SERVER_PORT};
 pub async fn get_server_url(state: tauri::State<'_, Ctx>) -> Result<String, String> {
     let ip = local_ip().map_err(|e| e.to_string())?;
 
-    let port_str = state.db
-        .settings()
-        .get_setting("port")
-        .await
-        .map_err(|e| e.to_string())?;
-    let port: u16 = port_str
-        .as_deref()
-        .unwrap_or(&SERVER_PORT.to_string())
-        .parse()
-        .unwrap_or(SERVER_PORT);
+    let port = *state.srv.port.lock().unwrap();
     Ok(format!("http://{}:{}", ip, port))
 }
 
@@ -32,31 +23,22 @@ pub async fn set_server_port(
     if port == 0 {
         return Err("Port 0 is not allowed".to_string());
     }
-
-    // 2. DBに保存 (文字列として保存)
-    // map_err で DBのエラーを文字列化してフロントエンドに返せるようにする
-    state.db.settings()
-        .set_setting("port", &port.to_string())
+    let current_port = *state.srv.port.lock().unwrap();
+    if port == current_port {
+        return Ok(()); // 変更なし
+    }
+    state
+        .srv
+        .restart(state.db.clone(), port)
         .await
-        .map_err(|e| e.to_string())?;
-
-    // 3. restart
-    app.restart();
-    // Ok(())
+        .map_err(|e| format!("Failed to restart server: {}", e))?;
+    println!("HTTP server restarted on port {}", port);
+    Ok(())
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn get_server_port(state: tauri::State<'_, Ctx>) -> Result<u16, String> {
-    let port_str = state.db
-        .settings()
-        .get_setting("port")
-        .await
-        .map_err(|e| e.to_string())?;
-    let port: u16 = port_str
-        .as_deref()
-        .unwrap_or(&SERVER_PORT.to_string())
-        .parse()
-        .unwrap_or(SERVER_PORT);
+    let port = *state.srv.port.lock().unwrap();
     Ok(port)
 }

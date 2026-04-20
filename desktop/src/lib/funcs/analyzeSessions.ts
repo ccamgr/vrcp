@@ -87,7 +87,7 @@ export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
   };
   console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
-    const ts = toTime(log.timestamp);
+    const ts = log.timestamp;
     // @ts-ignore
     const { type, data } = log.event;
 

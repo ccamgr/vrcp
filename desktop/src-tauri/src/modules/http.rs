@@ -31,6 +31,27 @@ impl HttpSrv {
             running: Mutex::new(false),
         }
     }
+    pub async fn restart(&self, db: DB, new_port: u16) -> Result<(), String> {
+        // 1. Save new port to DB first so spawn_server can read it
+        db.settings()
+            .set_setting("port", &new_port.to_string())
+            .await
+            .map_err(|e| format!("Failed to save new port to DB: {}", e))?;
+
+        // 2. Kill the old server task if it exists
+        if let Some(handle) = self.handle.lock().unwrap().take() {
+            handle.abort();
+            println!("Old HTTP server task aborted.");
+        }
+
+        // 3. Update the in-memory port
+        *self.port.lock().unwrap() = new_port;
+
+        // 4. Spawn a new server and save the new handle
+        let new_handle = spawn_server(db);
+        *self.handle.lock().unwrap() = Some(new_handle);
+        Ok(())
+    }
 }
 
 /// Query parameters for the /logs endpoint
