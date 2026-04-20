@@ -1,6 +1,5 @@
 use crate::db::schema::logs;
 use crate::modules::watcher::{LogPayload, VrcLogEvent};
-use crate::utils::date::str_to_i64;
 use sea_orm::*;
 
 pub struct LogsRepository {
