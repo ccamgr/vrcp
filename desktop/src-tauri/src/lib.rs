@@ -5,13 +5,12 @@ pub mod cmds;
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
-use crate::modules::vrcapi::VrcApiService;
 
 pub struct Ctx {
     db: db::DB,
     srv: modules::HttpSrv,
-    watcher: modules::Watcher,
-    vrcapi: VrcApiService,
+    watcher: modules::WatcherService,
+    vrcapi: modules::VrcApiService,
 }
 
 // ---------------------------------------------------------
@@ -73,7 +72,7 @@ pub fn run() {
             app.manage(db.clone()); // グローバルステートとしてDBを登録
 
             // VRCAPI サービス初期化
-            let vrcapi = VrcApiService::new(app_data_dir).expect("Failed to init VrcApiService");
+            let vrcapi = modules::VrcApiService::new(app_data_dir).expect("Failed to init VrcApiService");
             app.manage(vrcapi.clone());
 
             // ログ監視開始

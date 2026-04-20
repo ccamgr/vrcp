@@ -22,11 +22,11 @@ pub struct WatcherStatus {
     pub last_seen_timestamp: i64, // 💡 String -> i64
 }
 
-pub struct Watcher {
+pub struct WatcherService {
     pub handle: JoinHandle<()>,
     pub status: Arc<RwLock<WatcherStatus>>,
 }
-impl Watcher {
+impl WatcherService {
     pub fn is_app_running(&self) -> bool {
         self.status.read().map(|s| s.is_app_running).unwrap_or(false)
     }
@@ -443,13 +443,13 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 // Public Entry Point
 // ================================================================
 
-pub fn spawn_log_watcher(app: AppHandle, db: DB) -> Watcher {
+pub fn spawn_log_watcher(app: AppHandle, db: DB) -> WatcherService {
     let shared_status = Arc::new(RwLock::new(WatcherStatus {
         is_app_running: false,
         last_seen_timestamp: 0, // 💡 0で初期化
     }));
 
-    Watcher {
+    WatcherService {
         handle: tauri::async_runtime::spawn(
             watch_loop(app, db, Arc::clone(&shared_status))
         ),

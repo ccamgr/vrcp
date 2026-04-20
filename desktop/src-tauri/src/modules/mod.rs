@@ -6,4 +6,5 @@ pub mod watcher;
 pub mod vrcapi;
 
 pub use http::HttpSrv;
-pub use watcher::Watcher;
+pub use watcher::WatcherService;
+pub use vrcapi::VrcApiService;
