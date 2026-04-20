@@ -159,7 +159,7 @@ impl SessionBuilder {
     }
 
     // メインの処理ループ
-    fn process(mut self, logs: Vec<LogPayload>) -> Vec<SessionPayload> {
+    fn process(mut self, logs: Vec<LogPayload>, last_logged_time: i64) -> Vec<SessionPayload> {
         let mut last_ts = 0;
         for log in logs {
             let ts = to_timems(&log.timestamp);
@@ -226,8 +226,7 @@ impl SessionBuilder {
 
         // ループ終了後の処理
         if self.current_session.is_some() {
-            let end_time = if last_ts > 0 { last_ts } else { chrono::Utc::now().timestamp_millis() };
-            self.close_session(end_time);
+            self.close_session(last_logged_time);
         }
 
         self.sessions
@@ -252,5 +251,16 @@ pub async fn get_sessions(
         .await
         .map_err(|e| e.to_string())?;
 
-    Ok(builder.process(logs))
+    // WatcherState から「最後に書き込まれたログの時間」を取得
+    let mut last_logged_time = chrono::Utc::now().timestamp_millis();
+    if let Ok(Some(watcher_state)) = state.db.settings().get_watcher_state().await {
+        let ts = to_timems(&watcher_state.last_timestamp);
+        if ts > 0 {
+            last_logged_time = ts; // 例: 10時にクラッシュしていたら、10:00のタイムスタンプになる
+        }
+    }
+
+    let query_end_time = end.as_deref().map(|e| to_timems(e));
+
+    Ok(builder.process(logs, last_logged_time))
 }
