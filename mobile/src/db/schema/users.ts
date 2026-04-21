@@ -17,10 +17,12 @@ export const users = sqliteTable("users", {
     localNote?: string,
     [key: string]: any
   }>().notNull().default({}),
-  rawData: text("raw_data", { mode: 'json' }).$type<User>(),
+  rawData: text("raw_data", { mode: 'json' }).notNull().$type<User>(),
 });
 
-export function convertToDBUser(user: User): DBUser {
+export type DBUser = typeof users.$inferInsert;
+
+export function convertToDBUser(user: User, favoriteGroupId?: string | null): DBUser {
   return {
     id: user.id,
     displayName: user.displayName,
@@ -30,9 +32,12 @@ export function convertToDBUser(user: User): DBUser {
     imageUrl: (user.profilePicOverride && user.profilePicOverride.length > 0) ? user.profilePicOverride
       : user.currentAvatarImageUrl,
     isFriend: user.isFriend || false,
-    favoriteGroupId: null,
+    favoriteGroupId: favoriteGroupId || null,
     rawData: user,
   }
 }
 
-export type DBUser = typeof users.$inferInsert;
+export function convertFromDBUser(dbUser: DBUser): User {
+  return dbUser.rawData;
+}
+

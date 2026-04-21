@@ -13,7 +13,20 @@ export const groups = sqliteTable("groups", {
   option: text("option", { mode: 'json' }).$type<{
     [key: string]: any
   }>().notNull().default({}),
-  rawData: text("raw_data", { mode: 'json' }).$type<Group>(),
+  rawData: text("raw_data", { mode: 'json' }).notNull().$type<Group>(),
 });
 
 export type DBGroup = typeof groups.$inferInsert;
+
+export const convertToDBGroup = (group: Group): DBGroup => ({
+  id: group.id!,
+  name: group.name,
+  imageUrl: group.bannerUrl,
+  isJoined: group.membershipStatus === "member",
+  rawData: group,
+});
+
+export const convertFromDBGroup = (dbGroup: DBGroup): Group => {
+  return dbGroup.rawData;
+}
+

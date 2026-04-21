@@ -11,8 +11,8 @@ export const examples = sqliteTable("examples", {
   sampleFloat: real("sample_float"),
   sampleText: text("sample_text"),
   sampleBool: integer("sample_bool", { mode: 'boolean' }).default(false),
-  sampleJson: text("sample_json", { mode: 'json' }).$type<{ id: number, label: string, value: string }[]>().notNull().default([]), //  array of json
   sampleEnum: text("sample_enum", { enum: ["value1", "value2", "value3"] }),
+  sampleJson: text("sample_json", { mode: 'json' }).$type<{ id: number, label?: string, value?: string }>().notNull().default({ id: 0 }), //  array of json
 
 });
 

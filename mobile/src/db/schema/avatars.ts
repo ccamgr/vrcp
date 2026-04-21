@@ -14,18 +14,23 @@ export const avatars = sqliteTable("avatars", {
     [key: string]: any
   }>().notNull().default({}),
 
-  rawData: text("raw_data", { mode: 'json' }).$type<Avatar>(),
+  rawData: text("raw_data", { mode: 'json' }).notNull().$type<Avatar>(),
 
 });
 
-export function convertToDBAvatar(avatar: Avatar): DBAvatar {
+export type DBAvatar = typeof avatars.$inferInsert;
+
+export function convertToDBAvatar(avatar: Avatar, favoriteGroupId?: string | null): DBAvatar {
   return {
     id: avatar.id,
     name: avatar.name,
     imageUrl: avatar.imageUrl,
-    favoriteGroupId: null,
+    favoriteGroupId: favoriteGroupId || null,
     rawData: avatar,
   }
 }
 
-export type DBAvatar = typeof avatars.$inferInsert;
+export function convertFromDBAvatar(dbAvatar: DBAvatar): Avatar {
+  return dbAvatar.rawData;
+}
+
