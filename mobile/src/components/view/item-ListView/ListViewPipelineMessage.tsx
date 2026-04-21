@@ -2,7 +2,7 @@ import globalStyles, { fontSize, spacing } from "@/configs/styles";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";
 import { PipelineContent, PipelineMessage } from "@/generated/vrcpipline/type";
-import { formatToDateTimeStr } from "@/lib/date";
+import { formatDateTimeShort } from "@/lib/date";
 import { parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
 import { extractPipelineMessageContent } from "@/lib/funcs/extractPipelineMessageContent";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ interface Props {
   [key: string]: any;
 }
 const extractTitle = (data: PipelineMessage) => {
-  const timestamp = data.timestamp ? formatToDateTimeStr(new Date(data.timestamp)) : "";
+  const timestamp = data.timestamp ? formatDateTimeShort(new Date(data.timestamp)) : "";
   return `${timestamp}  ${data.type}`
 }
 const extractSubtitles = (data: PipelineMessage, user?:UserLike, world?: WorldLike) => {

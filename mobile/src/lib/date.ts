@@ -8,31 +8,48 @@ export function restoreDateKey(dateKey: string): Date {
   return new Date(dateKey);
 }
 
-// timestamp: RFC 3339形式の文字列 (toISOString())
-// timestamp文字列やDateオブジェクトを"YYYY/MM/DD HH:MM"形式に変換
-export function formatToDateTimeStr(timestamp: string | Date): string {
-  const date = new Date(timestamp);
-  return date.toLocaleString([], {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-export function formatToDateStr(timestamp: string | Date): string {
-  const date = new Date(timestamp);
-  return date.toLocaleDateString([], {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-export function formatToTimeStr(timestamp: string | Date): string {
-  const date = new Date(timestamp);
-  return date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
+/* desktopのi64(unix timestamp からの変換) */
+
+// ゼロ埋め用
+const pad = (num: number) => num.toString().padStart(2, "0");
+/**
+ * HH:mm 形式 (例: 15:30)
+ */
+export function formatTime(ts: number): string {
+  const d = new Date(ts);
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+/**
+ * HH:mm:ss 形式 (例: 15:30:45)
+ */
+export function formatTimeWithSec(ts: number): string {
+  const d = new Date(ts);
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+/**
+ * YYYY-MM-DD 形式 (例: 2026-04-20)
+ */
+export function formatDate(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+/**
+ * MM-DD 形式 (例: 04-20)
+ */
+export function formatDateShort(ts: number): string {
+  const d = new Date(ts);
+  return `${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+/**
+ * YYYY-MM-DD HH:mm:ss 形式 (例: 2026-04-20 15:30:45)
+ */
+export function formatDateTime(ts: number): string {
+  return `${formatDate(ts)} ${formatTimeWithSec(ts)}`;
+}
+/**
+ * YYYY-MM-DD HH:mm 形式 (例: 2026-04-20 15:30)
+ */
+export function formatDateTimeShort(ts: number): string {
+  return `${formatDate(ts)} ${formatTime(ts)}`;
+}

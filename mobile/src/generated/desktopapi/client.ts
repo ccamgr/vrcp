@@ -5,6 +5,6 @@
 import axios from "axios";
 import { GetLogsResponse } from "./type";
 
-export function getLogsFromDesktop(apiBaseUrl: string, params: { start?: string; end?: string }) {
+export function getLogsFromDesktop(apiBaseUrl: string, params: { start?: number; end?: number }) {
   return axios.get<GetLogsResponse>(`${apiBaseUrl}/logs`, { params });
 }

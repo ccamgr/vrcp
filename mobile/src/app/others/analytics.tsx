@@ -5,18 +5,13 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import { navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useSetting } from "@/contexts/SettingContext";
 import { getLogsFromDesktop } from "@/generated/desktopapi/client";
+import { formatDate, formatDateTime, formatDateTimeShort } from "@/lib/date";
 import { analyzeSessions, WorldSession } from "@/lib/funcs/analizeSessions";
 import { useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, Text, View, Modal, Alert } from "react-native";
 
-// 日付ヘルパー (Web版のgetLocalISODate相当)
-const getLocalISODateStr = (d: Date) => {
-  const offset = d.getTimezoneOffset() * 60000;
-  const localISOTime = (new Date(d.getTime() - offset)).toISOString().slice(0, 10);
-  return localISOTime;
-};
 
 export default function Analytics() {
   const theme = useTheme();
@@ -24,7 +19,7 @@ export default function Analytics() {
   const { settings } = useSetting();
 
   // 状態管理
-  const [targetDate, setTargetDate] = useState<string>(getLocalISODateStr(new Date()));
+  const [targetDate, setTargetDate] = useState<string>(formatDate(new Date().getTime())); // YYYY-MM-DD形式
   const [sessions, setSessions] = useState<WorldSession[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
@@ -38,26 +33,29 @@ export default function Analytics() {
 
     setLoading(true);
     try {
-      const start = `${targetDate} 00:00:00`;
-      const end = `${targetDate} 23:59:59`;
+      // 注意: new Date("2026-04-20") とするとUTC基準になってズレるため、ハイフンで割って手動生成します
+      const [year, month, day] = targetDate.split('-').map(Number);
+      // 指定日の 00:00:00 から 23:59:59 までを取得
+      const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
+      const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
 
       const res = await getLogsFromDesktop(settings.otherOptions_desktopAppURL, {
-        start: start,
-        end: end,
+        start: startOfDay,
+        end: endOfDay,
       });
 
       if (res.status !== 200) {
         console.error("Failed to fetch logs from desktop app:", res.statusText);
       } else {
         const analyzedSessions = analyzeSessions(res.data, {
-          start: new Date(start.replace(' ', 'T')).getTime(),
-          end: new Date(end.replace(' ', 'T')).getTime(),
+          start: startOfDay,
+          end: endOfDay
         });
         console.log(
           "Logs fetched from desktop app:",
           "\ncount:", analyzedSessions.length,
           "\nsessions:", analyzedSessions.map(s =>
-            `\n\t${new Date(s.startTime).toLocaleTimeString().padStart(8, '0')}~${new Date(s.endTime).toLocaleTimeString().padStart(8, '0')} (${(s.durationMs / 60000).toString().slice(0, 3)} min): ${s.worldName}`
+            `\n\t${formatDateTimeShort(s.startTime)}~${formatDateTimeShort(s.endTime)} (${(s.durationMs / 60000).toString().slice(0, 3)} min): ${s.worldName}`
           ).join(", ")
         );
         setSessions(analyzedSessions);
@@ -78,7 +76,7 @@ export default function Analytics() {
   const handleDateChange = (offset: number) => {
     const d = new Date(targetDate);
     d.setDate(d.getDate() + offset);
-    setTargetDate(getLocalISODateStr(d));
+    setTargetDate(formatDate(d.getTime()));
   };
 
   return (

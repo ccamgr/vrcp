@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
 import { CachedImage } from "@/contexts/CacheContext";
-import { formatToTimeStr } from "@/lib/date";
+import { formatTime } from "@/lib/date";
 
 
 
@@ -20,7 +20,7 @@ interface Props {
 const extractTitle = (data: CalendarEvent) =>
   `${data.title}`;
 const extractSubtitles = (data: CalendarEvent) => [
-  `${formatToTimeStr(data.startsAt ?? "")} - ${formatToTimeStr(data.endsAt ?? "")}`,
+  `${formatTime(data.startsAt ?? "")} - ${formatTime(data.endsAt ?? "")}`,
   data.description ?? "",
 ];
 

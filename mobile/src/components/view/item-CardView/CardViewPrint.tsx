@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BaseCardView from "./BaseCardView";
 import { Print } from "@/generated/vrcapi";
-import { formatToDateStr } from "@/lib/date";
+import { formatDate } from "@/lib/date";
 
 interface Props {
   print: Print;
@@ -18,7 +18,7 @@ const extractImageUrl = (data: Print) => data.files.image || "";
 const extractTitle = (data: Print) => {
   if (!data.timestamp && !data.authorName && !data.worldName) return "Unknown Print";
   const titles = []
-  if (data.timestamp.length > 0) titles.push(formatToDateStr(data.timestamp));
+  if (data.timestamp.length > 0) titles.push(formatDate(data.timestamp));
   // if (data.authorName.length > 0) titles.push(`by ${data.authorName}`);
   if (data.worldName.length > 0) titles.push(`in ${data.worldName}`);
   return titles.join(" ");
