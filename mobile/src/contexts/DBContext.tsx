@@ -3,7 +3,7 @@ import * as sqlite from "expo-sqlite";
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { SQLiteColumn, SQLiteInsertValue, sqliteTable, SQLiteTableWithColumns, SQLiteUpdateSetSource, TableConfig } from "drizzle-orm/sqlite-core";
 import { and, eq, like, not, sql, SQL } from "drizzle-orm";
-import { avatarsTable, favoriteGroupsTable, groupsTable, usersTable, worldsTable } from "@/db/schema";
+import { avatarsTable, favoriteGroupsTable, groupsTable, logsTable, usersTable, worldsTable } from "@/db/schema";
 import { migrations } from "@/db/migration";
 import Storage from "expo-sqlite/kv-store";
 
@@ -12,11 +12,12 @@ import Storage from "expo-sqlite/kv-store";
 
 
 export interface TableWrapper<
-  T extends SQLiteTableWithColumns<any>
+  T extends SQLiteTableWithColumns<any>,
 > {
   _tableName: string;
   _table: T;
   get: (id: T["$inferSelect"]["id"]) => Promise<T["$inferSelect"] | null>;
+  getList: (options?: DBGetListOptions<any>) => Promise<T["$inferSelect"][]>;
   create: (data: SQLiteInsertValue<T>) => Promise<T["$inferSelect"]>;
   update: (id: T["$inferInsert"]["id"], data: SQLiteUpdateSetSource<T>) => Promise<T["$inferSelect"]>;
   delete: (id: T["$inferSelect"]["id"]) => Promise<boolean>;
@@ -32,6 +33,8 @@ interface DBContextType {
   avatars: TableWrapper<typeof avatarsTable>;
   groups: TableWrapper<typeof groupsTable>;
   favoriteGroups: TableWrapper<typeof favoriteGroupsTable>;
+
+
 }
 const Context = createContext<DBContextType | undefined>(undefined);
 
@@ -56,12 +59,16 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
     applyMigrations(false);
   }, []);
 
+
   const wrappers = {
     users: initTableWrapper(db, usersTable),
     worlds: initTableWrapper(db, worldsTable),
     avatars: initTableWrapper(db, avatarsTable),
     groups: initTableWrapper(db, groupsTable),
     favoriteGroups: initTableWrapper(db, favoriteGroupsTable),
+
+    // logs table is handled separately due to its different structure and usage patterns
+    logs: initTableWrapper(db, logsTable),
   }
 
   const applyMigrations = async (init: boolean = false) => {
@@ -135,6 +142,24 @@ const DBProvider: React.FC<{ children?: React.ReactNode }> = ({
   );
 }
 
+
+// == Table Wrapper Factory ==
+
+export interface DBGetListOptions<T extends TableConfig = TableConfig> {
+  where?: SQL;
+  limit?: number;
+  offset?: number;
+  // Allow only SQL expressions (like desc()) or actual columns from this specific table
+  orderBy?: SQL | T["columns"][keyof T["columns"]] | (SQL | T["columns"][keyof T["columns"]])[];
+}
+
+
+/**
+ *
+ * @param db
+ * @param table
+ * @returns CRUD操作を備えたテーブルラッパー id指定のGET,DELETEと、データ指定のCREATE,UPDATEを提供
+ */
 const initTableWrapper = <
   T extends TableConfig,
 >(
@@ -169,8 +194,47 @@ const initTableWrapper = <
     ).execute();
     return result.changes > 0;
   }
+  const getList = async (options?: DBGetListOptions<T>): Promise<SQLiteTableWithColumns<T>["$inferSelect"][]> => {
+    // Use $dynamic() to build queries conditionally
+    let query = db.select().from(table).$dynamic();
 
-  return { get, create, update, delete: del, _tableName: tableName ?? "", _table: table };
+    if (options?.where) {
+      query = query.where(options.where);
+    }
+    if (options?.orderBy) {
+      const orderArgs = Array.isArray(options.orderBy) ? options.orderBy : [options.orderBy];
+      query = query.orderBy(...orderArgs);
+    }
+    if (options?.limit !== undefined) {
+      query = query.limit(options.limit);
+    }
+    if (options?.offset !== undefined) {
+      query = query.offset(options.offset);
+    }
+
+    const result = await query.all();
+    return result as SQLiteTableWithColumns<T>["$inferSelect"][];
+  }
+
+  return { get, getList, create, update, delete: del, _tableName: tableName ?? "", _table: table };
 }
 
 export { DBProvider, useDB };
+
+
+// // import { eq, desc, and, gt } from "drizzle-orm";
+
+// // Get all logs
+// const allLogs = await dbLogs.getList();
+
+// // Get logs with conditions
+// const recentJoinLogs = await dbLogs.getList({
+//   where: and(
+//     eq(logs.eventType, "PlayerJoin"),
+//     gt(logs.timestamp, 1713500000000)
+//   ),
+//   orderBy: desc(logs.timestamp),
+//   limit: 50,
+//   offset: 0
+// });
+

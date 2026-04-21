@@ -56,4 +56,17 @@ export const migrations = {
 );`
     ]
   },
+  '0001_marvelous_black_panther.sql': {
+    version: 1,
+    sql: [
+      `CREATE TABLE \`logs\` (
+	\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	\`hash\` integer NOT NULL,
+	\`timestamp\` integer NOT NULL,
+	\`event_type\` text NOT NULL,
+	\`data\` text NOT NULL
+);`,
+      `CREATE UNIQUE INDEX \`logs_hash_unique\` ON \`logs\` (\`hash\`);`
+    ]
+  },
 };

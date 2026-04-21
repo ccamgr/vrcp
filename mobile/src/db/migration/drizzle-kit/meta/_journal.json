@@ -8,6 +8,13 @@
       "when": 1759455351631,
       "tag": "0000_cool_mulholland_black",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1776772686008,
+      "tag": "0001_marvelous_black_panther",
+      "breakpoints": true
     }
   ]
 }
