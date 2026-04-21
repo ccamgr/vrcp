@@ -16,7 +16,12 @@ if (!config.transformer.babelTransformerPath) {
   config.transformer.babelTransformerPath = require.resolve('react-native-svg-transformer');
 }
 
-// for wasm support for web-sqlite 
+// for .sql support for drizzle
+if (!config.resolver.sourceExts.includes('sql')) {
+  config.resolver.sourceExts.push('sql');
+}
+
+// for wasm support for web-sqlite
 if (!config.resolver.assetExts.includes('wasm')) {
   config.resolver.assetExts.push('wasm');
 }
