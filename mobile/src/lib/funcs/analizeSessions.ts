@@ -35,9 +35,6 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
   // 完了したプレイヤーの区間記録 (id -> [{name, start, end }, ...])
   let playerIntervals = new Map<string, { name: string; start: number; end: number }[]>();
 
-  // ヘルパー: 日付文字列をタイムスタンプに変換 (ハイフン区切り対応)
-  const toTime = (ts: string) => new Date(ts.replace(' ', 'T')).getTime();
-
   // 現在のセッションを確定させてリストに追加する関数
   const closeSession = (endTime: number) => {
     if (!currentSession || !currentSession.startTime) return;
@@ -97,7 +94,6 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
   };
   console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
-    const ts = toTime(log.timestamp);
     // @ts-ignore
     const { type, data } = log.event;
 
@@ -114,18 +110,18 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
       worldName = data.world_name || "Unknown World";
     }
     else if (type === "InstanceJoin") {
-      if (currentSession) closeSession(ts)
+      if (currentSession) closeSession(log.timestamp)
       currentSession = {
         worldName: worldName || "Unknown World", // 直前のWorldEnterで設定されたワールド名を引き継ぐ
         instanceId: data.instance_id || "",
-        startTime: ts,
+        startTime: log.timestamp,
       };
       worldName = null; // ワールド名は使い切ったのでリセット
     }
     // 2. 誰かが入ってきた
     else if (type === "PlayerJoin" && currentSession) {
       const name = data.player_name;
-      activePlayers.set(data.user_id, { name, start: ts });
+      activePlayers.set(data.user_id, { name, start: log.timestamp });
     }
     // 3. 誰かが抜けた
     else if (type === "PlayerLeft" && currentSession) {
@@ -133,14 +129,14 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
       if (user) {
         // 区間を記録
         const intervals = playerIntervals.get(data.user_id) || [];
-        intervals.push({ name: user.name, start: user.start, end: ts });
+        intervals.push({ name: user.name, start: user.start, end: log.timestamp });
         playerIntervals.set(data.user_id, intervals);
         activePlayers.delete(data.user_id);
       }
     }
     // 4. アプリ終了など (セッション終了)
     else if ((type === "AppStop" || type === "InvalidAppStop") && currentSession) {
-      closeSession(ts);
+      closeSession(log.timestamp);
     }
   });
 
