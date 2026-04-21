@@ -2,11 +2,10 @@
 import { Group } from "@/generated/vrcapi";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { baseCacheColumns } from "./_baseSchema";
 
-export const groupsTable = sqliteTable("groups", {
-  id: text("id").primaryKey(), // ex. grp_c1644b5b-3ca4-45b4-97c6-a2a0de70d469
-  createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
-  updatedAt: text("updated_at").$onUpdateFn(()=>sql`(current_timestamp)`),
+export const groups = sqliteTable("groups", {
+  ...baseCacheColumns,
 
   name: text("name"),
   imageUrl: text("image_url"),
@@ -17,4 +16,4 @@ export const groupsTable = sqliteTable("groups", {
   rawData: text("raw_data", { mode: 'json' }).$type<Group>(),
 });
 
-export type DBGroup = typeof groupsTable.$inferInsert;
+export type DBGroup = typeof groups.$inferInsert;

@@ -2,11 +2,10 @@
 import { FavoriteGroup } from "@/generated/vrcapi";
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { baseCacheColumns } from "./_baseSchema";
 
-export const favoriteGroupsTable = sqliteTable("favorite_groups", {
-  id: text("id").primaryKey(),
-  createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
-  updatedAt: text("updated_at").$onUpdateFn(()=>sql`(current_timestamp)`),
+export const favoriteGroups = sqliteTable("favorite_groups", {
+  ...baseCacheColumns,
 
   name: text("name").notNull().default(""),
   displayName: text("display_name"),
@@ -20,15 +19,14 @@ export const favoriteGroupsTable = sqliteTable("favorite_groups", {
   rawData: text("raw_data", { mode: 'json' }).$type<FavoriteGroup>(),
 });
 
-export function convertToDBFavoriteGroup(favoriteGroup: FavoriteGroup) : DBFavoriteGroup {
+export function convertToDBFavoriteGroup(favoriteGroup: FavoriteGroup): DBFavoriteGroup {
   return {
     id: favoriteGroup.id,
     name: favoriteGroup.name,
     displayName: favoriteGroup.displayName,
     type: favoriteGroup.type,
     rawData: favoriteGroup,
-    updatedAt: new Date().toISOString(),
   }
 }
 
-export type DBFavoriteGroup = typeof favoriteGroupsTable.$inferInsert;
+export type DBFavoriteGroup = typeof favoriteGroups.$inferInsert;

@@ -2,7 +2,6 @@ import { darkTheme, lightTheme } from "@/configs/theme";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { CacheProvider } from "@/contexts/CacheContext";
 import { DataProvider } from "@/contexts/DataContext";
-import { DBProvider } from "@/contexts/DBContext";
 import { AppMenuProvider } from "@/contexts/AppMenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
@@ -17,7 +16,6 @@ import { use, useCallback, useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from 'expo-splash-screen';
 
-import '@/i18n'; // i18n 初期化
 import GlobalDrawer from "@/components/layout/GlobalDrawer";
 import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { LogProvider } from "@/contexts/LogContext";
@@ -27,17 +25,13 @@ import { db, cacheManager } from "@/db";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
+import '@/i18n'; // i18n 初期化
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
 
 function RootLayout() {
-  const { success, error } = useMigrations(db, migrations);
   const auth = useAuth();
-  useEffect(() => {
-    if (!auth.isLoading) {
-      SplashScreen.hideAsync();
-    }
-  }, [auth.isLoading]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -63,6 +57,15 @@ export default function Root() {
   const queryClient = new QueryClient();
   const cs = useColorScheme();
   const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
+  const auth = useAuth();
+  // Run migrations
+  const { success, error } = useMigrations(db, migrations);
+
+  useEffect(() => {
+    if (!auth.isLoading && success || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [auth.isLoading, success, error]);
 
   useEffect(() => {
     // init tasks
@@ -73,7 +76,6 @@ export default function Root() {
     <LogProvider>
       <SettingProvider>
         <QueryClientProvider client={queryClient}>
-          {/* <DBProvider> */}
           <VRChatProvider>
             <AuthProvider>
               <CacheProvider>
@@ -100,7 +102,6 @@ export default function Root() {
               </CacheProvider>
             </AuthProvider>
           </VRChatProvider>
-          {/* </DBProvider> */}
         </QueryClientProvider>
       </SettingProvider>
     </LogProvider>

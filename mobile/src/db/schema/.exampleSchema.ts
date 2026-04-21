@@ -2,7 +2,7 @@
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 import { baseColumns, baseCacheColumns } from "./_baseSchema";
 
-export const exsampleTable = sqliteTable("exsample", {
+export const examples = sqliteTable("examples", {
   // 共通カラム
   // ...baseColumns,
   ...baseCacheColumns,
@@ -11,9 +11,9 @@ export const exsampleTable = sqliteTable("exsample", {
   sampleFloat: real("sample_float"),
   sampleText: text("sample_text"),
   sampleBool: integer("sample_bool", { mode: 'boolean' }).default(false),
-  sampleJson: text("sample_json", { mode: 'json' }).$type<{ id:number ,label: string, value: string }[]>().notNull().default([]), //  array of json
+  sampleJson: text("sample_json", { mode: 'json' }).$type<{ id: number, label: string, value: string }[]>().notNull().default([]), //  array of json
   sampleEnum: text("sample_enum", { enum: ["value1", "value2", "value3"] }),
 
 });
 
-export type DBExsample = typeof exsampleTable.$inferSelect;
+export type DBExample = typeof examples.$inferSelect;
