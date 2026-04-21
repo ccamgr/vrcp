@@ -1,14 +1,12 @@
 // https://orm.drizzle.team/docs/column-types/sqlite
-import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { baseColumns, baseCacheColumns } from "./_baseSchema";
 
-export const sample = sqliteTable("sample", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  key: text("key").notNull().unique(),
-  createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
-  updatedAt: text("updated_at").$onUpdateFn(()=>sql`(current_timestamp)`),
-  deletedAt: text("deleted_at"),
-
+export const exsampleTable = sqliteTable("exsample", {
+  // 共通カラム
+  // ...baseColumns,
+  ...baseCacheColumns,
+  // 各テーブルで必要に応じて定義するカラム
   sampleInt: integer("sample_int"),
   sampleFloat: real("sample_float"),
   sampleText: text("sample_text"),
@@ -18,4 +16,4 @@ export const sample = sqliteTable("sample", {
 
 });
 
-// export type DBSample = typeof sample.$inferSelect;
+export type DBExsample = typeof exsampleTable.$inferSelect;
