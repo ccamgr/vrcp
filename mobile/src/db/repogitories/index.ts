@@ -1,4 +1,3 @@
-export * from "./favoriteGroups";
 export * from "./logs";
 export * from "./worlds";
 export * from "./users";
