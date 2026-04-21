@@ -1,38 +1,39 @@
 import { QueryClient } from "@tanstack/react-query";
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import { MMKV } from "react-native-mmkv";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { PersistQueryClientProviderProps } from "@tanstack/react-query-persist-client";
+import AsyncStorage from "expo-sqlite/kv-store";
 
-const storage = new MMKV();
+const STORAGE_KEY = "TANSTACK_STATE_CACHE";
 
-const clientStorage = {
-  setItem: (key: string, value: string) => storage.set(key, value),
-  getItem: (key: string) => storage.getString(key) ?? null,
-  removeItem: (key: string) => storage.delete(key),
+// 1. 公式 Persister が期待するインターフェースに合わせるための Shim
+const storageShim = {
+  getItem: (key: string) => AsyncStorage.getItemAsync(key),
+  setItem: (key: string, value: string) => AsyncStorage.setItemAsync(key, value),
+  removeItem: (key: string) => { AsyncStorage.removeItemAsync(key); },
 };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // 24 hours
       staleTime: 1000 * 60 * 60 * 24,
-      // 7 days
       gcTime: 1000 * 60 * 60 * 24 * 7,
     },
   },
 });
 
-export const persister = createSyncStoragePersister({
-  storage: clientStorage,
+// 2. 公式のファクトリ関数を使用して Persister を作成
+export const persister = createAsyncStoragePersister({
+  storage: storageShim,
+  key: STORAGE_KEY,
+  throttleTime: 1000,
 });
 
-// Persistence logic
-export const persistOptions = {
+export const persistOptions: PersistQueryClientProviderProps["persistOptions"] = {
   persister,
   dehydrateOptions: {
-    shouldDehydrateQuery: (query: any) => {
-      const [namespace, type] = query.queryKey as string[];
-      // Only persist queries that match ["vrc", "state", ...]
-      return namespace === "vrc" && type === "state";
+    shouldDehydrateQuery: (query) => {
+      const [key0, key1] = query.queryKey as string[];
+      return key0 === "vrc" && key1 === "state";
     },
   },
 };

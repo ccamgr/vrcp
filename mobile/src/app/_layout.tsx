@@ -11,7 +11,6 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { use, useCallback, useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from 'expo-splash-screen';
@@ -25,7 +24,12 @@ import { db, cacheManager } from "@/db";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
+// tanstack
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { persistOptions, queryClient } from "@/lib/queryClient";
+
 import '@/i18n'; // i18n 初期化
+
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
@@ -53,8 +57,6 @@ function RootLayout() {
 }
 
 export default function Root() {
-
-  const queryClient = new QueryClient();
   const cs = useColorScheme();
   const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
   const auth = useAuth();
@@ -75,7 +77,7 @@ export default function Root() {
   return (
     <LogProvider>
       <SettingProvider>
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <VRChatProvider>
             <AuthProvider>
               <CacheProvider>
@@ -102,7 +104,7 @@ export default function Root() {
               </CacheProvider>
             </AuthProvider>
           </VRChatProvider>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
       </SettingProvider>
     </LogProvider>
   );

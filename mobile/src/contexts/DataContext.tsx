@@ -16,8 +16,8 @@ import { PipelineContent, PipelineMessage, PipelineType } from "@/generated/vrcp
 import { convertToLimitedUserFriend } from "@/lib/vrchat";
 import { useCache } from "./CacheContext";
 import { useSetting } from "./SettingContext";
-import Storage from "expo-sqlite/kv-store";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import StorageWrapper from "@/lib/wrappers/storageWrapper";
 
 
 // Store Common VRCAPI Data Globally
@@ -188,7 +188,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
 
   // restore past pipeline messages from storage
   useEffect(() => {
-    Storage.getItem("data_lastPipeMsgs")
+    StorageWrapper.getItemAsync("data_lastPipeMsgs")
       .then((v) => {
         if (v) {
           const msgs = JSON.parse(v) as PipelineMessage[];
@@ -202,7 +202,7 @@ const DataProvider: React.FC<{ children?: React.ReactNode }> = ({
   const storeLastPipelineMessages = async (msg: PipelineMessage) => {
     const newMsgs = [msg, ...pipelineMessages].slice(0, settings.pipelineOptions_keepMsgNum);
     setPipelineMessages(newMsgs);
-    Storage.setItem("data_lastPipeMsgs", JSON.stringify(newMsgs))
+    StorageWrapper.setItemAsync("data_lastPipeMsgs", JSON.stringify(newMsgs))
       .catch(console.error);
   };
 

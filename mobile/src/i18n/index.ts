@@ -1,7 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
-import { Storage } from "expo-sqlite/kv-store";
 import { format, Locale } from 'date-fns';
 
 // Import translation files
@@ -18,6 +17,7 @@ import zhTW_translate from './locales/zh-TW.json';
 // Import date-fns locales
 import { de, enGB, enUS, ja, ko, ru, zhCN, zhTW } from 'date-fns/locale';
 import { ResourceLanguage } from 'i18next';
+import StorageWrapper from '@/lib/wrappers/storageWrapper';
 
 
 // https://en.wikipedia.org/wiki/IETF_language_tag
@@ -43,14 +43,14 @@ export const translateResources: { [key: LanguageTag]: TranslateResource } = {
 
 
 export const setUserLanguage = async (lang: LanguageTag) => {
-  await Storage.setItemAsync(LANGUAGE_KEY, lang);
+  await StorageWrapper.setItemAsync(LANGUAGE_KEY, lang);
   await i18n.changeLanguage(lang);
 }
 export const getUserLanguage = async (): Promise<LanguageTag> => {
   return i18n.language
 }
 const initUserLanguage = async (): Promise<LanguageTag> => {
-  const storedLang = await Storage.getItemAsync(LANGUAGE_KEY);
+  const storedLang = await StorageWrapper.getItemAsync(LANGUAGE_KEY);
   const deviceLang = Localization.getLocales()[0]?.languageTag;
   if ((storedLang || deviceLang) in translateResources) {
     return storedLang || deviceLang;

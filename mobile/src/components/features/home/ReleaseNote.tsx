@@ -13,10 +13,14 @@ import { TouchableEx } from '@/components/CustomElements';
 export default function ReleaseNote() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [ open, setOpen ] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    setOpen(isNewVersion());
+    isNewVersion().then((isNew) => {
+      if (isNew) {
+        setOpen(true);
+      }
+    });
     // setOpen(true);
   }, []);
 

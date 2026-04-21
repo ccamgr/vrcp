@@ -10,11 +10,11 @@ import { getStatusColor } from "@/lib/vrchat";
 import { UserStatus } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import StorageWrapper from "@/lib/wrappers/storageWrapper";
 
 const CONFIRMED_KEY = "confirmed_at_first_v1";
 
@@ -27,7 +27,7 @@ const ConfirmAtFirstDialog = () => {
   useEffect(() => {
     const checkConfirmed = async () => {
       try {
-        const value = await AsyncStorage.getItem(CONFIRMED_KEY);
+        const value = await StorageWrapper.getItemAsync(CONFIRMED_KEY);
         if (value !== "true") {
           setOpen(true);
         }
@@ -41,7 +41,7 @@ const ConfirmAtFirstDialog = () => {
 
   const handleConfirm = async () => {
     try {
-      await AsyncStorage.setItem(CONFIRMED_KEY, "true");
+      await StorageWrapper.setItemAsync(CONFIRMED_KEY, "true");
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to save confirmation status.");
@@ -61,7 +61,7 @@ const ConfirmAtFirstDialog = () => {
       showCloseButton={false}
       buttonItems={footerButtons}
       open={open}
-      // onClose={() => {}}
+    // onClose={() => {}}
     >
       <View style={styles.container}>
 

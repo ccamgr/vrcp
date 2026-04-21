@@ -1,7 +1,6 @@
 import { extractErrMsg } from "@/lib/utils";
 import { AuthenticationApi } from "@/generated/vrcapi";
 import { router } from "expo-router";
-import Storage from "expo-sqlite/kv-store";
 import * as SecureStore from "expo-secure-store";
 import {
   createContext,
@@ -14,6 +13,7 @@ import {
 } from "react";
 import { useVRChat } from "./VRChatContext";
 import { routeToHome, routeToIndex } from "@/lib/route";
+import StorageWrapper from "@/lib/wrappers/storageWrapper";
 
 type AuthUser = {
   id?: string;
@@ -89,9 +89,9 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       } else if (res.data.id) {
         console.log("Login successful");
         // save user data to storage
-        Storage.setItem("auth_user_id", res.data.id);
-        Storage.setItem("auth_user_displayName", res.data.displayName);
-        Storage.setItem("auth_user_icon", res.data.userIcon);
+        StorageWrapper.setItemAsync("auth_user_id", res.data.id);
+        StorageWrapper.setItemAsync("auth_user_displayName", res.data.displayName);
+        StorageWrapper.setItemAsync("auth_user_icon", res.data.userIcon);
 
         if (param.saveSecret) {
           SecureStore.setItemAsync("auth_secret_username", param.username);
@@ -153,7 +153,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
           const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
           if (tfaCookie) {
             // [ToDo] use SecureStore of expo
-            Storage.setItem("auth_2faCookie", tfaCookie);
+            StorageWrapper.setItemAsync("auth_2faCookie", tfaCookie);
           }
           setIsLoading(false);
           return "success";
@@ -183,13 +183,13 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     }
     vrc.unConfigure();
     // logout logic
-    Storage.removeItem("auth_user_id");
-    Storage.removeItem("auth_user_displayName");
-    Storage.removeItem("auth_user_icon");
+    await StorageWrapper.removeItemAsync("auth_user_id");
+    await StorageWrapper.removeItemAsync("auth_user_displayName");
+    await StorageWrapper.removeItemAsync("auth_user_icon");
 
     // [ToDo] use SecureStore of expo
-    SecureStore.deleteItemAsync("auth_authCookie");
-    SecureStore.deleteItemAsync("auth_2faCookie");
+    await SecureStore.deleteItemAsync("auth_authCookie");
+    await SecureStore.deleteItemAsync("auth_2faCookie");
     setUser(undefined);
     setIsLoading(false);
     routeToIndex(); // navigate to index after logout
@@ -214,9 +214,9 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       }); // configure VRChat client with past data
       const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
       const storedData = await Promise.all([
-        Storage.getItem("auth_user_id"),
-        Storage.getItem("auth_user_displayName"),
-        Storage.getItem("auth_user_icon"),
+        StorageWrapper.getItemAsync("auth_user_id"),
+        StorageWrapper.getItemAsync("auth_user_displayName"),
+        StorageWrapper.getItemAsync("auth_user_icon"),
 
         SecureStore.getItemAsync("auth_authCookie"),
         SecureStore.getItemAsync("auth_2faCookie"),
