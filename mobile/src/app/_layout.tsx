@@ -23,10 +23,15 @@ import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { LogProvider } from "@/contexts/LogContext";
 import { registerBackgroundTaskAsync } from "@/tasks/taskregister";
 
+import { db, cacheManager } from "@/db";
+import migrations from "@/db/migration/migrations";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
 
 function RootLayout() {
+  const { success, error } = useMigrations(db, migrations);
   const auth = useAuth();
   useEffect(() => {
     if (!auth.isLoading) {

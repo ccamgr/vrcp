@@ -4,7 +4,7 @@ import CardViewInstance from "@/components/view/item-CardView/CardViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useData } from "@/contexts/DataContext";
-import { usersTable } from "@/db/schema";
+import { usersTable } from "@/db/schema/schema";
 import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/lib/funcs/calcFriendLocations";
 import { routeToInstance, routeToUser } from "@/lib/route";
@@ -34,30 +34,30 @@ export default function FriendLocations() {
       .finally(() => setIsLoading(false));
   };
 
-  const {instances, unlocatableFriends} = useMemo(() => {
+  const { instances, unlocatableFriends } = useMemo(() => {
     return calcFriendsLocations(friends.data, favorites.data, false, true);
   }, [friends.data, favorites.data]);
 
 
   const renderInstItem = useCallback(({ item, index }: { item: InstanceLike[], index: number }) => (
-      <View style={styles.chunk}>
+    <View style={styles.chunk}>
       {item.map((instance: InstanceLike) => (
         <CardViewInstance key={instance.id} instance={instance} style={styles.cardView} onPress={() => routeToInstance(instance.worldId, instance.instanceId)} />
       ))}
-      </View>
-    ), []);
+    </View>
+  ), []);
   const renderUnlocItem = useCallback(({ item, index }: { item: LimitedUserFriend[], index: number }) => (
-      <View style={styles.chunk}>
+    <View style={styles.chunk}>
       {item.map((friend: LimitedUserFriend) => (
         <TouchableEx key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)}  >
           <UserOrGroupChip data={friend} />
         </TouchableEx>
       ))}
-      </View>
-    ), []);
+    </View>
+  ), []);
   const renderSecHeader = useCallback(({ section: { title } }: { section: { title: string } }) => (
-    <View style={[styles.sectionHeader, {borderBottomColor: theme.colors.border}]}>
-      <Text style={{fontWeight: "bold", color: theme.colors.text}}>{title}</Text>
+    <View style={[styles.sectionHeader, { borderBottomColor: theme.colors.border }]}>
+      <Text style={{ fontWeight: "bold", color: theme.colors.text }}>{title}</Text>
     </View>
   ), [theme.colors.border, theme.colors.text]);
 

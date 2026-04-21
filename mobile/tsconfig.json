@@ -9,7 +9,7 @@
       "@modules/*": [ // Alias for custom-modules
         "./modules/*",
       ]
-    },  
+    },
     "resolveJsonModule": true,
   },
   "include": [
@@ -17,6 +17,8 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "src/db/migration/**/*"
+    "src/db/migration/*",
+    "src/db/schema/.exampleSchema.ts",
+    "src/db/repogitories/.exampleRepo.ts"
   ],
 }

@@ -32,8 +32,7 @@ gen-vrcpipe: # generate the vrcpipe types from websocket spec
 .PHONY : migrate/generate
 migrate/generate:  # generate migration files based on schema changes
 	@npx drizzle-kit generate
-	@echo "Migration .sql files generated in src/db/migration/drizzle-kit"
-	@npx tsx ./src/db/migration/gen-migration.ts
+	@echo "Migration .sql files generated in src/db/migration"
 
 .PHONY : version-bump/ota version-bump/major version-bump/minor version-bump/patch
 version-bump/major:  # generate draft of versions.json with major bump

@@ -1,6 +1,6 @@
 import { createBaseRepository } from "./_baseRepo";
 import { db } from "../index";
-import { exsampleTable } from "../schema/_exampleSchema";
+import { exsampleTable } from "../schema/.exampleSchema";
 import { eq } from "drizzle-orm";
 
 export const exampleRepo = {

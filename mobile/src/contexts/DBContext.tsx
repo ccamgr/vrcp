@@ -3,7 +3,7 @@ import * as sqlite from "expo-sqlite";
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { SQLiteColumn, SQLiteInsertValue, sqliteTable, SQLiteTableWithColumns, SQLiteUpdateSetSource, TableConfig } from "drizzle-orm/sqlite-core";
 import { and, eq, like, not, sql, SQL } from "drizzle-orm";
-import { avatarsTable, favoriteGroupsTable, groupsTable, logsTable, usersTable, worldsTable } from "@/db/schema";
+import { avatarsTable, favoriteGroupsTable, groupsTable, logsTable, usersTable, worldsTable } from "@/db/schema/schema";
 import { migrations } from "@/db/migration";
 import Storage from "expo-sqlite/kv-store";
 
