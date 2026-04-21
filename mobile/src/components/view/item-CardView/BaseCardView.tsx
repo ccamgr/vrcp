@@ -1,6 +1,6 @@
 import { TouchableEx } from "@/components/CustomElements";
 import { fontSize, radius, spacing } from "@/configs/styles";
-import { CachedImage } from "@/contexts/CacheContext";
+import CachedImage from "@/components/CachedImage";
 import { omitObject } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";

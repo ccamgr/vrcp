@@ -3,7 +3,6 @@ import { TouchableEx } from "@/components/CustomElements";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
@@ -14,6 +13,7 @@ import { TextInput } from "react-native-gesture-handler";
 import DraggableFlatListItem from "@/components/view/DraggableFlatListItem";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 interface Props {
   open: boolean;
@@ -25,7 +25,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { currentUser } = useData();
+  const currentUser = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const [bioLinks, setBioLinks] = useState<string[]>([]);
@@ -41,7 +41,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
           bioLinks: bioLinks,
         },
       });
-      currentUser.fetch();
+      currentUser.refetch();
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update bio links.");
@@ -71,10 +71,10 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   return (
     <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
       {isLoading && <LoadingIndicator absolute />}
-      { currentUser.data && (
+      {currentUser.data && (
         <View style={styles.container}>
           <TextInput
-            style={[globalStyles.input, styles.input, {backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border}]}
+            style={[globalStyles.input, styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
             defaultValue=""
             placeholder={t("components.changeBioLinksModal.placeholder")}
             placeholderTextColor={theme.colors.text + "99"}

@@ -1,8 +1,8 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import { MenuItem } from "@/components/layout/type";
 import { spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { Notification } from "@/generated/vrcapi";
+import { useNotifications } from "@/hooks/vrc/useNotifications";
 import { extractNotificationContent } from "@/lib/funcs/extractNotificationContent";
 import { useTheme } from "@react-navigation/native";
 import { useCallback } from "react";
@@ -15,9 +15,9 @@ import { FlatList } from "react-native-gesture-handler";
 export default function Notifications() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { notifications } = useData();
+  const { data: notifications } = useNotifications();
 
-  const renderItem = useCallback(({item} : { item: Notification}) => {
+  const renderItem = useCallback(({ item }: { item: Notification }) => {
     const { title, contents } = extractNotificationContent(item)
     return (
       <View style={styles.notifications}>
@@ -40,7 +40,7 @@ export default function Notifications() {
     <GenericScreen >
       <View style={styles.container} >
         <FlatList
-          data={notifications.data}
+          data={notifications}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           ListEmptyComponent={emptyComponent}

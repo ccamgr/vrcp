@@ -3,7 +3,6 @@ import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getTintedColor } from "@/lib/utils";
@@ -14,6 +13,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useFavoriteGroups } from "@/hooks/vrc/useFavoriteGroups";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
 
 interface Props {
   open: boolean;
@@ -28,24 +29,25 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const {favoriteGroups, favorites} = useData();
+  const favoriteGroups = useFavoriteGroups();
+  const favorites = useFavorites();
   const [isLoading, setIsLoading] = useState(false);
 
   const [groups, setGroups] = useState<FavoriteGroup[]>([]);
   const [group, setGroup] = useState<FavoriteGroup | null>(null);
 
 
-  const getInitial = (): {group: FavoriteGroup | null, groups: FavoriteGroup[]} => {
-    if (!item) return {group: null, groups: []};
-    const groups = favoriteGroups.data.filter(g => g.type == type).sort((a,b) => a.name.localeCompare(b.name));
-    const fav = favorites.data.find((fav) => fav.favoriteId === item.id);
+  const getInitial = (): { group: FavoriteGroup | null, groups: FavoriteGroup[] } => {
+    if (!item) return { group: null, groups: [] };
+    const groups = favoriteGroups.data?.filter(g => g.type == type).sort((a, b) => a.name.localeCompare(b.name));
+    const fav = favorites.data?.find((fav) => fav.favoriteId === item.id);
     if (fav) {
-      const group = groups.find((g) => fav.tags.includes(g.name));
-      if (group) {
-        return {group, groups};
+      const group = groups?.find((g) => fav.tags.includes(g.name));
+      if (group && groups) {
+        return { group, groups };
       }
     }
-    return {group: null, groups};
+    return { group: null, groups: [] };
   };
 
   const handleSubmitChange = async () => {
@@ -77,7 +79,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
 
   useEffect(() => {
     if (!open) return;
-    const {group, groups} = getInitial();
+    const { group, groups } = getInitial();
     setGroups(groups);
     setGroup(group);
   }, [open]);
@@ -102,16 +104,16 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       {groups.map((g) => (
         <View key={g.id}>
           <TouchableEx onPress={() => setGroup(g)}>
-            <View style={[styles.group, {backgroundColor: theme.colors.card}, group?.id == g.id && {borderColor: theme.colors.primary}]}>
-              <Text style={[g.displayName.length ? {color: theme.colors.text} : { fontStyle: "italic", color: theme.colors.subText }]}>{g.displayName.length > 0 ? g.displayName : "*No Name*"}</Text>
+            <View style={[styles.group, { backgroundColor: theme.colors.card }, group?.id == g.id && { borderColor: theme.colors.primary }]}>
+              <Text style={[g.displayName.length ? { color: theme.colors.text } : { fontStyle: "italic", color: theme.colors.subText }]}>{g.displayName.length > 0 ? g.displayName : "*No Name*"}</Text>
             </View>
           </TouchableEx>
         </View>
       ))}
       {/* remove */}
       <TouchableEx onPress={() => setGroup(null)}>
-        <View style={[styles.group, {backgroundColor: getTintedColor(theme.colors.error)}, group === null && {borderColor: theme.colors.error}]}>
-          <Text style={[{color: theme.colors.text}]}>{t("components.changeFavoriteModal.button_unselect")}</Text>
+        <View style={[styles.group, { backgroundColor: getTintedColor(theme.colors.error) }, group === null && { borderColor: theme.colors.error }]}>
+          <Text style={[{ color: theme.colors.text }]}>{t("components.changeFavoriteModal.button_unselect")}</Text>
         </View>
       </TouchableEx>
     </GenericModal>

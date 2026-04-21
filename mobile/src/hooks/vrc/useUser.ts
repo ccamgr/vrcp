@@ -63,11 +63,13 @@ export const useUser = (userId?: string) => {
     staleTime: EXPIRATION,
     networkMode: 'offlineFirst',
   });
-
-  const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+  const refetch = async () => {
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    query.refetch();
+  };
   const setUser = (updater: (prev: User | undefined) => User) => {
     queryClient.setQueryData<User>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setUser };
+  return { ...query, refetch, setUser };
 };

@@ -5,7 +5,6 @@ import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { navigationBarHeight, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { routeToAvatar, routeToUser, routeToWorld } from "@/lib/route";
@@ -23,51 +22,57 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { useFavoriteGroups } from "@/hooks/vrc/useFavoriteGroups";
+import { useFavWorlds } from "@/hooks/vrc/useFavWorlds";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useFriends } from "@/hooks/vrc/useFriends";
+import { useFavAvatars } from "@/hooks/vrc/useFavAvatars";
+import { useFavFriends } from "@/hooks/vrc/useFavFriends";
 
 export default function Favorites() {
   const vrc = useVRChat();
   const { t } = useTranslation();
   const theme = useTheme();
   const { showToast } = useToast();
-  const { favoriteGroups } = useData();
+  const { data: favoriteGroups } = useFavoriteGroups();
 
   const MaterialTab = createMaterialTopTabNavigator();
 
   const favoriteGroupsMap = useMemo(
     () => ({
-      worlds: favoriteGroups.data
-        .filter((group) => group.type === "world")
-        .sort((a, b) => a.name.localeCompare(b.name)),
-      friends: favoriteGroups.data
-        .filter((group) => group.type === "friend")
-        .sort((a, b) => a.name.localeCompare(b.name)),
-      avatars: favoriteGroups.data
-        .filter((group) => group.type === "avatar")
-        .sort((a, b) => a.name.localeCompare(b.name)),
+      worlds: favoriteGroups
+        ?.filter((group) => group.type === "world")
+        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+      friends: favoriteGroups
+        ?.filter((group) => group.type === "friend")
+        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+      avatars: favoriteGroups
+        ?.filter((group) => group.type === "avatar")
+        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
     }),
-    [favoriteGroups.data]
+    [favoriteGroups]
   );
 
   const WorldsTab = () => {
-    const { favWorlds: worldsData, favorites } = useData();
+    const { data: favorites } = useFavorites();
+    const { data: favWorlds, refetch } = useFavWorlds();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null
     );
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const favWorldMap = useMemo(
-      () => new Map(favorites.data
-        .filter((fvrt) => selectedGroup &&
-          fvrt.type === "world" &&
-          fvrt.tags.includes(selectedGroup.name)
-        )
-        .map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites.data]
+      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
+        fvrt.type === "world" &&
+        fvrt.tags.includes(selectedGroup.name)
+      )
+        ?.map((fvrt) => [fvrt.favoriteId, true])
+      ), [selectedGroup, favorites]
     );
 
-    const worlds = useMemo(() => worldsData.data.filter(
+    const worlds = useMemo(() => favWorlds?.filter(
       (w) => favWorldMap.has(w.id)
-    ), [worldsData.data, favWorldMap]);
+    ), [favWorlds, favWorldMap]);
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.worlds[0] || null);
@@ -75,8 +80,7 @@ export default function Favorites() {
 
     const refresh = () => {
       setIsLoading(true);
-      worldsData
-        .fetch()
+      refetch()
         .catch((e) => showToast("error", "Error refreshing favorite worlds", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };
@@ -116,7 +120,8 @@ export default function Favorites() {
     );
   };
   const FriendsTab = () => {
-    const { friends: friendsData, favorites } = useData();
+    const { data: favorites } = useFavorites();
+    const { data: favFriends, refetch } = useFavFriends();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null
     );
@@ -124,18 +129,17 @@ export default function Favorites() {
 
 
     const favFriendMap = useMemo(
-      () => new Map(favorites.data
-        .filter((fvrt) => selectedGroup &&
-          fvrt.type === "friend" &&
-          fvrt.tags.includes(selectedGroup.name)
-        )
+      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
+        fvrt.type === "friend" &&
+        fvrt.tags.includes(selectedGroup.name)
+      )
         .map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites.data]
+      ), [selectedGroup, favorites]
     );
 
-    const friends = useMemo(() => friendsData.data.filter(
+    const friends = useMemo(() => favFriends?.filter(
       (f) => favFriendMap.has(f.id)
-    ), [friendsData.data, favFriendMap]);
+    ), [favFriends, favFriendMap]);
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.friends[0] || null);
@@ -143,8 +147,7 @@ export default function Favorites() {
 
     const refresh = () => {
       setIsLoading(true);
-      friendsData
-        .fetch()
+      refetch()
         .catch((e) => showToast("error", "Error refreshing favorite friends", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };
@@ -184,7 +187,8 @@ export default function Favorites() {
     );
   };
   const AvatarsTab = () => {
-    const { favAvatars: avatarsData, favorites } = useData();
+    const { data: favorites } = useFavorites();
+    const { data: favAvatars, refetch } = useFavAvatars();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null
     );
@@ -192,18 +196,17 @@ export default function Favorites() {
 
 
     const favAvatarMap = useMemo(
-      () => new Map(favorites.data
-        .filter((fvrt) => selectedGroup &&
-          fvrt.type === "avatar" &&
-          fvrt.tags.includes(selectedGroup.name)
-        )
+      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
+        fvrt.type === "avatar" &&
+        fvrt.tags.includes(selectedGroup.name)
+      )
         .map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites.data]
+      ), [selectedGroup, favorites]
     );
 
-    const avatars = useMemo(() => avatarsData.data.filter(
+    const avatars = useMemo(() => favAvatars?.filter(
       (a) => favAvatarMap.has(a.id)
-    ), [avatarsData.data, selectedGroup]);
+    ), [favAvatars, favAvatarMap]);
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.avatars[0] || null);
@@ -211,8 +214,7 @@ export default function Favorites() {
 
     const refresh = () => {
       setIsLoading(true);
-      avatarsData
-        .fetch()
+      refetch()
         .catch((e) => showToast("error", "Error refreshing favorite avatars", extractErrMsg(e)))
         .finally(() => setIsLoading(false));
     };

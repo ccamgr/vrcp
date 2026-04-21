@@ -3,7 +3,6 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getStatusColor } from "@/lib/vrchat";
@@ -14,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 interface Props {
   open: boolean;
@@ -25,7 +25,7 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { currentUser } = useData();
+  const currentUser = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const [bio, setBio] = useState<string>("");
@@ -41,7 +41,7 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
           bio: bio,
         },
       });
-      currentUser.fetch();
+      currentUser.refetch();
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update bio.");
@@ -71,7 +71,7 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
   return (
     <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
       {isLoading && <LoadingIndicator absolute />}
-      { currentUser.data && (
+      {currentUser.data && (
         <View style={styles.container}>
           <TextInput
             style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}

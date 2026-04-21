@@ -1,15 +1,14 @@
 import { fontSize, spacing } from "@/configs/styles";
 import { LimitedUserInstance } from "@/generated/vrcapi";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import BaseCardView from "./BaseCardView";
-import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
-import { useCache } from "@/contexts/CacheContext";
+import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString } from "@/lib/vrchat";
 import UserOrGroupChip from "../chip-badge/UserOrGroupChip";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
+import { useWorld } from "@/hooks/vrc/useWorld";
 
 interface Props {
   instance: InstanceLike;
@@ -18,60 +17,40 @@ interface Props {
   [key: string]: any;
 }
 
-const extractImageUrl = (data: InstanceLike) => {
-  const url = data?.world?.thumbnailImageUrl ?? data?.world?.imageUrl;
-  if (url && url.length > 0) return url;
-  return "";
+const extractImageUrl = (data: InstanceLike, world?: any) => {
+  const url = data?.world?.thumbnailImageUrl ?? data?.world?.imageUrl ?? world?.thumbnailImageUrl ?? world?.imageUrl;
+  return url && url.length > 0 ? url : "";
 };
-const extractTitle = (data: InstanceLike) => { // <instanceName> <worldName>
+
+const extractTitle = (data: InstanceLike, world?: any) => {
   const parsedInstance = parseInstanceId(data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId);
+  const worldName = data.world?.name ?? world?.name ?? "Unknown";
+
   if (parsedInstance) {
     const instType = getInstanceType(parsedInstance.type, parsedInstance.groupAccessType);
-    return `${instType} #${parsedInstance.name}\n${data.world?.name}`;
+    return `${instType} #${parsedInstance.name}\n${worldName}`;
   }
-  return data.world?.name ?? "Unknown";
+  return worldName;
 };
 
 const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) => {
-  const cache = useCache();
   const theme = useTheme();
   const { t } = useTranslation();
-  const [imageUrl, setImageUrl] = useState<string>(
-    extractImageUrl(instance)
-  );
-  const [title, setTitle] = useState<string>(
-    extractTitle(instance)
-  );
-  const fetchWorld = async () => {
-    if (instance.world) {
-      const url = extractImageUrl(instance);
-      const title = extractTitle(instance);
-      setImageUrl(url);
-      setTitle(title);
-    } else if (instance.worldId && instance.worldId.length > 0) {
-      const world = await cache.world.get(instance.worldId);
-      const title = extractTitle({ ...instance, world });
-      const url = extractImageUrl({ ...instance, world });
-      setImageUrl(url);
-      setTitle(title);
-    }
-  };
+
+  // 1. Fetch world data if it's not present in the instance object
+  // If instance.world already exists, we don't need to trigger the hook's fetch
+  const { data: fetchedWorld } = useWorld(instance.world ? undefined : instance.worldId);
+
+  // 2. Derive visual data using useMemo
+  const world = instance.world ?? fetchedWorld;
+
+  const imageUrl = useMemo(() => extractImageUrl(instance, world), [instance, world]);
+  const title = useMemo(() => extractTitle(instance, world), [instance, world]);
 
   const friends = useMemo(() => {
     const users = instance.users ?? [];
-    const friends = [] as LimitedUserInstance[];
-    users.forEach((user) => {
-      if (user.isFriend) {
-        friends.push(user);
-      }
-    });
-    return friends
+    return users.filter((user) => user.isFriend) as LimitedUserInstance[];
   }, [instance.users]);
-
-  useEffect(() => {
-    fetchWorld();
-  }, [instance.world]);
-
 
   return (
     <BaseCardView
@@ -92,12 +71,14 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
             style={styles.gradient}
           />
           <View style={styles.friendsContainer}>
-            {friends.slice(0, 3).map((friend)=> (
-              <UserOrGroupChip key={friend.id} data={friend} size={fontSize.large * 1.2} textSize={fontSize.medium}/>
+            {friends.slice(0, 3).map((friend) => (
+              <UserOrGroupChip key={friend.id} data={friend} size={fontSize.large * 1.2} textSize={fontSize.medium} />
             ))}
-            {friends.length > 3 &&
-              <Text style={[styles.moreText, { color: theme.colors.text }]}>{t("pages.home.friendLocation.more_friends_count", { count: friends.length - 3 })}</Text>
-            }
+            {friends.length > 3 && (
+              <Text style={[styles.moreText, { color: theme.colors.text }]}>
+                {t("pages.home.friendLocation.more_friends_count", { count: friends.length - 3 })}
+              </Text>
+            )}
           </View>
         </>
       }
@@ -115,7 +96,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: fontSize.large + fontSize.small + spacing.medium * 2,
     overflow: "hidden",
-    // borderColor: "blue", borderStyle: "dotted", borderWidth: 1,
   },
   gradient: {
     position: "absolute",

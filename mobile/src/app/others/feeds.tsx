@@ -1,7 +1,7 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import ListViewPipelineMessage from "@/components/view/item-ListView/ListViewPipelineMessage";
 import { spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
+import { usePipeline } from "@/contexts/PipelineContext";
 import { PipelineMessage } from "@/generated/vrcpipline/type";
 import { useTheme } from "@react-navigation/native";
 import { useCallback } from "react";
@@ -14,9 +14,9 @@ import { FlatList } from "react-native-gesture-handler";
 export default function Feeds() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { pipelineMessages } = useData();
+  const { messages } = usePipeline();
 
-  const renderItem = useCallback(({item} : { item: PipelineMessage}) => (
+  const renderItem = useCallback(({ item }: { item: PipelineMessage }) => (
     <ListViewPipelineMessage message={item} style={styles.feed} />
   ), []);
   const emptyComponent = useCallback(() => (
@@ -29,7 +29,7 @@ export default function Feeds() {
     <GenericScreen>
       <View style={styles.container} >
         <FlatList
-          data={pipelineMessages}
+          data={messages}
           keyExtractor={(item) => `${item.timestamp}-${item.type}`}
           renderItem={renderItem}
           ListEmptyComponent={emptyComponent}

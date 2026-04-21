@@ -7,7 +7,6 @@ import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import {
@@ -24,7 +23,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { routeToSearch, routeToUser } from "@/lib/route";
-import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -34,47 +32,37 @@ import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useWorld } from "@/hooks/vrc/useWorld";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useUser } from "@/hooks/vrc/useUser";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
-  const cache = useCache();
-  const data = useData();
   const { showToast } = useToast();
   const theme = useTheme();
-  const [world, setWorld] = useState<World>();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
-  const [author, setAuthor] = useState<User>();
   const [mode, setMode] = useState<"info" | "instance">("info");
+
+  const { data: world, refetch } = useWorld(id);
+  const { data: author } = useUser(world?.id ? world.authorId : undefined);
+  const { data: favorites, refetch: refetchFavorites } = useFavorites();
 
   const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
 
-  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "world");
+  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "world");
 
-  const fetchWorld = async () => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    cache.world.get(id, true)
-      .then(setWorld)
-      .catch((e) => showToast("error", "Error fetching user profile", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
-  };
 
   useEffect(() => {
-    fetchWorld();
+    refetch()
+      .catch((e) => showToast("error", "Error fetching world data", extractErrMsg(e)));
   }, []);
 
 
-  useEffect(() => {
-    if (!world?.authorId) return;
-    cache.user.get(world.authorId).then((u) => setAuthor(u)).catch((e) => {
-      showToast("error", "Error fetching author profile", extractErrMsg(e));
-    })
-  }, [world?.authorId])
 
   const formatAndSortInstances = (
     instances: any[][] | undefined
@@ -165,7 +153,7 @@ export default function WorldDetail() {
               refreshControl={
                 <RefreshControl
                   refreshing={isLoading}
-                  onRefresh={fetchWorld}
+                  onRefresh={refetch}
                 />
               }>
               <DetailItemContainer title={t("pages.detail_world.sectionLabel_platform")}>
@@ -234,7 +222,7 @@ export default function WorldDetail() {
               refreshControl={
                 <RefreshControl
                   refreshing={isLoading}
-                  onRefresh={fetchWorld}
+                  onRefresh={refetch}
                 />
               }
             />
@@ -252,7 +240,7 @@ export default function WorldDetail() {
         setOpen={setOpenChangeFavorite}
         item={world}
         type="world"
-        onSuccess={data.favorites.fetch}
+        onSuccess={refetchFavorites}
       />
     </GenericScreen>
   );

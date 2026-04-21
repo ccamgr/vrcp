@@ -3,9 +3,6 @@ import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import CardViewInstance from "@/components/view/item-CardView/CardViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
-import { usersTable } from "@/db/schema/schema";
-import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/lib/funcs/calcFriendLocations";
 import { routeToInstance, routeToUser } from "@/lib/route";
 import { InstanceLike } from "@/lib/vrchat";
@@ -17,6 +14,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { extractErrMsg } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
+import { useFriends } from "@/hooks/vrc/useFriends";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
 
 
 
@@ -24,19 +23,19 @@ export default function FriendLocations() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { friends, favorites } = useData();
+  const { data: friends, refetch } = useFriends();
+  const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const [isLoading, setIsLoading] = useState(false);
   const refresh = () => {
     setIsLoading(true);
-    friends
-      .fetch()
+    refetch()
       .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => setIsLoading(false));
   };
 
   const { instances, unlocatableFriends } = useMemo(() => {
-    return calcFriendsLocations(friends.data, favorites.data, false, true);
-  }, [friends.data, favorites.data]);
+    return calcFriendsLocations(friends ?? [], favorites ?? [], false, true);
+  }, [friends, favorites]);
 
 
   const renderInstItem = useCallback(({ item, index }: { item: InstanceLike[], index: number }) => (
@@ -87,7 +86,7 @@ export default function FriendLocations() {
   return (
     <GenericScreen>
       <View style={styles.container} >
-        {friends.isLoading && (<LoadingIndicator absolute />)}
+        {isLoading && (<LoadingIndicator absolute />)}
         <SectionList
           sections={sections}
           renderSectionHeader={renderSecHeader}

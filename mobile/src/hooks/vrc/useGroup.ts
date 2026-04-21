@@ -58,10 +58,13 @@ export const useGroup = (groupId?: string) => {
     networkMode: 'offlineFirst',
   });
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+  const refetch = async () => {
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    query.refetch();
+  };
   const setGroup = (updater: (prev: Group | undefined) => Group) => {
     queryClient.setQueryData<Group>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setGroup };
+  return { ...query, refetch, setGroup };
 };

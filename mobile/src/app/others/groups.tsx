@@ -16,12 +16,12 @@ import { Group, LimitedUserGroups, LimitedWorld, OrderOption, ReleaseStatus, Sor
 import { extractErrMsg } from "@/lib/utils";
 import { useLocalSearchParams } from "expo-router";
 import CardViewGroup from "@/components/view/item-CardView/CardViewGroup";
-import { useData } from "@/contexts/DataContext";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 export default function MyGroups() {
   const vrc = useVRChat();
   const theme = useTheme();
-  const { currentUser } = useData();
+  const { data: currentUser, refetch } = useCurrentUser();
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
@@ -38,10 +38,10 @@ export default function MyGroups() {
     fetchingRef.current = true;
     try {
       const r = await vrc.usersApi.getUserRepresentedGroup({
-        userId: currentUser.data?.id || "",
+        userId: currentUser?.id || "",
       })
       const res = await vrc.usersApi.getUserGroups({
-        userId: currentUser.data?.id || "",
+        userId: currentUser?.id || "",
       });
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data

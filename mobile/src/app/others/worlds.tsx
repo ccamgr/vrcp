@@ -14,7 +14,6 @@ import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import { routeToWorld } from "@/lib/route";
 import { LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
-import { useLocalSearchParams } from "expo-router";
 
 export default function MyWorlds() {
   const vrc = useVRChat();

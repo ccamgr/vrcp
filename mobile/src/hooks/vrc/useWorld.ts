@@ -58,10 +58,13 @@ export const useWorld = (worldId?: string) => {
     networkMode: 'offlineFirst',
   });
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+  const refetch = async () => {
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    query.refetch();
+  };
   const setWorld = (updater: (prev: World | undefined) => World) => {
     queryClient.setQueryData<World>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setWorld };
+  return { ...query, refetch, setWorld };
 };

@@ -4,7 +4,6 @@ import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { getFriendRequestStatus, getInstanceType, getUserIconUrl, getUserProfilePicUrl, parseLocationString } from "@/lib/vrchat";
@@ -15,7 +14,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { routeToInstance, routeToUserGroups, routeToUserWorlds } from "@/lib/route";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
-import { useData } from "@/contexts/DataContext";
 import ImagePreview from "@/components/view/ImagePreview";
 import { MenuItem } from "@/components/layout/type";
 import ChangeNoteModal from "@/components/modals/ChangeNoteModal";
@@ -28,19 +26,17 @@ import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useUser } from "@/hooks/vrc/useUser";
+import CachedImage from "@/components/CachedImage";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
-  const cache = useCache();
-  const data = useData();
   const { showToast } = useToast();
   const theme = useTheme();
-  const [user, setUser] = useState<User>();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const [locationInfo, setLocationInfo] = useState<{
     wId?: string;
     iId?: string;
@@ -57,16 +53,11 @@ export default function UserDetail() {
   const [openChangeFriend, setOpenChangeFriend] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
 
-  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "friend");
+  const { data: favorites, refetch: refetchFavorites } = useFavorites();
+  const { data: user, refetch, isFetching } = useUser(id);
 
-  const fetchUser = () => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    cache.user.get(id, true) // force latest data
-      .then(setUser)
-      .catch((e) => showToast("error", "Error fetching user profile", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
-  }
+  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "friend");
+
 
   const fetchLocationInfo = async () => {
     if (!user?.location) return;
@@ -112,7 +103,8 @@ export default function UserDetail() {
   };
 
   useEffect(() => {
-    fetchUser();
+    refetch()
+      .catch((e) => showToast("error", "Error fetching user data", extractErrMsg(e)));
   }, []);
 
   useEffect(() => {
@@ -198,8 +190,8 @@ export default function UserDetail() {
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
-                refreshing={isLoading}
-                onRefresh={fetchUser}
+                refreshing={isFetching}
+                onRefresh={refetch}
               />
             }
           >
@@ -298,20 +290,20 @@ export default function UserDetail() {
         open={openChangeNote}
         setOpen={setOpenChangeNote}
         user={user}
-        onSuccess={fetchUser}
+        onSuccess={refetch}
       />
       <ChangeFavoriteModal
         open={openChangeFavorite}
         setOpen={setOpenChangeFavorite}
         item={user}
         type="friend"
-        onSuccess={data.favorites.fetch}
+        onSuccess={refetchFavorites}
       />
       <ChangeFriendModal
         open={openChangeFriend}
         setOpen={setOpenChangeFriend}
         user={user}
-        onSuccess={fetchUser}
+        onSuccess={refetch}
       />
     </GenericScreen>
   );

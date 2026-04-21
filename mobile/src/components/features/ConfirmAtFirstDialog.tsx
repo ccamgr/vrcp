@@ -3,7 +3,6 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getStatusColor } from "@/lib/vrchat";

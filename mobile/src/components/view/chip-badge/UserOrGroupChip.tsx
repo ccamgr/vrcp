@@ -1,5 +1,4 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
-import { CachedImage } from "@/contexts/CacheContext";
 import { omitObject } from "@/lib/utils";
 import { getStatusColor, getTrustRankColor, getUserIconUrl, GroupLike, isGroupLike, UserLike } from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
@@ -8,6 +7,7 @@ import { StyleSheet, View } from "react-native";
 import IconSymbol from "../icon-components/IconView";
 import { useTheme } from "@react-navigation/native";
 import { SupportedIconNames } from "../icon-components/utils";
+import CachedImage from "@/components/CachedImage";
 
 
 interface Props {
@@ -27,7 +27,7 @@ const UserOrGroupChip = ({ data, icon, textSize, textColor, size = 32, IconStyle
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style", "IconStyle")}>
 
       {icon && (
-        <IconSymbol name={icon} size={size/2} style={styles.option} />
+        <IconSymbol name={icon} size={size / 2} style={styles.option} />
       )}
 
       <CachedImage
@@ -61,13 +61,13 @@ const styles = StyleSheet.create({
     marginLeft: spacing.mini,
     // borderColor: "red", borderStyle: "dotted", borderWidth: 1,
   },
-  icon : {
+  icon: {
     borderRadius: radius.all,
     borderWidth: 1.5,
     aspectRatio: 1,
     margin: spacing.small
   },
-  squareIcon : {
+  squareIcon: {
     borderRadius: radius.mini,
     borderWidth: 1.5,
     aspectRatio: 1,

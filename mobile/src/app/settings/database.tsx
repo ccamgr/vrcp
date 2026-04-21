@@ -2,7 +2,6 @@ import { ButtonEx } from "@/components/CustomElements";
 import GenericScreen from "@/components/layout/GenericScreen";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +12,6 @@ import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 export default function DatabaseSettings() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const cache = useCache();
   // const db = useDB();
 
   const [cacheInfo, setCacheInfo] = useState<{
@@ -26,12 +24,10 @@ export default function DatabaseSettings() {
   }>();
 
   const refleshCacheInfo = async () => {
-    const info = await cache.getCacheInfo();
-    setCacheInfo(info);
+    // setCacheInfo(info);
   };
   const clearCache = async () => {
     setCacheInfo(undefined);
-    await cache.clearCache();
     refleshCacheInfo();
   }
 
@@ -101,7 +97,7 @@ export default function DatabaseSettings() {
                   { color: theme.colors.text },
                 ]}
               >
-                {t("pages.setting_database.cache_size_and_count", {size: (cacheInfo.size / (1024 * 1024)).toFixed(2), count: cacheInfo.count})}
+                {t("pages.setting_database.cache_size_and_count", { size: (cacheInfo.size / (1024 * 1024)).toFixed(2), count: cacheInfo.count })}
               </Text>
               <ButtonEx
                 style={[globalStyles.button, { marginLeft: spacing.medium }]}

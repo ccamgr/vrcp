@@ -3,7 +3,6 @@ import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { CachedImage, useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { CalendarEvent } from "@/generated/vrcapi";
@@ -24,6 +23,7 @@ import IconSymbol from "@/components/view/icon-components/IconView";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useGroup } from "@/hooks/vrc/useGroup";
 
 export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,16 +31,15 @@ export default function EventDetail() {
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
-  const cache = useCache();
   const theme = useTheme();
   const { showToast } = useToast();
   const [event, setEvent] = useState<CalendarEvent>();
-  const [ownerGroup, setOwnerGroup] = useState<GroupLike>();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
   const [openJson, setOpenJson] = useState(false);
 
+  const { data: ownerGroup } = useGroup(groupId ?? "");
 
   const fetchEvent = () => {
     if (fetchingRef.current) return;
@@ -53,15 +52,8 @@ export default function EventDetail() {
       .catch((e) => showToast("error", "Error fetching event data", extractErrMsg(e)))
       .finally(() => fetchingRef.current = false);
   };
-  const fetchOwnerGroup = () => {
-    cache.group.get(groupId ?? "")
-      .then(setOwnerGroup)
-      .catch((e) => console.warn("Error fetching owner group data", extractErrMsg(e)));
-  };
-
   useEffect(() => {
     fetchEvent();
-    fetchOwnerGroup();
   }, []);
 
   const menuItems: MenuItem[] = useMemo(() => [

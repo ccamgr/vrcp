@@ -3,7 +3,6 @@ import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { Avatar, User } from "@/generated/vrcapi";
@@ -16,7 +15,6 @@ import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { getAuthorTags, getPlatform, getTrustRankColor } from "@/lib/vrchat";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
-import { useData } from "@/contexts/DataContext";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
 import { enableExperimentalWebImplementation, RefreshControl } from "react-native-gesture-handler";
@@ -27,46 +25,36 @@ import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useAvatar } from "@/hooks/vrc/useAvatar";
+import { useUser } from "@/hooks/vrc/useUser";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { showToast } = useToast();
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
-  const cache = useCache();
-  const data = useData();
   const theme = useTheme();
   const { t } = useTranslation();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
-  const [avatar, setAvatar] = useState<Avatar>();
-  const [author, setAuthor] = useState<User>();
 
   const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
   const [openChangeAvatar, setOpenChangeAvatar] = useState(false);
 
-  const isFavorite = data.favorites.data.some(fav => fav.favoriteId === id && fav.type === "avatar");
+  const { data: favorites, refetch: refetchFavorites } = useFavorites();
+  const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
+  const { data: avatar, refetch, isFetching } = useAvatar(id);
+  const { data: author } = useUser(avatar?.authorId);
 
-  const fetchAvatar = () => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    cache.avatar.get(id, true)
-      .then(setAvatar)
-      .catch((e) => showToast("error", "Error fetching avatar data", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
-  };
+  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "avatar");
+
 
   useEffect(() => {
-    fetchAvatar();
+    refetch()
+      .catch((e) => showToast("error", "Error fetching avatar data", extractErrMsg(e)));
   }, []);
 
-  useEffect(() => {
-    if (!avatar?.authorId) return;
-    cache.user.get(avatar.authorId).then((u) => setAuthor(u)).catch((e) => showToast("error", "Error fetching author data", extractErrMsg(e)));
-  }, [avatar?.authorId])
-
-
-  const isCurrentAvatar = data.currentUser.data?.currentAvatar === avatar?.id;
+  const isCurrentAvatar = currentUser?.currentAvatar === avatar?.id;
 
   const menuItems: MenuItem[] = useMemo(() => [
     {
@@ -76,13 +64,13 @@ export default function AvatarDetail() {
     },
     {
       type: "divider",
-      hidden: !isFavorite && avatar?.authorId !== data.currentUser.data?.id,
+      hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
     },
     {
       icon: isCurrentAvatar ? "tshirt-crew-outline" : "tshirt-crew",
       title: isCurrentAvatar ? t("pages.detail_avatar.menuLabel_avatar_nowUsing") : t("pages.detail_avatar.menuLabel_avatar_changeTo"),
       onPress: () => !isCurrentAvatar && setOpenChangeAvatar(true),
-      hidden: !isFavorite && avatar?.authorId !== data.currentUser.data?.id,
+      hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
     },
     {
       type: "divider",
@@ -94,7 +82,7 @@ export default function AvatarDetail() {
       onPress: () => setOpenJson(true),
       hidden: !enableJsonViewer,
     },
-  ], [isFavorite, isCurrentAvatar, avatar, enableJsonViewer, t, data.currentUser.data]);
+  ], [isFavorite, isCurrentAvatar, avatar, enableJsonViewer, t, currentUser?.id]);
 
   useSideMenu(menuItems);
 
@@ -107,8 +95,8 @@ export default function AvatarDetail() {
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
-                refreshing={isLoading}
-                onRefresh={fetchAvatar}
+                refreshing={isFetching}
+                onRefresh={refetch}
               />
             }
           >
@@ -158,13 +146,13 @@ export default function AvatarDetail() {
         setOpen={setOpenChangeFavorite}
         item={avatar}
         type="avatar"
-        onSuccess={data.favorites.fetch}
+        onSuccess={refetchFavorites}
       />
       <ChangeAvatarModal
         open={openChangeAvatar}
         setOpen={setOpenChangeAvatar}
         avatar={avatar}
-        onSuccess={data.currentUser.fetch}
+        onSuccess={refetchCurrentUser}
       />
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={avatar} />
     </GenericScreen>

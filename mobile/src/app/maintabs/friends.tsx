@@ -2,7 +2,6 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import ListViewUser from "@/components/view/item-ListView/ListViewUser";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { routeToUser } from "@/lib/route";
@@ -16,6 +15,8 @@ import { Text } from "@react-navigation/elements";
 import { sortFriendWithStatus } from "@/lib/funcs/sortFriendWithStatus";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { useFavFriends } from "@/hooks/vrc/useFavFriends";
+import { useFriends } from "@/hooks/vrc/useFriends";
 
 interface FriendsByState {
   online: LimitedUserFriend[];
@@ -25,7 +26,7 @@ interface FriendsByState {
 
 export default function Friends() {
   const theme = useTheme();
-  const { t } = useTranslation ();
+  const { t } = useTranslation();
   const MaterialTab = createMaterialTopTabNavigator();
 
   // separate loading with online,active and offline friend
@@ -68,32 +69,27 @@ export default function Friends() {
 
 const FavoriteFriendsTab = memo(() => {
   const theme = useTheme();
-  const { t } = useTranslation ();
+  const { t } = useTranslation();
   const { showToast } = useToast();
-  const { friends, favorites, favoriteGroups } = useData();
+  const { data: favFriends, refetch } = useFavFriends();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const refresh = () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
-    friends
-      .fetch()
+    refetch()
       .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => (fetchingRef.current = false));
   };
 
-  const friFavSet = useMemo<Map<string, string>>(() => {
-    const friFavs = favorites.data.filter((ff) => ff.type === "friend");
-    return new Map(friFavs.map((ff) => [ff.favoriteId, ff.tags.length ? ff.tags[0] : ""]));
-  }, [favorites.data]);
+
 
   const favoriteFriends = useMemo(() => {
-    const favFriends = friends.data.filter((f) => friFavSet.has(f.id));
-    const devided : FriendsByState = { online: [], active: [], offline: []};
+    const devided: FriendsByState = { online: [], active: [], offline: [] };
     favFriends.forEach(f => {
       const state = getState(f);
-      if(state === "online") devided.online.push(f);
-      else if(state === "active") devided.active.push(f);
+      if (state === "online") devided.online.push(f);
+      else if (state === "active") devided.active.push(f);
       else devided.offline.push(f);
     });
 
@@ -105,7 +101,7 @@ const FavoriteFriendsTab = memo(() => {
     };
 
     return sorted;
-  }, [friends.data, friFavSet]);
+  }, [favFriends]);
 
   const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (
     <ListViewUser
@@ -116,8 +112,8 @@ const FavoriteFriendsTab = memo(() => {
   ), []);
 
   const renderSecHeader = useCallback(({ section: { title } }: { section: { title: string } }) => (
-    <View style={[styles.sectionHeader, {borderBottomColor: theme.colors.border}]}>
-      <Text style={{fontWeight: "bold", color: theme.colors.text}}>{title}</Text>
+    <View style={[styles.sectionHeader, { borderBottomColor: theme.colors.border }]}>
+      <Text style={{ fontWeight: "bold", color: theme.colors.text }}>{title}</Text>
     </View>
   ), [theme.colors.border, theme.colors.text]);
 
@@ -142,24 +138,23 @@ const FavoriteFriendsTab = memo(() => {
   );
 });
 
-const StateFriendsTab = memo(({filterState}: {filterState: "online" | "active" | "offline"}) => {
-  const { friends } = useData();
+const StateFriendsTab = memo(({ filterState }: { filterState: "online" | "active" | "offline" }) => {
+  const { data: friends, refetch } = useFriends();
   const { showToast } = useToast();
   const fetchingRef = useRef(false);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const refresh = () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
-    friends
-      .fetch()
+    refetch()
       .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
       .finally(() => (fetchingRef.current = false));
   };
 
   const onlineFriends = useMemo(() => {
-    const unsorted = friends.data.filter((f) => getState(f) === filterState);
-    return sortFriendWithStatus(unsorted);
-  }, [friends.data, filterState]);
+    const unsorted = friends?.filter((f) => getState(f) === filterState);
+    return sortFriendWithStatus(unsorted ?? []);
+  }, [friends, filterState]);
 
 
   const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (

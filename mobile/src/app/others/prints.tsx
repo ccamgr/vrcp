@@ -15,14 +15,14 @@ import { FlatList } from "react-native-gesture-handler";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { OrderOption, Print, SortOption } from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
-import { useData } from "@/contexts/DataContext";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 export default function Prints() {
   const vrc = useVRChat();
   const theme = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { currentUser } = useData();
+  const { data: currentUser } = useCurrentUser();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions_cardViewColumns;
   const NumPerReq = 50;
@@ -40,7 +40,7 @@ export default function Prints() {
       if (fetchingRef.current || offset.current < 0) return;
       fetchingRef.current = true;
       const res = await vrc.printsApi.getUserPrints({
-        userId: currentUser.data?.id || "",
+        userId: currentUser?.id || "",
       }, {
         // API仕様にはないがoffsetとnを指定できるっぽい
         params: {

@@ -65,10 +65,13 @@ export const useAvatar = (avatarId?: string) => {
     networkMode: 'offlineFirst',
   });
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+  const refetch = async () => {
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    query.refetch();
+  };
   const setAvatar = (updater: (prev: Avatar | undefined) => Avatar) => {
     queryClient.setQueryData<Avatar>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setAvatar };
+  return { ...query, refetch, setAvatar };
 };

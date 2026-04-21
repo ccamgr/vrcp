@@ -3,7 +3,6 @@ import CardViewInstance from "@/components/view/item-CardView/CardViewInstance";
 import ListViewPipelineMessage from "@/components/view/item-ListView/ListViewPipelineMessage";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/lib/funcs/calcFriendLocations";
@@ -22,6 +21,8 @@ import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
 import ReleaseNote from "@/components/features/home/ReleaseNote";
 import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
+import { usePipeline } from "@/contexts/PipelineContext";
+import { useFavFriends } from "@/hooks/vrc/useFavFriends";
 
 export default function Home() {
   const theme = useTheme();
@@ -77,7 +78,7 @@ export default function Home() {
 const FeedArea = memo(({ style }: { style?: any }) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { pipelineMessages } = useData();
+  const { messages } = usePipeline();
 
   const renderItem = useCallback(({ item }: { item: PipelineMessage }) => (
     <ListViewPipelineMessage message={item} style={styles.feed} />
@@ -94,7 +95,7 @@ const FeedArea = memo(({ style }: { style?: any }) => {
       style={style}
     >
       <FlatList
-        data={pipelineMessages}
+        data={messages}
         keyExtractor={(item) => `${item.timestamp}-${item.type}`}
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
@@ -107,11 +108,11 @@ const FeedArea = memo(({ style }: { style?: any }) => {
 const FriendLocationArea = memo(({ style }: { style?: any }) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { friends, favorites } = useData();
+  const { data: favFriends, refetch, isFetching } = useFavFriends();
 
   const instances = useMemo<InstanceLike[]>(() => {
-    return calcFriendsLocations(friends.data, favorites.data, true, false);
-  }, [friends.data, favorites.data]);
+    return calcFriendsLocations(favFriends, [], true, false);
+  }, [favFriends]);
 
   const renderItem = useCallback(({ item }: { item: InstanceLike }) => (
     <CardViewInstance instance={item} style={styles.cardView} onPress={() => routeToInstance(item.worldId, item.instanceId)} />
@@ -133,8 +134,8 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={2}
-        onRefresh={friends.fetch}
-        refreshing={friends.isLoading}
+        onRefresh={refetch}
+        refreshing={isFetching}
       />
     </SeeMoreContainer>
   );

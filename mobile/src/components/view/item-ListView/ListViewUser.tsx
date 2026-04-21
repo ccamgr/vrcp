@@ -1,5 +1,4 @@
 import { radius, spacing } from "@/configs/styles";
-import { CachedImage, useCache } from "@/contexts/CacheContext";
 import {
   getInstanceType,
   getStatusColor,
@@ -10,30 +9,37 @@ import {
 } from "@/lib/vrchat";
 import { World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import BaseListView from "./BaseListView";
-import { useToast } from "@/contexts/ToastContext";
+import CachedImage from "@/components/CachedImage";
+import { useWorld } from "@/hooks/vrc/useWorld";
 
 interface Props {
   user: UserLike;
   onPress?: () => void;
   onLongPress?: () => void;
-
   [key: string]: any;
 }
+
 const extractTitle = (data: UserLike) => data.displayName;
-const extractSubtitles = (data: UserLike, world?: World) => {
-  const statusText =
-    data.statusDescription !== "" ? data.statusDescription : data.status;
+
+/**
+ * 以前の extractSubtitles をフックと使いやすいように調整
+ */
+const getSubtitles = (data: UserLike, world?: World) => {
+  const statusText = data.statusDescription !== "" ? data.statusDescription : data.status;
   let locationText = "unknown";
-  if (Object(data).hasOwnProperty("location")) {
-    const { isOffline, isPrivate, isTraveling, parsedLocation } =
-      parseLocationString(Object(data).location);
+
+  // location プロパティの存在を確認してパース
+  const location = (data as any).location;
+  if (location) {
+    const { isOffline, isPrivate, isTraveling, parsedLocation } = parseLocationString(location);
+
     if (isOffline) locationText = "* user is offline *";
-    if (isPrivate) locationText = "* user is in a private instance *";
-    if (isTraveling) locationText = "* user is now traveling... *";
-    if (parsedLocation) {
+    else if (isPrivate) locationText = "* user is in a private instance *";
+    else if (isTraveling) locationText = "* user is now traveling... *";
+    else if (parsedLocation) {
       const parsedInstance = parseInstanceId(parsedLocation.instanceId);
       const worldName = world?.name ?? "";
       const instanceType = parsedInstance
@@ -48,23 +54,23 @@ const extractSubtitles = (data: UserLike, world?: World) => {
 
 const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
   const theme = useTheme();
-  const { showToast } = useToast();
-  const { world } = useCache();
-  const [subtitles, setSubtitles] = useState<string[]>(extractSubtitles(user));
-  // ワールド情報をキャッシュから取得してサブタイトルを更新
-  useEffect(() => {
-    const { parsedLocation } = parseLocationString(Object(user).location);
-    if (!parsedLocation?.worldId) return;
-    // get world data with using cache
-    world
-      .get(parsedLocation.worldId)
-      .then((world) => {
-        setSubtitles(extractSubtitles(user, world));
-      })
-      .catch((e) => {
-        showToast("error", `Err fetching world on ListViewUser: ${parsedLocation.worldId}`);
-      });
-  }, [Object(user).location]);
+
+  // 1. location から worldId を抽出
+  const location = (user as any).location;
+  const worldId = useMemo(() => {
+    const { parsedLocation } = parseLocationString(location);
+    return parsedLocation?.worldId;
+  }, [location]);
+
+  // 2. useWorld フックを使用してワールド情報を取得（キャッシュがあれば即座に返る）
+  const { data: worldData } = useWorld(worldId);
+
+  // 3. サブタイトルの計算（メモ化）
+  const subtitles = useMemo(() =>
+    getSubtitles(user, worldData),
+    [user, worldData]
+  );
+
   return (
     <BaseListView
       data={user}
@@ -88,26 +94,20 @@ const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
             ]}
           />
         </View>
-        // ToDo: isFavoriteIcon,
       }
       {...rest}
     />
   );
 };
 
-const _defaultHeight = 65; // default, height-based
+const _defaultHeight = 65;
 const styles = StyleSheet.create({
   container: {
-    // aspectRatio: 6, paddingLeft: "17%",
     height: _defaultHeight,
     paddingLeft: _defaultHeight,
   },
-  title: {
-    // borderColor: "blue", borderStyle: "dotted", borderWidth: 1
-  },
-  subtitle: {
-    // borderColor: "blue", borderStyle: "dotted", borderWidth: 1
-  },
+  title: {},
+  subtitle: {},
   iconContainer: {
     position: "absolute",
     height: "100%",
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     padding: spacing.small,
     bottom: 0,
     left: 0,
-    // borderColor: "red", borderStyle: "solid", borderWidth: 1,
   },
   icon: {
     aspectRatio: 1,
@@ -124,4 +123,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.all,
   },
 });
+
 export default React.memo(ListViewUser);

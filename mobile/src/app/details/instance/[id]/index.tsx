@@ -1,121 +1,111 @@
+import React, { useMemo, useState, useEffect, useCallback } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import { RefreshControl } from "react-native-gesture-handler";
+
+// Components
 import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/DetailItemContainer";
 import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import CardViewInstanceDetail from "@/components/view/item-CardView/detail/CardViewInstanceDetail";
-import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardViewWorldDetail";
-import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import SelectGroupButton from "@/components/view/SelectGroupButton";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { CachedImage, useCache } from "@/contexts/CacheContext";
-import { useData } from "@/contexts/DataContext";
+import JsonDataModal from "@/components/modals/JsonDataModal";
+import CachedImage from "@/components/CachedImage";
+import { TouchableEx } from "@/components/CustomElements";
+
+// Hooks & Contexts
 import { useVRChat } from "@/contexts/VRChatContext";
+import { useToast } from "@/contexts/ToastContext";
+import { useSetting } from "@/contexts/SettingContext";
+import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useFriends } from "@/hooks/vrc/useFriends";
+import { useUser } from "@/hooks/vrc/useUser";
+import { useGroup } from "@/hooks/vrc/useGroup";
+
+// Utils
+import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { extractErrMsg } from "@/lib/utils";
 import {
   getAuthorTags,
   getTrustRankColor,
   getPlatform,
   parseLocationString,
-  UserLike,
-  GroupLike,
 } from "@/lib/vrchat";
-import { Instance, LimitedUserFriend, LimitedUserInstance, World } from "@/generated/vrcapi";
-import { useTheme } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { routeToGroup, routeToSearch, routeToUser, routeToWorld } from "@/lib/route";
-import IconSymbol from "@/components/view/icon-components/IconView";
-import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
-import JsonDataModal from "@/components/modals/JsonDataModal";
-import { useToast } from "@/contexts/ToastContext";
-import { useTranslation } from "react-i18next";
-import { TouchableEx } from "@/components/CustomElements";
-import { t } from "i18next";
-import { useSetting } from "@/contexts/SettingContext";
-import { useSideMenu } from "@/contexts/AppMenuContext";
-
-type Owner =
-  | { type: "user"; owner: UserLike }
-  | { type: "group"; owner: GroupLike };
+import { Instance } from "@/generated/vrcapi";
 
 export default function InstanceDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>(); // must be locationStr (e.g. wrld_xxx:00000~region(jp))
+  const { id } = useLocalSearchParams<{ id: string }>(); // locationStr
   const { parsedLocation } = parseLocationString(id);
-  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { friends: allFriends } = useData();
-  const cache = useCache();
   const theme = useTheme();
-  const [instance, setInstance] = useState<Instance>();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
 
-  const [owner, setOwner] = useState<Owner>();
-  const [friends, setFriends] = useState<(LimitedUserFriend | LimitedUserInstance)[]>([]);
+  // 1. Manual State Management for Instance
+  const [instance, setInstance] = useState<Instance | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [openJson, setOpenJson] = useState(false);
+  const fetchInstance = useCallback(async () => {
+    if (!parsedLocation || !vrc.instancesApi) return;
 
-  const fetchInstance = () => {
-    // instance isnot cached
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    vrc.instancesApi.getInstance({
-      worldId: parsedLocation?.worldId ?? "",
-      instanceId: parsedLocation?.instanceId ?? "",
-    })
-      .then((res) => setInstance(res.data))
-      .catch((e) => showToast("error", "Error fetching instance data", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
-  };
+    setIsLoading(true);
+    try {
+      const res = await vrc.instancesApi.getInstance({
+        worldId: parsedLocation.worldId ?? "",
+        instanceId: parsedLocation.instanceId ?? "",
+      });
+      setInstance(res.data);
+    } catch (e) {
+      showToast("error", "Error fetching instance data", extractErrMsg(e));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [parsedLocation, vrc.instancesApi]);
 
   useEffect(() => {
     fetchInstance();
-  }, []);
+  }, [fetchInstance]);
 
-  useEffect(() => {
-    if (!instance) return;
-    let foundOwner = false;
-    const friendList: (LimitedUserFriend | LimitedUserInstance)[] = [];
+  // 2. Owner Information (Keep Hooks at top level)
+  const ownerId = instance?.ownerId ?? "";
+  const isUserOwner = ownerId.startsWith("usr_");
+  const isGroupOwner = ownerId.startsWith("grp_");
+
+  // These hooks will only run if the ID is valid (internal 'enabled' check)
+  const { data: userOwner } = useUser(isUserOwner ? ownerId : undefined);
+  const { data: groupOwner } = useGroup(isGroupOwner ? ownerId : undefined);
+
+  const owner = useMemo(() => {
+    if (isUserOwner && userOwner) return { type: "user" as const, data: userOwner };
+    if (isGroupOwner && groupOwner) return { type: "group" as const, data: groupOwner };
+    return null;
+  }, [isUserOwner, userOwner, isGroupOwner, groupOwner]);
+
+  // 3. Friends in this Instance
+  const { data: allFriends } = useFriends();
+  const friendsInInstance = useMemo(() => {
+    if (!instance || !allFriends) return [];
     const location = `${instance.worldId}:${instance.instanceId}`;
-    allFriends.data.forEach((f) => {
-      if (f.location === location) friendList.push(f);
-      if (f.id === instance.ownerId) {
-        foundOwner = true;
-        setOwner({ type: "user", owner: f }); // if owner is friend, set owner data
-      }
-    });
-    setFriends(friendList);
-    if (!foundOwner && instance.ownerId) {
-      // not found in friends, fetch owner data
-      if (instance.ownerId.startsWith("usr_")) {
-        cache.user.get(instance.ownerId).then((owner) => setOwner({ type: "user", owner })).catch((e) => {
-          showToast("error", "Error fetching owner profile", extractErrMsg(e));
-        });
-      } else if (instance.ownerId.startsWith("grp_")) {
-        cache.group.get(instance.ownerId).then((owner) => setOwner({ type: "group", owner })).catch((e) => {
-          showToast("error", "Error fetching owner group", extractErrMsg(e));
-        });
-      }
-    }
-  }, [instance, instance?.users, instance?.ownerId]);
+    return allFriends.filter((f) => f.location === location);
+  }, [instance, allFriends]);
 
+  const [openJson, setOpenJson] = useState(false);
 
+  // 4. Side Menu
   const menuItems: MenuItem[] = useMemo(() => [
     {
       icon: "circle-medium",
-      title: "INVITE ME or REQUEST INVITE"
-      // onPress: () => {},
+      title: "INVITE ME or REQUEST INVITE",
+      onPress: () => { /* TODO: Implement Invite */ },
     },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
+    { type: "divider", hidden: !enableJsonViewer },
     {
       icon: "code-json",
       title: t("pages.detail_instance.menuLabel_json"),
@@ -123,7 +113,10 @@ export default function InstanceDetail() {
       hidden: !enableJsonViewer,
     },
   ], [enableJsonViewer, t]);
+
   useSideMenu(menuItems);
+
+  if (!instance && isLoading) return <LoadingIndicator absolute />;
 
   return (
     <GenericScreen>
@@ -139,32 +132,29 @@ export default function InstanceDetail() {
               />
             }
           >
+            {/* Friends in Instance */}
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_usersInInstance")}>
               <View style={styles.detailItemContent}>
-                {/* {chunkArray(friends, 2).map((chunk, index) => (
-                  <View style={{ flexDirection: "row" }} key={`friend-chunk-${index}`}>
-                    {chunk.map((friend) => (
-                      <TouchableOpacity style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
-                        <UserOrGroupChip data={friend} textColor={getTrustRankColor(friend, true, false)} />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                ))} */}
-                {friends.map((friend) => (
+                {friendsInInstance.map((friend) => (
                   <TouchableEx style={styles.user} key={friend.id} onPress={() => routeToUser(friend.id)}>
                     <UserOrGroupChip data={friend} textColor={getTrustRankColor(friend, true, false)} />
                   </TouchableEx>
                 ))}
-                {instance.n_users > friends.length && (
-                  <Text style={[styles.moreUser, { color: theme.colors.text }]}>{t("pages.detail_instance.section_users_more_user_count_other", { count: instance.n_users - friends.length })}</Text>
+                {instance.n_users > friendsInInstance.length && (
+                  <Text style={[styles.moreUser, { color: theme.colors.text }]}>
+                    {t("pages.detail_instance.section_users_more_user_count_other", {
+                      count: instance.n_users - friendsInInstance.length
+                    })}
+                  </Text>
                 )}
               </View>
             </DetailItemContainer>
 
+            {/* World Info */}
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_world")}>
               <View style={styles.detailItemContent}>
                 <TouchableEx style={styles.horizontal} onPress={() => routeToWorld(instance.worldId)}>
-                  <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.subText }]} />
+                  <CachedImage src={instance.world.thumbnailImageUrl} style={[styles.worldImage, { borderColor: theme.colors.border }]} />
                   <Text style={[styles.worldName, { color: theme.colors.text }]}>
                     {instance.world.name}
                   </Text>
@@ -172,22 +162,18 @@ export default function InstanceDetail() {
               </View>
             </DetailItemContainer>
 
+            {/* Owner Info */}
             {owner && (
               <DetailItemContainer title={t("pages.detail_instance.sectionLabel_owner")}>
-                <View style={[styles.detailItemContent]}>
-                  {owner.type === "user" ? (
-                    <TouchableEx onPress={() => routeToUser(owner.owner.id)}>
-                      <UserOrGroupChip data={owner.owner} icon="crown" textColor={getTrustRankColor(owner.owner, true, false)} />
-                    </TouchableEx>
-                  ) : (
-                    <TouchableEx onPress={() => owner.owner.id && routeToGroup(owner.owner.id)}>
-                      <UserOrGroupChip data={owner.owner} icon="crown" />
-                    </TouchableEx>
-                  )}
+                <View style={styles.detailItemContent}>
+                  <TouchableEx onPress={() => owner.data?.id && (owner.type === "user" ? routeToUser(owner.data.id) : routeToGroup(owner.data.id))}>
+                    <UserOrGroupChip data={owner.data!} icon="crown" textColor={owner.type === "user" ? getTrustRankColor(owner.data as any, true, false) : undefined} />
+                  </TouchableEx>
                 </View>
               </DetailItemContainer>
             )}
 
+            {/* Platforms & Tags */}
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_platform")}>
               <View style={styles.detailItemContent}>
                 <PlatformChips platforms={getPlatform(instance.world)} />
@@ -200,93 +186,36 @@ export default function InstanceDetail() {
               </View>
             </DetailItemContainer>
 
-
+            {/* Basic Info */}
             <DetailItemContainer title={t("pages.detail_instance.sectionLabel_info")}>
               <View style={styles.detailItemContent}>
-                <Text
-                  style={{ color: theme.colors.text }}
-                >{t("pages.detail_instance.section_info_capacity", { capacity: instance.capacity })}</Text>
-                <Text
-                  style={{ color: theme.colors.text }}
-                >{t("pages.detail_instance.section_info_ageGated", { ageGated: instance.ageGate })}</Text>
+                <Text style={{ color: theme.colors.text }}>
+                  {t("pages.detail_instance.section_info_capacity", { capacity: instance.capacity })}
+                </Text>
+                <Text style={{ color: theme.colors.text }}>
+                  {t("pages.detail_instance.section_info_ageGated", { ageGated: instance.ageGate })}
+                </Text>
               </View>
             </DetailItemContainer>
 
           </ScrollView>
-
         </View>
       ) : (
         <LoadingIndicator absolute />
       )}
 
-      {/* Modals */}
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={instance} />
     </GenericScreen>
   );
 }
 
-
-const chunkArray = <T,>(array: T[], size: number): T[][] => {
-  const chunkedArr: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunkedArr.push(array.slice(i, i + size));
-  }
-  return chunkedArr;
-};
-
 const styles = StyleSheet.create({
-  scrollContent: {
-    paddingBottom: navigationBarHeight,
-  },
-  horizontal: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    gap: spacing.small,
-  },
-  cardView: {
-    position: "relative",
-    paddingVertical: spacing.medium,
-  },
-  badgeContainer: {
-    position: "absolute",
-    width: "100%",
-    top: spacing.medium,
-    bottom: spacing.medium,
-    borderRadius: radius.small,
-    padding: spacing.medium,
-  },
-  badge: {
-    padding: spacing.small,
-    width: "20%",
-    aspectRatio: 1,
-  },
-  listWorld: {
-
-  },
-  user: {
-    // width: "50%",
-    width: "100%",
-    // borderStyle:"dotted", borderColor:"blue",borderWidth:1
-  },
-  moreUser: {
-    alignSelf: "flex-end",
-    marginRight: spacing.medium,
-  },
-
-  detailItemContent: {
-    flex: 1,
-    // borderStyle:"dotted", borderColor:"red",borderWidth:1
-  },
-  worldImage: {
-    marginRight: spacing.small,
-    height: spacing.small * 2 + fontSize.medium * 3,
-    aspectRatio: 16 / 9,
-    borderRadius: radius.small,
-    borderStyle: "solid",
-    borderWidth: 1
-  },
-  worldName: {
-    fontSize: fontSize.medium,
-  }
+  scrollContent: { paddingBottom: navigationBarHeight },
+  horizontal: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.small },
+  cardView: { position: "relative", paddingVertical: spacing.medium },
+  user: { width: "100%" },
+  moreUser: { alignSelf: "flex-end", marginRight: spacing.medium },
+  detailItemContent: { flex: 1 },
+  worldImage: { marginRight: spacing.small, height: spacing.small * 2 + fontSize.medium * 3, aspectRatio: 16 / 9, borderRadius: radius.small, borderWidth: 1 },
+  worldName: { fontSize: fontSize.medium, flex: 1 }
 });

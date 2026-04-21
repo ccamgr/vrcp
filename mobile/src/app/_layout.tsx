@@ -1,7 +1,5 @@
 import { darkTheme, lightTheme } from "@/configs/theme";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { CacheProvider } from "@/contexts/CacheContext";
-import { DataProvider } from "@/contexts/DataContext";
 import { AppMenuProvider } from "@/contexts/AppMenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
@@ -29,6 +27,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { persistOptions, queryClient } from "@/lib/queryClient";
 
 import '@/i18n'; // i18n 初期化
+import { PipelineProvider } from "@/contexts/PipelineContext";
 
 
 // Keep the splash screen visible while we fetch resources
@@ -80,28 +79,26 @@ export default function Root() {
         <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <VRChatProvider>
             <AuthProvider>
-              <CacheProvider>
-                <DataProvider>
-                  <SafeAreaProvider>
-                    {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <ThemeProvider
-                        value={theme}
-                      >
-                        <AppMenuProvider>
-                          <ToastProvider>
-                            <GlobalDrawer>
-                              <RootLayout />
-                            </GlobalDrawer>
-                            <StatusBar style="auto" />
-                          </ToastProvider>
-                        </AppMenuProvider>
-                      </ThemeProvider>
-                    </GestureHandlerRootView>
-                    {/* </SafeAreaView> */}
-                  </SafeAreaProvider>
-                </DataProvider>
-              </CacheProvider>
+              <PipelineProvider>
+                <SafeAreaProvider>
+                  {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <ThemeProvider
+                      value={theme}
+                    >
+                      <AppMenuProvider>
+                        <ToastProvider>
+                          <GlobalDrawer>
+                            <RootLayout />
+                          </GlobalDrawer>
+                          <StatusBar style="auto" />
+                        </ToastProvider>
+                      </AppMenuProvider>
+                    </ThemeProvider>
+                  </GestureHandlerRootView>
+                  {/* </SafeAreaView> */}
+                </SafeAreaProvider>
+              </PipelineProvider>
             </AuthProvider>
           </VRChatProvider>
         </PersistQueryClientProvider>

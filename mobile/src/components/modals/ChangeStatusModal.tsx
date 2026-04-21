@@ -4,7 +4,6 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import IconSymbol from "@/components/view/icon-components/IconView";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getStatusColor } from "@/lib/vrchat";
 import { UserStatus } from "@/generated/vrcapi";
@@ -15,6 +14,7 @@ import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 interface Props {
   open: boolean;
@@ -26,7 +26,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { currentUser } = useData();
+  const currentUser = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const [statusDescription, setStatusDescription] = useState<string>("");
@@ -52,7 +52,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
           statusDescription: statusDescription,
         },
       });
-      currentUser.fetch();
+      currentUser.refetch();
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update status.");
@@ -83,13 +83,13 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
   return (
     <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
       {isLoading && <LoadingIndicator absolute />}
-      { currentUser.data && (
+      {currentUser.data && (
         <View style={styles.container}>
           <View style={styles.statusOptionAreaContainer}>
             {statusOptions.map(status => (
               <TouchableEx
                 key={`status_option_${status}`}
-                style={[styles.statusOptionItem, selectedStatus === status && { borderColor: theme.colors.primary}]}
+                style={[styles.statusOptionItem, selectedStatus === status && { borderColor: theme.colors.primary }]}
                 onPress={() => setSelectedStatus(status)}
               >
                 <IconSymbol name="circle" size={12} color={getStatusColor(status)} style={{ marginRight: spacing.mini }} />
@@ -99,7 +99,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
           </View>
           <View style={styles.descriptionAreaContainer}>
             <TextInput
-              style={[styles.descriptionInput, { color: theme.colors.text, borderColor: theme.colors.subText}]}
+              style={[styles.descriptionInput, { color: theme.colors.text, borderColor: theme.colors.subText }]}
               value={statusDescription}
               onChange={e => setStatusDescription(e.nativeEvent.text)}
               // autoFocus

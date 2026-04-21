@@ -2,10 +2,10 @@ import GenericModal from "@/components/layout/GenericModal";
 import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
-import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { Avatar } from "@/generated/vrcapi";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
   const { t } = useTranslation();
   const vrc = useVRChat();
   const { showToast } = useToast();
-  const { currentUser } = useData();
+  const currentUser = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -67,7 +67,7 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
   return (
     <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
       {isLoading && <LoadingIndicator absolute />}
-      { avatar && (
+      {avatar && (
         <Text style={[globalStyles.text, { fontSize: fontSize.medium }]}>
           {t("components.changeAvatarModal.confirm_text", { avatarName: avatar.name })}
         </Text>

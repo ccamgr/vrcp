@@ -3,7 +3,6 @@ import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { useCache } from "@/contexts/CacheContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { Group } from "@/generated/vrcapi";
@@ -18,35 +17,21 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
+import { useGroup } from "@/hooks/vrc/useGroup";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
-  const cache = useCache();
   const theme = useTheme();
   const { showToast } = useToast();
-  const [group, setGroup] = useState<Group>();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
   const [mode, setMode] = useState<"info" | "instances">("info");
   const [openJson, setOpenJson] = useState(false);
 
+  const { data: group, refetch, isFetching } = useGroup(id);
 
-  const fetchGroup = () => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    cache.group.get(id, true)
-      .then(setGroup)
-      .catch((e) => showToast("error", "Error fetching group data", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
-  };
-
-  useEffect(() => {
-    fetchGroup();
-  }, []);
 
   const menuItems: MenuItem[] = useMemo(() => [
     {
@@ -94,8 +79,8 @@ export default function GroupDetail() {
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
-                refreshing={isLoading}
-                onRefresh={fetchGroup}
+                refreshing={isFetching}
+                onRefresh={refetch}
               />
             }
           >

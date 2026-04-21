@@ -11,8 +11,8 @@ export type InstanceLike = MinInstance | Instance
 type StatusGettableUser = Exclude<UserLike, LimitedUserInstance>
 
 // 最低限のInstance情報だけを持つ型 (Worldに付随した部分的なInstance情報に対応)
-type MinInstance = Pick< Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">
-  & Partial<Exclude< Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">>;
+type MinInstance = Pick<Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">
+  & Partial<Exclude<Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">>;
 
 /** Checker */
 export function isUserLike(data: any): data is UserLike {
@@ -93,8 +93,7 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
 
 //** location */
 // parse location string
-export function parseLocationString(location: string| undefined):
-{
+export function parseLocationString(location: string | undefined): {
   isOffline?: boolean;
   isPrivate?: boolean;
   isTraveling?: boolean;
@@ -149,27 +148,27 @@ export function parseInstanceId(instanceId: string | undefined): {
   }
 
   const parsed = {
-    region : (parseByReg("region") ?? "unknown" )as InstanceRegion,
+    region: (parseByReg("region") ?? "unknown") as InstanceRegion,
     groupAccessType: parseByReg("groupAccessType") as GroupAccessType | undefined,
     // types
-    hidden : parseByReg("hidden"),
-    friends : parseByReg("friends"),
-    private : parseByReg("private"),
-    group : parseByReg("group"),
+    hidden: parseByReg("hidden"),
+    friends: parseByReg("friends"),
+    private: parseByReg("private"),
+    group: parseByReg("group"),
   }
 
   const type = parsed.hidden ? "hidden"
     : parsed.friends ? "friends"
-    : parsed.private ? "private"
-    : parsed.group ? "group"
-    : "public"; // default to public (no-type provide)
+      : parsed.private ? "private"
+        : parsed.group ? "group"
+          : "public"; // default to public (no-type provide)
 
   return { name, type, ...parsed };
 }
 
 
 // Get instance type with DisplayName (ex.Friends+)
-export function getInstanceType(type:InstanceType, groupAccessType?: GroupAccessType) {
+export function getInstanceType(type: InstanceType, groupAccessType?: GroupAccessType) {
   if (type === "public") return vrcTexts.instanceType.public;
   if (type === "hidden") return vrcTexts.instanceType.friends_plus;
   if (type === "friends") return vrcTexts.instanceType.friends;
@@ -190,7 +189,7 @@ export function getState(user: LimitedUserFriend): UserState | undefined {
   return undefined;
 }
 // get user status color
-export function getStatusColor(userOrStr: StatusGettableUser | string ): string {
+export function getStatusColor(userOrStr: StatusGettableUser | string): string {
   const status = typeof userOrStr === "string" ? userOrStr : userOrStr.status;
   if (status == "join me") return vrcColors.userStatus.join_me; // join me
   if (status == "active") return vrcColors.userStatus.online; // online
@@ -258,7 +257,7 @@ export function getReleaseStatusColor(data: AvatarLike | WorldLike) {
   return "#000000ff";
 }
 
-export function getPlatform (data: AvatarLike | WorldLike): {
+export function getPlatform(data: AvatarLike | WorldLike): {
   platform: string;
   avatarPerformance?: string;
 }[] {
@@ -282,7 +281,7 @@ export function convertToLimitedUserFriend(user: UserLike): LimitedUserFriend {
   const obj = Object(user);
   return {
     ...user,
-    imageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl,
+    imageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? obj.profilePicOverrideThumbnail ?? user?.profilePicOverride ?? "",
     location: obj.location ?? "offline",
     friendKey: obj.friendKey ?? "",
     last_mobile: obj.last_mobile ?? "",
@@ -298,7 +297,8 @@ export function convertToLimitedUserInstance(user: UserLike): LimitedUserInstanc
   return {
     ...user,
     pronouns: obj.pronouns ?? "",
-    currentAvatarThumbnailImageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl,
+    currentAvatarImageUrl: user?.currentAvatarImageUrl ?? user.profilePicOverride ?? "",
+    currentAvatarThumbnailImageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? obj.profilePicOverrideThumbnail ?? user?.profilePicOverride ?? "",
     currentAvatarTags: obj.currentAvatarTags ?? [],
     ageVerified: obj.ageVerificationStatus ?? false,
     ageVerificationStatus: obj.ageVerificationStatus ?? "hidden",

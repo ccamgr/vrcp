@@ -4,7 +4,7 @@ import { Instance } from "@/generated/vrcapi";
 import { StyleSheet, View } from "react-native";
 import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
-import { CachedImage } from "@/contexts/CacheContext";
+import CachedImage from "@/components/CachedImage";
 
 
 

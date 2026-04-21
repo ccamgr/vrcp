@@ -1,5 +1,4 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
-import { CachedImage } from "@/contexts/CacheContext";
 import { getStatusColor, getTrustRankColor, getUserIconUrl, getUserProfilePicUrl, UserLike } from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
@@ -7,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import IconSymbol from "../../icon-components/IconView";
 import BaseCardView from "../BaseCardView";
 import { TouchableEx } from "@/components/CustomElements";
+import CachedImage from "@/components/CachedImage";
 
 interface Props {
   user: UserLike;

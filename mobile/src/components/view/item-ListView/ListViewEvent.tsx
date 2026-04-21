@@ -4,7 +4,7 @@ import { CalendarEvent, Instance } from "@/generated/vrcapi";
 import { StyleSheet, View } from "react-native";
 import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
-import { CachedImage } from "@/contexts/CacheContext";
+import CachedImage from "@/components/CachedImage";
 import { formatTime } from "@/lib/date";
 
 
@@ -37,7 +37,7 @@ const ListViewEvent = ({
       subtitles={extractSubtitles}
       onPress={onPress}
       onLongPress={onLongPress}
-      ContainerStyle={[styles.container, !event.imageUrl && {marginLeft:0}]}
+      ContainerStyle={[styles.container, !event.imageUrl && { marginLeft: 0 }]}
       TitleStyle={styles.title}
       SubtitleStyle={styles.subtitle}
       OverlapComponents={

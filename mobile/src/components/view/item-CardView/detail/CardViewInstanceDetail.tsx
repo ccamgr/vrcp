@@ -1,15 +1,14 @@
 import { spacing } from "@/configs/styles";
-import { LimitedUserInstance } from "@/generated/vrcapi";
-import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString, UserLike, WorldLike } from "@/lib/vrchat";
-import { useCache } from "@/contexts/CacheContext";
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useMemo } from "react";
+import { StyleSheet } from "react-native";
+import {
+  getInstanceType,
+  InstanceLike,
+  parseInstanceId,
+  parseLocationString
+} from "@/lib/vrchat";
 import BaseCardView from "../BaseCardView";
-import UserOrGroupChip from "../../chip-badge/UserOrGroupChip";
-import IconButton from "../../icon-components/IconButton";
-import { routeToWorld } from "@/lib/route";
-
+import { useWorld } from "@/hooks/vrc/useWorld";
 
 interface Props {
   instance: InstanceLike;
@@ -18,48 +17,40 @@ interface Props {
   [key: string]: any;
 }
 
-const extractImageUrl = (data: InstanceLike) => {
-  const url = data?.world?.imageUrl;
-  if (url && url.length > 0) return url;
-  return "";
+/**
+ * Extract image URL from instance or fetched world data
+ */
+const extractImageUrl = (data: InstanceLike, world?: any) => {
+  const url = data?.world?.imageUrl ?? world?.imageUrl;
+  return url && url.length > 0 ? url : "";
 };
-const extractTitle = (data: InstanceLike) => { // <instanceName> <worldName>
-  const parsedInstance = parseInstanceId(data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId);
+
+/**
+ * Extract title string including instance type, name, and world name
+ */
+const extractTitle = (data: InstanceLike, world?: any) => {
+  const location = data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId;
+  const parsedInstance = parseInstanceId(location);
+  const worldName = data.world?.name ?? world?.name ?? "Unknown";
+
   if (parsedInstance) {
     const instType = getInstanceType(parsedInstance.type, parsedInstance.groupAccessType);
-    return `${instType} #${parsedInstance.name}${data.displayName ? `  (${data.displayName})` : ""}\n${data.world?.name}`;
+    const displayName = data.displayName ? ` (${data.displayName})` : "";
+    return `${instType} #${parsedInstance.name}${displayName}\n${worldName}`;
   }
-  return data.world?.name ?? "Unknown";
+  return worldName;
 };
 
 const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Props) => {
-  const cache = useCache();
-  const [imageUrl, setImageUrl] = useState<string>(
-    extractImageUrl(instance)
-  );
-  const [title, setTitle] = useState<string>(
-    extractTitle(instance)
-  );
-  const fetchWorld = async () => {
-    if (instance.world) {
-      const url = extractImageUrl(instance);
-      const title = extractTitle(instance);
-      setImageUrl(url);
-      setTitle(title);
-    } else if (instance.worldId && instance.worldId.length > 0) {
-      const world = await cache.world.get(instance.worldId);
-      const title = extractTitle({ ...instance, world });
-      const url = extractImageUrl({ ...instance, world });
-      setImageUrl(url);
-      setTitle(title);
-    }
-  };
+  // 1. Fetch world data if not present in the instance object
+  const { data: fetchedWorld } = useWorld(instance.world ? undefined : instance.worldId);
 
+  // 2. Resolve the world object
+  const world = useMemo(() => instance.world ?? fetchedWorld, [instance.world, fetchedWorld]);
 
-  useEffect(() => {
-    fetchWorld();
-  }, [instance.world]);
-
+  // 3. Declarative data extraction
+  const imageUrl = useMemo(() => extractImageUrl(instance, world), [instance, world]);
+  const title = useMemo(() => extractTitle(instance, world), [instance, world]);
 
   return (
     <BaseCardView
@@ -76,19 +67,9 @@ const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Pro
 };
 
 const styles = StyleSheet.create({
-  gradient: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    left: 0,
-    aspectRatio: 2,
-  },
   image: {
     aspectRatio: 2,
     resizeMode: "cover",
-  },
-  chip: {
-    marginVertical: spacing.mini,
   },
 });
 
