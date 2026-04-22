@@ -34,7 +34,17 @@ import { PipelineProvider } from "@/contexts/PipelineContext";
 SplashScreen.preventAutoHideAsync()
 
 function RootLayout() {
+
   const auth = useAuth();
+  // Run migrations
+  const { success, error } = useMigrations(db, migrations);
+
+  useEffect(() => {
+    if (!auth.isLoading && success || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [auth.isLoading, success, error]);
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -58,15 +68,7 @@ function RootLayout() {
 export default function Root() {
   const cs = useColorScheme();
   const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
-  const auth = useAuth();
-  // Run migrations
-  const { success, error } = useMigrations(db, migrations);
 
-  useEffect(() => {
-    if (!auth.isLoading && success || error) {
-      SplashScreen.hideAsync();
-    }
-  }, [auth.isLoading, success, error]);
 
   useEffect(() => {
     // init tasks
@@ -76,9 +78,10 @@ export default function Root() {
   return (
     <LogProvider>
       <SettingProvider>
-        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-          <VRChatProvider>
-            <AuthProvider>
+        <VRChatProvider>
+          <AuthProvider>
+            <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+
               <PipelineProvider>
                 <SafeAreaProvider>
                   {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
@@ -99,9 +102,10 @@ export default function Root() {
                   {/* </SafeAreaView> */}
                 </SafeAreaProvider>
               </PipelineProvider>
-            </AuthProvider>
-          </VRChatProvider>
-        </PersistQueryClientProvider>
+
+            </PersistQueryClientProvider>
+          </AuthProvider>
+        </VRChatProvider>
       </SettingProvider>
     </LogProvider>
   );
