@@ -7,10 +7,10 @@ import { Configuration, Notification, NotificationsApi, UsersApi, OrderOption, S
 import { getUserAgent } from '@/lib/utils';
 import { extractNotificationContent } from '@/lib/funcs/extractNotificationContent';
 
-export const TASK_NAME = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK';
+export const VRCHAT_NOTIFICATION_TASK_NAME = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK';
 const LAST_CHECKED_KEY = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK_LAST_CHECKED';
 
-TaskManager.defineTask(TASK_NAME, async () => {
+TaskManager.defineTask(VRCHAT_NOTIFICATION_TASK_NAME, async () => {
   const now = new Date();
   console.log(`[Background Task] Executed at: ${now.toISOString()}`);
 

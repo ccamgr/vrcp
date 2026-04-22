@@ -3,7 +3,7 @@ import { ButtonItemForFooter } from "@/components/layout/type";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, spacing } from "@/configs/styles";
-import { useLog } from "@/contexts/LogContext";
+import { logger } from "@/lib/logger";
 import { useToast } from "@/contexts/ToastContext";
 import { FeedbackType, sendFeedbacktoDevelopper } from "@/lib/funcs/sendFeedbackToDevelopper";
 import { useTheme } from "@react-navigation/native";
@@ -18,9 +18,8 @@ interface Props {
 
 const FeedbackModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
-  const { log, getRecentLogFilePath } = useLog();
   const { t } = useTranslation();
-  const {showToast} = useToast();
+  const { showToast } = useToast();
   const [type, setType] = useState<FeedbackType>("bug-report");
   const [email, setEmail] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -35,8 +34,8 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
 
     try {
       setIsLoading(true);
-      const logfilePath = type == "bug-report" ? getRecentLogFilePath() : null;
-      const res = await sendFeedbacktoDevelopper(type , email, content, logfilePath);
+      const logfilePath = type == "bug-report" ? logger.getRecentLogFilePath() : null;
+      const res = await sendFeedbacktoDevelopper(type, email, content, logfilePath);
       if (res.ok) {
         showToast("success", "Thank you for your feedback!");
         setOpen(false);
@@ -68,10 +67,10 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
     label: string;
     value: FeedbackType;
   }[] = [
-    { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
-    { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
-    { label: t("components.feedbackModal.type_request"), value: "request" },
-  ];
+      { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
+      { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
+      { label: t("components.feedbackModal.type_request"), value: "request" },
+    ];
 
   return (
     <GenericModal

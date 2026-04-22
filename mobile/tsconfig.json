@@ -17,6 +17,6 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "src/db/migration/*",
+    "src/db/migration/*"
   ],
 }
