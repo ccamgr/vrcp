@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { dbManager } from "@/db";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import { TANSTACK_STORAGE_KEY } from "@/lib/queryClient";
+import { avatarsRepo, groupsRepo, usersRepo, worldsRepo } from "@/db/repogitories";
 
 export interface CacheStats {
   size: number;  // bytes
@@ -40,16 +41,27 @@ export const useCacheManager = () => {
   // ==========================================
   const measureDbCache = useCallback(async () => {
     // db/index.ts の cacheManager を使って行数を取得
-    const stats = await dbManager.getDBStats();
-
-    setDbStats({ size: stats.size, count: stats.rows });
+    const [u, a, w, g] = await Promise.all([
+      usersRepo.count(),
+      avatarsRepo.count(),
+      worldsRepo.count(),
+      groupsRepo.count()
+    ]);
+    const rows = u + a + w + g;
+    const size = await dbManager.getDBFileSize();
+    setDbStats({ size, count: rows });
   }, []);
 
   const clearDbCache = useCallback(async () => {
     // メモリ上の クエリキャッシュをクリア
     queryClient.removeQueries({ queryKey: ["vrc", "db"] });
 
-    await dbManager.clearAll();
+    await Promise.all([
+      usersRepo.clearAll(),
+      avatarsRepo.clearAll(),
+      worldsRepo.clearAll(),
+      groupsRepo.clearAll()
+    ]);
 
     await measureDbCache();
   }, [measureDbCache, queryClient]);

@@ -1,4 +1,4 @@
-import { SQL, eq } from "drizzle-orm";
+import { SQL, eq, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import {
   SQLiteTableWithColumns,
@@ -19,16 +19,17 @@ export interface GetListOptions<TTable extends SQLiteTableWithColumns<any>> {
 
 // Generic repository interface providing common CRUD logic
 // Assumes the table has a primary key column named "id" of type string
-export interface BaseRepo<TTable extends SQLiteTableWithColumns<any>> {
+interface BaseRepo<TTable extends SQLiteTableWithColumns<any>> {
   get: (id: string) => Promise<TTable["$inferSelect"] | null>;
   getList: (options?: GetListOptions<TTable>) => Promise<TTable["$inferSelect"][]>;
   create: (data: SQLiteInsertValue<TTable>) => Promise<TTable["$inferSelect"]>;
   update: (id: string, data: SQLiteUpdateSetSource<TTable>) => Promise<TTable["$inferSelect"]>;
   upsert: (data: SQLiteInsertValue<TTable>) => Promise<TTable["$inferSelect"]>;
   delete: (id: string) => Promise<boolean>;
+  count: () => Promise<number>;
 }
 
-export const createBaseRepository = <TTable extends SQLiteTableWithColumns<any>>(
+export const createBaseRepo = <TTable extends SQLiteTableWithColumns<any>>(
   db: ReturnType<typeof drizzle>,
   table: TTable
 ): BaseRepo<TTable> => {
@@ -98,5 +99,40 @@ export const createBaseRepository = <TTable extends SQLiteTableWithColumns<any>>
     return result as TTable["$inferSelect"][];
   };
 
-  return { get, create, update, upsert, delete: del, getList };
+  const count = async (): Promise<number> => {
+    const result = await db.select({ count: sql<number>`count(*)` }).from(table);
+    return result[0].count;
+  };
+
+  return { get, create, update, upsert, delete: del, getList, count };
+};
+
+
+
+interface BaseCacheRepo<TTable extends SQLiteTableWithColumns<any>> extends BaseRepo<TTable> {
+  clearExpired: () => Promise<void>;
+  clearAll: () => Promise<void>;
+  setWithTTL: (data: SQLiteInsertValue<TTable>, ttl: number) => Promise<TTable["$inferSelect"]>;
+}
+
+export const createBaseCacheRepo = <TTable extends SQLiteTableWithColumns<any>>(
+  db: ReturnType<typeof drizzle>,
+  table: TTable
+): BaseCacheRepo<TTable> => {
+  const repo = createBaseRepo(db, table);
+
+  const clearExpired = async () => {
+    const now = Date.now();
+    await db.delete(table).where(lt(table.expiresAt, now)).execute();
+  };
+  const clearAll = async () => {
+    await db.delete(table).execute();
+  };
+
+  const setWithTTL = async (data: SQLiteInsertValue<TTable>, ttl: number) => {
+    const expiresAt = Date.now() + ttl;
+    return await repo.upsert({ ...data, expiresAt } as SQLiteInsertValue<TTable>);
+  };
+
+  return { ...repo, clearExpired, clearAll, setWithTTL };
 };

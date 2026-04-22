@@ -1,10 +1,11 @@
-import { createBaseRepository } from "./_baseRepo";
+import { createBaseRepo } from "./_baseRepo";
 import { db } from "../index";
 import { convertToDBLog, logs } from "../schema/logs";
 import { LogPayload } from "@/generated/desktopapi/type";
+import { lt, sql } from "drizzle-orm";
 
 export const logsRepo = {
-  ...createBaseRepository(db, logs),
+  // 大量のログを一括で挿入する（アップサート）
   bulkUpsert: async (newLogs: LogPayload[]) => {
     if (!newLogs || newLogs.length === 0) return;
 
@@ -23,11 +24,20 @@ export const logsRepo = {
     });
   },
 
-  /**
-   * すべてのログを削除する（フルリセット用）
-   */
+  //すべてのログを削除する（フルリセット用）
   deleteAll: async () => {
     await db.delete(logs).execute();
-  }
-}
+  },
+
+  // 古いログを削除する（例: 30日以上前のログ）
+  deleteBefore: async (timestamp: number) => {
+    await db.delete(logs).where(lt(logs.timestamp, timestamp)).execute();
+  },
+
+  // ログの総数を取得する
+  count: async (): Promise<number> => {
+    const result = await db.select({ count: sql<number>`count(*)` }).from(logs);
+    return result[0].count;
+  },
+};
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/contexts/ToastContext";
 import { useCacheManager } from "@/hooks/useCacheManager";
+import { useLogManager } from "@/hooks/useLogManager";
 import { formatBytes } from "@/lib/utils";
 
 export default function DatabaseSettings() {
@@ -14,17 +15,22 @@ export default function DatabaseSettings() {
   const { t } = useTranslation();
   const { showToast } = useToast();
 
+  // Cache management hooks
   const {
     stateStats, measureStateCache, clearStateCache,
     dbStats, measureDbCache, clearDbCache,
     imageStats, measureImageCache, clearImageCache,
   } = useCacheManager();
 
+  // Desktop log management hooks
+  const { logStats, measureLogs, clearLogs } = useLogManager();
+
   const [isClearingState, setIsClearingState] = useState(false);
   const [isClearingDb, setIsClearingDb] = useState(false);
   const [isClearingImage, setIsClearingImage] = useState(false);
+  const [isClearingLogs, setIsClearingLogs] = useState(false);
 
-  // 汎用ダイアログ用のステート
+  // State for generic confirmation dialog
   const [dialogState, setDialogState] = useState<{
     open: boolean;
     message: string;
@@ -36,29 +42,30 @@ export default function DatabaseSettings() {
   });
 
   useEffect(() => {
+    // Measure all sizes on mount
     measureStateCache();
     measureDbCache();
     measureImageCache();
-  }, [measureStateCache, measureDbCache, measureImageCache]);
+    measureLogs();
+  }, [measureStateCache, measureDbCache, measureImageCache, measureLogs]);
 
-  // ダイアログを呼び出して、OKが押されたらクリア処理を実行するラッパー
-  const confirmClear = (title: string, clearFn: () => Promise<void>, setClearing: (v: boolean) => void) => {
+  // Helper function to show confirmation and execute clear process
+  const confirmClear = (title: string, clearFn: () => Promise<void>, setClearing: (v: boolean) => void, isDangerous: boolean = false) => {
     setDialogState({
       open: true,
-      // i18nに対応。キーがない場合のフォールバックも用意
-      message: t("pages.setting_database.dialog_confirm_clear", {
+      message: t(isDangerous ? "pages.setting_database.dialog_confirm_clear_danger" : "pages.setting_database.dialog_confirm_clear", {
         cacheName: title
       }),
       onConfirm: async () => {
-        setDialogState((prev) => ({ ...prev, open: false })); // ダイアログを閉じる
-        setClearing(true); // 対象のローディングをON
+        setDialogState((prev) => ({ ...prev, open: false }));
+        setClearing(true);
         try {
           await clearFn();
           showToast("success", `${title} Cleared`);
         } catch (e) {
           showToast("error", "Error", String(e));
         } finally {
-          setClearing(false); // ローディングをOFF
+          setClearing(false);
         }
       }
     });
@@ -115,6 +122,24 @@ export default function DatabaseSettings() {
           ),
         }
       ]
+    },
+    {
+      title: t("pages.setting_database.groupLabel_localData"),
+      items: [
+        {
+          icon: "text-box-remove",
+          title: t("pages.setting_database.itemLabel_desktopLogs"),
+          description: isClearingLogs
+            ? t("common.loading", "Clearing...")
+            : t("pages.setting_database.itemDescription_desktopLogs") + "\n" + (logStats ? `Count: ${logStats.count}` : ""),
+          onPress: () => confirmClear(
+            t("pages.setting_database.itemLabel_desktopLogs"),
+            clearLogs,
+            setIsClearingLogs,
+            true // isDangerous action, show different confirmation message
+          ),
+        }
+      ]
     }
   ];
 
@@ -129,7 +154,7 @@ export default function DatabaseSettings() {
         onCancel={closeDialog}
         confirmTitle={t("common.clear", "Clear")}
         cancelTitle={t("common.cancel", "Cancel")}
-        // キャッシュクリアのような破壊的アクションなので、目立つ色（赤系）を指定
+        // Use notification color (red-ish) for destructive actions
         colorConfirm={theme.colors.notification}
       />
     </GenericScreen>

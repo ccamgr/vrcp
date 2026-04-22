@@ -150,7 +150,11 @@
       "itemLabel_dbCache": "データベースキャッシュ",
       "itemLabel_imageCache": "画像キャッシュ",
       "itemLabel_stateCache": "ステートキャッシュ",
-      "dialog_confirm_clear": "{{cacheName}} を削除します\nよろしいですか?"
+      "dialog_confirm_clear": "{{cacheName}} を削除します\nよろしいですか?",
+      "groupLabel_localData": "ローカルデータ",
+      "itemLabel_desktopLogs": "デスクトップログ",
+      "itemDescription_desktopLogs": "同期されたデスクトップアプリのログをデータベースから削除します．",
+      "dialog_confirm_clear_danger": "本当に {{cacheName}} を消去しますか？\nこの操作は取り消せません．"
     },
     "setting_notifications": {
       "label": "通知設定"

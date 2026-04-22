@@ -17,7 +17,7 @@ import GlobalDrawer from "@/components/layout/GlobalDrawer";
 import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { registerBackgroundTaskAsync } from "@/tasks";
 
-import { db, dbManager } from "@/db";
+import { db } from "@/db";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 

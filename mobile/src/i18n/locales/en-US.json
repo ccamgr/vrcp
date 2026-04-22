@@ -150,7 +150,11 @@
       "itemLabel_dbCache": "Database Cache",
       "itemDescription_dbCache": "Individual users, worlds, etc.",
       "itemLabel_imageCache": "Image Cache",
-      "itemDescription_imageCache": "Thumbnails and downloaded images. Managed by system."
+      "itemDescription_imageCache": "Thumbnails and downloaded images. Managed by system.",
+      "groupLabel_localData": "Local Data",
+      "itemLabel_desktopLogs": "Desktop Logs",
+      "itemDescription_desktopLogs": "Clear synced desktop logs from the database.",
+      "dialog_confirm_clear_danger": "Are you sure you want to clear {{cacheName}}? This action cannot be undone."
     },
     "setting_notifications": {
       "label": "Notification Settings"

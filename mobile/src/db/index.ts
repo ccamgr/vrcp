@@ -12,34 +12,17 @@ export const db = drizzle(expoDb);
 
 // 3. Cache management utilities
 export const dbManager = {
-  clearExpired: async () => {
-    const now = Date.now();
-    await db.delete(users).where(lt(users.expiresAt, now)).execute();
-    await db.delete(avatars).where(lt(avatars.expiresAt, now)).execute();
-    await db.delete(worlds).where(lt(worlds.expiresAt, now)).execute();
-    await db.delete(groups).where(lt(groups.expiresAt, now)).execute();
 
-    // Logs are history data, so they are excluded from cache expiration
-    // await db.delete(logs).where(lt(logs.expiresAt, now)).execute();
+  getDBFileSize: async () => {
+    const dbFileInfo = await FileWrapper.getInfoAsync(FileWrapper.documentDirectory + "SQLite/vrcp.db");
+    return dbFileInfo.exists ? dbFileInfo.size : -1; // size is not tracked in DB, so return -1 to indicate unknown
   },
 
-  clearAll: async () => {
-    // Clear all cache tables
-    await db.delete(users).execute();
-    await db.delete(avatars).execute();
-    await db.delete(worlds).execute();
-    await db.delete(groups).execute();
-    console.log("All DB caches completely cleared.");
-
-    // Note: If you want to clear logs on full reset, uncomment the line below
-    // await db.delete(logs).execute();
-  },
-
+  // Drop all tables including __drizzle_migrations
   resetDB: async () => {
     console.log("Starting full database reset...");
 
     try {
-      // Drop all tables including __drizzle_migrations
       await db.transaction(async (tx) => {
         const existTables = await tx.select({ name: sql`name` })
           .from(sql`sqlite_master`)
@@ -66,22 +49,4 @@ export const dbManager = {
       throw error;
     }
   },
-
-  getDBStats: async () => {
-    try {
-      const [u, a, w, g] = await Promise.all([
-        db.select({ count: sql<number>`count(*)` }).from(users),
-        db.select({ count: sql<number>`count(*)` }).from(avatars),
-        db.select({ count: sql<number>`count(*)` }).from(worlds),
-        db.select({ count: sql<number>`count(*)` }).from(groups),
-      ]);
-      const rows = Number(u[0].count) + Number(a[0].count) + Number(w[0].count) + Number(g[0].count)
-      const dbFileInfo = await FileWrapper.getInfoAsync(FileWrapper.documentDirectory + "SQLite/vrcp.db");
-
-      return { rows, size: dbFileInfo.exists ? dbFileInfo.size : -1 }; // size is not tracked in DB, so return -1 to indicate unknown
-    } catch (e) {
-      console.warn("Failed to get DB stats:", e);
-      return { rows: 0, size: -1 }; // size is not tracked in DB, so return -1 to indicate unknown
-    }
-  }
 };
