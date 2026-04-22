@@ -2,9 +2,9 @@
 import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { dbManager, dbPath } from "@/db";
-import FileWrapper from "@/lib/wrappers/fileWrapper";
+import { dbManager } from "@/db";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
+import { TANSTACK_STORAGE_KEY } from "@/lib/queryClient";
 
 export interface CacheStats {
   size: number;  // bytes
@@ -23,15 +23,15 @@ export const useCacheManager = () => {
   // ==========================================
   const measureStateCache = useCallback(async () => {
     const queries = queryClient.getQueryCache().findAll({ queryKey: ["vrc", "state"] });
-    const stored = await StorageWrapper.getItemAsync("VRC_APP_STATE_CACHE");
-    const sizeBytes = stored ? new Blob([stored]).size : 0;
+    const stored = await StorageWrapper.getItemAsync(TANSTACK_STORAGE_KEY);
+    const sizeBytes = stored ? new Blob([stored]).size : -1;
 
     setStateStats({ size: sizeBytes, count: queries.length });
   }, [queryClient]);
 
   const clearStateCache = useCallback(async () => {
     queryClient.removeQueries({ queryKey: ["vrc", "state"] });
-    await StorageWrapper.removeItemAsync("VRC_APP_STATE_CACHE");
+    await StorageWrapper.removeItemAsync(TANSTACK_STORAGE_KEY);
     await measureStateCache();
   }, [measureStateCache, queryClient]);
 
@@ -42,11 +42,7 @@ export const useCacheManager = () => {
     // db/index.ts の cacheManager を使って行数を取得
     const stats = await dbManager.getDBStats();
 
-    // SQLite ファイル (vrcp.db) の物理サイズを取得
-    const fileInfo = await FileWrapper.getInfoAsync(dbPath);
-    const sizeBytes = fileInfo.exists ? fileInfo.size : 0;
-
-    setDbStats({ size: sizeBytes, count: stats.rows });
+    setDbStats({ size: stats.size, count: stats.rows });
   }, []);
 
   const clearDbCache = useCallback(async () => {

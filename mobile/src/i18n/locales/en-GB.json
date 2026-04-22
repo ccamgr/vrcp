@@ -143,7 +143,14 @@
       "groupLabel_cache": "Cache",
       "cache_size_and_count_one": "{{size}} MB ({{count}} item)",
       "cache_size_and_count_other": "{{size}} MB ({{count}} items)",
-      "button_clearCache": "Clear Cache"
+      "button_clearCache": "Clear Cache",
+      "dialog_confirm_clear": "Are you sure you want to clear {{cacheName}}?",
+      "itemDescription_dbCache": "Individual users, worlds, etc.",
+      "itemDescription_imageCache": "Thumbnails and downloaded images. Managed by system.",
+      "itemDescription_stateCache": "Current-user, friend's status, etc.",
+      "itemLabel_dbCache": "Database Cache",
+      "itemLabel_imageCache": "Image Cache",
+      "itemLabel_stateCache": "State Cache"
     },
     "setting_notifications": {
       "label": "Notification Settings"

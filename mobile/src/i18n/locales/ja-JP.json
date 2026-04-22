@@ -141,9 +141,16 @@
     "setting_database": {
       "label": "データベース設定",
       "groupLabel_cache": "キャッシュ",
-      "cache_size_and_count_one": "{{size}} MB ({{count}} 項目)",
-      "cache_size_and_count_other": "{{size}} MB ({{count}} 項目)",
-      "button_clearCache": "キャッシュを削除"
+      "cache_size_and_count_one": "{{size}} ({{count}} 項目)",
+      "cache_size_and_count_other": "{{size}} ({{count}} 項目)",
+      "button_clearCache": "キャッシュ削除",
+      "itemDescription_dbCache": "各ユーザー，ワールドなど",
+      "itemDescription_imageCache": "サムネイルとダウンロードした画像\nシステムによって管理されます。",
+      "itemDescription_stateCache": "現在のユーザー，フレンドのステータスなど",
+      "itemLabel_dbCache": "データベースキャッシュ",
+      "itemLabel_imageCache": "画像キャッシュ",
+      "itemLabel_stateCache": "ステートキャッシュ",
+      "dialog_confirm_clear": "{{cacheName}} を削除します\nよろしいですか?"
     },
     "setting_notifications": {
       "label": "通知設定"

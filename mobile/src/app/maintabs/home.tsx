@@ -111,7 +111,7 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
   const { data: favFriends, refetch, isFetching } = useFavFriends();
 
   const instances = useMemo<InstanceLike[]>(() => {
-    return calcFriendsLocations(favFriends, [], true, false);
+    return calcFriendsLocations(favFriends, false);
   }, [favFriends]);
 
   const renderItem = useCallback(({ item }: { item: InstanceLike }) => (

@@ -91,3 +91,22 @@ export function updateLastVersion(): void {
   const currentVersionKey = `${currentVersion.nativeVersion}:${currentVersion.updates?.[0].date}`;
   StorageWrapper.setItemAsync("releasenote_lastversionkey", currentVersionKey);
 }
+
+
+// byte size
+/**
+ * バイト数を人が読みやすい形式 (KB, MB, GB...) に変換します
+ */
+export const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes < 0) return "Invalid size";
+  if (bytes === 0) return '0 KB';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  if (i === 0) return `< 1 KB`; // 1KB未満は「x B」ではなく「< 1 KB」と表示
+  if (i >= sizes.length) return `${parseFloat((bytes / Math.pow(k, sizes.length - 1)).toFixed(dm))} ${sizes[sizes.length - 1]}`; // TB以上はTBで表示
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};

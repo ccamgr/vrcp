@@ -27,7 +27,7 @@ const GenericDialog = ({
   colorCancel,
   cancelOnOutside = true,
 }: // children
-Props) => {
+  Props) => {
   const theme = useTheme();
   return (
     <Modal
@@ -37,7 +37,7 @@ Props) => {
       onRequestClose={onCancel}
     >
       <View style={styles.modalRoot}>
-        { cancelOnOutside && (
+        {cancelOnOutside && (
           <Pressable // close when press outside
             style={styles.closeOnOutside}
             onPress={onCancel}

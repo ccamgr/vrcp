@@ -143,7 +143,14 @@
       "groupLabel_cache": "Кэш",
       "cache_size_and_count_one": "{{size}} МБ ({{count}} элемент)",
       "cache_size_and_count_other": "{{size}} МБ ({{count}} элементов)",
-      "button_clearCache": "Очистить кэш"
+      "button_clearCache": "Очистить кэш",
+      "dialog_confirm_clear": "Вы уверены, что хотите очистить {{cacheName}}?",
+      "itemDescription_dbCache": "Отдельные пользователи, миры и т. д.",
+      "itemDescription_imageCache": "Миниатюры и загруженные изображения. \nУправляется системой.",
+      "itemDescription_stateCache": "Текущий пользователь, статус друга и т. д.",
+      "itemLabel_dbCache": "Кэш базы данных",
+      "itemLabel_imageCache": "Кэш изображений",
+      "itemLabel_stateCache": "Государственный кэш"
     },
     "setting_notifications": {
       "label": "Настройки уведомлений"

@@ -34,7 +34,7 @@ export default function FriendLocations() {
   };
 
   const { instances, unlocatableFriends } = useMemo(() => {
-    return calcFriendsLocations(friends ?? [], favorites ?? [], false, true);
+    return calcFriendsLocations(friends ?? [], true);
   }, [friends, favorites]);
 
 

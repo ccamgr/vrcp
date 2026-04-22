@@ -143,7 +143,14 @@
       "groupLabel_cache": "캐시",
       "cache_size_and_count_one": "{{size}} MB ({{count}}개 항목)",
       "cache_size_and_count_other": "{{size}} MB ({{count}}개 항목)",
-      "button_clearCache": "캐시 삭제"
+      "button_clearCache": "캐시 삭제",
+      "dialog_confirm_clear": "{{cacheName}}을(를) 삭제하시겠습니까?",
+      "itemDescription_dbCache": "개인 사용자, 월드 등",
+      "itemDescription_imageCache": "썸네일 및 다운로드한 이미지. \n시스템으로 관리됩니다.",
+      "itemDescription_stateCache": "현재 사용자, 친구 상태 등",
+      "itemLabel_dbCache": "데이터베이스 캐시",
+      "itemLabel_imageCache": "이미지 캐시",
+      "itemLabel_stateCache": "상태 캐시"
     },
     "setting_notifications": {
       "label": "알림 설정"

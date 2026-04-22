@@ -3,7 +3,7 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import { PersistQueryClientProviderProps } from "@tanstack/react-query-persist-client";
 import AsyncStorage from "expo-sqlite/kv-store";
 
-const STORAGE_KEY = "TANSTACK_STATE_CACHE";
+export const TANSTACK_STORAGE_KEY = "TANSTACK_STATE_CACHE";
 
 // 1. 公式 Persister が期待するインターフェースに合わせるための Shim
 const storageShim = {
@@ -24,7 +24,7 @@ export const queryClient = new QueryClient({
 // 2. 公式のファクトリ関数を使用して Persister を作成
 export const persister = createAsyncStoragePersister({
   storage: storageShim,
-  key: STORAGE_KEY,
+  key: TANSTACK_STORAGE_KEY,
   throttleTime: 1000,
 });
 

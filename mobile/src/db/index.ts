@@ -4,10 +4,10 @@ import { avatars, worlds, groups, users, logs } from "./schema";
 import { eq, and, like, lt, not, sql } from "drizzle-orm";
 import migrations from "./migration/migrations";
 import { migrate } from "drizzle-orm/expo-sqlite/migrator";
+import FileWrapper from "@/lib/wrappers/fileWrapper";
 
 // 1. Create DB instance as a singleton
 const expoDb = openDatabaseSync("vrcp.db", undefined, defaultDatabaseDirectory);
-export const dbPath = `${defaultDatabaseDirectory}vrcp.db`;
 export const db = drizzle(expoDb);
 
 // 3. Cache management utilities
@@ -75,12 +75,13 @@ export const dbManager = {
         db.select({ count: sql<number>`count(*)` }).from(worlds),
         db.select({ count: sql<number>`count(*)` }).from(groups),
       ]);
-      return {
-        rows: Number(u[0].count) + Number(a[0].count) + Number(w[0].count) + Number(g[0].count)
-      };
+      const rows = Number(u[0].count) + Number(a[0].count) + Number(w[0].count) + Number(g[0].count)
+      const dbFileInfo = await FileWrapper.getInfoAsync(FileWrapper.documentDirectory + "SQLite/vrcp.db");
+
+      return { rows, size: dbFileInfo.exists ? dbFileInfo.size : -1 }; // size is not tracked in DB, so return -1 to indicate unknown
     } catch (e) {
       console.warn("Failed to get DB stats:", e);
-      return { rows: 0 };
+      return { rows: 0, size: -1 }; // size is not tracked in DB, so return -1 to indicate unknown
     }
   }
 };

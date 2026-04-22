@@ -143,7 +143,14 @@
       "groupLabel_cache": "缓存",
       "cache_size_and_count_one": "{{size}} MB ({{count}} 项)",
       "cache_size_and_count_other": "{{size}} MB ({{count}} 项)",
-      "button_clearCache": "清除缓存"
+      "button_clearCache": "清除缓存",
+      "dialog_confirm_clear": "您确定要清除 {{cacheName}} 吗？",
+      "itemDescription_dbCache": "个人用户、世界等。",
+      "itemDescription_imageCache": "缩略图和下载的图像。\n由系统管理。",
+      "itemDescription_stateCache": "当前用户、好友状态等",
+      "itemLabel_dbCache": "数据库缓存",
+      "itemLabel_imageCache": "图片缓存",
+      "itemLabel_stateCache": "状态缓存"
     },
     "setting_notifications": {
       "label": "通知设置"
