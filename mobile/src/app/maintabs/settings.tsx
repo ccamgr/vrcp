@@ -13,6 +13,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { routeToAppearanceSettings, routeToDatabaseSettings, routeToDesktopAppSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/lib/route";
 import SettingItemList from "@/components/features/settings/SettingItemList";
+import { useCacheManager } from "@/hooks/useCacheManager";
 
 interface SettingItem {
   icon: SupportedIconNames;
@@ -30,6 +31,7 @@ export default function Settings() {
   const [openDevelopment, setOpenDevelopment] = useState(false);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
+  const { clearAllCaches } = useCacheManager();
 
   const { showToast } = useToast();
 
@@ -118,8 +120,9 @@ export default function Settings() {
       <GenericDialog
         open={openLogout}
         message={t("pages.settings.logout_dialog_text")}
-        onConfirm={() => {
-          auth.logout();
+        onConfirm={async () => {
+          await auth.logout();
+          clearAllCaches();
           setOpenLogout(false);
         }}
         onCancel={() => setOpenLogout(false)}
