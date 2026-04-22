@@ -1,33 +1,31 @@
 import FileWrapper from "@/lib/wrappers/fileWrapper";
 import React, { createContext, useContext, useEffect } from "react";
 
-// 定数定義
 const LOG_FILE_DIR = FileWrapper.documentDirectory + "logs/";
 const LATEST_LOG_FILE = LOG_FILE_DIR + "latest.log";
 
-const MAX_LOG_FILE_SIZE = 10 * 1024; // ファイルサイズ上限: 10KB
-const MAX_LOG_FILES = 20;            // 保持する最大ファイル数（latest.log含む）
+const MAX_LOG_FILE_SIZE = 10 * 1024; // 10KB
+const MAX_LOG_FILES = 20;
 
 interface LogContextType {
-  log: (message: string, data?: any) => void; // ログファイルに記録
+  log: (message: string, data?: any) => void;
   getRecentLogFilePath: () => string;
   clearLogFiles: () => Promise<void>;
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined);
 
-const useLog = () => {
+export const useLog = () => {
   const context = useContext(LogContext);
   if (!context) throw new Error("useLog must be used within a LogProvider");
   return context;
 };
 
-// 連続書き込みの衝突を防ぐためのキュー（直列化）
-let writeQueue = Promise.resolve();
+// Queue state to prevent memory leaks and file lock collisions
+let isWriting = false;
+const writeQueue: string[] = [];
 
-const LogProvider = ({ children }: { children: React.ReactNode }) => {
-
-  // アプリ起動時（マウント時）に logs ディレクトリを確実に作成する
+export const LogProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initDir = async () => {
       const dirInfo = await FileWrapper.getInfoAsync(LOG_FILE_DIR);
@@ -38,56 +36,65 @@ const LogProvider = ({ children }: { children: React.ReactNode }) => {
     initDir();
   }, []);
 
-  const writeLogToFile = async (logEntry: string) => {
-    let fileInfo = await FileWrapper.getInfoAsync(LATEST_LOG_FILE);
-    let existingLogs = "";
+  // Safely process the queue one by one
+  const processQueue = async () => {
+    if (isWriting || writeQueue.length === 0) return;
+    isWriting = true;
 
-    // 1. ファイルが存在する場合の処理（サイズチェックとローテーション）
-    if (fileInfo.exists) {
-      if (fileInfo.size >= MAX_LOG_FILE_SIZE) {
-        // [ローテーション処理]
-        // 現在の latest.log を タイムスタンプ付きの名前にリネームして退避
-        const timestampStr = new Date().toISOString().replace(/[:.]/g, "-");
-        const archivedFileName = `log_${timestampStr}.log`;
-
-        await FileWrapper.moveAsync({
-          from: LATEST_LOG_FILE,
-          to: LOG_FILE_DIR + archivedFileName,
-        });
-
-        // [古いファイルの削除処理 (20ファイル上限)]
-        const files = await FileWrapper.readDirectoryAsync(LOG_FILE_DIR);
-        // latest.log 以外の退避されたログファイルを抽出し、名前順（= 古い順）にソート
-        const archivedLogs = files
-          .filter(f => f.endsWith(".log") && f !== "latest.log")
-          .sort();
-
-        // 保持する最大数（latest.logの1枠分を引く）を超えていたら、古いものから削除
-        const maxArchivedFiles = MAX_LOG_FILES - 1;
-        if (archivedLogs.length > maxArchivedFiles) {
-          const overCount = archivedLogs.length - maxArchivedFiles;
-          for (let i = 0; i < overCount; i++) {
-            await FileWrapper.deleteAsync(LOG_FILE_DIR + archivedLogs[i], { idempotent: true });
-          }
-        }
-
-        // リネームしたので、既存ログは空として扱う（新しい latest.log の始まり）
-        existingLogs = "";
-      } else {
-        // 上限に達していなければ、既存のログを読み込む
-        existingLogs = await FileWrapper.readAsStringAsync(LATEST_LOG_FILE);
+    while (writeQueue.length > 0) {
+      const logEntry = writeQueue.shift();
+      if (logEntry) {
+        await writeLogToFile(logEntry);
       }
     }
 
-    // 2. 追記して書き込み
-    await FileWrapper.writeAsStringAsync(LATEST_LOG_FILE, existingLogs + logEntry);
+    isWriting = false;
+  };
+
+  const writeLogToFile = async (logEntry: string) => {
+    try {
+      let fileInfo = await FileWrapper.getInfoAsync(LATEST_LOG_FILE);
+      let existingLogs = "";
+
+      if (fileInfo.exists) {
+        if (fileInfo.size >= MAX_LOG_FILE_SIZE) {
+          // Rotation process
+          const timestampStr = new Date().toISOString().replace(/[:.]/g, "-");
+          const archivedFileName = `log_${timestampStr}.log`;
+
+          await FileWrapper.moveAsync({
+            from: LATEST_LOG_FILE,
+            to: LOG_FILE_DIR + archivedFileName,
+          });
+
+          // Cleanup old files
+          const files = await FileWrapper.readDirectoryAsync(LOG_FILE_DIR);
+          const archivedLogs = files
+            .filter((f) => f.endsWith(".log") && f !== "latest.log")
+            .sort();
+
+          const maxArchivedFiles = MAX_LOG_FILES - 1;
+          if (archivedLogs.length > maxArchivedFiles) {
+            const overCount = archivedLogs.length - maxArchivedFiles;
+            for (let i = 0; i < overCount; i++) {
+              await FileWrapper.deleteAsync(LOG_FILE_DIR + archivedLogs[i], { idempotent: true });
+            }
+          }
+          existingLogs = "";
+        } else {
+          existingLogs = await FileWrapper.readAsStringAsync(LATEST_LOG_FILE);
+        }
+      }
+
+      await FileWrapper.writeAsStringAsync(LATEST_LOG_FILE, existingLogs + logEntry);
+    } catch (e) {
+      console.error("Failed to write to log file:", e);
+    }
   };
 
   const log = (message: string, data?: any) => {
     try {
       const timestamp = new Date().toISOString();
-
-      // データを安全に文字列化
       let dataString = "";
       if (data) {
         try {
@@ -97,30 +104,23 @@ const LogProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
 
-      // ログのフォーマット定義
       const logEntry = `[${timestamp}] ${message} ${dataString}\n`;
       console.log(logEntry.trim());
 
-      // writeQueue に繋げることで、複数回呼ばれても順番にファイル処理が行われるようにする
-      writeQueue = writeQueue
-        .then(() => writeLogToFile(logEntry))
-        .catch((error) => console.error("Failed to write log to file:", error));
-
+      // Add to queue and trigger processor
+      writeQueue.push(logEntry);
+      processQueue();
     } catch (error) {
-      console.error("Failed to write log to file:", error);
+      console.error("Failed to enqueue log:", error);
     }
   };
 
-  const getRecentLogFilePath = () => {
-    // 開発者に送る用の最新ファイルパスを返す
-    return LATEST_LOG_FILE;
-  };
+  const getRecentLogFilePath = () => LATEST_LOG_FILE;
 
   const clearLogFiles = async () => {
     try {
       const dirInfo = await FileWrapper.getInfoAsync(LOG_FILE_DIR);
       if (!dirInfo.exists) return;
-
       const files = await FileWrapper.readDirectoryAsync(LOG_FILE_DIR);
       for (const file of files) {
         await FileWrapper.deleteAsync(LOG_FILE_DIR + file, { idempotent: true });
@@ -136,5 +136,3 @@ const LogProvider = ({ children }: { children: React.ReactNode }) => {
     </LogContext.Provider>
   );
 };
-
-export { LogProvider, useLog };

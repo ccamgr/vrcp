@@ -18,7 +18,7 @@ import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { LogProvider } from "@/contexts/LogContext";
 import { registerBackgroundTaskAsync } from "@/tasks/taskregister";
 
-import { db, cacheManager } from "@/db";
+import { db, dbManager } from "@/db";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 

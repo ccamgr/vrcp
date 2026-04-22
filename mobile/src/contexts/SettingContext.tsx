@@ -1,12 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { vrcColors } from "@/configs/vrchat";
-import { mergeWithDefaults } from "@/lib/utils";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
-import { de } from "date-fns/locale";
-
-
-
-// provide user settings globally,
 
 type HomeTabVariant = "friend-locations" | "feeds" | "events";
 
@@ -48,35 +42,38 @@ const defaultSettings: Setting = {
   otherOptions_desktopAppURL: null,
   otherOptions_sendDebugLogs: false,
   otherOptions_enableJsonViewer: false,
-}
+};
 
 interface SettingContextType {
   settings: Setting;
   defaultSettings: Setting;
   saveSettings: (newSettings: Partial<Setting>) => Promise<void>;
   loadSettings: () => Promise<Setting>;
+  isLoaded: boolean;
 }
+
 const Context = createContext<SettingContextType | undefined>(undefined);
 
-const useSetting = () => {
+export const useSetting = () => {
   const context = useContext(Context);
-  if (!context) throw new Error("useSetting must be used within a SettingContextProvider");
+  if (!context) throw new Error("useSetting must be used within a SettingProvider");
   return context;
-}
+};
 
-const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+export const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<Setting>(defaultSettings);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
-    // Load settings from async storage on mount
-    loadSettings().then(setSettings);
+    loadSettings().then((loadedSettings) => {
+      setSettings(loadedSettings);
+      setIsLoaded(true);
+    });
   }, []);
 
   const saveSettings = async (newSettings: Partial<Setting>) => {
     const updatedSettings = { ...settings, ...newSettings };
     setSettings(updatedSettings);
-    // Save settings to async storage
     const entries = Object.entries(newSettings).map(([key, value]) => [
       key,
       JSON.stringify(value),
@@ -85,32 +82,27 @@ const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
   };
 
   const loadSettings = async (): Promise<Setting> => {
-    // Load settings from async storage
-    const storedSettings = await StorageWrapper.multiGet(
-      Object.keys(defaultSettings)
-    );
+    const storedSettings = await StorageWrapper.multiGet(Object.keys(defaultSettings));
     const newSettings = { ...defaultSettings };
+
     storedSettings.forEach(([key, value]) => {
       if (value !== null && key in defaultSettings) {
-        // @ts-ignore
-        newSettings[key] = JSON.parse(value);
+        const typedKey = key as SettingKey;
+        try {
+          // Cast type to fix TS error safely
+          (newSettings as any)[typedKey] = JSON.parse(value);
+        } catch (e) {
+          console.error(`Failed to parse setting for ${key}`);
+        }
       }
     });
-    console.log("Loaded settings:", JSON.stringify(newSettings, null, 2));
     return newSettings;
-  }
-
+  };
 
   return (
-    <Context.Provider value={{
-      settings,
-      defaultSettings,
-      saveSettings,
-      loadSettings,
-    }}>
-      {children}
+    <Context.Provider value={{ settings, defaultSettings, saveSettings, loadSettings, isLoaded }}>
+      {/* Wait for settings to load before rendering children to prevent UI flash */}
+      {isLoaded ? children : null}
     </Context.Provider>
   );
-}
-
-export { SettingProvider, useSetting };
+};
