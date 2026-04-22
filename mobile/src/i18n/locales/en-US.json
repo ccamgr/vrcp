@@ -143,7 +143,6 @@
       "groupLabel_cache": "Cache",
       "cache_size_and_count_one": "{{size}} ({{count}} item)",
       "cache_size_and_count_other": "{{size}} ({{count}} items)",
-      "button_clearCache": "Clear Cache",
       "dialog_confirm_clear": "Are you sure you want to clear {{cacheName}}?",
       "itemLabel_stateCache": "State Cache",
       "itemDescription_stateCache": "Current-user, friend's status, etc.",
@@ -153,8 +152,9 @@
       "itemDescription_imageCache": "Thumbnails and downloaded images. Managed by system.",
       "groupLabel_localData": "Local Data",
       "itemLabel_desktopLogs": "Desktop Logs",
-      "itemDescription_desktopLogs": "Clear synced desktop logs from the database.",
-      "dialog_confirm_clear_danger": "Are you sure you want to clear {{cacheName}}? This action cannot be undone."
+      "itemDescription_desktopLogs": "Synced desktop logs from the database.",
+      "dialog_confirm_clear_danger": "Are you sure you want to clear {{cacheName}}? This action cannot be undone.",
+      "button_clear": "Clear"
     },
     "setting_notifications": {
       "label": "Notification Settings"

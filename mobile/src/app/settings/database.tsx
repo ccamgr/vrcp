@@ -9,6 +9,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { useCacheManager } from "@/hooks/useCacheManager";
 import { useLogManager } from "@/hooks/useLogManager";
 import { formatBytes } from "@/lib/utils";
+import { TouchableEx } from "@/components/CustomElements";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 
 export default function DatabaseSettings() {
   const theme = useTheme();
@@ -30,7 +32,20 @@ export default function DatabaseSettings() {
   const [isClearingImage, setIsClearingImage] = useState(false);
   const [isClearingLogs, setIsClearingLogs] = useState(false);
 
-  // State for generic confirmation dialog
+  // Step 1 State (For Desktop Logs only)
+  const [actionMenuState, setActionMenuState] = useState<{
+    open: boolean;
+    title: string;
+    stats: string;
+    onProceed: () => void;
+  }>({
+    open: false,
+    title: "",
+    stats: "",
+    onProceed: () => { },
+  });
+
+  // Step 2 State (Final Confirmation)
   const [dialogState, setDialogState] = useState<{
     open: boolean;
     message: string;
@@ -42,14 +57,34 @@ export default function DatabaseSettings() {
   });
 
   useEffect(() => {
-    // Measure all sizes on mount
     measureStateCache();
     measureDbCache();
     measureImageCache();
     measureLogs();
   }, [measureStateCache, measureDbCache, measureImageCache, measureLogs]);
 
-  // Helper function to show confirmation and execute clear process
+  // Handler for Desktop Logs (Two-step)
+  const openActionMenu = (
+    title: string,
+    stats: string,
+    clearFn: () => Promise<void>,
+    setClearing: (v: boolean) => void,
+    isDangerous: boolean = false
+  ) => {
+    setActionMenuState({
+      open: true,
+      title,
+      stats,
+      onProceed: () => {
+        setActionMenuState((prev) => ({ ...prev, open: false }));
+        setTimeout(() => {
+          confirmClear(title, clearFn, setClearing, isDangerous);
+        }, 350);
+      }
+    });
+  };
+
+  // Handler for Final Clear
   const confirmClear = (title: string, clearFn: () => Promise<void>, setClearing: (v: boolean) => void, isDangerous: boolean = false) => {
     setDialogState({
       open: true,
@@ -71,9 +106,22 @@ export default function DatabaseSettings() {
     });
   };
 
-  const closeDialog = () => {
-    setDialogState((prev) => ({ ...prev, open: false }));
-  };
+  // Render clear button (Inherit theme colors)
+  const renderClearButton = (onPress: () => void, isLoading: boolean) => (
+    <TouchableEx
+      style={[styles.clearButton, { backgroundColor: theme.colors.card, borderColor: theme.colors.border, borderWidth: 1 }]}
+      onPress={onPress}
+      disabled={isLoading}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="small" color={theme.colors.text} />
+      ) : (
+        <Text style={[styles.clearButtonText, { color: theme.colors.text }]}>
+          {t("pages.setting_database.button_clear", "Clear")}
+        </Text>
+      )}
+    </TouchableEx>
+  );
 
   const listContents: SettingItemListContents = [
     {
@@ -88,10 +136,9 @@ export default function DatabaseSettings() {
               size: formatBytes(stateStats.size),
               count: stateStats.count
             }) : ""),
-          onPress: () => confirmClear(
-            t("pages.setting_database.itemLabel_stateCache"),
-            clearStateCache,
-            setIsClearingState
+          leading: renderClearButton(
+            () => confirmClear(t("pages.setting_database.itemLabel_stateCache"), clearStateCache, setIsClearingState, false),
+            isClearingState
           ),
         },
         {
@@ -103,10 +150,9 @@ export default function DatabaseSettings() {
               size: formatBytes(dbStats.size),
               count: dbStats.count
             }) : ""),
-          onPress: () => confirmClear(
-            t("pages.setting_database.itemLabel_dbCache"),
-            clearDbCache,
-            setIsClearingDb
+          leading: renderClearButton(
+            () => confirmClear(t("pages.setting_database.itemLabel_dbCache"), clearDbCache, setIsClearingDb, false),
+            isClearingDb
           ),
         },
         {
@@ -115,10 +161,9 @@ export default function DatabaseSettings() {
           description: isClearingImage
             ? t("common.loading", "Clearing...")
             : t("pages.setting_database.itemDescription_imageCache"),
-          onPress: () => confirmClear(
-            t("pages.setting_database.itemLabel_imageCache"),
-            clearImageCache,
-            setIsClearingImage
+          leading: renderClearButton(
+            () => confirmClear(t("pages.setting_database.itemLabel_imageCache"), clearImageCache, setIsClearingImage, false),
+            isClearingImage
           ),
         }
       ]
@@ -132,11 +177,13 @@ export default function DatabaseSettings() {
           description: isClearingLogs
             ? t("common.loading", "Clearing...")
             : t("pages.setting_database.itemDescription_desktopLogs") + "\n" + (logStats ? `Count: ${logStats.count}` : ""),
-          onPress: () => confirmClear(
+          // Tap the whole field for logs
+          onPress: () => openActionMenu(
             t("pages.setting_database.itemLabel_desktopLogs"),
+            logStats ? `Count: ${logStats.count}` : "",
             clearLogs,
             setIsClearingLogs,
-            true // isDangerous action, show different confirmation message
+            true
           ),
         }
       ]
@@ -147,16 +194,42 @@ export default function DatabaseSettings() {
     <GenericScreen scrollable>
       <SettingItemList contents={listContents} />
 
+      {/* desktop logs dialog */}
+      <GenericDialog
+        open={actionMenuState.open}
+        message={`【${actionMenuState.title}】\n\n${actionMenuState.stats}`}
+        onConfirm={actionMenuState.onProceed}
+        onCancel={() => setActionMenuState((prev) => ({ ...prev, open: false }))}
+        confirmTitle={t("pages.setting_database.button_clear", "Clear")}
+        cancelTitle={t("common.cancel", "Cancel")}
+        colorConfirm={theme.colors.primary}
+      />
+
+      {/* Final confirmation dialog (for all actions) */}
       <GenericDialog
         open={dialogState.open}
         message={dialogState.message}
         onConfirm={dialogState.onConfirm}
-        onCancel={closeDialog}
-        confirmTitle={t("common.clear", "Clear")}
+        onCancel={() => setDialogState((prev) => ({ ...prev, open: false }))}
+        confirmTitle={t("pages.setting_database.button_clear", "Clear")}
         cancelTitle={t("common.cancel", "Cancel")}
-        // Use notification color (red-ish) for destructive actions
         colorConfirm={theme.colors.notification}
       />
     </GenericScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  clearButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8, // Adjust spacing as leading element
+  },
+  clearButtonText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+});

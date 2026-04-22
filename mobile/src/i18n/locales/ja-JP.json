@@ -143,7 +143,6 @@
       "groupLabel_cache": "キャッシュ",
       "cache_size_and_count_one": "{{size}} ({{count}} 項目)",
       "cache_size_and_count_other": "{{size}} ({{count}} 項目)",
-      "button_clearCache": "キャッシュ削除",
       "itemDescription_dbCache": "各ユーザー，ワールドなど",
       "itemDescription_imageCache": "サムネイルとダウンロードした画像\nシステムによって管理されます。",
       "itemDescription_stateCache": "現在のユーザー，フレンドのステータスなど",
@@ -153,8 +152,9 @@
       "dialog_confirm_clear": "{{cacheName}} を削除します\nよろしいですか?",
       "groupLabel_localData": "ローカルデータ",
       "itemLabel_desktopLogs": "デスクトップログ",
-      "itemDescription_desktopLogs": "同期されたデスクトップアプリのログをデータベースから削除します．",
-      "dialog_confirm_clear_danger": "本当に {{cacheName}} を消去しますか？\nこの操作は取り消せません．"
+      "itemDescription_desktopLogs": "同期されたデスクトップアプリのログ",
+      "dialog_confirm_clear_danger": "本当に {{cacheName}} を消去しますか？\nこの操作は取り消せません．",
+      "button_clear": "削除"
     },
     "setting_notifications": {
       "label": "通知設定"

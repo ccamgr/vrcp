@@ -143,14 +143,18 @@
       "groupLabel_cache": "Cache",
       "cache_size_and_count_one": "{{size}} MB ({{count}} Element)",
       "cache_size_and_count_other": "{{size}} MB ({{count}} Elemente)",
-      "button_clearCache": "Cache leeren",
       "dialog_confirm_clear": "Sind Sie sicher, dass Sie {{cacheName}} löschen möchten?",
       "itemDescription_dbCache": "Einzelne Benutzer, Welten usw.",
       "itemDescription_imageCache": "Miniaturansichten und heruntergeladene Bilder. \nVom System verwaltet.",
       "itemDescription_stateCache": "Aktueller Benutzer, Status des Freundes usw.",
       "itemLabel_dbCache": "Datenbank-Cache",
       "itemLabel_imageCache": "Bildcache",
-      "itemLabel_stateCache": "Staatscache"
+      "itemLabel_stateCache": "Staatscache",
+      "button_clear": "Klar",
+      "dialog_confirm_clear_danger": "Sind Sie sicher, dass Sie {{cacheName}} löschen möchten? \nDiese Aktion kann nicht rückgängig gemacht werden.",
+      "groupLabel_localData": "Lokale Daten",
+      "itemDescription_desktopLogs": "Synchronisierte Desktop-Protokolle aus der Datenbank.",
+      "itemLabel_desktopLogs": "Desktop-Protokolle"
     },
     "setting_notifications": {
       "label": "Benachrichtigungen"

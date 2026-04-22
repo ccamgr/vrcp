@@ -143,14 +143,18 @@
       "groupLabel_cache": "快取",
       "cache_size_and_count_one": "{{size}} MB ({{count}} 個項目)",
       "cache_size_and_count_other": "{{size}} MB ({{count}} 個項目)",
-      "button_clearCache": "清除快取",
       "dialog_confirm_clear": "您確定要清除 {{cacheName}} 嗎？",
       "itemDescription_dbCache": "個人用戶、世界等。",
       "itemDescription_imageCache": "縮圖和下載的圖像。由系統管理。",
       "itemDescription_stateCache": "目前使用者、好友狀態等",
       "itemLabel_dbCache": "資料庫快取",
       "itemLabel_imageCache": "圖片快取",
-      "itemLabel_stateCache": "狀態快取"
+      "itemLabel_stateCache": "狀態快取",
+      "button_clear": "清除",
+      "dialog_confirm_clear_danger": "您確定要清除 {{cacheName}} 嗎？此操作無法撤銷。",
+      "groupLabel_localData": "本地數據",
+      "itemDescription_desktopLogs": "從資料庫同步桌面日誌。",
+      "itemLabel_desktopLogs": "桌面紀錄"
     },
     "setting_notifications": {
       "label": "通知設定"

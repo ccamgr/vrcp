@@ -143,14 +143,18 @@
       "groupLabel_cache": "Кэш",
       "cache_size_and_count_one": "{{size}} МБ ({{count}} элемент)",
       "cache_size_and_count_other": "{{size}} МБ ({{count}} элементов)",
-      "button_clearCache": "Очистить кэш",
       "dialog_confirm_clear": "Вы уверены, что хотите очистить {{cacheName}}?",
       "itemDescription_dbCache": "Отдельные пользователи, миры и т. д.",
       "itemDescription_imageCache": "Миниатюры и загруженные изображения. \nУправляется системой.",
       "itemDescription_stateCache": "Текущий пользователь, статус друга и т. д.",
       "itemLabel_dbCache": "Кэш базы данных",
       "itemLabel_imageCache": "Кэш изображений",
-      "itemLabel_stateCache": "Государственный кэш"
+      "itemLabel_stateCache": "Государственный кэш",
+      "button_clear": "Прозрачный",
+      "dialog_confirm_clear_danger": "Вы уверены, что хотите очистить {{cacheName}}? \nЭто действие невозможно отменить.",
+      "groupLabel_localData": "Локальные данные",
+      "itemDescription_desktopLogs": "Синхронизированные журналы рабочего стола из базы данных.",
+      "itemLabel_desktopLogs": "Журналы рабочего стола"
     },
     "setting_notifications": {
       "label": "Настройки уведомлений"
