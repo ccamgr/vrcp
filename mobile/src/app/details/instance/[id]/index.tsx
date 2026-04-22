@@ -42,6 +42,8 @@ import { Instance } from "@/generated/vrcapi";
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // locationStr
   const { parsedLocation } = parseLocationString(id);
+  const worldId = parsedLocation?.worldId;
+  const instanceId = parsedLocation?.instanceId;
   const vrc = useVRChat();
   const { t } = useTranslation();
   const { showToast } = useToast();
@@ -53,21 +55,18 @@ export default function InstanceDetail() {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchInstance = useCallback(async () => {
-    if (!parsedLocation || !vrc.instancesApi) return;
+    if (!worldId || !instanceId || !vrc.instancesApi) return;
 
     setIsLoading(true);
     try {
-      const res = await vrc.instancesApi.getInstance({
-        worldId: parsedLocation.worldId ?? "",
-        instanceId: parsedLocation.instanceId ?? "",
-      });
+      const res = await vrc.instancesApi.getInstance({ worldId, instanceId });
       setInstance(res.data);
     } catch (e) {
       showToast("error", "Error fetching instance data", extractErrMsg(e));
     } finally {
       setIsLoading(false);
     }
-  }, [parsedLocation, vrc.instancesApi]);
+  }, [worldId, instanceId, vrc.instancesApi]);
 
   useEffect(() => {
     fetchInstance();
