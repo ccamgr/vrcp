@@ -3,81 +3,95 @@ import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
 import StorageWrapper from '@/lib/wrappers/storageWrapper';
 import * as SecureStore from "expo-secure-store";
-import { Configuration, Notification, NotificationsApi, OrderOption, SortOption } from '@/generated/vrcapi';
+import { Configuration, Notification, NotificationsApi, UsersApi, OrderOption, SortOption } from '@/generated/vrcapi';
 import { getUserAgent } from '@/lib/utils';
 import { extractNotificationContent } from '@/lib/funcs/extractNotificationContent';
 
-// Must match the identifier registered in app.json (if required)
 export const TASK_NAME = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK';
-const LAST_CHECKED_KEY = '@vrcp_last_notification_checked';
+const LAST_CHECKED_KEY = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK_LAST_CHECKED';
 
-
-// Define the background task
 TaskManager.defineTask(TASK_NAME, async () => {
   const now = new Date();
   console.log(`[Background Task] Executed at: ${now.toISOString()}`);
 
   try {
-    /** Fetch user credentials from secure storage and Configure API   */
     const secret = await Promise.all([
       SecureStore.getItemAsync("auth_secret_username"),
       SecureStore.getItemAsync("auth_secret_password"),
     ]);
+
     if (!secret[0] || !secret[1]) {
       console.log("No secret found for auto login");
-      return BackgroundTask.BackgroundTaskResult.Success; // No credentials, can't check notifications, but task itself succeeded
+      return BackgroundTask.BackgroundTaskResult.Success;
     }
+
     const conf = new Configuration({
-      // basePath: BASE_API_URL, // default
       username: secret[0] || undefined,
       password: secret[1] || undefined,
       baseOptions: {
         headers: { "User-Agent": getUserAgent() },
       },
     });
-    const api = new NotificationsApi(conf);
-    /** get notifications */
-    const responses = await api.getNotifications({
+
+    const notificationsApi = new NotificationsApi(conf);
+    const usersApi = new UsersApi(conf); // Add UsersApi to fetch display names
+
+    const responses = await notificationsApi.getNotifications({
       type: "all",
-      hidden: undefined,
-      after: "five_days_ago", // or use actual timestamp
-      n: 20, // fetch latest 20 notifications
+      after: "five_days_ago",
+      n: 20,
       offset: 0,
     }, {
-      params: {
-        sort: SortOption.CreatedAt,
-        order: OrderOption.Descending,
-      }
-    })
-
+      params: { sort: SortOption.CreatedAt, order: OrderOption.Descending }
+    });
 
     const lastNotified = await StorageWrapper.getItemAsync(LAST_CHECKED_KEY);
     let newlastNotified: string | null = null;
     const notifications: Notification[] = responses.data;
+
     const newNotifications = notifications.filter(notif => {
-      if (!notif.id) return false;
-      if (notif.seen) return false; // only notify about unseen notifications
-      if (lastNotified && notif.created_at <= lastNotified) {
-        return false; // already notified
-      } else {
-        if (!newlastNotified || notif.created_at > newlastNotified) {
-          newlastNotified = notif.created_at;
-        }
+      if (!notif.id || notif.seen) return false;
+      if (lastNotified && notif.created_at <= lastNotified) return false;
+
+      if (!newlastNotified || notif.created_at > newlastNotified) {
+        newlastNotified = notif.created_at;
       }
       return true;
     });
-    // Save the new last notified timestamp to prevent duplicate notifications
-    await StorageWrapper.setItemAsync(LAST_CHECKED_KEY, newlastNotified || "" );
 
+    await StorageWrapper.setItemAsync(LAST_CHECKED_KEY, newlastNotified || "");
 
-    // send notification to mobile
     if (newNotifications.length > 0) {
-      await Promise.all(newNotifications.map((notif) => {
+      // Simple memory cache to avoid fetching the same user multiple times in one task run
+      const fetchedUsers: Record<string, string> = {};
+
+      await Promise.all(newNotifications.map(async (notif) => {
+        let senderNameStr = "";
+
+        // Fetch displayName using senderUserId
+        if (notif.senderUserId) {
+          try {
+            if (fetchedUsers[notif.senderUserId]) {
+              senderNameStr = `${fetchedUsers[notif.senderUserId]}: `;
+            } else {
+              const userRes = await usersApi.getUser({ userId: notif.senderUserId });
+              const displayName = userRes.data.displayName;
+              fetchedUsers[notif.senderUserId] = displayName;
+              senderNameStr = `${displayName}: `;
+            }
+          } catch (e) {
+            console.warn(`Failed to fetch user info for ${notif.senderUserId}`, e);
+            senderNameStr = "Unknown User: ";
+          }
+        }
+
         const { title, contents } = extractNotificationContent(notif);
-        Notifications.scheduleNotificationAsync({
+        const bodyText = senderNameStr + contents.join("\n");
+
+        await Notifications.scheduleNotificationAsync({
           content: {
-            title: title || "",
-            body: contents.join("\n") || "",
+            title: title || "VRChat",
+            body: bodyText,
             data: {
               type: "vrc_notification",
               notificationId: notif.id || "",
@@ -85,9 +99,10 @@ TaskManager.defineTask(TASK_NAME, async () => {
               notificationType: notif.type || "",
             },
           },
-          trigger: null, // Send immediately
+          trigger: null,
         });
       }));
+
       return BackgroundTask.BackgroundTaskResult.Success;
     } else {
       console.log(`[Background Task] No new notifications.`);
@@ -95,6 +110,6 @@ TaskManager.defineTask(TASK_NAME, async () => {
     }
   } catch (error) {
     console.error(`[Background Task] Error:`, error);
-    return BackgroundTask.BackgroundTaskResult.Success; // Even on error, we return Success to avoid retry storms. Consider logging the error for debugging.
+    return BackgroundTask.BackgroundTaskResult.Success;
   }
 });
