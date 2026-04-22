@@ -68,9 +68,16 @@ export const useCacheManager = () => {
     await measureImageCache();
   }, [measureImageCache]);
 
+  const clearAllCaches = useCallback(async () => Promise.all([
+    clearStateCache(),
+    clearDbCache(),
+    clearImageCache()
+  ]), [clearStateCache, clearDbCache, clearImageCache]);
+
   return {
     stateStats, measureStateCache, clearStateCache,
     dbStats, measureDbCache, clearDbCache,
     imageStats, measureImageCache, clearImageCache,
+    clearAllCaches
   };
 };

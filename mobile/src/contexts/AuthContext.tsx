@@ -14,6 +14,8 @@ import {
 import { useVRChat } from "./VRChatContext";
 import { routeToHome, routeToIndex } from "@/lib/route";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
+import { useCacheManager } from "@/hooks/useCacheManager";
+
 
 type AuthUser = {
   id?: string;
@@ -53,6 +55,7 @@ const useAuth = () => {
 
 const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const vrc = useVRChat();
+  const cacheManager = useCacheManager();
   const [user, setUser] = useState<AuthUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -182,6 +185,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       console.error("Logout failed", e);
     }
     vrc.unConfigure();
+    cacheManager.clearAllCaches(); // clear all caches on logout, including TanStack Cache and DB Cache
     // logout logic
     await StorageWrapper.removeItemAsync("auth_user_id");
     await StorageWrapper.removeItemAsync("auth_user_displayName");
