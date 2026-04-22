@@ -190,6 +190,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     await SecureStore.deleteItemAsync("auth_authCookie");
     await SecureStore.deleteItemAsync("auth_2faCookie");
     setUser(undefined);
+    console.log("Logged out successfully");
     setIsLoading(false);
   };
 
@@ -200,7 +201,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         SecureStore.getItemAsync("auth_secret_username"),
         SecureStore.getItemAsync("auth_secret_password"),
       ]);
-      console.log("Auto login with secret: {", secret[0], secret[1], "}");
+      console.log("Auto login : ", secret[0]);
       if (!secret[0] || !secret[1]) {
         console.log("No secret found for auto login");
         setIsLoading(false);
@@ -233,7 +234,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
             vrc.configurePipeline(authCookie); // set auth cookie to pipeline
           }
           setUser(storedUser);
-          console.log(`login as ${storedUser.displayName}: ${storedUser.id}`);
+          console.log(`logged in as ${storedUser.displayName}: ${storedUser.id}`);
           setIsLoading(false);
           return;
         } else {
