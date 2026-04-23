@@ -77,7 +77,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Wo
 
               return (
                 <TouchableEx
-                  key={`${session.instanceId}-${index}`}
+                  key={`${session.location}-${index}`}
                   style={[
                     styles.sessionBlockVertical,
                     {

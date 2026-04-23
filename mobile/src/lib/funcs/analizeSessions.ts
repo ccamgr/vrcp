@@ -8,7 +8,7 @@ export interface PlayerInterval {
 
 export interface WorldSession {
   worldName: string;
-  instanceId: string;
+  location: string;
   startTime: number;
   endTime: number;
   durationMs: number;
@@ -79,7 +79,7 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
 
     sessions.push({
       worldName: currentSession.worldName || "Unknown World",
-      instanceId: currentSession.instanceId || "",
+      location: currentSession.location || "",
       startTime: currentSession.startTime,
       endTime: currentSession.endTime,
       durationMs: currentSession.endTime - currentSession.startTime,
@@ -112,7 +112,7 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
       if (currentSession) closeSession(log.timestamp)
       currentSession = {
         worldName: worldName || "Unknown World", // 直前のWorldEnterで設定されたワールド名を引き継ぐ
-        instanceId: data.instance_id || "",
+        location: data.instance_id || "",
         startTime: log.timestamp,
       };
       worldName = null; // ワールド名は使い切ったのでリセット

@@ -75,14 +75,14 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
 
   const typeColor = toast.type === "success" ? theme.colors.success
     : toast.type === "error" ? theme.colors.error
-    : toast.type === "info" ? theme.colors.info
-    : theme.colors.text;
+      : toast.type === "info" ? theme.colors.info
+        : theme.colors.text;
 
   return (
     <Animated.View style={[styles.toast, { borderColor: typeColor, backgroundColor: theme.colors.card, transform: [{ translateY }] }]}>
       <TouchableEx onPress={onClose}>
-        <Text style={[styles.title, {color: theme.colors.text}]}>{toast.title}</Text>
-        <Text style={[styles.message, {color: theme.colors.text}]}>{toast.message}</Text>
+        <Text style={[styles.title, { color: theme.colors.text }]}>{toast.title}</Text>
+        <Text style={[styles.message, { color: theme.colors.text }]}>{toast.message}</Text>
       </TouchableEx>
     </Animated.View>
   );
