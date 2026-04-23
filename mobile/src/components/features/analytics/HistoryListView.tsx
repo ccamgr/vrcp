@@ -2,15 +2,20 @@ import { spacing } from "@/configs/styles";
 import { PlayerInterval, WorldSession } from "@/lib/funcs/analizeSessions";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function HistoryListView({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {
   const theme = useTheme();
 
   return (
     <View style={styles.listViewContainer}>
-      {sessions.map((session, idx) => (
-        <SessionCard key={`${session.startTime}-${idx}`} session={session} theme={theme} />
-      ))}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
+        {sessions.map((session, idx) => (
+          <SessionCard key={`${session.startTime}-${idx}`} session={session} theme={theme} />
+        ))}
+      </ScrollView>
     </View>
   );
 }

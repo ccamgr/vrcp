@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, onlineManager } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { groupsRepo } from "@/db/repogitories";
 import { Group } from "@/generated/vrcapi";
-import { convertFromDBGroup, convertToDBGroup } from "@/db/schema";
 
 const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
@@ -22,16 +21,16 @@ export const useGroup = (groupId?: string) => {
       if (!groupId) throw new Error("Group ID is required");
       const now = Date.now();
 
-      const cached = await groupsRepo.get(groupId);
+      const cached = await groupsRepo.getWithTTL(groupId);
 
-      if (cached?.expiresAt && cached.expiresAt > now) {
-        return convertFromDBGroup(cached);
+      if (cached && cached.ttl > 0) {
+        return cached.data;
       }
 
       if (!onlineManager.isOnline()) {
         if (cached) {
           console.log(`[useGroup] Offline: Using expired cache for ${groupId}`);
-          return convertFromDBGroup(cached);
+          return cached.data;
         }
         throw new Error("Offline and no cache available");
       }
@@ -39,16 +38,12 @@ export const useGroup = (groupId?: string) => {
       try {
         const res = await vrc.groupsApi.getGroup({ groupId });
 
-        groupsRepo.upsert({
-          ...convertToDBGroup(res.data),
-          expiresAt: now + EXPIRATION,
-        }).catch(console.error);
-
+        groupsRepo.setWithTTL(res.data, EXPIRATION).catch(console.error);
         return res.data;
       } catch (error) {
         if (cached) {
           console.log(`[useGroup] Offline fallback for ${groupId}`);
-          return convertFromDBGroup(cached);
+          return cached.data;
         }
         throw error;
       }

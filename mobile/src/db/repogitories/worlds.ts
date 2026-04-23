@@ -1,6 +1,5 @@
 import { createBaseCacheRepo } from "./_baseRepo";
 import { db } from "../index";
-import { worlds } from "../schema/worlds";
-import { lt } from "drizzle-orm";
+import { worlds, convertFromDBWorld, convertToDBWorld } from "../schema/worlds";
 
-export const worldsRepo = createBaseCacheRepo(db, worlds);
+export const worldsRepo = createBaseCacheRepo(db, worlds, convertToDBWorld, convertFromDBWorld);

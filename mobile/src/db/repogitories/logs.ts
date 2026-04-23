@@ -1,8 +1,8 @@
 import { createBaseRepo } from "./_baseRepo";
 import { db } from "../index";
-import { convertToDBLog, logs } from "../schema/logs";
+import { convertFromDBLog, convertToDBLog, logs } from "../schema/logs";
 import { LogPayload } from "@/generated/desktopapi/type";
-import { lt, sql } from "drizzle-orm";
+import { and, asc, gte, lt, lte, sql } from "drizzle-orm";
 
 export const logsRepo = {
   // 大量のログを一括で挿入する（アップサート）
@@ -22,6 +22,17 @@ export const logsRepo = {
           .execute();
       }
     });
+  },
+
+  // 指定した時間範囲のログを取得する
+  getLogsByRange: async (startMs: number, endMs: number) => {
+    const dblogs = await db.select().from(logs).where(
+      and(
+        gte(logs.timestamp, startMs),
+        lte(logs.timestamp, endMs)
+      )
+    ).orderBy(asc(logs.timestamp)).execute();
+    return dblogs.map(convertFromDBLog);
   },
 
   //すべてのログを削除する（フルリセット用）

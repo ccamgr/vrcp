@@ -1,17 +1,19 @@
-import { ButtonEx, TouchableEx } from "@/components/CustomElements";
+import { TouchableEx } from "@/components/CustomElements";
 import HistoryListView from "@/components/features/analytics/HistoryListView";
 import HistoryTimeline from "@/components/features/analytics/HistoryTimeline";
 import GenericScreen from "@/components/layout/GenericScreen";
-import { navigationBarHeight, radius, spacing } from "@/configs/styles";
+import LoadingIndicator from "@/components/view/LoadingIndicator";
+import { spacing } from "@/configs/styles";
 import { useSetting } from "@/contexts/SettingContext";
-import { getLogsFromDesktop } from "@/generated/desktopapi/client";
-import { formatDate, formatDateTime, formatDateTimeShort } from "@/lib/date";
+import { useLogManager } from "@/hooks/useLogManager";
+import { formatDate } from "@/lib/date";
 import { analyzeSessions, WorldSession } from "@/lib/funcs/analizeSessions";
-import { useTheme } from "@react-navigation/native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, Text, View, Modal, Alert } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
+const SYNC_INTERVAL = 10 * 1000; // 5分
 
 export default function Analytics() {
   const theme = useTheme();
@@ -24,53 +26,70 @@ export default function Analytics() {
   const [loading, setLoading] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
 
-  // データ取得
-  const fetchLogs = useCallback(async () => {
-    if (!settings.otherOptions_desktopAppURL) {
-      // console.warn("Desktop app URL is not set.");
-      return;
-    }
+  // hookから isSyncing も取り出します
+  const { getLocalLogs, getLastSync, syncLogs, isSyncing } = useLogManager();
 
-    setLoading(true);
+  // データ取得 (UIブロックを避けるため loading は初回のみ)
+  const fetchLogs = useCallback(async (silent: boolean = false) => {
+    if (!silent) setLoading(true);
     try {
-      // 注意: new Date("2026-04-20") とするとUTC基準になってズレるため、ハイフンで割って手動生成します
       const [year, month, day] = targetDate.split('-').map(Number);
-      // 指定日の 00:00:00 から 23:59:59 までを取得
       const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
       const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
 
-      const res = await getLogsFromDesktop(settings.otherOptions_desktopAppURL, {
+      const localLogs = await getLocalLogs(startOfDay, endOfDay);
+      const analyzedSessions = analyzeSessions(localLogs, {
         start: startOfDay,
-        end: endOfDay,
+        end: endOfDay
       });
 
-      if (res.status !== 200) {
-        console.error("Failed to fetch logs from desktop app:", res.statusText);
-      } else {
-        const analyzedSessions = analyzeSessions(res.data, {
-          start: startOfDay,
-          end: endOfDay
-        });
-        console.log(
-          "Logs fetched from desktop app:",
-          "\ncount:", analyzedSessions.length,
-          "\nsessions:", analyzedSessions.map(s =>
-            `\n\t${formatDateTimeShort(s.startTime)}~${formatDateTimeShort(s.endTime)} (${(s.durationMs / 60000).toString().slice(0, 3)} min): ${s.worldName}`
-          ).join(", ")
-        );
-        setSessions(analyzedSessions);
-      }
+      setSessions(analyzedSessions);
     } catch (error) {
-      console.error("Failed to fetch logs from desktop app:", error);
+      console.error("Failed to analyze local logs:", error);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
-  }, [settings.otherOptions_desktopAppURL, targetDate]);
+  }, [targetDate, getLocalLogs]);
 
-  // 日付変更時の副作用
+  // 日付が変更された時、または初回マウント時にローカルDBから読み込む
   useEffect(() => {
-    fetchLogs();
+    fetchLogs(false);
   }, [fetchLogs]);
+
+  // 画面が表示されている間だけ有効になる同期ロジック
+  useFocusEffect(
+    useCallback(() => {
+      let isMounted = true;
+      let intervalId: number;
+
+      const checkAndSync = async () => {
+        // 表示対象が「今日」かどうか判定
+        const todayStr = formatDate(new Date().getTime());
+        if (targetDate === todayStr) {
+          const lastSyncTime = await getLastSync();
+          const now = Date.now();
+          if (!lastSyncTime || now - lastSyncTime > SYNC_INTERVAL) {
+            await syncLogs(false);
+            if (isMounted) await fetchLogs(true);
+          }
+        }
+      };
+
+      // 1. 画面にフォーカスが当たった瞬間にチェック
+      checkAndSync();
+
+      // 2. 画面を開いている間、5分ごとに定期チェック
+      intervalId = setInterval(() => {
+        checkAndSync();
+      }, SYNC_INTERVAL);
+
+      // クリーンアップ (画面から離れたらタイマーを解除)
+      return () => {
+        isMounted = false;
+        clearInterval(intervalId);
+      };
+    }, [targetDate, fetchLogs, getLastSync, syncLogs])
+  );
 
   // 日付操作ハンドラ
   const handleDateChange = (offset: number) => {
@@ -84,7 +103,10 @@ export default function Analytics() {
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         {/* --- Header Control --- */}
         <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: theme.colors.text }]}>History</Text>
+          <View style={styles.titleRow}>
+            <Text style={[styles.headerTitle, { color: theme.colors.text }]}>History</Text>
+            {isSyncing && <LoadingIndicator notext />}
+          </View>
 
           <View style={styles.controlsRow}>
             {/* Mode Switcher */}
@@ -128,10 +150,9 @@ export default function Analytics() {
             </View>
           ) : (
             viewMode === 'list' ? (
-              <ScrollView style={styles.scrollView}>
-                <HistoryListView sessions={sessions} targetDate={targetDate} />
-              </ScrollView>
+              <HistoryListView sessions={sessions} targetDate={targetDate} />
             ) : (
+              // タイムラインモード
               <HistoryTimeline sessions={sessions} targetDate={targetDate} />
             )
           )}
@@ -139,8 +160,7 @@ export default function Analytics() {
       </View>
     </GenericScreen>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -151,10 +171,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(128,128,128,0.2)',
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: spacing.small,
+  },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: spacing.small,
   },
   controlsRow: {
     flexDirection: 'row',
@@ -214,8 +239,5 @@ const styles = StyleSheet.create({
   noDataText: {
     fontSize: 16,
     opacity: 0.7,
-  },
-  scrollView: {
-    flex: 1,
   },
 });

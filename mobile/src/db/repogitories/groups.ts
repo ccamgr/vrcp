@@ -1,6 +1,5 @@
 import { createBaseCacheRepo } from "./_baseRepo";
 import { db } from "../index";
-import { groups } from "../schema/groups";
-import { lt } from "drizzle-orm";
+import { groups, convertFromDBGroup, convertToDBGroup } from "../schema/groups";
 
-export const groupsRepo = createBaseCacheRepo(db, groups);
+export const groupsRepo = createBaseCacheRepo(db, groups, convertToDBGroup, convertFromDBGroup);

@@ -27,6 +27,14 @@ export function convertToDBLog(payload: LogPayload): DBLog {
   };
 }
 
+export function convertFromDBLog(dbLog: DBLog): LogPayload {
+  return {
+    hash: dbLog.hash,
+    timestamp: dbLog.timestamp,
+    event: dbLog.data
+  };
+}
+
 export type DBLog = typeof logs.$inferInsert;
 
 

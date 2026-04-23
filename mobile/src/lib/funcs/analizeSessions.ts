@@ -92,7 +92,6 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
     activePlayers.clear();
     playerIntervals.clear();
   };
-  console.log("Analyzing logs:", logs.map(l => `[${l.timestamp}] ${JSON.stringify(l.event.type)}  `));
   logs.forEach((log) => {
     // @ts-ignore
     const { type, data } = log.event;

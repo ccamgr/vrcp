@@ -3,6 +3,7 @@ import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import { extractErrMsg } from "@/lib/utils";
 import { getLogsFromDesktop } from "@/generated/desktopapi/client";
 import { logsRepo } from "@/db/repogitories/logs";
+import { LogPayload } from "@/generated/desktopapi/type";
 
 const LAST_SYNC_KEY = "DESKTOP_LOG_LAST_SYNC_TIME";
 
@@ -21,8 +22,7 @@ export async function syncDesktopLogs(
     let startTimestamp: number | undefined = undefined;
 
     if (!isFullSync) {
-      const lastSyncStr = await StorageWrapper.getItemAsync(LAST_SYNC_KEY);
-      const lastSyncTime = lastSyncStr ? parseInt(lastSyncStr, 10) : 0;
+      const lastSyncTime = await getLastSyncTime() || 0;
       const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
       startTimestamp = Math.max(lastSyncTime, oneWeekAgo);
     }
@@ -33,7 +33,7 @@ export async function syncDesktopLogs(
       start: startTimestamp
     });
 
-    const newLogs = Array.isArray(response.data) ? response.data : (response.data as any).logs;
+    const newLogs: LogPayload[] = response.data;
 
     if (newLogs && newLogs.length > 0) {
       onProgress?.(`Saving ${newLogs.length} records to local database...`);
@@ -49,4 +49,13 @@ export async function syncDesktopLogs(
     console.error("Log sync error:", error);
     throw new Error(extractErrMsg(error) || "Failed to sync logs");
   }
+}
+
+export async function getLastSyncTime(): Promise<number | null> {
+  const value = await StorageWrapper.getItemAsync(LAST_SYNC_KEY);
+  if (value) {
+    const timestamp = parseInt(value, 10);
+    return isNaN(timestamp) ? null : timestamp;
+  }
+  return null;
 }

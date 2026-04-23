@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
 import { useSetting } from "@/contexts/SettingContext";
-import { syncDesktopLogs } from "@/lib/funcs/syncDesktopLogs";
+import { syncDesktopLogs, getLastSyncTime } from "@/lib/funcs/syncDesktopLogs";
 import { logsRepo } from "@/db/repogitories";
+import { LogPayload } from "@/generated/desktopapi/type";
 
 export const useLogManager = () => {
   const { settings } = useSetting();
@@ -38,6 +39,7 @@ export const useLogManager = () => {
   const syncLogs = useCallback(async (isFullSync: boolean = false) => {
     setIsSyncing(true);
     setSyncProgress("Starting sync...");
+    console.log("Initiating log sync with desktop app...");
 
     try {
       await syncDesktopLogs(
@@ -55,12 +57,32 @@ export const useLogManager = () => {
     }
   }, [settings.otherOptions_desktopAppURL, measureLogs]);
 
+  const getLocalLogs = useCallback(async (startMs: number, endMs: number): Promise<LogPayload[]> => {
+    try {
+      return await logsRepo.getLogsByRange(startMs, endMs);
+    } catch (error) {
+      console.error("Failed to fetch local logs by range", error);
+      return [];
+    }
+  }, []);
+
+  const getLastSync = useCallback(async (): Promise<number | null> => {
+    try {
+      return await getLastSyncTime();
+    } catch (error) {
+      console.error("Failed to get last sync time", error);
+      return null;
+    }
+  }, []);
+
   return {
     isSyncing,
     syncProgress,
     syncLogs,
+    getLocalLogs,
     logStats,
     measureLogs,
-    clearLogs
+    clearLogs,
+    getLastSync
   };
 };

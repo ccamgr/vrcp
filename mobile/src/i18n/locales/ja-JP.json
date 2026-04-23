@@ -342,7 +342,17 @@
       "no_analytics": "利用可能な分析データがありません。"
     },
     "setting_desktopapp": {
-      "label": "デスクトップアプリ"
+      "label": "デスクトップアプリ",
+      "description": "デスクトップアプリと連携するためのURLを設定します。PC画面のQRコードを読み取るか、直接入力してください。",
+      "button_scan_qr": "QRコードをスキャン",
+      "divider_or": "- または -",
+      "label_server_url": "サーバー URL",
+      "helper_format_auto": "※ 入力完了後に自動で整形・保存されます",
+      "label_sync": "ログ同期",
+      "button_sync_normal": "手動同期 (差分)",
+      "button_sync_full": "全同期 (すべて)",
+      "sync_status": "状況: {{progress}}",
+      "toast_sync_success": "同期が完了しました．"
     }
   },
   "components": {

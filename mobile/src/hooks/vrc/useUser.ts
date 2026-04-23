@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, onlineManager } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { usersRepo } from "@/db/repogitories";
 import { User } from "@/generated/vrcapi";
-import { convertFromDBUser, convertToDBUser } from "@/db/schema";
 
 const EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -23,18 +22,17 @@ export const useUser = (userId?: string) => {
       const now = Date.now();
 
       // 1. Get current cache (regardless of expiration)
-      const cached = await usersRepo.get(userId);
+      const cached = await usersRepo.getWithTTL(userId);
 
       // 2. If valid cache exists, return it immediately
-      if (cached?.expiresAt && cached.expiresAt > now) {
-        return convertFromDBUser(cached);
+      if (cached && cached.ttl > 0) {
+        return cached.data;
       }
-
       // 3. If expired or no cache, check network status
       if (!onlineManager.isOnline()) {
         if (cached) {
           console.log(`[useUser] Offline: Using expired cache for ${userId}`);
-          return convertFromDBUser(cached);
+          return cached.data;
         }
         throw new Error("Offline and no cache available");
       }
@@ -44,17 +42,14 @@ export const useUser = (userId?: string) => {
         const res = await vrc.usersApi.getUser({ userId });
 
         // Update SQLite cache (Fire and forget)
-        usersRepo.upsert({
-          ...convertToDBUser(res.data),
-          expiresAt: now + EXPIRATION,
-        }).catch(console.error);
+        usersRepo.setWithTTL(res.data, EXPIRATION).catch(console.error);
 
         return res.data;
       } catch (error) {
         // 5. Offline Fallback: If API fails but we have an expired cache, use it
         if (cached) {
           console.log(`[useUser] Offline fallback for ${userId}`);
-          return convertFromDBUser(cached);
+          return cached.data;
         }
         throw error;
       }

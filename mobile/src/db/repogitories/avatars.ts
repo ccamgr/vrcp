@@ -1,6 +1,5 @@
 import { createBaseCacheRepo } from "./_baseRepo";
 import { db } from "../index";
-import { avatars } from "../schema/avatars";
+import { avatars, convertFromDBAvatar, convertToDBAvatar } from "../schema/avatars";
 
-export const avatarsRepo = createBaseCacheRepo(db, avatars);
-
+export const avatarsRepo = createBaseCacheRepo(db, avatars, convertToDBAvatar, convertFromDBAvatar);

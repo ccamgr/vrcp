@@ -23,11 +23,11 @@ export const useAvatar = (avatarId?: string) => {
       const now = Date.now();
 
       // 1. Get current cache (regardless of expiration)
-      const cached = await avatarsRepo.get(avatarId);
+      const cached = await avatarsRepo.getWithTTL(avatarId);
 
       // 2. If valid cache exists, return it immediately
-      if (cached?.expiresAt && cached.expiresAt > now) {
-        return convertFromDBAvatar(cached);
+      if (cached && cached.ttl > 0) {
+        return cached.data;
       }
 
       // 3. If expired or no cache, check network status
@@ -35,7 +35,7 @@ export const useAvatar = (avatarId?: string) => {
       if (!onlineManager.isOnline()) {
         if (cached) {
           console.log(`[useAvatar] Offline: Using expired cache for ${avatarId}`);
-          return convertFromDBAvatar(cached);
+          return cached.data;
         }
         throw new Error("Offline and no cache available");
       }
@@ -45,17 +45,14 @@ export const useAvatar = (avatarId?: string) => {
         const res = await vrc.avatarsApi.getAvatar({ avatarId });
 
         // Update SQLite cache (Fire and forget)
-        avatarsRepo.upsert({
-          ...convertToDBAvatar(res.data),
-          expiresAt: now + EXPIRATION,
-        }).catch(console.error);
+        avatarsRepo.setWithTTL(res.data, EXPIRATION).catch(console.error);
 
         return res.data;
       } catch (error) {
         // 4. Offline Fallback: If API fails but we have an expired cache, use it
         if (cached) {
           console.log(`[useAvatar] Offline fallback for ${avatarId}`);
-          return convertFromDBAvatar(cached);
+          return cached.data;
         }
         throw error; // No cache and API failed
       }

@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, onlineManager } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { worldsRepo } from "@/db/repogitories";
 import { World } from "@/generated/vrcapi";
-import { convertFromDBWorld, convertToDBWorld } from "@/db/schema";
 
 const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
@@ -22,16 +21,16 @@ export const useWorld = (worldId?: string) => {
       if (!worldId) throw new Error("World ID is required");
       const now = Date.now();
 
-      const cached = await worldsRepo.get(worldId);
+      const cached = await worldsRepo.getWithTTL(worldId);
 
-      if (cached?.expiresAt && cached.expiresAt > now) {
-        return convertFromDBWorld(cached);
+      if (cached && cached.ttl > 0) {
+        return cached.data;
       }
 
       if (!onlineManager.isOnline()) {
         if (cached) {
           console.log(`[useWorld] Offline: Using expired cache for ${worldId}`);
-          return convertFromDBWorld(cached);
+          return cached.data;
         }
         throw new Error("Offline and no cache available");
       }
@@ -39,16 +38,13 @@ export const useWorld = (worldId?: string) => {
       try {
         const res = await vrc.worldsApi.getWorld({ worldId });
 
-        worldsRepo.upsert({
-          ...convertToDBWorld(res.data),
-          expiresAt: now + EXPIRATION,
-        }).catch(console.error);
+        worldsRepo.setWithTTL(res.data, EXPIRATION).catch(console.error);
 
         return res.data;
       } catch (error) {
         if (cached) {
           console.log(`[useWorld] Offline fallback for ${worldId}`);
-          return convertFromDBWorld(cached);
+          return cached.data;
         }
         throw error;
       }

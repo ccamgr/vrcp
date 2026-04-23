@@ -160,7 +160,17 @@
       "label": "Notification Settings"
     },
     "setting_desktopapp": {
-      "label": "Desktop App"
+      "label": "Desktop App",
+      "description": "Set the URL to connect with the desktop app. Scan the QR code on the PC screen or enter it manually.",
+      "button_scan_qr": "Scan QR Code",
+      "divider_or": "- OR -",
+      "label_server_url": "Server URL",
+      "helper_format_auto": "* Formatted and saved automatically after input.",
+      "label_sync": "Log Sync",
+      "button_sync_normal": "Sync (Delta)",
+      "button_sync_full": "Full Sync",
+      "sync_status": "Status: {{progress}}",
+      "toast_sync_success": "Sync completed successfully."
     },
     "setting_language": {
       "label": "Language Settings",
