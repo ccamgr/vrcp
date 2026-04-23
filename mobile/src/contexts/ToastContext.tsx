@@ -18,13 +18,13 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-const useToast = () => {
+export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) throw new Error("useToast must be used within a ToastProvider");
   return context;
 };
 
-const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const removeToast = useCallback((id: string) => {
@@ -42,10 +42,9 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         return newToasts;
       });
 
-      // 自動で消す
-      setTimeout(() => removeToast(id), duration);
+      // Remove the setTimeout here. Let ToastMessage handle its own unmount animation.
     },
-    [removeToast]
+    []
   );
 
   return (
@@ -62,27 +61,57 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
 const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => void }) => {
   const theme = useTheme();
+  // Changed any custom types if needed, using generic React Native Theme types as fallback
+  const anyTheme = theme as any;
+
   const translateY = useRef(new Animated.Value(-100)).current;
+  const opacity = useRef(new Animated.Value(0)).current; // Added fade-in/out for smoother effect
+
   useEffect(() => {
-    Animated.spring(translateY, { toValue: 0, useNativeDriver: true }).start();
+    // Entrance animation
+    Animated.parallel([
+      Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
+      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true })
+    ]).start();
+
+    // Exit animation triggered after duration
     const timer = setTimeout(() => {
-      Animated.timing(translateY, { toValue: -100, duration: 100, useNativeDriver: true }).start(() => {
-        onClose();
-      });
+      closeToast();
     }, toast.duration);
+
     return () => clearTimeout(timer);
   }, []);
 
-  const typeColor = toast.type === "success" ? theme.colors.success
-    : toast.type === "error" ? theme.colors.error
-      : toast.type === "info" ? theme.colors.info
+  // Function to handle manual or automatic closing
+  const closeToast = () => {
+    Animated.parallel([
+      Animated.timing(translateY, { toValue: -50, duration: 200, useNativeDriver: true }),
+      Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true })
+    ]).start(() => {
+      onClose();
+    });
+  };
+
+  const typeColor = toast.type === "success" ? anyTheme.colors.success
+    : toast.type === "error" ? anyTheme.colors.error
+      : toast.type === "info" ? anyTheme.colors.info
         : theme.colors.text;
 
   return (
-    <Animated.View style={[styles.toast, { borderColor: typeColor, backgroundColor: theme.colors.card, transform: [{ translateY }] }]}>
-      <TouchableEx onPress={onClose}>
+    <Animated.View style={[
+      styles.toast,
+      {
+        borderColor: typeColor,
+        backgroundColor: theme.colors.card,
+        transform: [{ translateY }],
+        opacity: opacity
+      }
+    ]}>
+      <TouchableEx onPress={closeToast}>
         <Text style={[styles.title, { color: theme.colors.text }]}>{toast.title}</Text>
-        <Text style={[styles.message, { color: theme.colors.text }]}>{toast.message}</Text>
+        {!!toast.message && (
+          <Text style={[styles.message, { color: theme.colors.text }]}>{toast.message}</Text>
+        )}
       </TouchableEx>
     </Animated.View>
   );
@@ -110,10 +139,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.medium,
+    fontWeight: "bold", // Added bold for better hierarchy
   },
   message: {
     fontSize: fontSize.small,
+    marginTop: 2, // Added slight spacing
   },
 });
-
-export { ToastProvider, useToast };

@@ -105,7 +105,6 @@ export default function Analytics() {
         <View style={styles.header}>
           <View style={styles.titleRow}>
             <Text style={[styles.headerTitle, { color: theme.colors.text }]}>History</Text>
-            {isSyncing && <LoadingIndicator notext />}
           </View>
 
           <View style={styles.controlsRow}>

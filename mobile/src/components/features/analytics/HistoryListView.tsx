@@ -44,6 +44,11 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
   const formatTime = (ts: number) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
 
+  // locationからインスタンスIDの数字・識別子部分を抽出 (例: "wrld_xxxx:12345~hidden..." -> "12345")
+  const instanceIdPart = session.location && session.location.includes(":")
+    ? session.location.split(":")[1].split("~")[0]
+    : null;
+
   return (
     <View style={[styles.card, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
       {/* Header */}
@@ -64,6 +69,12 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{durationMin} min</Text>
             </View>
+            {/* インスタンスIDのバッジを追加 */}
+            {instanceIdPart && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>#{instanceIdPart}</Text>
+              </View>
+            )}
           </View>
         </View>
         <Text style={[styles.cardMetaText, { marginLeft: 8 }]}>{session.players.length} met</Text>
