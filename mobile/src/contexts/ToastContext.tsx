@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { spacing, radius, fontSize } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
@@ -41,8 +41,6 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         }
         return newToasts;
       });
-
-      // Remove the setTimeout here. Let ToastMessage handle its own unmount animation.
     },
     []
   );
@@ -59,22 +57,19 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => void }) => {
+const ToastMessage = ({ toast, onClose }: { toast: ToastItem, onClose: () => void }) => {
   const theme = useTheme();
-  // Changed any custom types if needed, using generic React Native Theme types as fallback
-  const anyTheme = theme as any;
 
-  const translateY = useRef(new Animated.Value(-100)).current;
-  const opacity = useRef(new Animated.Value(0)).current; // Added fade-in/out for smoother effect
+  // 💡 useRef(new...) ではなく、useStateの初期化関数を使って初回のみ安全に生成する
+  const [translateY] = useState(() => new Animated.Value(-100));
+  const [opacity] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
-    // Entrance animation
     Animated.parallel([
       Animated.spring(translateY, { toValue: 0, useNativeDriver: true }),
       Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true })
     ]).start();
 
-    // Exit animation triggered after duration
     const timer = setTimeout(() => {
       closeToast();
     }, toast.duration);
@@ -82,7 +77,6 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
     return () => clearTimeout(timer);
   }, []);
 
-  // Function to handle manual or automatic closing
   const closeToast = () => {
     Animated.parallel([
       Animated.timing(translateY, { toValue: -50, duration: 200, useNativeDriver: true }),
@@ -92,10 +86,13 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
     });
   };
 
-  const typeColor = toast.type === "success" ? anyTheme.colors.success
-    : toast.type === "error" ? anyTheme.colors.error
-      : toast.type === "info" ? anyTheme.colors.info
-        : theme.colors.text;
+  // 💡 テーマに色が設定されていない場合のフォールバックを定義
+  const colors = theme.colors as any;
+  const typeColor =
+    toast.type === "success" ? (colors.success || '#22c55e')
+      : toast.type === "error" ? (colors.error || '#ef4444')
+        : toast.type === "info" ? (colors.info || '#3b82f6')
+          : theme.colors.text;
 
   return (
     <Animated.View style={[
@@ -139,10 +136,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.medium,
-    fontWeight: "bold", // Added bold for better hierarchy
+    fontWeight: "bold",
   },
   message: {
     fontSize: fontSize.small,
-    marginTop: 2, // Added slight spacing
+    marginTop: 2,
   },
 });

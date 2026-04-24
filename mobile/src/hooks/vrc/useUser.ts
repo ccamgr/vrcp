@@ -11,7 +11,7 @@ const EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 1 day
  * @param forceRefetch - If true, bypass cache and fetch fresh data from API (if online). Still updates cache with new data.
  * @returns
  */
-export const useUser = (userId: string, forceRefetch: boolean = false) => {
+export const useUser = (userId?: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "user", userId];

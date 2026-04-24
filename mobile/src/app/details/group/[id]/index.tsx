@@ -25,7 +25,6 @@ export default function GroupDetail() {
   const vrc = useVRChat();
   const { t } = useTranslation();
   const theme = useTheme();
-  const { showToast } = useToast();
 
   const [mode, setMode] = useState<"info" | "instances">("info");
   const [openJson, setOpenJson] = useState(false);

@@ -8,9 +8,10 @@ const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 /**
  * Hook with offline-first caching with SQLite for world data
  * @param worldId
+ * @param forceRefetch - If true, bypass cache and fetch fresh data from API (if online). Still updates cache with new data.
  * @returns
  */
-export const useWorld = (worldId: string, forceRefetch: boolean = false) => {
+export const useWorld = (worldId?: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "world", worldId];

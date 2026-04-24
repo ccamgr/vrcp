@@ -22,7 +22,7 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
-import { routeToSearch, routeToUser } from "@/lib/route";
+import { routeToInstance, routeToSearch, routeToUser } from "@/lib/route";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -209,7 +209,7 @@ export default function WorldDetail() {
           {mode === "instance" && (
             <FlatList
               data={formatAndSortInstances(world.instances)}
-              renderItem={({ item }) => <ListViewInstance instance={item} />}
+              renderItem={({ item }) => <ListViewInstance instance={item} onPress={() => routeToInstance(item.worldId, item.instanceId)} />}
               keyExtractor={(item) => item.id}
               ListEmptyComponent={() => (
                 <View style={{ alignItems: "center", marginTop: spacing.large }}>
