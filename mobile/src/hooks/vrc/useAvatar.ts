@@ -11,7 +11,7 @@ const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
  * @param avatarId
  * @returns
  */
-export const useAvatar = (avatarId?: string) => {
+export const useAvatar = (avatarId: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "avatar", avatarId];
@@ -26,7 +26,7 @@ export const useAvatar = (avatarId?: string) => {
       const cached = await avatarsRepo.getWithTTL(avatarId);
 
       // 2. If valid cache exists, return it immediately
-      if (cached && cached.ttl > 0) {
+      if (!forceRefetch && cached && cached.ttl > 0) {
         return cached.data;
       }
 

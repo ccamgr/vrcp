@@ -10,7 +10,7 @@ const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
  * @param worldId
  * @returns
  */
-export const useWorld = (worldId?: string) => {
+export const useWorld = (worldId: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "world", worldId];
@@ -23,7 +23,7 @@ export const useWorld = (worldId?: string) => {
 
       const cached = await worldsRepo.getWithTTL(worldId);
 
-      if (cached && cached.ttl > 0) {
+      if (!forceRefetch && cached && cached.ttl > 0) {
         return cached.data;
       }
 

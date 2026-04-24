@@ -8,9 +8,10 @@ const EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 1 day
 /**
  * Hook with offline-first caching with SQLite for user data
  * @param userId
+ * @param forceRefetch - If true, bypass cache and fetch fresh data from API (if online). Still updates cache with new data.
  * @returns
  */
-export const useUser = (userId?: string) => {
+export const useUser = (userId: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "user", userId];
@@ -25,7 +26,7 @@ export const useUser = (userId?: string) => {
       const cached = await usersRepo.getWithTTL(userId);
 
       // 2. If valid cache exists, return it immediately
-      if (cached && cached.ttl > 0) {
+      if (!forceRefetch && cached && cached.ttl > 0) {
         return cached.data;
       }
       // 3. If expired or no cache, check network status

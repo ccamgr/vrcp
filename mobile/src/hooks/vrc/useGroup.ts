@@ -10,7 +10,7 @@ const EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
  * @param groupId
  * @returns
  */
-export const useGroup = (groupId?: string) => {
+export const useGroup = (groupId: string, forceRefetch: boolean = false) => {
   const vrc = useVRChat();
   const queryClient = useQueryClient();
   const QUERY_KEY = ["vrc", "db", "group", groupId];
@@ -23,7 +23,7 @@ export const useGroup = (groupId?: string) => {
 
       const cached = await groupsRepo.getWithTTL(groupId);
 
-      if (cached && cached.ttl > 0) {
+      if (!forceRefetch && cached && cached.ttl > 0) {
         return cached.data;
       }
 
