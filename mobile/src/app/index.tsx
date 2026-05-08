@@ -152,7 +152,7 @@ export default function Login() {
         console.log(res.data)
         const msg = t("pages.login.online_count_message", { count: res.data });
         setLogoMsg(msg);
-        if (logoMsgTimeoutRef.current)  clearTimeout(logoMsgTimeoutRef.current);
+        if (logoMsgTimeoutRef.current) clearTimeout(logoMsgTimeoutRef.current);
         logoMsgTimeoutRef.current = setTimeout(() => {
           setLogoMsg(null)
           logoMsgTimeoutRef.current = null
