@@ -3,6 +3,7 @@ import { useSetting } from "@/contexts/SettingContext";
 import { syncDesktopLogs, getLastSyncTime } from "@/lib/funcs/syncDesktopLogs";
 import { logsRepo } from "@/db/repogitories";
 import { LogPayload } from "@/generated/desktopapi/type";
+import * as Network from 'expo-network';
 
 export const useLogManager = () => {
   const { settings } = useSetting();
@@ -40,6 +41,13 @@ export const useLogManager = () => {
     setIsSyncing(true);
     setSyncProgress("Starting sync...");
     console.log("Initiating log sync with desktop app...");
+
+    const networkState = await Network.getNetworkStateAsync();
+    if (!networkState.isConnected) {
+      setSyncProgress("No network connection. Please connect to the internet and try again.");
+      setIsSyncing(false);
+      return;
+    }
 
     try {
       await syncDesktopLogs(

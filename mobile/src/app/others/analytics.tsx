@@ -2,7 +2,6 @@ import { TouchableEx } from "@/components/CustomElements";
 import HistoryListView from "@/components/features/analytics/HistoryListView";
 import HistoryTimeline from "@/components/features/analytics/HistoryTimeline";
 import GenericScreen from "@/components/layout/GenericScreen";
-import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { spacing } from "@/configs/styles";
 import { useSetting } from "@/contexts/SettingContext";
 import { useLogManager } from "@/hooks/useLogManager";
