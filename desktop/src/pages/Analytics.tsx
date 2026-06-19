@@ -53,9 +53,17 @@ export default function Analytics() {
   };
 
   const handleDateChange = (offset: number) => {
-    const d = new Date(targetDate);
+    // Fix timezone issue when parsing "YYYY-MM-DD" directly
+    const [year, month, day] = targetDate.split("-").map(Number);
+    const d = new Date(year, month - 1, day);
     d.setDate(d.getDate() + offset);
-    setTargetDate(d.toISOString().split("T")[0]);
+    setTargetDate(
+      d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0"),
+    );
   };
 
   return (

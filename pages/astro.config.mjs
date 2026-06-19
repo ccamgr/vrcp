@@ -9,14 +9,22 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'VRCP',
+      favicon: '/favicon.png',
+      defaultLocale: 'root',
+      locales: {
+        root: {
+          label: '日本語',
+          lang: 'ja',
+        },
+      },
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ccamgr/vrcp' }],
       sidebar: [
         // sidebar items here
         {
           label: 'Legals',
           items: [
-            { label: '利用規約', link: '/terms-of-use/' },
-            { label: 'プライバシーポリシー', link: '/privacy-policy/' },
+            { label: '利用規約', slug: 'terms-of-use' },
+            { label: 'プライバシーポリシー', slug: 'privacy-policy' },
           ],
         },
       ],

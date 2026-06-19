@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
-import { save, ask } from "@tauri-apps/plugin-dialog";
+import { save, ask, message } from "@tauri-apps/plugin-dialog";
 import {
   Smartphone,
   Power,
@@ -46,7 +46,7 @@ export default function Settings() {
         setAutoStart(true);
       }
     } catch (e) {
-      alert("Failed to update settings");
+      await message("Failed to update settings");
     }
   };
 
@@ -54,18 +54,16 @@ export default function Settings() {
     const portNum = parseInt(portInput ?? "", 10);
 
     if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
-      alert("有効なポート番号(1-65535)を入力してください");
+      await message("Please enter a valid port number (1-65535)");
       return;
     }
 
     try {
       await commands.setServerPort(portNum);
-      alert(
-        "ポート設定を保存しました。\n反映するにはアプリを再起動してください。",
-      );
+      await message("Port settings saved.\nPlease restart the app to apply.");
     } catch (e) {
       console.error(e);
-      alert(`保存に失敗しました: ${e}`);
+      await message(`Failed to save: ${e}`);
     }
   };
 
@@ -85,14 +83,14 @@ export default function Settings() {
       const result = await commands.exportLogs(filePath);
 
       if (typeof result === "number") {
-        alert(`Export successful!\nSaved ${result} records.`);
+        await message(`Export successful!\nSaved ${result} records.`);
       } else {
         // Result型でラップされている場合 (bindingsの生成設定による)
-        // alert("Export complete.");
+        // await message("Export complete.");
       }
     } catch (e) {
       console.error(e);
-      alert(`Export failed: ${e}`);
+      await message(`Export failed: ${e}`);
     } finally {
       setIsProcessing(false);
     }
@@ -113,10 +111,10 @@ export default function Settings() {
     setIsProcessing(true);
     try {
       await commands.deleteAllLogs();
-      alert("Database cleared successfully.");
+      await message("Database cleared successfully.");
     } catch (e) {
       console.error(e);
-      alert(`Failed to clear database: ${e}`);
+      await message(`Failed to clear database: ${e}`);
     } finally {
       setIsProcessing(false);
     }

@@ -9,7 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { use, useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from "expo-splash-screen";
 

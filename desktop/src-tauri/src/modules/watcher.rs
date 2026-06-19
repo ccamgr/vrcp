@@ -191,6 +191,9 @@ pub fn parse_log_line(line: &str) -> Option<LogPayload> {
             // 💡 文字列として抽出してから即座に i64 に変換
             let ts_str = caps.get(1).map_or("unknown", |m| m.as_str());
             let timestamp = str_to_i64(ts_str);
+            if timestamp == 0 {
+                return None;
+            }
 
             let hash = gen_hash(timestamp, &event); // 💡 参照渡し(&)を解除
 
@@ -233,7 +236,7 @@ fn get_latest_log_path() -> Option<PathBuf> {
         })
         .collect();
 
-    logs.sort_by_key(|path| path.metadata().and_then(|m| m.modified()).ok());
+    logs.sort_by_key(|path| path.metadata().and_then(|m| m.created()).ok());
     logs.last().cloned()
 }
 
@@ -285,7 +288,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     let mut temp_is_running = false;
                     let mut temp_last_ts: i64 = 0; // 💡 i64
 
-                    for l in reader.lines().flatten() {
+                    for l in reader.lines().map_while(Result::ok) {
                         if let Some(ts) = extract_timestamp(&l) {
                             temp_last_ts = ts;
                         }

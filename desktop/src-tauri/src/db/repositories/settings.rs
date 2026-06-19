@@ -30,7 +30,6 @@ impl SettingsRepository {
         let setting = settings::ActiveModel {
             key: Set(key.to_owned()),
             value: Set(value.to_owned()),
-            ..Default::default()
         };
 
         settings::Entity::insert(setting)
@@ -67,7 +66,6 @@ impl SettingsRepository {
             let active_model = settings::ActiveModel {
                 key: Set(k.to_string()),
                 value: Set(v),
-                ..Default::default()
             };
 
             settings::Entity::insert(active_model)

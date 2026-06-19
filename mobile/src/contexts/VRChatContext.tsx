@@ -181,6 +181,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     console.log("Unconfigure VRChatContext");
     setConfig(undefined);
     authTokenRef.current = null;
+    shouldReconnectRef.current = false;
     if (pipelineRef.current) {
       pipelineRef.current.close();
       pipelineRef.current = null;

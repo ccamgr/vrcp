@@ -35,7 +35,7 @@ export const dbManager = {
 
         console.log("Dropping tables:", existTables.map(t => t.name).join(", "));
         for (const table of existTables) {
-          await tx.run(sql.raw(`DROP TABLE IF EXISTS "${table.name}";`));
+          await tx.run(sql`DROP TABLE IF EXISTS ${sql.identifier(String(table.name))}`);
         }
       }, { behavior: "immediate" });
 

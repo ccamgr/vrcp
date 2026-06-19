@@ -40,7 +40,10 @@ pub async fn check_auth(state: State<'_, Ctx>) -> Result<LoginResponse, String> 
                 }
                 RequiresTwoFactorAuth(_) => {
                     // Session requires 2FA to proceed
-                    Err("Session exists but requires 2FA. Please log in again with 2FA.".to_string())
+                    Err(
+                        "Session exists but requires 2FA. Please log in again with 2FA."
+                            .to_string(),
+                    )
                 }
             }
         }

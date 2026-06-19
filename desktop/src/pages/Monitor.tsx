@@ -70,7 +70,7 @@ export default function Monitor() {
             const { color, text } = getEventContent(log.event);
             return (
               <div
-                key={index}
+                key={log.hash}
                 className="flex mb-1 border-b border-slate-700/30 pb-1 hover:bg-slate-700/30"
               >
                 <span className="text-slate-500 mr-4 select-none w-36 shrink-0 text-xs py-0.5">

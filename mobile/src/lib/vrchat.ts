@@ -278,35 +278,33 @@ export function getPlatform(data: AvatarLike | WorldLike): {
 // converter
 // Convert User to LimitedUserFriend (for DataContext etc...)
 export function convertToLimitedUserFriend(user: UserLike): LimitedUserFriend {
-  const obj = Object(user);
   return {
     ...user,
-    imageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? obj.profilePicOverrideThumbnail ?? user?.profilePicOverride ?? "",
-    location: obj.location ?? "offline",
-    friendKey: obj.friendKey ?? "",
-    last_mobile: obj.last_mobile ?? "",
-    last_login: obj.last_login ?? "",
-    last_activity: obj.last_activity ?? "",
-    platform: obj.platform ?? "",
+    imageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? ("profilePicOverrideThumbnail" in user ? (user as any).profilePicOverrideThumbnail : undefined) ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
+    location: "location" in user ? (user as any).location : "offline",
+    friendKey: "friendKey" in user ? (user as any).friendKey : "",
+    last_mobile: "last_mobile" in user ? (user as any).last_mobile : "",
+    last_login: "last_login" in user ? (user as any).last_login : "",
+    last_activity: "last_activity" in user ? (user as any).last_activity : "",
+    platform: "platform" in user ? (user as any).platform : "",
 
   };
 }
 // Convert User to LimitedUserInstance (for DataContext etc...)
 export function convertToLimitedUserInstance(user: UserLike): LimitedUserInstance {
-  const obj = Object(user);
   return {
     ...user,
-    pronouns: obj.pronouns ?? "",
-    currentAvatarImageUrl: user?.currentAvatarImageUrl ?? user.profilePicOverride ?? "",
-    currentAvatarThumbnailImageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? obj.profilePicOverrideThumbnail ?? user?.profilePicOverride ?? "",
-    currentAvatarTags: obj.currentAvatarTags ?? [],
-    ageVerified: obj.ageVerificationStatus ?? false,
-    ageVerificationStatus: obj.ageVerificationStatus ?? "hidden",
-    allowAvatarCopying: obj.allowAvatarCopying ?? false,
-    date_joined: obj.date_joined ?? "",
-    friendKey: obj.friendKey ?? "",
-    state: obj.state ?? undefined,
-    last_mobile: obj.last_mobile ?? "",
-    last_activity: obj.last_activity ?? "",
+    pronouns: "pronouns" in user ? (user as any).pronouns : "",
+    currentAvatarImageUrl: user?.currentAvatarImageUrl ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
+    currentAvatarThumbnailImageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? ("profilePicOverrideThumbnail" in user ? (user as any).profilePicOverrideThumbnail : undefined) ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
+    currentAvatarTags: "currentAvatarTags" in user ? (user as any).currentAvatarTags : [],
+    ageVerified: "ageVerificationStatus" in user ? (user as any).ageVerificationStatus : false,
+    ageVerificationStatus: "ageVerificationStatus" in user ? (user as any).ageVerificationStatus : "hidden",
+    allowAvatarCopying: "allowAvatarCopying" in user ? (user as any).allowAvatarCopying : false,
+    date_joined: "date_joined" in user ? (user as any).date_joined : "",
+    friendKey: "friendKey" in user ? (user as any).friendKey : "",
+    state: "state" in user ? (user as any).state : undefined,
+    last_mobile: "last_mobile" in user ? (user as any).last_mobile : "",
+    last_activity: "last_activity" in user ? (user as any).last_activity : "",
   };
 }

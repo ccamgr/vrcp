@@ -6,7 +6,6 @@ use vrcp_lib::create_specta_builder;
  *
  * usage: cargo run --bin vrcp_cli -- gen-bindings
  */
-
 pub fn gen_bindings() {
     println!("🚀 Generating bindings...");
 

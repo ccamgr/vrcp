@@ -6,7 +6,7 @@ import { fontSize, navigationBarHeight, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Configuration, MiscellaneousApi } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -19,6 +19,7 @@ import {
   View,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import * as SecureStore from "expo-secure-store";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { ButtonEx } from "@/components/CustomElements";
@@ -43,6 +44,15 @@ export default function Login() {
   const [modeTFA, setModeTFA] = useState<"totp" | "email">("totp");
   const [openTFA, setOpenTFA] = useState(false);
   const [openLinks, setOpenLinks] = useState(false);
+
+  useEffect(() => {
+    SecureStore.getItemAsync("auth_secret_username").then((u) => {
+      if (u) setUsername(u);
+    });
+    SecureStore.getItemAsync("auth_secret_password").then((p) => {
+      if (p) setPassword(p);
+    });
+  }, []);
 
   const handleLogin = async () => {
     if (!username) {

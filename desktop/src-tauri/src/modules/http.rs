@@ -8,7 +8,7 @@ use serde::Deserialize;
 use std::net::SocketAddr;
 use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::db::DB;
 
@@ -91,11 +91,22 @@ pub fn spawn_server(db: DB) -> JoinHandle<()> {
             .unwrap_or(&SERVER_PORT.to_string())
             .parse()
             .unwrap_or(SERVER_PORT);
-        // Build the application router
+        let cors = CorsLayer::new()
+            .allow_origin([
+                "http://localhost"
+                    .parse::<axum::http::HeaderValue>()
+                    .unwrap(),
+                "http://localhost:8081"
+                    .parse::<axum::http::HeaderValue>()
+                    .unwrap(),
+            ])
+            .allow_methods(Any)
+            .allow_headers(Any);
+
         let app = Router::new()
             .route("/logs", get(handle_get_logs))
             .with_state(db) // Share the DB instance with handlers
-            .layer(CorsLayer::permissive()); // Allow access from Mobile (different IP)
+            .layer(cors); // Restrict CORS instead of permissive
 
         // Listen on 0.0.0.0 to accept connections from LAN (Mobile)
         let addr = SocketAddr::from(([0, 0, 0, 0], port));

@@ -75,17 +75,18 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       );
       if (requiredTFA) {
         // two factor auth
-        const allowedTFA = Object(res.data).requiresTwoFactorAuth as string[];
-        if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
-          setIsLoading(false);
-          return "tfa-totp"; // return for TOTP 2FA
-        } else if (allowedTFA.includes("emailOtp")) {
-          setIsLoading(false);
-          return "tfa-email"; // return for Email 2FA
-        } else {
-          setIsLoading(false);
-          return "error"; // no supported 2FA method
+        const allowedTFA = Object(res.data).requiresTwoFactorAuth;
+        if (Array.isArray(allowedTFA)) {
+          if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
+            setIsLoading(false);
+            return "tfa-totp"; // return for TOTP 2FA
+          } else if (allowedTFA.includes("emailOtp")) {
+            setIsLoading(false);
+            return "tfa-email"; // return for Email 2FA
+          }
         }
+        setIsLoading(false);
+        return "error"; // no supported 2FA method
       } else if (res.data.id) {
         console.log("Login successful");
         // save user data to storage
@@ -154,8 +155,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         if (res.data.verified) {
           const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
           if (tfaCookie) {
-            // [ToDo] use SecureStore of expo
-            StorageWrapper.setItemAsync("auth_2faCookie", tfaCookie);
+            SecureStore.setItemAsync("auth_2faCookie", tfaCookie);
           }
           setIsLoading(false);
           return "success";
@@ -235,6 +235,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         } catch (e: any) {
           if (axios.isAxiosError(e) && !e.response) {
             console.log("Network error, assuming user is logged in.");
+            const authCookie = storedData[3];
+            if (authCookie) {
+              vrc.configurePipeline(authCookie);
+            }
             setUser(storedUser);
             setIsLoading(false);
             return;
@@ -303,11 +307,11 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
 // なんかフォーマットが変になるので、関数化しておく
 const extractAuthCookie = (string: string | undefined): string | undefined => {
-  const match = string?.match(/auth=([^;]+);/);
+  const match = string?.match(/auth=([^;]+)/);
   return match ? match[1] : undefined;
 };
 const extract2faCookie = (string: string | undefined): string | undefined => {
-  const match = string?.match(/twoFactorAuth=([^;]+);/);
+  const match = string?.match(/twoFactorAuth=([^;]+)/);
   return match ? match[1] : undefined;
 };
 
