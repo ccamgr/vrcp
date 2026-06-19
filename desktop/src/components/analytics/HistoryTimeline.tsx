@@ -10,21 +10,32 @@ const MIN_HOUR_WIDTH = 90; // px per hour
 const MIN_VISIBLE_DURATION_MS = 1 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
 const MIN_SESSION_WIDTH_MS = 1 * 60 * 1000; // 表示される場合に最小でもこの時間分の幅を表示する
 
-export default function HistoryTimeline({ sessions, targetDate }: { sessions: SessionPayload[], targetDate: string }) {
-
+export default function HistoryTimeline({
+  sessions,
+  targetDate,
+}: {
+  sessions: SessionPayload[];
+  targetDate: string;
+}) {
   // ツールチップ用の状態
-  const [hoveredSession, setHoveredSession] = useState<SessionPayload | null>(null);
+  const [hoveredSession, setHoveredSession] = useState<SessionPayload | null>(
+    null,
+  );
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // 1. 時間軸の計算 (Min - Max)
   const { timelineStart, timelineEnd, totalDuration } = useMemo(() => {
     if (sessions.length === 0) {
       const start = new Date(`${targetDate}T00:00:00`).getTime();
-      return { timelineStart: start, timelineEnd: start + 24 * 60 * 60 * 1000, totalDuration: 24 * 60 * 60 * 1000 };
+      return {
+        timelineStart: start,
+        timelineEnd: start + 24 * 60 * 60 * 1000,
+        totalDuration: 24 * 60 * 60 * 1000,
+      };
     }
     let min = sessions[0].startTime;
     let max = sessions[0].endTime;
-    sessions.forEach(s => {
+    sessions.forEach((s) => {
       if (s.startTime < min) min = s.startTime;
       if (s.endTime > max) max = s.endTime;
     });
@@ -32,17 +43,25 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
     const padding = 15 * 60 * 1000;
     const start = new Date(min).getTime() - padding;
     const end = new Date(max).getTime() + padding;
-    return { timelineStart: start, timelineEnd: end, totalDuration: end - start };
+    return {
+      timelineStart: start,
+      timelineEnd: end,
+      totalDuration: end - start,
+    };
   }, [sessions, targetDate]);
 
-  const TIMELINE_WIDTH = totalDuration / (60 * 60 * 1000) * MIN_HOUR_WIDTH; // px
+  const TIMELINE_WIDTH = (totalDuration / (60 * 60 * 1000)) * MIN_HOUR_WIDTH; // px
 
   // 2. インスタンスごとのグループ化 (Y軸の決定)
   const instanceRows = useMemo(() => {
-    const rows: { instanceId: string, worldName: string, sessions: SessionPayload[] }[] = [];
+    const rows: {
+      instanceId: string;
+      worldName: string;
+      sessions: SessionPayload[];
+    }[] = [];
     const map = new Map<string, number>(); // instanceId -> index
 
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       // instanceId が無い場合はワールド名などで代用キーを作る
       const key = session.instanceId || `${session.worldName}-unknown`;
 
@@ -51,7 +70,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
         rows.push({
           instanceId: session.instanceId,
           worldName: session.worldName,
-          sessions: []
+          sessions: [],
         });
       }
       rows[map.get(key)!].sessions.push(session);
@@ -80,19 +99,34 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
 
   return (
     <div className="h-full flex flex-col bg-slate-900 overflow-hidden relative p-6">
-      <div className="flex-1 overflow-auto relative border border-slate-700/50 rounded-xl bg-slate-800/30" onMouseMove={handleMouseMove}>
-
-        <div className="relative" style={{ minWidth: `${LEFT_HEADER_WIDTH + TIMELINE_WIDTH}px` }}>
+      <div
+        className="flex-1 overflow-auto relative border border-slate-700/50 rounded-xl bg-slate-800/30"
+        onMouseMove={handleMouseMove}
+      >
+        <div
+          className="relative"
+          style={{ minWidth: `${LEFT_HEADER_WIDTH + TIMELINE_WIDTH}px` }}
+        >
           {/* --- ヘッダー (時間軸ラベル) --- */}
           <div className="sticky top-0 z-20  border-b border-slate-700 h-10 w-full flex items-end pb-1 backdrop-blur-sm">
-            <div className="z-50 sticky left-0 bg-slate-900/90 backdrop-blur-sm flex-shrink-0 px-4 text-xs text-slate-500 font-bold border-r border-slate-700 h-full flex items-center" style={{ width: `${LEFT_HEADER_WIDTH}px` }}>
+            <div
+              className="z-50 sticky left-0 bg-slate-900/90 backdrop-blur-sm flex-shrink-0 px-4 text-xs text-slate-500 font-bold border-r border-slate-700 h-full flex items-center"
+              style={{ width: `${LEFT_HEADER_WIDTH}px` }}
+            >
               Instance Name
             </div>
-            <div className="z-40 flex-1 relative h-full" style={{ minWidth: `${TIMELINE_WIDTH}px` }}>
-              {timeMarkers.map(time => {
+            <div
+              className="z-40 flex-1 relative h-full"
+              style={{ minWidth: `${TIMELINE_WIDTH}px` }}
+            >
+              {timeMarkers.map((time) => {
                 const left = ((time - timelineStart) / totalDuration) * 100;
                 return (
-                  <div key={time} className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center" style={{ left: `${left}%` }}>
+                  <div
+                    key={time}
+                    className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center"
+                    style={{ left: `${left}%` }}
+                  >
                     <span className="text-[10px] text-slate-400 font-mono mb-1">
                       {formatTime(time)}
                     </span>
@@ -106,39 +140,64 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
           {/* --- ボディ (グリッド & バー) --- */}
           <div className="relative">
             {/* 背景グリッド線 */}
-            <div className="absolute inset-0 z-0 pointer-events-none" style={{ left: `${LEFT_HEADER_WIDTH}px` }}>
-              {timeMarkers.map(time => {
+            <div
+              className="absolute inset-0 z-0 pointer-events-none"
+              style={{ left: `${LEFT_HEADER_WIDTH}px` }}
+            >
+              {timeMarkers.map((time) => {
                 const left = ((time - timelineStart) / totalDuration) * 100;
                 return (
-                  <div key={time} className="absolute top-0 bottom-0 border-l border-slate-700/30 border-dashed" style={{ left: `${left}%` }} />
+                  <div
+                    key={time}
+                    className="absolute top-0 bottom-0 border-l border-slate-700/30 border-dashed"
+                    style={{ left: `${left}%` }}
+                  />
                 );
               })}
             </div>
 
             {/* 行の描画 */}
             {instanceRows.map((row, rowIndex) => (
-              <div key={row.instanceId || rowIndex} className="flex border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors h-[50px]" style={{ minWidth: `${LEFT_HEADER_WIDTH + TIMELINE_WIDTH}px` }}>
-
+              <div
+                key={row.instanceId || rowIndex}
+                className="flex border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors h-[50px]"
+                style={{ minWidth: `${LEFT_HEADER_WIDTH + TIMELINE_WIDTH}px` }}
+              >
                 {/* 左サイドバー: ワールド名 */}
-                <div className="z-30 sticky left-0 backdrop-blur-sm flex-shrink-0 p-2 border-r border-slate-700 bg-slate-800/80 flex flex-col justify-center" style={{ width: `${LEFT_HEADER_WIDTH}px` }}>
-                  <div className="text-xs font-bold text-slate-300 truncate" title={row.worldName}>
+                <div
+                  className="z-30 sticky left-0 backdrop-blur-sm flex-shrink-0 p-2 border-r border-slate-700 bg-slate-800/80 flex flex-col justify-center"
+                  style={{ width: `${LEFT_HEADER_WIDTH}px` }}
+                >
+                  <div
+                    className="text-xs font-bold text-slate-300 truncate"
+                    title={row.worldName}
+                  >
                     {row.worldName}
                   </div>
                   <div className="text-[10px] text-slate-500 truncate font-mono">
-                    #{row.instanceId ? row.instanceId.split('~')[0] : '???'}
+                    #{row.instanceId ? row.instanceId.split("~")[0] : "???"}
                     {/* InstanceIDが長すぎる場合があるので適当に省略表示 */}
                   </div>
                 </div>
 
                 {/* 右側: タイムラインバーエリア */}
-                <div className="flex-1 relative h-full" style={{ minWidth: `${TIMELINE_WIDTH}px` }}>
+                <div
+                  className="flex-1 relative h-full"
+                  style={{ minWidth: `${TIMELINE_WIDTH}px` }}
+                >
                   {row.sessions.map((session, sIdx) => {
                     if (session.durationMs < MIN_VISIBLE_DURATION_MS) {
                       return null; // 短すぎる滞在はそもそも表示しない
                     }
-                    const left = ((new Date(session.startTime).getTime() - timelineStart) / totalDuration) * 100;
-                    const width = ((session.durationMs) / totalDuration) * 100;
-                    const displayWidth = Math.max(width, (MIN_SESSION_WIDTH_MS / totalDuration) * 100); // 最低幅
+                    const left =
+                      ((new Date(session.startTime).getTime() - timelineStart) /
+                        totalDuration) *
+                      100;
+                    const width = (session.durationMs / totalDuration) * 100;
+                    const displayWidth = Math.max(
+                      width,
+                      (MIN_SESSION_WIDTH_MS / totalDuration) * 100,
+                    ); // 最低幅
 
                     return (
                       <div
@@ -175,7 +234,7 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
           className="fixed z-50 pointer-events-none bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-3 w-72 text-left"
           style={{
             top: Math.min(mousePos.y, window.innerHeight - 300), // 画面下にはみ出さないよう調整
-            left: Math.min(mousePos.x, window.innerWidth - 300)
+            left: Math.min(mousePos.x, window.innerWidth - 300),
           }}
         >
           <div className="border-b border-slate-700 pb-2 mb-2">
@@ -188,7 +247,8 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
               </div>
               <div className="flex items-center gap-1 text-slate-300">
                 <Clock size={10} />
-                {formatTime(hoveredSession.startTime)} - {formatTime(hoveredSession.endTime)}
+                {formatTime(hoveredSession.startTime)} -{" "}
+                {formatTime(hoveredSession.endTime)}
                 <span className="bg-slate-800 px-1 rounded ml-1">
                   {Math.floor(hoveredSession.durationMs / 1000 / 60)} min
                 </span>
@@ -205,7 +265,10 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
             ) : (
               <div className="space-y-1">
                 {hoveredSession.players.slice(0, 8).map((p, i) => (
-                  <div key={i} className="flex justify-between text-xs text-slate-300">
+                  <div
+                    key={i}
+                    className="flex justify-between text-xs text-slate-300"
+                  >
                     <span className="truncate w-32">{p.name}</span>
                     <span className="text-slate-500 text-[10px]">
                       {Math.floor(p.totalDurationMs / 60000)}m
@@ -226,13 +289,23 @@ export default function HistoryTimeline({ sessions, targetDate }: { sessions: Se
       {/* 統計フッター */}
       <div className="h-12 bg-slate-800 border-t border-slate-700 flex items-center px-4 gap-6 text-xs text-slate-400 shrink-0">
         <div>
-          <span className="font-bold text-slate-200">{sessions.length}</span> Sessions
+          <span className="font-bold text-slate-200">{sessions.length}</span>{" "}
+          Sessions
         </div>
         <div>
-          <span className="font-bold text-slate-200">{instanceRows.length}</span> Unique Instances
+          <span className="font-bold text-slate-200">
+            {instanceRows.length}
+          </span>{" "}
+          Unique Instances
         </div>
         <div>
-          Total Play: <span className="font-bold text-blue-300">{Math.floor(sessions.reduce((a, c) => a + c.durationMs, 0) / 3600000 * 10) / 10}h</span>
+          Total Play:{" "}
+          <span className="font-bold text-blue-300">
+            {Math.floor(
+              (sessions.reduce((a, c) => a + c.durationMs, 0) / 3600000) * 10,
+            ) / 10}
+            h
+          </span>
         </div>
       </div>
     </div>

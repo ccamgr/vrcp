@@ -1,10 +1,9 @@
+pub mod cmds;
 pub mod db;
 pub mod modules;
 pub mod utils;
-pub mod cmds;
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
-
 
 pub struct Ctx {
     db: db::DB,
@@ -66,13 +65,13 @@ pub fn run() {
                 .app_local_data_dir()
                 .expect("failed to resolve app local data dir");
 
-            let db =
-                tauri::async_runtime::block_on(db::DB::new(app_data_dir.clone()))?;
+            let db = tauri::async_runtime::block_on(db::DB::new(app_data_dir.clone()))?;
 
             app.manage(db.clone()); // グローバルステートとしてDBを登録
 
             // VRCAPI サービス初期化
-            let vrcapi = modules::VrcApiService::new(app_data_dir).expect("Failed to init VrcApiService");
+            let vrcapi =
+                modules::VrcApiService::new(app_data_dir).expect("Failed to init VrcApiService");
             app.manage(vrcapi.clone());
 
             // ログ監視開始
@@ -95,7 +94,12 @@ pub fn run() {
                 }
             }
 
-            let ctx = Ctx { db, srv, watcher, vrcapi };
+            let ctx = Ctx {
+                db,
+                srv,
+                watcher,
+                vrcapi,
+            };
             app.manage(ctx); // グローバルステートとしてCtxを登録
 
             Ok(())

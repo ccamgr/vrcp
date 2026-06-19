@@ -6,12 +6,14 @@ import HistoryTimeline from "../components/analytics/HistoryTimeline";
 import { formatDate } from "../lib/date";
 
 export default function Analytics() {
-  const [targetDate, setTargetDate] = useState<string>(formatDate(new Date().getTime())); // YYYY-MM-DD形式
+  const [targetDate, setTargetDate] = useState<string>(
+    formatDate(new Date().getTime()),
+  ); // YYYY-MM-DD形式
   const [sessions, setSessions] = useState<SessionPayload[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   // 表示モードの状態管理 (list | timeline)
-  const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
+  const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
   // 日付変更時にデータ取得
   useEffect(() => {
@@ -22,10 +24,18 @@ export default function Analytics() {
     setLoading(true);
     try {
       // 注意: new Date("2026-04-20") とするとUTC基準になってズレるため、ハイフンで割って手動生成します
-      const [year, month, day] = dateStr.split('-').map(Number);
+      const [year, month, day] = dateStr.split("-").map(Number);
       // 指定日の 00:00:00 から 23:59:59 までを取得
       const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
-      const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+      const endOfDay = new Date(
+        year,
+        month - 1,
+        day,
+        23,
+        59,
+        59,
+        999,
+      ).getTime();
 
       const result = await commands.getSessions(startOfDay, endOfDay);
       // const result = await commands.getLogs(start, end);
@@ -45,7 +55,7 @@ export default function Analytics() {
   const handleDateChange = (offset: number) => {
     const d = new Date(targetDate);
     d.setDate(d.getDate() + offset);
-    setTargetDate(d.toISOString().split('T')[0]);
+    setTargetDate(d.toISOString().split("T")[0]);
   };
 
   return (
@@ -56,22 +66,27 @@ export default function Analytics() {
           {/* 表示モード切り替えスイッチ */}
           <div className="flex bg-slate-900 rounded-lg p-1 border border-slate-700">
             <button
-              onClick={() => setViewMode('list')}
-              className={`p-1 w-24 justify-center rounded flex items-center gap-2 text-sm transition ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              onClick={() => setViewMode("list")}
+              className={`p-1 w-24 justify-center rounded flex items-center gap-2 text-sm transition ${viewMode === "list" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"}`}
             >
-              <LayoutList size={16} /> <span className="hidden md:inline">List</span>
+              <LayoutList size={16} />{" "}
+              <span className="hidden md:inline">List</span>
             </button>
             <button
-              onClick={() => setViewMode('timeline')}
-              className={`p-1 w-24 justify-center rounded flex items-center gap-2 text-sm transition ${viewMode === 'timeline' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              onClick={() => setViewMode("timeline")}
+              className={`p-1 w-24 justify-center rounded flex items-center gap-2 text-sm transition ${viewMode === "timeline" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"}`}
             >
-              <BarChart3 size={16} /> <span className="hidden md:inline">Timeline</span>
+              <BarChart3 size={16} />{" "}
+              <span className="hidden md:inline">Timeline</span>
             </button>
           </div>
 
           {/* 日付操作 */}
           <div className="flex gap-2 bg-slate-900 rounded-lg p-1 border border-slate-700">
-            <button onClick={() => handleDateChange(-1)} className="p-1 hover:bg-slate-700 rounded transition">
+            <button
+              onClick={() => handleDateChange(-1)}
+              className="p-1 hover:bg-slate-700 rounded transition"
+            >
               <ChevronLeft size={20} />
             </button>
             <input
@@ -80,7 +95,10 @@ export default function Analytics() {
               onChange={(e) => setTargetDate(e.target.value)}
               className="bg-transparent text-center focus:outline-none font-mono text-sm w-32 text-white [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
             />
-            <button onClick={() => handleDateChange(1)} className="p-1 hover:bg-slate-700 rounded transition">
+            <button
+              onClick={() => handleDateChange(1)}
+              className="p-1 hover:bg-slate-700 rounded transition"
+            >
               <ChevronRight size={20} />
             </button>
           </div>
@@ -96,12 +114,14 @@ export default function Analytics() {
         ) : sessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-slate-500">
             <p className="text-lg">No activity recorded on this day.</p>
-            <p className="text-sm opacity-60">Try selecting a different date.</p>
+            <p className="text-sm opacity-60">
+              Try selecting a different date.
+            </p>
           </div>
         ) : (
           // モードによって表示を切り替え
           <div className="h-full overflow-y-auto">
-            {viewMode === 'list' ? (
+            {viewMode === "list" ? (
               <HistoryListView sessions={sessions} targetDate={targetDate} />
             ) : (
               <HistoryTimeline sessions={sessions} targetDate={targetDate} />
@@ -112,6 +132,3 @@ export default function Analytics() {
     </div>
   );
 }
-
-
-

@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::BufWriter;
 
-use crate::Ctx;
 use crate::modules::watcher::LogPayload;
+use crate::Ctx;
 
 #[tauri::command]
 #[specta::specta]
@@ -12,7 +12,9 @@ pub async fn get_logs(
     end: Option<i64>,
 ) -> Result<Vec<LogPayload>, String> {
     // db.get_logs の frontからの呼び出し
-    state.db.logs()
+    state
+        .db
+        .logs()
         .get_session_expanded_logs(start.as_ref(), end.as_ref())
         .await
         .map_err(|e| e.to_string())
@@ -21,7 +23,9 @@ pub async fn get_logs(
 #[tauri::command]
 #[specta::specta]
 pub async fn delete_all_logs(state: tauri::State<'_, Ctx>) -> Result<(), String> {
-    state.db.logs()
+    state
+        .db
+        .logs()
         .delete_all_logs()
         .await
         .map_err(|e| e.to_string())?;
@@ -32,7 +36,9 @@ pub async fn delete_all_logs(state: tauri::State<'_, Ctx>) -> Result<(), String>
 #[specta::specta]
 pub async fn export_logs(state: tauri::State<'_, Ctx>, file_path: String) -> Result<usize, String> {
     // 1. 全ログを取得 (since=None, until=None で全期間)
-    let logs = state.db.logs()
+    let logs = state
+        .db
+        .logs()
         .get_session_expanded_logs(None, None)
         .await
         .map_err(|e| e.to_string())?;

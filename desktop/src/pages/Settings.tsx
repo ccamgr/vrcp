@@ -4,7 +4,15 @@ import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
 import { save, ask } from "@tauri-apps/plugin-dialog";
-import { Smartphone, Power, Globe, Database, Download, Trash2, AlertTriangle } from "lucide-react";
+import {
+  Smartphone,
+  Power,
+  Globe,
+  Database,
+  Download,
+  Trash2,
+  AlertTriangle,
+} from "lucide-react";
 
 export default function Settings() {
   const { serverUrl } = useLogContext();
@@ -52,7 +60,9 @@ export default function Settings() {
 
     try {
       await commands.setServerPort(portNum);
-      alert("ポート設定を保存しました。\n反映するにはアプリを再起動してください。");
+      alert(
+        "ポート設定を保存しました。\n反映するにはアプリを再起動してください。",
+      );
     } catch (e) {
       console.error(e);
       alert(`保存に失敗しました: ${e}`);
@@ -63,8 +73,8 @@ export default function Settings() {
     try {
       // 1. 保存先ダイアログを表示
       const filePath = await save({
-        filters: [{ name: 'JSON', extensions: ['json'] }],
-        defaultPath: 'vrcp_logs_backup.json',
+        filters: [{ name: "JSON", extensions: ["json"] }],
+        defaultPath: "vrcp_logs_backup.json",
       });
 
       if (!filePath) return; // キャンセルされた場合
@@ -74,13 +84,12 @@ export default function Settings() {
       // 2. Rustへパスを渡して書き出し実行
       const result = await commands.exportLogs(filePath);
 
-      if (typeof result === 'number') {
+      if (typeof result === "number") {
         alert(`Export successful!\nSaved ${result} records.`);
       } else {
         // Result型でラップされている場合 (bindingsの生成設定による)
         // alert("Export complete.");
       }
-
     } catch (e) {
       console.error(e);
       alert(`Export failed: ${e}`);
@@ -91,10 +100,13 @@ export default function Settings() {
 
   const handleClear = async () => {
     // 1. 確認ダイアログ (Tauriのネイティブダイアログ推奨)
-    const confirmed = await ask("Are you sure you want to delete ALL logs?\nThis action cannot be undone.", {
-      title: 'Danger: Clear Database',
-      kind: 'warning',
-    });
+    const confirmed = await ask(
+      "Are you sure you want to delete ALL logs?\nThis action cannot be undone.",
+      {
+        title: "Danger: Clear Database",
+        kind: "warning",
+      },
+    );
 
     if (!confirmed) return;
 
@@ -116,10 +128,7 @@ export default function Settings() {
         <h2 className="text-2xl font-bold">Settings</h2>
       </header>
 
-
       <div className="grid gap-8 p-6 overflow-y-auto ">
-
-
         {/* Mobile Connection */}
         <section className="bg-slate-800/40 p-6 rounded-xl border border-slate-700">
           <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -127,7 +136,11 @@ export default function Settings() {
           </h3>
           <div className="flex gap-8 items-start">
             <div className="bg-white p-2 rounded-lg shrink-0">
-              {serverUrl ? <QRCode value={serverUrl} size={120} /> : <div className="w-[120px] h-[120px] bg-gray-200 animate-pulse rounded" />}
+              {serverUrl ? (
+                <QRCode value={serverUrl} size={120} />
+              ) : (
+                <div className="w-[120px] h-[120px] bg-gray-200 animate-pulse rounded" />
+              )}
             </div>
             <div>
               <p className="font-medium mb-1">Scan this QR Code</p>
@@ -150,16 +163,21 @@ export default function Settings() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Auto Start</p>
-              <p className="text-sm text-slate-400">Launch VRCP automatically when PC starts.</p>
+              <p className="text-sm text-slate-400">
+                Launch VRCP automatically when PC starts.
+              </p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={autoStart} onChange={toggleAutoStart} />
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={autoStart}
+                onChange={toggleAutoStart}
+              />
               <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
         </section>
-
-
 
         {/* Network Settings (Port) */}
         <section className="bg-slate-800/40 p-6 rounded-xl border border-slate-700">
@@ -171,7 +189,9 @@ export default function Settings() {
               <p className="font-medium">Server Port</p>
               <p className="text-sm text-slate-400">
                 Change the listening port for mobile connection. <br />
-                <span className="text-yellow-500 text-xs">Note: App restarts automatically to apply change.</span>
+                <span className="text-yellow-500 text-xs">
+                  Note: App restarts automatically to apply change.
+                </span>
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -180,7 +200,7 @@ export default function Settings() {
                 value={portInput ?? ""}
                 onChange={(e) => setPortInput(e.target.value)}
                 className="bg-slate-900 border border-slate-600 rounded px-3 py-2 w-24 text-center font-mono focus:outline-none focus:border-blue-500 transition"
-              // placeholder="8727"
+                // placeholder="8727"
               />
               <button
                 onClick={handleSavePort}
@@ -205,7 +225,9 @@ export default function Settings() {
                 <p className="font-medium flex items-center gap-2">
                   <Download size={18} className="text-blue-400" /> Export Data
                 </p>
-                <p className="text-sm text-slate-400">Save all logs to a JSON file for backup.</p>
+                <p className="text-sm text-slate-400">
+                  Save all logs to a JSON file for backup.
+                </p>
               </div>
               <button
                 onClick={handleExport}
@@ -222,7 +244,9 @@ export default function Settings() {
                 <p className="font-medium flex items-center gap-2 text-red-400">
                   <Trash2 size={18} /> Clear Database
                 </p>
-                <p className="text-sm text-slate-400">Permanently delete all logs from the database.</p>
+                <p className="text-sm text-slate-400">
+                  Permanently delete all logs from the database.
+                </p>
               </div>
               <button
                 onClick={handleClear}
@@ -235,8 +259,6 @@ export default function Settings() {
             </div>
           </div>
         </section>
-
-
       </div>
     </div>
   );

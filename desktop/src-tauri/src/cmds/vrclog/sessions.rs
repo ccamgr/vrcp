@@ -1,7 +1,5 @@
+use crate::modules::watcher::{LogPayload, VrcLogEvent};
 use crate::Ctx;
-use crate::{
-    modules::watcher::{LogPayload, VrcLogEvent},
-};
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::collections::HashMap;
@@ -111,14 +109,11 @@ impl SessionBuilder {
                     .cloned()
                     .unwrap_or_else(|| "Unknown".to_string());
 
-                let total_ms: i64 = intervals
-                    .iter()
-                    .map(|i| i.end - i.start)
-                    .sum();
+                let total_ms: i64 = intervals.iter().map(|i| i.end - i.start).sum();
 
                 // 自分のIDかどうか判定
                 let is_me = if let Some(me_ref) = &self.me {
-                    &me_ref.user_id == &id
+                    me_ref.user_id == id
                 } else {
                     false
                 };
@@ -159,7 +154,6 @@ impl SessionBuilder {
     // メインの処理ループ
     fn process(mut self, logs: Vec<LogPayload>, last_logged_time: i64) -> Vec<SessionPayload> {
         for log in logs {
-
             match log.event {
                 VrcLogEvent::Login { username, user_id } => {
                     self.me = Some(Me {
@@ -193,8 +187,12 @@ impl SessionBuilder {
                     if self.current_session.is_some() {
                         self.known_player_names
                             .insert(user_id.clone(), player_name.clone());
-                        self.active_players
-                            .insert(user_id, ActivePlayer { start: log.timestamp });
+                        self.active_players.insert(
+                            user_id,
+                            ActivePlayer {
+                                start: log.timestamp,
+                            },
+                        );
                     }
                 }
                 VrcLogEvent::PlayerLeft { user_id, .. } => {
@@ -241,7 +239,9 @@ pub async fn get_sessions(
 ) -> Result<Vec<SessionPayload>, String> {
     let builder = SessionBuilder::new();
 
-    let logs = state.db.logs()
+    let logs = state
+        .db
+        .logs()
         .get_session_expanded_logs(start.as_ref(), end.as_ref())
         .await
         .map_err(|e| e.to_string())?;

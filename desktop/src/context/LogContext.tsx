@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { events, commands, type LogPayload } from "../generated/bindings";
 
 interface LogContextType {
@@ -16,15 +22,18 @@ export function LogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // 1. サーバーURL取得
     const refreshUrl = () => {
-      commands.getServerUrl().then((result) => {
-        if (result.status === "ok") {
-          setServerUrl(result.data);
-        } else {
-          console.error("Failed to get server URL:", result.error);
-        }
-      }).catch(console.error);
-    }
-    const unsubscribe = setInterval(refreshUrl, 30 * 1000)
+      commands
+        .getServerUrl()
+        .then((result) => {
+          if (result.status === "ok") {
+            setServerUrl(result.data);
+          } else {
+            console.error("Failed to get server URL:", result.error);
+          }
+        })
+        .catch(console.error);
+    };
+    const unsubscribe = setInterval(refreshUrl, 30 * 1000);
     refreshUrl();
 
     // 2. ログ監視開始
@@ -49,6 +58,7 @@ export function LogProvider({ children }: { children: ReactNode }) {
 
 export function useLogContext() {
   const context = useContext(LogContext);
-  if (!context) throw new Error("useLogContext must be used within a LogProvider");
+  if (!context)
+    throw new Error("useLogContext must be used within a LogProvider");
   return context;
 }

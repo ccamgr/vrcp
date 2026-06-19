@@ -42,7 +42,7 @@ impl LogsRepository {
             .await;
 
         match res {
-            Ok(res) => Ok(res.last_insert_id as i32),
+            Ok(res) => Ok(res.last_insert_id),
             Err(e) => Err(e),
         }
     }

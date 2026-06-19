@@ -68,10 +68,10 @@ async fn process_file(
             // insert_logの実装に任せる (エラーが出ても止まらないようにする)
             last_timestamp = payload.timestamp;
             match &payload.event {
-                AppStart { .. } => {
+                AppStart => {
                     is_running = true;
                 }
-                AppStop { .. } | InvalidAppStop { .. } => {
+                AppStop | InvalidAppStop => {
                     is_running = false;
                 }
                 _ => {}

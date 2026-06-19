@@ -1,3 +1,4 @@
+use crate::utils::constants;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::fs::File;
@@ -5,7 +6,6 @@ use std::io::{BufReader, BufWriter};
 use std::path::PathBuf;
 use std::sync::Arc;
 use vrchatapi::apis::configuration::Configuration;
-use crate::utils::constants;
 
 // Service struct to manage VRChat API state
 #[derive(Clone)]

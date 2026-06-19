@@ -1,7 +1,5 @@
-
-
-use local_ip_address::local_ip;
 use crate::Ctx;
+use local_ip_address::local_ip;
 
 #[tauri::command]
 #[specta::specta]
@@ -14,10 +12,7 @@ pub async fn get_server_url(state: tauri::State<'_, Ctx>) -> Result<String, Stri
 
 #[tauri::command]
 #[specta::specta]
-pub async fn set_server_port(
-    state: tauri::State<'_, Ctx>,
-    port: u16,
-) -> Result<(), String> {
+pub async fn set_server_port(state: tauri::State<'_, Ctx>, port: u16) -> Result<(), String> {
     // 1. バリデーション (u16なので 0~65535 は保証されるが、0番ポートなどを弾くならここに書く)
     if port == 0 {
         return Err("Port 0 is not allowed".to_string());

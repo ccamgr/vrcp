@@ -1,21 +1,21 @@
 use serde::{Deserialize, Serialize};
+use specta::Type;
 use tauri::State;
-use vrchatapi::apis::authentication_api::{get_current_user, logout as vrc_logout, verify2_fa, verify2_fa_email_code};
+use vrchatapi::apis::authentication_api::{
+    get_current_user, logout as vrc_logout, verify2_fa, verify2_fa_email_code,
+};
 use vrchatapi::models::{
     RegisterUserAccount200Response::{CurrentUser, RequiresTwoFactorAuth},
-    TwoFactorEmailCode,
-    TwoFactorAuthCode,
+    TwoFactorAuthCode, TwoFactorEmailCode,
 };
-use specta::Type;
 
 use crate::Ctx;
-
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
 pub struct LoginResponse {
     user: Option<String>, // ログイン成功してユーザー情報が取れた場合はユーザー名を入れる
     #[serde(rename = "requires2fa")]
-    requires_2fa: bool,   // 2FAが必要な場合はtrue
+    requires_2fa: bool, // 2FAが必要な場合はtrue
     #[serde(rename = "type2fa")]
     type_2fa: Vec<String>, // 2FAの種類（例: "emailOtp", "otp", "totp"）を入れる
 }
@@ -40,7 +40,7 @@ pub async fn check_auth(state: State<'_, Ctx>) -> Result<LoginResponse, String> 
                 }
                 RequiresTwoFactorAuth(_) => {
                     // Session requires 2FA to proceed
-                    Err(format!("Session exists but requires 2FA. Please log in again with 2FA."))
+                    Err("Session exists but requires 2FA. Please log in again with 2FA.".to_string())
                 }
             }
         }
@@ -53,7 +53,7 @@ pub async fn check_auth(state: State<'_, Ctx>) -> Result<LoginResponse, String> 
 pub async fn login(
     username: String,
     password: String,
-    state: State<'_, Ctx>
+    state: State<'_, Ctx>,
 ) -> Result<LoginResponse, String> {
     let mut config = state.vrcapi.config.lock().await;
 
@@ -74,28 +74,26 @@ pub async fn login(
             }
 
             match response {
-                CurrentUser(user) => {
-                    Ok(LoginResponse {
-                        user: Some(user.display_name.clone()),
-                        requires_2fa: false,
-                        type_2fa: Vec::new(),
-                    })
-                }
-                RequiresTwoFactorAuth(req2fa) => {
-                    Ok(LoginResponse {
-                        user: None,
-                        requires_2fa: true,
-                        type_2fa: Vec::from_iter(req2fa.requires_two_factor_auth.iter().map(|t| format!("{:?}", t))),
-                    })
-                }
+                CurrentUser(user) => Ok(LoginResponse {
+                    user: Some(user.display_name.clone()),
+                    requires_2fa: false,
+                    type_2fa: Vec::new(),
+                }),
+                RequiresTwoFactorAuth(req2fa) => Ok(LoginResponse {
+                    user: None,
+                    requires_2fa: true,
+                    type_2fa: Vec::from_iter(
+                        req2fa
+                            .requires_two_factor_auth
+                            .iter()
+                            .map(|t| format!("{:?}", t)),
+                    ),
+                }),
             }
-        },
-        Err(e) => {
-            Err(format!("Login failed: {}", e))
         }
+        Err(e) => Err(format!("Login failed: {}", e)),
     }
 }
-
 
 //2faverify
 #[tauri::command]
@@ -103,17 +101,19 @@ pub async fn login(
 pub async fn verify_2fa(
     code: String,
     is_emailotp: bool,
-    state: State<'_, Ctx>
+    state: State<'_, Ctx>,
 ) -> Result<LoginResponse, String> {
     let config = state.vrcapi.config.lock().await;
 
     // 1. Verify code based on the type and get the boolean result
     let verified = if is_emailotp {
-        verify2_fa_email_code(&config, TwoFactorEmailCode { code }).await
+        verify2_fa_email_code(&config, TwoFactorEmailCode { code })
+            .await
             .map_err(|e| format!("Email 2FA error: {}", e))?
             .verified
     } else {
-        verify2_fa(&config, TwoFactorAuthCode { code }).await
+        verify2_fa(&config, TwoFactorAuthCode { code })
+            .await
             .map_err(|e| format!("App 2FA error: {}", e))?
             .verified
     };
@@ -139,8 +139,11 @@ pub async fn verify_2fa(
             } else {
                 Err("Verification succeeded, but failed to retrieve user data.".to_string())
             }
-        },
-        Err(e) => Err(format!("Verification succeeded, but failed to fetch user: {}", e)),
+        }
+        Err(e) => Err(format!(
+            "Verification succeeded, but failed to fetch user: {}",
+            e
+        )),
     }
 }
 
@@ -158,6 +161,6 @@ pub async fn logout(state: State<'_, Ctx>) -> Result<String, String> {
     // 2. ローカルのクッキーをクリアしてディスクに反映
     match state.vrcapi.clear_cookies() {
         Ok(_) => Ok("Logged out successfully".to_string()),
-        Err(e) => Err(format!("Failed to clear local cookies: {}", e))
+        Err(e) => Err(format!("Failed to clear local cookies: {}", e)),
     }
 }

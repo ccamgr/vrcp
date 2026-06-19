@@ -46,7 +46,7 @@ version-bump/patch:  # generate draft of versions.json with patch bump
 .PHONY: lint
 lint: # lint the codebase
 	@cd src-tauri && cargo fmt --all
-	@cd src-tauri && cargo clippy --fix
+	@cd src-tauri && cargo clippy --fix --allow-dirty
 # @npx eslint . --fix
 	@npx prettier --write "**/*.tsx"
 	@echo "tsc checking..." && npx tsc --noEmit && echo "done"

@@ -10,11 +10,11 @@ use std::hash::{Hash, Hasher};
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::sync::OnceLock;
+use std::sync::{Arc, RwLock};
 use std::time::{Duration, Instant};
 use tauri::async_runtime::JoinHandle;
 use tauri::AppHandle;
 use tauri_specta::Event;
-use std::sync::{Arc, RwLock};
 
 #[derive(Clone, Debug)]
 pub struct WatcherStatus {
@@ -28,11 +28,18 @@ pub struct WatcherService {
 }
 impl WatcherService {
     pub fn is_app_running(&self) -> bool {
-        self.status.read().map(|s| s.is_app_running).unwrap_or(false)
+        self.status
+            .read()
+            .map(|s| s.is_app_running)
+            .unwrap_or(false)
     }
 
-    pub fn last_seen_timestamp(&self) -> i64 { // 💡 String -> i64
-        self.status.read().map(|s| s.last_seen_timestamp).unwrap_or(0)
+    pub fn last_seen_timestamp(&self) -> i64 {
+        // 💡 String -> i64
+        self.status
+            .read()
+            .map(|s| s.last_seen_timestamp)
+            .unwrap_or(0)
     }
 }
 
@@ -106,7 +113,7 @@ const LOG_DEFINITIONS: &[LogDefinition] = &[
         pattern_part: r"\[Behaviour\] Joining (wrld_[\w-]+):(.+)",
         factory: |caps| VrcLogEvent::InstanceJoin {
             world_id: caps[2].to_string(),
-            instance_id: caps[2].to_string() + ":" + &caps[3].to_string(),
+            instance_id: caps[2].to_string() + ":" + &caps[3],
         },
     },
     LogDefinition {
@@ -162,9 +169,7 @@ fn gen_hash(timestamp: i64, event: &VrcLogEvent) -> i64 {
 // 💡 戻り値を Option<i64> に変更
 pub fn extract_timestamp(line: &str) -> Option<i64> {
     static RE: OnceLock<Regex> = OnceLock::new();
-    let re = RE.get_or_init(|| {
-        Regex::new(r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2})").unwrap()
-    });
+    let re = RE.get_or_init(|| Regex::new(r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2})").unwrap());
 
     if let Some(caps) = re.captures(line) {
         return Some(str_to_i64(&caps[1])); // 💡 即時 i64 化
@@ -259,12 +264,18 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
     if let Ok(Some(saved_state)) = db.settings().get_watcher_state().await {
         if saved_state.log_path == current_path_str && !current_path_str.is_empty() {
-            println!("Resuming watcher from position: {}", saved_state.last_position);
+            println!(
+                "Resuming watcher from position: {}",
+                saved_state.last_position
+            );
             current_position = saved_state.last_position;
             is_app_running = saved_state.is_running;
             last_seen_timestamp = str_to_i64(&saved_state.last_timestamp); // 💡 DBのStringをi64に戻す
         } else if !saved_state.log_path.is_empty() {
-            println!("Rotation detected. Re-scanning old log fully: {}", saved_state.log_path);
+            println!(
+                "Rotation detected. Re-scanning old log fully: {}",
+                saved_state.log_path
+            );
 
             let old_path = PathBuf::from(&saved_state.log_path);
             if old_path.exists() {
@@ -274,25 +285,26 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     let mut temp_is_running = false;
                     let mut temp_last_ts: i64 = 0; // 💡 i64
 
-                    for line in reader.lines() {
-                        if let Ok(l) = line {
-                            if let Some(ts) = extract_timestamp(&l) {
-                                temp_last_ts = ts;
-                            }
+                    for l in reader.lines().flatten() {
+                        if let Some(ts) = extract_timestamp(&l) {
+                            temp_last_ts = ts;
+                        }
 
-                            if let Some(payload) = parse_log_line(&l) {
-                                match payload.event {
-                                    VrcLogEvent::AppStart => temp_is_running = true,
-                                    VrcLogEvent::AppStop => temp_is_running = false,
-                                    _ => {}
-                                }
-                                let _ = db.logs().insert_log(&payload).await;
+                        if let Some(payload) = parse_log_line(&l) {
+                            match payload.event {
+                                VrcLogEvent::AppStart => temp_is_running = true,
+                                VrcLogEvent::AppStop => temp_is_running = false,
+                                _ => {}
                             }
+                            let _ = db.logs().insert_log(&payload).await;
                         }
                     }
 
                     if temp_is_running {
-                        println!("Crash detected in old log. Inserting InvalidAppStop at {}", i64_to_str(temp_last_ts));
+                        println!(
+                            "Crash detected in old log. Inserting InvalidAppStop at {}",
+                            i64_to_str(temp_last_ts)
+                        );
                         let crash_payload = create_invalid_app_stop_payload(temp_last_ts);
                         let _ = db.logs().insert_log(&crash_payload).await;
                     }
@@ -314,7 +326,10 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
             File::open(path).ok().map(|mut f| {
                 let file_len = f.metadata().map(|m| m.len()).unwrap_or(0);
                 if current_position > file_len {
-                    println!("Saved position {} > File length {}. Resetting to 0.", current_position, file_len);
+                    println!(
+                        "Saved position {} > File length {}. Resetting to 0.",
+                        current_position, file_len
+                    );
                     current_position = 0;
                 }
                 if let Err(e) = f.seek(SeekFrom::Start(current_position)) {
@@ -450,9 +465,7 @@ pub fn spawn_log_watcher(app: AppHandle, db: DB) -> WatcherService {
     }));
 
     WatcherService {
-        handle: tauri::async_runtime::spawn(
-            watch_loop(app, db, Arc::clone(&shared_status))
-        ),
-        status: shared_status
+        handle: tauri::async_runtime::spawn(watch_loop(app, db, Arc::clone(&shared_status))),
+        status: shared_status,
     }
 }

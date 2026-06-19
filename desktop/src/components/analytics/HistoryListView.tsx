@@ -6,7 +6,13 @@ import { PlayerInterval, SessionPayload } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
 
 // ============================================================================
-export default function HistoryListView({ sessions, targetDate }: { sessions: SessionPayload[], targetDate: string }) {
+export default function HistoryListView({
+  sessions,
+  targetDate,
+}: {
+  sessions: SessionPayload[];
+  targetDate: string;
+}) {
   return (
     <div className="space-y-6 p-6">
       {sessions.map((session, idx) => (
@@ -29,7 +35,8 @@ function SessionCard({ session }: { session: SessionPayload }) {
           </h3>
           <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <Clock size={12} /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
+              <Clock size={12} /> {formatTime(session.startTime)} -{" "}
+              {formatTime(session.endTime)}
             </span>
             <span className="bg-slate-700 px-1.5 rounded text-[10px]">
               {durationMin} min
@@ -46,7 +53,9 @@ function SessionCard({ session }: { session: SessionPayload }) {
         {/* 自分 (Self) のベースバー */}
         <div className="mb-4">
           <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span className="flex items-center gap-1 font-bold text-blue-400"><User size={12} /> {session.username || "You"}</span>
+            <span className="flex items-center gap-1 font-bold text-blue-400">
+              <User size={12} /> {session.username || "You"}
+            </span>
             <span>{durationMin} min</span>
           </div>
           <div className="h-2 bg-blue-500/30 rounded-full w-full relative overflow-hidden">
@@ -58,7 +67,9 @@ function SessionCard({ session }: { session: SessionPayload }) {
         {/* 他のプレイヤーリスト */}
         {session.players.length > 0 && (
           <div className="space-y-2 mt-2 border-t border-slate-700/50 pt-2">
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Met Players</div>
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-2">
+              Met Players
+            </div>
             {session.players.map((player) => (
               <PlayerTimelineRow
                 key={player.name}
@@ -71,17 +82,23 @@ function SessionCard({ session }: { session: SessionPayload }) {
         )}
 
         {session.players.length === 0 && (
-          <p className="text-xs text-slate-600 italic">No other players detected during this session.</p>
+          <p className="text-xs text-slate-600 italic">
+            No other players detected during this session.
+          </p>
         )}
       </div>
     </div>
   );
 }
 
-function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
-  player: PlayerInterval,
-  sessionStart: number,
-  sessionDuration: number,
+function PlayerTimelineRow({
+  player,
+  sessionStart,
+  sessionDuration,
+}: {
+  player: PlayerInterval;
+  sessionStart: number;
+  sessionDuration: number;
 }) {
   const pDurationMin = Math.floor(player.totalDurationMs / 1000 / 60);
 
@@ -89,7 +106,9 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
     <div className="group">
       <div className="flex items-center justify-between text-xs text-slate-300 mb-0.5">
         <span className="font-medium truncate w-32">{player.name}</span>
-        <span className="text-[10px] text-slate-500">{pDurationMin > 0 ? `${pDurationMin}m` : "<1m"}</span>
+        <span className="text-[10px] text-slate-500">
+          {pDurationMin > 0 ? `${pDurationMin}m` : "<1m"}
+        </span>
       </div>
 
       {/* タイムラインバーの背景 */}
@@ -97,8 +116,14 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration }: {
         {/* 滞在区間の描画 (複数回出入りに対応) */}
         {player.intervals.map((interval, i) => {
           // セッション開始からの経過時間(%)を計算
-          const startPercent = Math.max(0, ((interval.start - sessionStart) / sessionDuration) * 100);
-          const endPercent = Math.min(100, ((interval.end - sessionStart) / sessionDuration) * 100);
+          const startPercent = Math.max(
+            0,
+            ((interval.start - sessionStart) / sessionDuration) * 100,
+          );
+          const endPercent = Math.min(
+            100,
+            ((interval.end - sessionStart) / sessionDuration) * 100,
+          );
           const widthPercent = endPercent - startPercent;
 
           return (

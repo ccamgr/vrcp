@@ -7,5 +7,5 @@ mod migrator;
 
 // re-exportss
 // crate::db::Database => crate::db::core::Database;
-pub use core::DB;
 pub use core::DbResult;
+pub use core::DB;

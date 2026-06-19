@@ -28,13 +28,18 @@ export default function Sample() {
 
     if (result.status === "ok") {
       if (result.data.requires2fa) {
-        setStatusLog(`2FA Required. Available types: ${result.data.type2fa.join(", ")}`);
+        setStatusLog(
+          `2FA Required. Available types: ${result.data.type2fa.join(", ")}`,
+        );
         setRequires2fa(true);
         setAvailable2faTypes(result.data.type2fa);
         setCurrentUser(null);
 
         // Auto-select email OTP if it is the only option available
-        if (result.data.type2fa.includes("emailOtp") && !result.data.type2fa.includes("totp")) {
+        if (
+          result.data.type2fa.includes("emailOtp") &&
+          !result.data.type2fa.includes("totp")
+        ) {
           setIsEmailOtp(true);
         } else {
           setIsEmailOtp(false);
@@ -102,12 +107,13 @@ export default function Sample() {
       <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
         {/* Auth Form Area */}
         <div className="bg-slate-800/50 p-6 rounded-xl shadow-inner border border-slate-700/50 max-w-md w-full mx-auto">
-
           {/* Default Login Form */}
           {!requires2fa ? (
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Username / Email</label>
+                <label className="block text-sm font-medium text-slate-400 mb-1">
+                  Username / Email
+                </label>
                 <input
                   type="text"
                   value={username}
@@ -117,7 +123,9 @@ export default function Sample() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Password</label>
+                <label className="block text-sm font-medium text-slate-400 mb-1">
+                  Password
+                </label>
                 <input
                   type="password"
                   value={password}
@@ -148,12 +156,16 @@ export default function Sample() {
             <form onSubmit={handleVerify2fa} className="flex flex-col gap-4">
               <div className="bg-yellow-900/30 border border-yellow-700/50 text-yellow-300 p-3 rounded-lg text-sm mb-2">
                 2FA is required. Please enter your verification code.
-                <br/>
-                <span className="text-yellow-500 text-xs">Types: {available2faTypes.join(", ")}</span>
+                <br />
+                <span className="text-yellow-500 text-xs">
+                  Types: {available2faTypes.join(", ")}
+                </span>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">2FA Code</label>
+                <label className="block text-sm font-medium text-slate-400 mb-1">
+                  2FA Code
+                </label>
                 <input
                   type="text"
                   value={code}
@@ -199,7 +211,13 @@ export default function Sample() {
         {/* Log/Result Display Area */}
         <div className="bg-slate-950 rounded-xl shadow-inner border border-slate-800 font-mono text-sm p-4 h-48 overflow-y-auto">
           <div className="text-slate-500 mb-2">// Status Log</div>
-          <div className={statusLog.includes("Error") || statusLog.includes("Failed") ? "text-red-400" : "text-emerald-400"}>
+          <div
+            className={
+              statusLog.includes("Error") || statusLog.includes("Failed")
+                ? "text-red-400"
+                : "text-emerald-400"
+            }
+          >
             {statusLog}
           </div>
         </div>
