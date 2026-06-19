@@ -67,14 +67,25 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
       color: theme.colors.primary,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
       {currentUser.data && (
         <View style={styles.container}>
           <TextInput
-            style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}
+            style={[
+              styles.input,
+              {
+                color: theme.colors.text,
+                backgroundColor: theme.colors.card,
+                borderColor: theme.colors.border,
+              },
+            ]}
             value={bio}
             onChangeText={setBio}
             placeholder={t("components.changeBioModal.placeholder")}
@@ -88,12 +99,10 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   input: {
     borderRadius: radius.input,
   },
-
 });
 
 export default ChangeBioModal;

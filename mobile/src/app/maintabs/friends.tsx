@@ -64,8 +64,7 @@ export default function Friends() {
       </MaterialTab.Navigator>
     </GenericScreen>
   );
-};
-
+}
 
 const FavoriteFriendsTab = memo(() => {
   const theme = useTheme();
@@ -78,21 +77,20 @@ const FavoriteFriendsTab = memo(() => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
     refetch()
-      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
+      .catch((e) =>
+        showToast("error", "Error refreshing friends", extractErrMsg(e)),
+      )
       .finally(() => (fetchingRef.current = false));
   };
 
-
-
   const favoriteFriends = useMemo(() => {
     const devided: FriendsByState = { online: [], active: [], offline: [] };
-    favFriends.forEach(f => {
+    favFriends.forEach((f) => {
       const state = getState(f);
       if (state === "online") devided.online.push(f);
       else if (state === "active") devided.active.push(f);
       else devided.offline.push(f);
     });
-
 
     const sorted: FriendsByState = {
       online: sortFriendWithStatus(devided.online),
@@ -103,25 +101,50 @@ const FavoriteFriendsTab = memo(() => {
     return sorted;
   }, [favFriends]);
 
-  const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (
-    <ListViewUser
-      user={item}
-      style={styles.cardView}
-      onPress={() => routeToUser(item.id)}
-    />
-  ), []);
+  const renderItem = useCallback(
+    ({ item, index }: { item: LimitedUserFriend; index: number }) => (
+      <ListViewUser
+        user={item}
+        style={styles.cardView}
+        onPress={() => routeToUser(item.id)}
+      />
+    ),
+    [],
+  );
 
-  const renderSecHeader = useCallback(({ section: { title } }: { section: { title: string } }) => (
-    <View style={[styles.sectionHeader, { borderBottomColor: theme.colors.border }]}>
-      <Text style={{ fontWeight: "bold", color: theme.colors.text }}>{title}</Text>
-    </View>
-  ), [theme.colors.border, theme.colors.text]);
+  const renderSecHeader = useCallback(
+    ({ section: { title } }: { section: { title: string } }) => (
+      <View
+        style={[
+          styles.sectionHeader,
+          { borderBottomColor: theme.colors.border },
+        ]}
+      >
+        <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
+          {title}
+        </Text>
+      </View>
+    ),
+    [theme.colors.border, theme.colors.text],
+  );
 
-  const sections = useMemo(() => [
-    { title: t("pages.friends.tabLabel_online"), data: favoriteFriends.online },
-    { title: t("pages.friends.tabLabel_active"), data: favoriteFriends.active },
-    { title: t("pages.friends.tabLabel_offline"), data: favoriteFriends.offline },
-  ], [favoriteFriends, t]);
+  const sections = useMemo(
+    () => [
+      {
+        title: t("pages.friends.tabLabel_online"),
+        data: favoriteFriends.online,
+      },
+      {
+        title: t("pages.friends.tabLabel_active"),
+        data: favoriteFriends.active,
+      },
+      {
+        title: t("pages.friends.tabLabel_offline"),
+        data: favoriteFriends.offline,
+      },
+    ],
+    [favoriteFriends, t],
+  );
 
   return (
     <>
@@ -138,48 +161,53 @@ const FavoriteFriendsTab = memo(() => {
   );
 });
 
-const StateFriendsTab = memo(({ filterState }: { filterState: "online" | "active" | "offline" }) => {
-  const { data: friends, refetch } = useFriends();
-  const { showToast } = useToast();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
-  const refresh = () => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-    refetch()
-      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
-      .finally(() => (fetchingRef.current = false));
-  };
+const StateFriendsTab = memo(
+  ({ filterState }: { filterState: "online" | "active" | "offline" }) => {
+    const { data: friends, refetch } = useFriends();
+    const { showToast } = useToast();
+    const fetchingRef = useRef(false);
+    const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+    const refresh = () => {
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
+      refetch()
+        .catch((e) =>
+          showToast("error", "Error refreshing friends", extractErrMsg(e)),
+        )
+        .finally(() => (fetchingRef.current = false));
+    };
 
-  const onlineFriends = useMemo(() => {
-    const unsorted = friends?.filter((f) => getState(f) === filterState);
-    return sortFriendWithStatus(unsorted ?? []);
-  }, [friends, filterState]);
+    const onlineFriends = useMemo(() => {
+      const unsorted = friends?.filter((f) => getState(f) === filterState);
+      return sortFriendWithStatus(unsorted ?? []);
+    }, [friends, filterState]);
 
+    const renderItem = useCallback(
+      ({ item, index }: { item: LimitedUserFriend; index: number }) => (
+        <ListViewUser
+          user={item}
+          style={styles.cardView}
+          onPress={() => routeToUser(item.id)}
+        />
+      ),
+      [],
+    );
 
-  const renderItem = useCallback(({ item, index }: { item: LimitedUserFriend, index: number }) => (
-    <ListViewUser
-      user={item}
-      style={styles.cardView}
-      onPress={() => routeToUser(item.id)}
-    />
-  ), []);
-
-  return (
-    <>
-      {isLoading && <LoadingIndicator absolute />}
-      <FlatList
-        data={onlineFriends}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        numColumns={1}
-        refreshing={isLoading}
-        onRefresh={refresh}
-      />
-    </>
-  );
-});
-
+    return (
+      <>
+        {isLoading && <LoadingIndicator absolute />}
+        <FlatList
+          data={onlineFriends}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          numColumns={1}
+          refreshing={isLoading}
+          onRefresh={refresh}
+        />
+      </>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   sectionHeader: {

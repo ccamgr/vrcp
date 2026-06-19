@@ -38,7 +38,7 @@ const CardViewWorldDetail = ({
       imageUrl={extractImageUrl}
       title={extractTitle}
       TitleStyle={styles.title}
-      FooterStyle={{marginRight: mgn + spacing.medium}}
+      FooterStyle={{ marginRight: mgn + spacing.medium }}
       OverlapComponents={
         <>
           <View style={styles.chipContainer} onLayout={onLayout}>

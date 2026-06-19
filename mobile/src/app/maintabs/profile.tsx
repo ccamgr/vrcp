@@ -24,7 +24,14 @@ import { MenuItem } from "@/components/layout/type";
 import ChangeBioModal from "@/components/modals/ChangeBioModal";
 import ChangeBioLinksModal from "@/components/modals/ChangeBioLinksModal";
 import JsonDataModal from "@/components/modals/JsonDataModal";
-import { routeToAvatar, routeToFavorites, routeToAvatars, routeToGroups, routeToPrints, routeToWorlds } from "@/lib/route";
+import {
+  routeToAvatar,
+  routeToFavorites,
+  routeToAvatars,
+  routeToGroups,
+  routeToPrints,
+  routeToWorlds,
+} from "@/lib/route";
 import { useTranslation } from "react-i18next";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
@@ -40,92 +47,104 @@ export default function Profile() {
   const [openChangeBio, setOpenChangeBio] = useState(false);
   const [openChangeBioLinks, setOpenChangeBioLinks] = useState(false);
 
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: "playlist-edit",
-      title: t("pages.profile.menuLabel_edit_bio"),
-      onPress: () => setOpenChangeBio(true),
-    },
-    {
-      icon: "circle-edit-outline",
-      // icon: "clipboard-edit-outline",
-      title: t("pages.profile.menuLabel_edit_bio_links"),
-      onPress: () => setOpenChangeBioLinks(true),
-    },
-    {
-      icon: "human-edit",
-      title: t("pages.profile.menuLabel_change_status"),
-      onPress: () => setOpenChangeStatus(true),
-    },
-    {
-      type: "divider",
-    },
-    {
-      icon: "human",
-      title: t("pages.profile.menuLabel_route_avatars"),
-      onPress: () => routeToAvatars(),
-    },
-    {
-      icon: "forest",
-      title: t("pages.profile.menuLabel_route_worlds"),
-      onPress: () => routeToWorlds(),
-
-    },
-    {
-      icon: "diversity-3",
-      title: t("pages.profile.menuLabel_route_groups"),
-      onPress: () => routeToGroups(),
-    },
-    {
-      icon: "panorama",
-      title: t("pages.profile.menuLabel_route_prints"),
-      onPress: () => routeToPrints(),
-    },
-    {
-      type: "divider"
-    },
-    {
-      icon: "star",
-      title: t("pages.profile.menuLabel_route_favorites"),
-      onPress: () => routeToFavorites(),
-    },
-    {
-      icon: "hanger",
-      title: t("pages.profile.menuLabel_route_current_avatar"),
-      onPress: () => currentUser?.currentAvatar && routeToAvatar(currentUser.currentAvatar),
-    },
-    {
-      type: "divider"
-    },
-    {
-      icon: "code-json",
-      title: t("pages.profile.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-    },
-  ], [t, currentUser]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: "playlist-edit",
+        title: t("pages.profile.menuLabel_edit_bio"),
+        onPress: () => setOpenChangeBio(true),
+      },
+      {
+        icon: "circle-edit-outline",
+        // icon: "clipboard-edit-outline",
+        title: t("pages.profile.menuLabel_edit_bio_links"),
+        onPress: () => setOpenChangeBioLinks(true),
+      },
+      {
+        icon: "human-edit",
+        title: t("pages.profile.menuLabel_change_status"),
+        onPress: () => setOpenChangeStatus(true),
+      },
+      {
+        type: "divider",
+      },
+      {
+        icon: "human",
+        title: t("pages.profile.menuLabel_route_avatars"),
+        onPress: () => routeToAvatars(),
+      },
+      {
+        icon: "forest",
+        title: t("pages.profile.menuLabel_route_worlds"),
+        onPress: () => routeToWorlds(),
+      },
+      {
+        icon: "diversity-3",
+        title: t("pages.profile.menuLabel_route_groups"),
+        onPress: () => routeToGroups(),
+      },
+      {
+        icon: "panorama",
+        title: t("pages.profile.menuLabel_route_prints"),
+        onPress: () => routeToPrints(),
+      },
+      {
+        type: "divider",
+      },
+      {
+        icon: "star",
+        title: t("pages.profile.menuLabel_route_favorites"),
+        onPress: () => routeToFavorites(),
+      },
+      {
+        icon: "hanger",
+        title: t("pages.profile.menuLabel_route_current_avatar"),
+        onPress: () =>
+          currentUser?.currentAvatar &&
+          routeToAvatar(currentUser.currentAvatar),
+      },
+      {
+        type: "divider",
+      },
+      {
+        icon: "code-json",
+        title: t("pages.profile.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+      },
+    ],
+    [t, currentUser],
+  );
 
   useSideMenu(menuItems);
 
   return (
-    <GenericScreen >
+    <GenericScreen>
       {currentUser ? (
         <View style={{ height: "100%" }}>
           <CardViewUserDetail
             user={currentUser}
             style={[styles.cardView]}
-            onPress={() => currentUser && setPreview({ imageUrl: getUserProfilePicUrl(currentUser, true), open: true })}
-            onPressIcon={() => currentUser && setPreview({ imageUrl: getUserIconUrl(currentUser, true), open: true })}
+            onPress={() =>
+              currentUser &&
+              setPreview({
+                imageUrl: getUserProfilePicUrl(currentUser, true),
+                open: true,
+              })
+            }
+            onPressIcon={() =>
+              currentUser &&
+              setPreview({
+                imageUrl: getUserIconUrl(currentUser, true),
+                open: true,
+              })
+            }
           />
 
           <ScrollView
             refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={refetch}
-              />
+              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
             }
           >
-
             <DetailItemContainer title={t("pages.profile.sectionLabel_bio")}>
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>
@@ -134,7 +153,9 @@ export default function Profile() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.profile.sectionLabel_bio_links")}>
+            <DetailItemContainer
+              title={t("pages.profile.sectionLabel_bio_links")}
+            >
               <View style={styles.detailItemContent}>
                 {currentUser.bioLinks.map((link, index) => (
                   <LinkChip key={index} url={link} />
@@ -162,7 +183,6 @@ export default function Profile() {
                 </Text>
               </View>
             </DetailItemContainer>
-
           </ScrollView>
         </View>
       ) : (
@@ -176,9 +196,15 @@ export default function Profile() {
         open={preview.open}
         onClose={() => setPreview({ imageUrl: "", open: false })}
       />
-      <ChangeStatusModal open={openChangeStatus} setOpen={setOpenChangeStatus} />
+      <ChangeStatusModal
+        open={openChangeStatus}
+        setOpen={setOpenChangeStatus}
+      />
       <ChangeBioModal open={openChangeBio} setOpen={setOpenChangeBio} />
-      <ChangeBioLinksModal open={openChangeBioLinks} setOpen={setOpenChangeBioLinks} />
+      <ChangeBioLinksModal
+        open={openChangeBioLinks}
+        setOpen={setOpenChangeBioLinks}
+      />
     </GenericScreen>
   );
 }

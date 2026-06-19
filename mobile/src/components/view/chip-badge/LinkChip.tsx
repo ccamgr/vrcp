@@ -19,7 +19,11 @@ const LinkChip = ({ url, text }: Props) => {
       }}
     >
       <Text
-        style={{ paddingLeft: spacing.small, color: theme.colors.text, textDecorationLine: "underline" }}
+        style={{
+          paddingLeft: spacing.small,
+          color: theme.colors.text,
+          textDecorationLine: "underline",
+        }}
       >
         {text || url}
       </Text>

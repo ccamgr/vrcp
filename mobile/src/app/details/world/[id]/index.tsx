@@ -6,7 +6,12 @@ import CardViewWorldDetail from "@/components/view/item-CardView/detail/CardView
 import ListViewInstance from "@/components/view/item-ListView/ListViewInstance";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import SelectGroupButton from "@/components/view/SelectGroupButton";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
+import {
+  fontSize,
+  navigationBarHeight,
+  radius,
+  spacing,
+} from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import {
@@ -54,18 +59,18 @@ export default function WorldDetail() {
   const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
 
-  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "world");
-
+  const isFavorite = favorites?.some(
+    (fav) => fav.favoriteId === id && fav.type === "world",
+  );
 
   useEffect(() => {
-    refetch()
-      .catch((e) => showToast("error", "Error fetching world data", extractErrMsg(e)));
+    refetch().catch((e) =>
+      showToast("error", "Error fetching world data", extractErrMsg(e)),
+    );
   }, []);
 
-
-
   const formatAndSortInstances = (
-    instances: any[][] | undefined
+    instances: any[][] | undefined,
   ): InstanceLike[] => {
     const parsedInstances = [] as InstanceLike[];
     instances?.forEach((item) => {
@@ -87,51 +92,54 @@ export default function WorldDetail() {
       parsedInstances.push(instance);
     });
     const sortedInstances = parsedInstances.sort(
-      (a, b) => b.n_users - a.n_users
+      (a, b) => b.n_users - a.n_users,
     );
     return sortedInstances;
   };
 
-
-
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: isFavorite ? "heart" : "heart-plus",
-      title: isFavorite ? t("pages.detail_world.menuLabel_favoriteGroup_edit") : t("pages.detail_world.menuLabel_favoriteGroup_add"),
-      onPress: () => setOpenChangeFavorite(true),
-    },
-    {
-      icon: "circle-medium",
-      title: "CREATE INSTANCE", // => Invite myself
-      // onPress: () => {},
-    },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
-    {
-      icon: "code-json",
-      title: t("pages.detail_world.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-      hidden: !enableJsonViewer,
-    },
-  ], [isFavorite, enableJsonViewer, t]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: isFavorite ? "heart" : "heart-plus",
+        title: isFavorite
+          ? t("pages.detail_world.menuLabel_favoriteGroup_edit")
+          : t("pages.detail_world.menuLabel_favoriteGroup_add"),
+        onPress: () => setOpenChangeFavorite(true),
+      },
+      {
+        icon: "circle-medium",
+        title: "CREATE INSTANCE", // => Invite myself
+        // onPress: () => {},
+      },
+      {
+        type: "divider",
+        hidden: !enableJsonViewer,
+      },
+      {
+        icon: "code-json",
+        title: t("pages.detail_world.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+        hidden: !enableJsonViewer,
+      },
+    ],
+    [isFavorite, enableJsonViewer, t],
+  );
 
   useSideMenu(menuItems);
 
   const tabItems: {
     label: string;
-    value: typeof mode,
+    value: typeof mode;
   }[] = [
-      {
-        label: t("pages.detail_world.tabLabel_info"),
-        value: "info",
-      },
-      {
-        label: t("pages.detail_world.tabLabel_instances"),
-        value: "instance",
-      },
-    ];
+    {
+      label: t("pages.detail_world.tabLabel_info"),
+      value: "info",
+    },
+    {
+      label: t("pages.detail_world.tabLabel_instances"),
+      value: "instance",
+    },
+  ];
 
   return (
     <GenericScreen>
@@ -151,18 +159,20 @@ export default function WorldDetail() {
             <ScrollView
               contentContainerStyle={styles.scrollContent}
               refreshControl={
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={refetch}
-                />
-              }>
-              <DetailItemContainer title={t("pages.detail_world.sectionLabel_platform")}>
+                <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+              }
+            >
+              <DetailItemContainer
+                title={t("pages.detail_world.sectionLabel_platform")}
+              >
                 <View style={styles.detailItemContent}>
                   <PlatformChips platforms={getPlatform(world)} />
                 </View>
               </DetailItemContainer>
 
-              <DetailItemContainer title={t("pages.detail_world.sectionLabel_description")}>
+              <DetailItemContainer
+                title={t("pages.detail_world.sectionLabel_description")}
+              >
                 <View style={styles.detailItemContent}>
                   <Text style={{ color: theme.colors.text }}>
                     {world.description}
@@ -170,49 +180,79 @@ export default function WorldDetail() {
                 </View>
               </DetailItemContainer>
 
-              <DetailItemContainer title={t("pages.detail_world.sectionLabel_tags")}>
+              <DetailItemContainer
+                title={t("pages.detail_world.sectionLabel_tags")}
+              >
                 <View style={styles.detailItemContent}>
-                  <TagChips tags={getAuthorTags(world)} onPress={(tag) => routeToSearch(tag)} />
+                  <TagChips
+                    tags={getAuthorTags(world)}
+                    onPress={(tag) => routeToSearch(tag)}
+                  />
                 </View>
               </DetailItemContainer>
 
-              <DetailItemContainer title={t("pages.detail_world.sectionLabel_author")}>
+              <DetailItemContainer
+                title={t("pages.detail_world.sectionLabel_author")}
+              >
                 {author && (
                   <View style={styles.detailItemContent}>
-                    <TouchableEx onPress={() => routeToUser(author.id)}  >
-                      <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)} />
+                    <TouchableEx onPress={() => routeToUser(author.id)}>
+                      <UserOrGroupChip
+                        data={author}
+                        textColor={getTrustRankColor(author, true, false)}
+                      />
                     </TouchableEx>
                   </View>
                 )}
               </DetailItemContainer>
 
-              <DetailItemContainer title={t("pages.detail_world.sectionLabel_info")}>
+              <DetailItemContainer
+                title={t("pages.detail_world.sectionLabel_info")}
+              >
                 <View style={styles.detailItemContent}>
-                  <Text
-                    style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_capacityAndRecommended", { capacity: world.capacity, recommendedCapacity: world.recommendedCapacity })}</Text>
-                  <Text
-                    style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_visits", { visits: world.visits })}</Text>
-                  <Text
-                    style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_updated", { date: new Date(world.updated_at) })}</Text>
-                  <Text
-                    style={{ color: theme.colors.text }}
-                  >{t("pages.detail_world.section_info_created", { date: new Date(world.created_at) })}</Text>
+                  <Text style={{ color: theme.colors.text }}>
+                    {t(
+                      "pages.detail_world.section_info_capacityAndRecommended",
+                      {
+                        capacity: world.capacity,
+                        recommendedCapacity: world.recommendedCapacity,
+                      },
+                    )}
+                  </Text>
+                  <Text style={{ color: theme.colors.text }}>
+                    {t("pages.detail_world.section_info_visits", {
+                      visits: world.visits,
+                    })}
+                  </Text>
+                  <Text style={{ color: theme.colors.text }}>
+                    {t("pages.detail_world.section_info_updated", {
+                      date: new Date(world.updated_at),
+                    })}
+                  </Text>
+                  <Text style={{ color: theme.colors.text }}>
+                    {t("pages.detail_world.section_info_created", {
+                      date: new Date(world.created_at),
+                    })}
+                  </Text>
                 </View>
               </DetailItemContainer>
-
             </ScrollView>
           )}
 
           {mode === "instance" && (
             <FlatList
               data={formatAndSortInstances(world.instances)}
-              renderItem={({ item }) => <ListViewInstance instance={item} onPress={() => routeToInstance(item.worldId, item.instanceId)} />}
+              renderItem={({ item }) => (
+                <ListViewInstance
+                  instance={item}
+                  onPress={() => routeToInstance(item.worldId, item.instanceId)}
+                />
+              )}
               keyExtractor={(item) => item.id}
               ListEmptyComponent={() => (
-                <View style={{ alignItems: "center", marginTop: spacing.large }}>
+                <View
+                  style={{ alignItems: "center", marginTop: spacing.large }}
+                >
                   <Text style={{ color: theme.colors.text }}>
                     {t("pages.detail_world.no_instances")}
                   </Text>
@@ -220,10 +260,7 @@ export default function WorldDetail() {
               )}
               contentContainerStyle={styles.listInner}
               refreshControl={
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={refetch}
-                />
+                <RefreshControl refreshing={isLoading} onRefresh={refetch} />
               }
             />
           )}

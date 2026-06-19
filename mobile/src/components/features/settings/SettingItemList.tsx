@@ -17,10 +17,7 @@ interface SettingItemListProps {
   contents: SettingItemListContents;
 }
 
-const SettingItemList = ({
-  contents,
-  ...rest
-}: SettingItemListProps ) => {
+const SettingItemList = ({ contents, ...rest }: SettingItemListProps) => {
   const theme = useTheme();
   return (
     <View {...rest}>
@@ -33,32 +30,34 @@ const SettingItemList = ({
             <SettingItem
               key={index}
               {...item}
-              style={[styles.listItemContainer, { borderBottomColor: theme.colors.border }, item.style]}
+              style={[
+                styles.listItemContainer,
+                { borderBottomColor: theme.colors.border },
+                item.style,
+              ]}
             />
           ))}
         </View>
       ))}
     </View>
   );
-}
-
-
+};
 
 const styles = StyleSheet.create({
   groupHeader: {
     fontSize: fontSize.medium,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   groupContainer: {
     padding: spacing.medium,
     gap: spacing.small,
   },
   listItemContainer: {
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   listItemLabel: {
     marginLeft: spacing.medium,
   },
 });
 
-export default SettingItemList
+export default SettingItemList;

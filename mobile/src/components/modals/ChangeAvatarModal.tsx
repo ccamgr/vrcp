@@ -28,7 +28,6 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
   const currentUser = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
-
   const handleChangeAvatar = async () => {
     if (!avatar) return;
     if (isLoading) return;
@@ -41,7 +40,7 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
       setIsLoading(true);
       const res = await vrc.avatarsApi.selectAvatar({
         avatarId: avatar.id,
-      })
+      });
       onSuccess?.();
       setOpen(false);
     } catch (error) {
@@ -63,13 +62,19 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
       color: theme.colors.primary,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
       {avatar && (
         <Text style={[globalStyles.text, { fontSize: fontSize.medium }]}>
-          {t("components.changeAvatarModal.confirm_text", { avatarName: avatar.name })}
+          {t("components.changeAvatarModal.confirm_text", {
+            avatarName: avatar.name,
+          })}
         </Text>
       )}
     </GenericModal>
@@ -77,12 +82,10 @@ const ChangeAvatarModal = ({ open, setOpen, avatar, onSuccess }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   input: {
     borderRadius: radius.input,
   },
-
 });
 
 export default ChangeAvatarModal;

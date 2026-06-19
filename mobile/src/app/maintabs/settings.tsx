@@ -11,7 +11,13 @@ import AboutModal from "@/components/features/settings/AboutModal";
 import FeedbackModal from "@/components/features/settings/FeedbackModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
-import { routeToAppearanceSettings, routeToDatabaseSettings, routeToDesktopAppSettings, routeToLanguageSettings, routeToNotificationSettings } from "@/lib/route";
+import {
+  routeToAppearanceSettings,
+  routeToDatabaseSettings,
+  routeToDesktopAppSettings,
+  routeToLanguageSettings,
+  routeToNotificationSettings,
+} from "@/lib/route";
 import SettingItemList from "@/components/features/settings/SettingItemList";
 import { useCacheManager } from "@/hooks/useCacheManager";
 
@@ -39,82 +45,81 @@ export default function Settings() {
     title: string;
     items: SettingItem[];
   }[] = [
-      {
-        title: t("pages.settings.groupLabel_general"),
-        items: [
-          {
-            icon: "imagesearch-roller",
-            title: t("pages.settings.itemLabel_appearance"),
-            description: t("pages.settings.itemDescription_appearance"),
-            onPress: () => routeToAppearanceSettings(),
-          },
-          {
-            icon: "view-list",
-            title: t("pages.settings.itemLabel_database"),
-            description: t("pages.settings.itemDescription_database"),
-            onPress: () => routeToDatabaseSettings(),
-          },
-          {
-            icon: "notifications",
-            title: t("pages.settings.itemLabel_notifications"),
-            description: t("pages.settings.itemDescription_notifications"),
-            onPress: () => routeToNotificationSettings(),
-          },
-          {
-            icon: "desktop-mac",
-            title: t("pages.settings.itemLabel_desktopapp"),
-            description: t("pages.settings.itemDescription_desktopapp"),
-            onPress: () => routeToDesktopAppSettings(),
-          },
-          {
-            icon: "language",
-            title: t("pages.settings.itemLabel_language"),
-            description: t("pages.settings.itemDescription_language"),
-            onPress: () => routeToLanguageSettings(),
-          },
-        ],
-      },
-      {
-        title: t("pages.settings.groupLabel_other"),
-        items: [
-          {
-            icon: "information",
-            title: t("pages.settings.itemLabel_about"),
-            description: t("pages.settings.itemDescription_about"),
-            onPress: () => setOpenAbout(true),
-          },
-          {
-            icon: "code-not-equal-variant",
-            title: t("pages.settings.itemLabel_development"),
-            description: t("pages.settings.itemDescription_development"),
-            onPress: () => setOpenDevelopment(true),
-          },
-          {
-            icon: "message-alert",
-            title: t("pages.settings.itemLabel_feedback"),
-            description: t("pages.settings.itemDescription_feedback"),
-            onPress: () => setOpenFeedback(true),
-          },
-        ],
-      },
-      {
-        title: t("pages.settings.groupLabel_account"),
-        items: [
-          {
-            icon: "logout",
-            title: t("pages.settings.itemLabel_logout"),
-            description: t("pages.settings.itemDescription_logout"),
-            onPress: () => setOpenLogout(true),
-            iconColor: theme.colors.error,
-          },
-        ],
-      },
-    ];
+    {
+      title: t("pages.settings.groupLabel_general"),
+      items: [
+        {
+          icon: "imagesearch-roller",
+          title: t("pages.settings.itemLabel_appearance"),
+          description: t("pages.settings.itemDescription_appearance"),
+          onPress: () => routeToAppearanceSettings(),
+        },
+        {
+          icon: "view-list",
+          title: t("pages.settings.itemLabel_database"),
+          description: t("pages.settings.itemDescription_database"),
+          onPress: () => routeToDatabaseSettings(),
+        },
+        {
+          icon: "notifications",
+          title: t("pages.settings.itemLabel_notifications"),
+          description: t("pages.settings.itemDescription_notifications"),
+          onPress: () => routeToNotificationSettings(),
+        },
+        {
+          icon: "desktop-mac",
+          title: t("pages.settings.itemLabel_desktopapp"),
+          description: t("pages.settings.itemDescription_desktopapp"),
+          onPress: () => routeToDesktopAppSettings(),
+        },
+        {
+          icon: "language",
+          title: t("pages.settings.itemLabel_language"),
+          description: t("pages.settings.itemDescription_language"),
+          onPress: () => routeToLanguageSettings(),
+        },
+      ],
+    },
+    {
+      title: t("pages.settings.groupLabel_other"),
+      items: [
+        {
+          icon: "information",
+          title: t("pages.settings.itemLabel_about"),
+          description: t("pages.settings.itemDescription_about"),
+          onPress: () => setOpenAbout(true),
+        },
+        {
+          icon: "code-not-equal-variant",
+          title: t("pages.settings.itemLabel_development"),
+          description: t("pages.settings.itemDescription_development"),
+          onPress: () => setOpenDevelopment(true),
+        },
+        {
+          icon: "message-alert",
+          title: t("pages.settings.itemLabel_feedback"),
+          description: t("pages.settings.itemDescription_feedback"),
+          onPress: () => setOpenFeedback(true),
+        },
+      ],
+    },
+    {
+      title: t("pages.settings.groupLabel_account"),
+      items: [
+        {
+          icon: "logout",
+          title: t("pages.settings.itemLabel_logout"),
+          description: t("pages.settings.itemDescription_logout"),
+          onPress: () => setOpenLogout(true),
+          iconColor: theme.colors.error,
+        },
+      ],
+    },
+  ];
 
   return (
     <GenericScreen scrollable>
       <SettingItemList contents={settingContents} />
-
 
       {/* dialog and modals */}
       <GenericDialog
@@ -133,7 +138,6 @@ export default function Settings() {
       <DevelopmentModal open={openDevelopment} setOpen={setOpenDevelopment} />
       <AboutModal open={openAbout} setOpen={setOpenAbout} />
       <FeedbackModal open={openFeedback} setOpen={setOpenFeedback} />
-
     </GenericScreen>
   );
 }

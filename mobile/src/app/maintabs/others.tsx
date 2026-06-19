@@ -44,6 +44,4 @@ export default function Others() {
       </MaterialTab.Navigator>
     </GenericScreen>
   );
-};
-
-
+}

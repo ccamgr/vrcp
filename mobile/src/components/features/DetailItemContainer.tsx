@@ -25,15 +25,19 @@ const DetailItemContainer = ({ title, children, iconButtonConfig }: Props) => {
           {title}
         </Text>
         <View style={styles.iconContainer}>
-          {iconButtonConfig && iconButtonConfig.map((conf, idx) => (
-            <IconButton
-              key={`detail-item-icon-${idx}`}
-              style={[styles.icon, { backgroundColor: theme.colors.background }]}
-              name={conf.name ?? "edit"}
-              size={fontSize.large}
-              onPress={conf.onPress}
-            />
-          ))}
+          {iconButtonConfig &&
+            iconButtonConfig.map((conf, idx) => (
+              <IconButton
+                key={`detail-item-icon-${idx}`}
+                style={[
+                  styles.icon,
+                  { backgroundColor: theme.colors.background },
+                ]}
+                name={conf.name ?? "edit"}
+                size={fontSize.large}
+                onPress={conf.onPress}
+              />
+            ))}
         </View>
       </View>
       <View style={styles.children}>{children}</View>

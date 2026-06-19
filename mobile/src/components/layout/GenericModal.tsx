@@ -4,7 +4,10 @@ import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { ButtonItemForFooter } from "./type";
 import { Text } from "@react-navigation/elements";
 import { useMemo } from "react";
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import IconButton from "../view/icon-components/IconButton";
 import { hide } from "expo-router/build/utils/splash";
 import { ButtonEx } from "../CustomElements";
@@ -20,7 +23,17 @@ interface Props {
   children: React.ReactNode;
 }
 
-const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseButton = false, scrollable=false, size = "normal", closeOnOutside = true }: Props) => {
+const GenericModal = ({
+  open,
+  onClose,
+  children,
+  buttonItems,
+  title,
+  showCloseButton = false,
+  scrollable = false,
+  size = "normal",
+  closeOnOutside = true,
+}: Props) => {
   const theme = useTheme();
   return (
     <Modal
@@ -32,7 +45,7 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
       {/* GestureHandlerRootView is needed for DraggableFlatList */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.modalRoot}>
-          { closeOnOutside && (
+          {closeOnOutside && (
             <Pressable // close when press outside
               style={styles.closeOnOutside}
               onPress={onClose}
@@ -41,17 +54,25 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
           <View
             style={[
               styles.modalContainer,
-              (
-                size === "small" ? styles.modalSizeSmall
-                : size === "normal" ? styles.modalSizeNormal
-                : size === "large" ? styles.modalSizeLarge
-                : size === "full" ? styles.modalSizeFull
-                : {}),
-            { backgroundColor: theme.colors.background },
+              size === "small"
+                ? styles.modalSizeSmall
+                : size === "normal"
+                  ? styles.modalSizeNormal
+                  : size === "large"
+                    ? styles.modalSizeLarge
+                    : size === "full"
+                      ? styles.modalSizeFull
+                      : {},
+              { backgroundColor: theme.colors.background },
             ]}
           >
-            { (showCloseButton || title)  && (
-              <View style={[styles.titleContainer, {backgroundColor: theme.colors.card}]}>
+            {(showCloseButton || title) && (
+              <View
+                style={[
+                  styles.titleContainer,
+                  { backgroundColor: theme.colors.card },
+                ]}
+              >
                 {showCloseButton && (
                   <IconButton
                     style={{ paddingRight: spacing.large }}
@@ -60,22 +81,16 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                   />
                 )}
                 {title && (
-                  <Text
-                    style={[
-                      styles.title,
-                      { color: theme.colors.text },
-                    ]}
-                  >
+                  <Text style={[styles.title, { color: theme.colors.text }]}>
                     {title}
                   </Text>
                 )}
               </View>
             )}
-            <ChildContainer scrollable={scrollable}>
-              {children}
-            </ChildContainer>
+            <ChildContainer scrollable={scrollable}>{children}</ChildContainer>
             <View style={styles.footer}>
-              {buttonItems?.map((item, index) => item.type === "text" ? (
+              {buttonItems?.map((item, index) =>
+                item.type === "text" ? (
                   <Text
                     key={index}
                     style={[
@@ -84,27 +99,31 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
                         flex: item.flex,
                         width: item.width,
                         color: item.color || theme.colors.text,
-                      }
+                      },
                     ]}
                   >
                     {item.title}
                   </Text>
                 ) : (
-                <ButtonEx
-                  key={index}
-                  style={[styles.footerButton, {
-                    flex: item.flex,
-                    width: item.width,
-                  }]}
-                  onPress={item.onPress}
-                  pointerEvents={item.onPress ? "auto" : "none"}
-                  variant={item.variant}
-                  color={item.color || theme.colors.text}
-                  disabled={item.disabled}
-                >
-                  {item.title}
-                </ButtonEx>
-              ))}
+                  <ButtonEx
+                    key={index}
+                    style={[
+                      styles.footerButton,
+                      {
+                        flex: item.flex,
+                        width: item.width,
+                      },
+                    ]}
+                    onPress={item.onPress}
+                    pointerEvents={item.onPress ? "auto" : "none"}
+                    variant={item.variant}
+                    color={item.color || theme.colors.text}
+                    disabled={item.disabled}
+                  >
+                    {item.title}
+                  </ButtonEx>
+                ),
+              )}
             </View>
           </View>
         </View>
@@ -113,11 +132,13 @@ const GenericModal = ({ open, onClose, children, buttonItems, title, showCloseBu
   );
 };
 
-const ChildContainer = ({ scrollable, children }: {
+const ChildContainer = ({
+  scrollable,
+  children,
+}: {
   scrollable: boolean | "horizontal" | "vertical" | "both";
-  children: React.ReactNode
+  children: React.ReactNode;
 }) => {
-
   if (scrollable === "both") {
     return (
       <ScrollView horizontal>
@@ -136,13 +157,7 @@ const ChildContainer = ({ scrollable, children }: {
       </ScrollView>
     );
   } else {
-    return (
-      <View
-        style={styles.childContainer}
-      >
-        {children}
-      </View>
-    );
+    return <View style={styles.childContainer}>{children}</View>;
   }
 };
 
@@ -186,7 +201,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: '100%',
+    width: "100%",
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.small,
   },

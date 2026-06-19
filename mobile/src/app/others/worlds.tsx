@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { TouchableEx, ButtonEx } from "@/components/CustomElements";
@@ -12,7 +18,12 @@ import { FlatList } from "react-native-gesture-handler";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import { routeToWorld } from "@/lib/route";
-import { LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/generated/vrcapi";
+import {
+  LimitedWorld,
+  OrderOption,
+  ReleaseStatus,
+  SortOption,
+} from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
 
 export default function MyWorlds() {
@@ -44,7 +55,7 @@ export default function MyWorlds() {
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data
       } else {
-        setWorlds(prev => [...prev, ...res.data]);
+        setWorlds((prev) => [...prev, ...res.data]);
         offset.current += NumPerReq;
       }
     } catch (e) {
@@ -62,22 +73,28 @@ export default function MyWorlds() {
     offset.current = 0;
     setWorlds([]);
     fetchWorlds();
-  }
+  };
 
-  const renderItem = useCallback(({ item, index }: { item: LimitedWorld; index: number }) => (
-    <CardViewWorld
-      world={item}
-      style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
-      onPress={() => routeToWorld(item.id)}
-    />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>
-        {t("pages.worlds.no_worlds")}
-      </Text>
-    </View>
-  ), []);
+  const renderItem = useCallback(
+    ({ item, index }: { item: LimitedWorld; index: number }) => (
+      <CardViewWorld
+        world={item}
+        style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
+        onPress={() => routeToWorld(item.id)}
+      />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.worlds.no_worlds")}
+        </Text>
+      </View>
+    ),
+    [],
+  );
 
   return (
     <GenericScreen>
@@ -97,7 +114,6 @@ export default function MyWorlds() {
     </GenericScreen>
   );
 }
-
 
 const styles = StyleSheet.create({
   cardView: {

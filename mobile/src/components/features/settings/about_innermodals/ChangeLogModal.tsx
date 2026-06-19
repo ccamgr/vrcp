@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import { View, Text, SectionList, StyleSheet } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useMemo } from "react";
+import { View, Text, SectionList, StyleSheet } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
-import rawVersions from '@/../versions.json';
-import GenericModal from '@/components/layout/GenericModal';
-import { useTranslation } from 'react-i18next';
+import rawVersions from "@/../versions.json";
+import GenericModal from "@/components/layout/GenericModal";
+import { useTranslation } from "react-i18next";
 
 interface UpdateEntry {
   date: string;
@@ -37,27 +37,59 @@ export default function ChangeLogModal({ open, setOpen }: Props) {
   }, []);
 
   // Header for each version block (e.g. "Ver 1.0.0")
-  const renderSectionHeader = ({ section: { title } }: { section: VersionSection }) => (
-    <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.versionBadge, { backgroundColor: theme.colors.primary }]}>
-        <Text style={styles.versionText}>{t("components.aboutModal.innerModals.changeLog.format_version", { version: title })}</Text>
+  const renderSectionHeader = ({
+    section: { title },
+  }: {
+    section: VersionSection;
+  }) => (
+    <View
+      style={[
+        styles.sectionHeader,
+        { backgroundColor: theme.colors.background },
+      ]}
+    >
+      <View
+        style={[styles.versionBadge, { backgroundColor: theme.colors.primary }]}
+      >
+        <Text style={styles.versionText}>
+          {t("components.aboutModal.innerModals.changeLog.format_version", {
+            version: title,
+          })}
+        </Text>
       </View>
-      <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+      <View
+        style={[styles.separator, { backgroundColor: theme.colors.border }]}
+      />
     </View>
   );
 
   // Individual update item
-  const renderItem = ({ item, index, section }: { item: UpdateEntry, index: number, section: VersionSection }) => {
+  const renderItem = ({
+    item,
+    index,
+    section,
+  }: {
+    item: UpdateEntry;
+    index: number;
+    section: VersionSection;
+  }) => {
     const isLastItem = index === section.data.length - 1;
 
     return (
-      <View style={[
-        styles.itemContainer,
-        // Remove border for the last item in the section to look cleaner
-        !isLastItem && { borderBottomWidth: 1, borderBottomColor: theme.colors.border }
-      ]}>
+      <View
+        style={[
+          styles.itemContainer,
+          // Remove border for the last item in the section to look cleaner
+          !isLastItem && {
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.border,
+          },
+        ]}
+      >
         <Text style={[styles.date, { color: theme.colors.primary }]}>
-          {t("components.aboutModal.innerModals.changeLog.format_date", { date: new Date(item.date) })}
+          {t("components.aboutModal.innerModals.changeLog.format_date", {
+            date: new Date(item.date),
+          })}
         </Text>
         <Text style={[styles.message, { color: theme.colors.text }]}>
           {item.message}
@@ -91,8 +123,8 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     marginTop: 8,
   },
@@ -103,8 +135,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   versionText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 14,
   },
   separator: {
@@ -118,7 +150,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
     opacity: 0.8,
   },

@@ -28,13 +28,15 @@ const extractTitle = (data: UserLike) => data.displayName;
  * 以前の extractSubtitles をフックと使いやすいように調整
  */
 const getSubtitles = (data: UserLike, world?: World) => {
-  const statusText = data.statusDescription !== "" ? data.statusDescription : data.status;
+  const statusText =
+    data.statusDescription !== "" ? data.statusDescription : data.status;
   let locationText = "unknown";
 
   // location プロパティの存在を確認してパース
   const location = (data as any).location;
   if (location) {
-    const { isOffline, isPrivate, isTraveling, parsedLocation } = parseLocationString(location);
+    const { isOffline, isPrivate, isTraveling, parsedLocation } =
+      parseLocationString(location);
 
     if (isOffline) locationText = "* user is offline *";
     else if (isPrivate) locationText = "* user is in a private instance *";
@@ -66,9 +68,9 @@ const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {
   const { data: worldData } = useWorld(worldId);
 
   // 3. サブタイトルの計算（メモ化）
-  const subtitles = useMemo(() =>
-    getSubtitles(user, worldData),
-    [user, worldData]
+  const subtitles = useMemo(
+    () => getSubtitles(user, worldData),
+    [user, worldData],
   );
 
   return (

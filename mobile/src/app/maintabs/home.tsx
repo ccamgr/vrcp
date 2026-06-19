@@ -6,12 +6,27 @@ import { spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import SeeMoreContainer from "@/components/features/home/SeeMoreContainer";
 import { calcFriendsLocations } from "@/lib/funcs/calcFriendLocations";
-import { routeToCalendar, routeToEvent, routeToFeeds, routeToFriendLocations, routeToInstance, routeToWorld } from "@/lib/route";
+import {
+  routeToCalendar,
+  routeToEvent,
+  routeToFeeds,
+  routeToFriendLocations,
+  routeToInstance,
+  routeToWorld,
+} from "@/lib/route";
 import { InstanceLike } from "@/lib/vrchat";
 import { PipelineMessage } from "@/generated/vrcpipline/type";
 import { useLocale, useTheme } from "@react-navigation/native";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { Setting, useSetting } from "@/contexts/SettingContext";
 import { CalendarEvent, PaginatedCalendarEventList } from "@/generated/vrcapi";
 import { useToast } from "@/contexts/ToastContext";
@@ -30,18 +45,19 @@ export default function Home() {
   const {
     uiOptions_homeTabTopVariant: homeTabTopVariant,
     uiOptions_homeTabBottomVariant: homeTabBottomVariant,
-    uiOptions_homeTabSeparatePos: homeTabSeparatePos
+    uiOptions_homeTabSeparatePos: homeTabSeparatePos,
   } = settings;
 
   if (homeTabSeparatePos <= 0 || homeTabSeparatePos >= 100) {
-    const singleVariant = homeTabSeparatePos >= 100 ? homeTabTopVariant : homeTabBottomVariant;
+    const singleVariant =
+      homeTabSeparatePos >= 100 ? homeTabTopVariant : homeTabBottomVariant;
     return (
       <GenericScreen>
-        {singleVariant === 'feeds' ? (
+        {singleVariant === "feeds" ? (
           <FeedArea />
-        ) : singleVariant === 'friend-locations' ? (
+        ) : singleVariant === "friend-locations" ? (
           <FriendLocationArea />
-        ) : singleVariant === 'events' ? (
+        ) : singleVariant === "events" ? (
           <EventsArea />
         ) : null}
 
@@ -52,42 +68,50 @@ export default function Home() {
 
   return (
     <GenericScreen>
-      {homeTabTopVariant === 'feeds' ? (
+      {homeTabTopVariant === "feeds" ? (
         <FeedArea style={{ maxHeight: `${homeTabSeparatePos}%` }} />
-      ) : homeTabTopVariant === 'friend-locations' ? (
+      ) : homeTabTopVariant === "friend-locations" ? (
         <FriendLocationArea style={{ maxHeight: `${homeTabSeparatePos}%` }} />
-      ) : homeTabTopVariant === 'events' ? (
+      ) : homeTabTopVariant === "events" ? (
         <EventsArea style={{ maxHeight: `${homeTabSeparatePos}%` }} />
       ) : null}
 
-      {homeTabBottomVariant === 'feeds' ? (
+      {homeTabBottomVariant === "feeds" ? (
         <FeedArea style={{ maxHeight: `${100 - homeTabSeparatePos}%` }} />
-      ) : homeTabBottomVariant === 'friend-locations' ? (
-        <FriendLocationArea style={{ maxHeight: `${100 - homeTabSeparatePos}%` }} />
-      ) : homeTabBottomVariant === 'events' ? (
+      ) : homeTabBottomVariant === "friend-locations" ? (
+        <FriendLocationArea
+          style={{ maxHeight: `${100 - homeTabSeparatePos}%` }}
+        />
+      ) : homeTabBottomVariant === "events" ? (
         <EventsArea style={{ maxHeight: `${100 - homeTabSeparatePos}%` }} />
       ) : null}
-
 
       <ReleaseNote />
     </GenericScreen>
   );
 }
 
-
 const FeedArea = memo(({ style }: { style?: any }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { messages } = usePipeline();
 
-  const renderItem = useCallback(({ item }: { item: PipelineMessage }) => (
-    <ListViewPipelineMessage message={item} style={styles.feed} />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.home.no_feeds")}</Text>
-    </View>
-  ), [theme.colors.text, t]);
+  const renderItem = useCallback(
+    ({ item }: { item: PipelineMessage }) => (
+      <ListViewPipelineMessage message={item} style={styles.feed} />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.home.no_feeds")}
+        </Text>
+      </View>
+    ),
+    [theme.colors.text, t],
+  );
   return (
     <SeeMoreContainer
       title={t("pages.home.feeds_area")}
@@ -114,14 +138,26 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
     return calcFriendsLocations(favFriends, false);
   }, [favFriends]);
 
-  const renderItem = useCallback(({ item }: { item: InstanceLike }) => (
-    <CardViewInstance instance={item} style={styles.cardView} onPress={() => routeToInstance(item.worldId, item.instanceId)} />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.home.no_friendlocations")}</Text>
-    </View>
-  ), [theme.colors.text, t]);
+  const renderItem = useCallback(
+    ({ item }: { item: InstanceLike }) => (
+      <CardViewInstance
+        instance={item}
+        style={styles.cardView}
+        onPress={() => routeToInstance(item.worldId, item.instanceId)}
+      />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.home.no_friendlocations")}
+        </Text>
+      </View>
+    ),
+    [theme.colors.text, t],
+  );
   return (
     <SeeMoreContainer
       title={t("pages.home.friendlocations_area")}
@@ -141,9 +177,7 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
   );
 });
 
-const EventsArea = memo(({ style }: {
-  style?: any
-}) => {
+const EventsArea = memo(({ style }: { style?: any }) => {
   const auth = useAuth();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -156,16 +190,20 @@ const EventsArea = memo(({ style }: {
   const [isLoading, setIsLoading] = useState(false);
   const npr = 60;
 
-  const [eventDetailModal, setEventDetailModal] = useState<{ open: boolean; event: CalendarEvent | null }>({ open: false, event: null });
-
+  const [eventDetailModal, setEventDetailModal] = useState<{
+    open: boolean;
+    event: CalendarEvent | null;
+  }>({ open: false, event: null });
 
   const fetchEvents = async () => {
     fetchingRef.current = true;
     setIsLoading(true);
     try {
       // adjust to UTC to avoid timezone issues
-      const targetMonth = new Date()
-      targetMonth.setMinutes(targetMonth.getMinutes() - targetMonth.getTimezoneOffset());
+      const targetMonth = new Date();
+      targetMonth.setMinutes(
+        targetMonth.getMinutes() - targetMonth.getTimezoneOffset(),
+      );
 
       while (fetchingRef.current) {
         const res = await vrc.calendarApi.getCalendarEvents({
@@ -175,12 +213,22 @@ const EventsArea = memo(({ style }: {
         });
         const paginated: PaginatedCalendarEventList = res.data;
         if (paginated.results) {
-          eventsRef.current = [...eventsRef.current, ...paginated.results ?? []];
+          eventsRef.current = [
+            ...eventsRef.current,
+            ...(paginated.results ?? []),
+          ];
         }
-        if (paginated.hasNext && (paginated.totalCount ?? 0 > offset.current + npr)) {
+        if (
+          paginated.hasNext &&
+          (paginated.totalCount ?? 0 > offset.current + npr)
+        ) {
           offset.current += npr;
         } else {
-          setTodayEvents(eventsRef.current.filter(event => isSameDay(new Date(event.startsAt ?? ""), new Date()))); // update grouped events
+          setTodayEvents(
+            eventsRef.current.filter((event) =>
+              isSameDay(new Date(event.startsAt ?? ""), new Date()),
+            ),
+          ); // update grouped events
           fetchingRef.current = false;
           setIsLoading(false);
         }
@@ -205,15 +253,24 @@ const EventsArea = memo(({ style }: {
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (
-      <ListViewEvent style={styles.listview} event={item} onPress={() => item.ownerId && routeToEvent(item.ownerId, item.id)} />
+      <ListViewEvent
+        style={styles.listview}
+        event={item}
+        onPress={() => item.ownerId && routeToEvent(item.ownerId, item.id)}
+      />
     );
   }, []);
 
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.home.no_events")}</Text>
-    </View>
-  ), [theme.colors.text, t]);
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.home.no_events")}
+        </Text>
+      </View>
+    ),
+    [theme.colors.text, t],
+  );
 
   return (
     <SeeMoreContainer
@@ -230,11 +287,9 @@ const EventsArea = memo(({ style }: {
         onRefresh={reload}
         refreshing={isLoading}
       />
-
     </SeeMoreContainer>
   );
 });
-
 
 const styles = StyleSheet.create({
   container: {

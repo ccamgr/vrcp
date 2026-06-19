@@ -52,13 +52,13 @@ export default function TabLayout() {
             </View>
           ),
           headerRight: () => (
-              <View style={{ flex: 1, paddingRight: spacing.medium }}>
-                <SearchBox
-                  onSubmit={routeToSearch}
-                  clearOnSubmit={true}
-                  placeholder={t("pages.search.searchbox_placeholder")}
-                />
-              </View>
+            <View style={{ flex: 1, paddingRight: spacing.medium }}>
+              <SearchBox
+                onSubmit={routeToSearch}
+                clearOnSubmit={true}
+                placeholder={t("pages.search.searchbox_placeholder")}
+              />
+            </View>
           ),
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="home" color={color} />

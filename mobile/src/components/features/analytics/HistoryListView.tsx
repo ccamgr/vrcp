@@ -8,17 +8,23 @@ import { TouchableEx, ButtonEx } from "@/components/CustomElements";
 import { useSelfInvite } from "@/hooks/useSelfInvite";
 import IconSymbol from "@/components/view/icon-components/IconView";
 
-export default function HistoryListView({ sessions, targetDate }: { sessions: WorldSession[], targetDate: string }) {
+export default function HistoryListView({
+  sessions,
+  targetDate,
+}: {
+  sessions: WorldSession[];
+  targetDate: string;
+}) {
   const theme = useTheme();
 
   // モーダル用のステート
-  const [selectedSession, setSelectedSession] = useState<WorldSession | null>(null);
+  const [selectedSession, setSelectedSession] = useState<WorldSession | null>(
+    null,
+  );
 
   return (
     <View style={styles.listViewContainer}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         {sessions.map((session, idx) => (
           <SessionCard
             key={`${session.startTime}-${idx}`}
@@ -40,17 +46,35 @@ export default function HistoryListView({ sessions, targetDate }: { sessions: Wo
   );
 }
 
-function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSession, theme: any, onLongPressWorld: () => void }) {
-  const formatTime = (ts: number) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function SessionCard({
+  session,
+  theme,
+  onLongPressWorld,
+}: {
+  session: WorldSession;
+  theme: any;
+  onLongPressWorld: () => void;
+}) {
+  const formatTime = (ts: number) =>
+    new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
 
   // locationからインスタンスIDの数字・識別子部分を抽出 (例: "wrld_xxxx:12345~hidden..." -> "12345")
-  const instanceIdPart = session.location && session.location.includes(":")
-    ? session.location.split(":")[1].split("~")[0]
-    : null;
+  const instanceIdPart =
+    session.location && session.location.includes(":")
+      ? session.location.split(":")[1].split("~")[0]
+      : null;
 
   return (
-    <View style={[styles.card, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.card,
+          borderColor: theme.colors.border,
+        },
+      ]}
+    >
       {/* Header */}
       <View style={styles.cardHeader}>
         <View style={{ flex: 1 }}>
@@ -59,13 +83,23 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
             delayLongPress={300} // 少し早めに長押し判定
             style={styles.worldNameContainer}
           >
-            <Text style={[styles.cardWorldName, { color: theme.colors.primary }]} numberOfLines={2}>
+            <Text
+              style={[styles.cardWorldName, { color: theme.colors.primary }]}
+              numberOfLines={2}
+            >
               {session.worldName}
             </Text>
-            <IconSymbol name="information-outline" size={14} color={theme.colors.primary} style={styles.infoIcon} />
+            <IconSymbol
+              name="information-outline"
+              size={14}
+              color={theme.colors.primary}
+              style={styles.infoIcon}
+            />
           </TouchableEx>
           <View style={styles.cardMetaRow}>
-            <Text style={styles.cardMetaText}>{formatTime(session.startTime)} - {formatTime(session.endTime)}</Text>
+            <Text style={styles.cardMetaText}>
+              {formatTime(session.startTime)} - {formatTime(session.endTime)}
+            </Text>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{durationMin} min</Text>
             </View>
@@ -77,7 +111,9 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
             )}
           </View>
         </View>
-        <Text style={[styles.cardMetaText, { marginLeft: 8 }]}>{session.players.length} met</Text>
+        <Text style={[styles.cardMetaText, { marginLeft: 8 }]}>
+          {session.players.length} met
+        </Text>
       </View>
 
       {/* Timeline Area */}
@@ -85,11 +121,22 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
         {/* Self Bar */}
         <View style={styles.playerRow}>
           <View style={styles.playerInfoRow}>
-            <Text style={[styles.playerName, { color: theme.colors.primary }]}>{session.username || "You"}</Text>
+            <Text style={[styles.playerName, { color: theme.colors.primary }]}>
+              {session.username || "You"}
+            </Text>
             <Text style={styles.playerDuration}>{durationMin} min</Text>
           </View>
           <View style={styles.timelineTrack}>
-            <View style={[styles.timelineFill, { width: '100%', backgroundColor: theme.colors.primary, opacity: 0.5 }]} />
+            <View
+              style={[
+                styles.timelineFill,
+                {
+                  width: "100%",
+                  backgroundColor: theme.colors.primary,
+                  opacity: 0.5,
+                },
+              ]}
+            />
           </View>
         </View>
 
@@ -115,25 +162,43 @@ function SessionCard({ session, theme, onLongPressWorld }: { session: WorldSessi
   );
 }
 
-function PlayerTimelineRow({ player, sessionStart, sessionDuration, theme }: {
-  player: PlayerInterval,
-  sessionStart: number,
-  sessionDuration: number,
-  theme: any
+function PlayerTimelineRow({
+  player,
+  sessionStart,
+  sessionDuration,
+  theme,
+}: {
+  player: PlayerInterval;
+  sessionStart: number;
+  sessionDuration: number;
+  theme: any;
 }) {
   const pDurationMin = Math.floor(player.totalDurationMs / 1000 / 60);
 
   return (
     <View style={styles.playerRow}>
       <View style={styles.playerInfoRow}>
-        <Text style={[styles.playerName, { color: theme.colors.text }]} numberOfLines={1}>{player.name}</Text>
-        <Text style={styles.playerDuration}>{pDurationMin > 0 ? `${pDurationMin}m` : "<1m"}</Text>
+        <Text
+          style={[styles.playerName, { color: theme.colors.text }]}
+          numberOfLines={1}
+        >
+          {player.name}
+        </Text>
+        <Text style={styles.playerDuration}>
+          {pDurationMin > 0 ? `${pDurationMin}m` : "<1m"}
+        </Text>
       </View>
 
       <View style={styles.timelineTrack}>
         {player.intervals.map((interval: any, i: number) => {
-          const startPercent = Math.max(0, ((interval.start - sessionStart) / sessionDuration) * 100);
-          const endPercent = Math.min(100, ((interval.end - sessionStart) / sessionDuration) * 100);
+          const startPercent = Math.max(
+            0,
+            ((interval.start - sessionStart) / sessionDuration) * 100,
+          );
+          const endPercent = Math.min(
+            100,
+            ((interval.end - sessionStart) / sessionDuration) * 100,
+          );
           const widthPercent = endPercent - startPercent;
 
           return (
@@ -144,10 +209,10 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration, theme }: {
                 {
                   left: `${startPercent}%`,
                   width: `${widthPercent}%`,
-                  backgroundColor: '#22c55e', // green-500
+                  backgroundColor: "#22c55e", // green-500
                   opacity: 0.7,
-                  position: 'absolute'
-                }
+                  position: "absolute",
+                },
               ]}
             />
           );
@@ -160,7 +225,17 @@ function PlayerTimelineRow({ player, sessionStart, sessionDuration, theme }: {
 // ----------------------------------------------------------------------
 // インスタンス詳細 ＆ 自分を招待用モーダルコンポーネント
 // ----------------------------------------------------------------------
-function SessionDetailModal({ session, visible, onClose, theme }: { session: WorldSession | null, visible: boolean, onClose: () => void, theme: any }) {
+function SessionDetailModal({
+  session,
+  visible,
+  onClose,
+  theme,
+}: {
+  session: WorldSession | null;
+  visible: boolean;
+  onClose: () => void;
+  theme: any;
+}) {
   const { inviteMyself, isInviting } = useSelfInvite();
 
   if (!session) return null;
@@ -186,15 +261,50 @@ function SessionDetailModal({ session, visible, onClose, theme }: { session: Wor
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
-          <Text style={[styles.modalTitle, { color: theme.colors.text }]}>Instance Details</Text>
+        <View
+          style={[
+            styles.modalContent,
+            {
+              backgroundColor: theme.colors.card,
+              borderColor: theme.colors.border,
+            },
+          ]}
+        >
+          <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
+            Instance Details
+          </Text>
 
           <View style={styles.modalInfoBox}>
-            <Text style={[styles.modalLabel, { color: theme.colors.text, opacity: 0.7 }]}>World Name</Text>
-            <Text style={[styles.modalValue, { color: theme.colors.text }]} selectable>{session.worldName}</Text>
+            <Text
+              style={[
+                styles.modalLabel,
+                { color: theme.colors.text, opacity: 0.7 },
+              ]}
+            >
+              World Name
+            </Text>
+            <Text
+              style={[styles.modalValue, { color: theme.colors.text }]}
+              selectable
+            >
+              {session.worldName}
+            </Text>
 
-            <Text style={[styles.modalLabel, { color: theme.colors.text, opacity: 0.7, marginTop: 12 }]}>Location ID</Text>
-            <Text style={[styles.modalValue, { color: theme.colors.text, fontSize: 11 }]} selectable>
+            <Text
+              style={[
+                styles.modalLabel,
+                { color: theme.colors.text, opacity: 0.7, marginTop: 12 },
+              ]}
+            >
+              Location ID
+            </Text>
+            <Text
+              style={[
+                styles.modalValue,
+                { color: theme.colors.text, fontSize: 11 },
+              ]}
+              selectable
+            >
               {session.location || "Private / Offline"}
             </Text>
           </View>
@@ -202,8 +312,14 @@ function SessionDetailModal({ session, visible, onClose, theme }: { session: Wor
           <View style={styles.modalActions}>
             <ButtonEx
               onPress={onClose}
-              style={[styles.modalButton, { backgroundColor: theme.colors.border }]}
-            > Close </ButtonEx>
+              style={[
+                styles.modalButton,
+                { backgroundColor: theme.colors.border },
+              ]}
+            >
+              {" "}
+              Close{" "}
+            </ButtonEx>
             {isValidLocation ? (
               <TouchableEx
                 style={[styles.modalButton, styles.inviteButton]}
@@ -231,7 +347,6 @@ function SessionDetailModal({ session, visible, onClose, theme }: { session: Wor
   );
 }
 
-
 const styles = StyleSheet.create({
   listViewContainer: {
     padding: spacing.medium,
@@ -241,20 +356,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     marginBottom: spacing.medium,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   cardHeader: {
     padding: spacing.medium,
-    backgroundColor: 'rgba(128,128,128,0.1)',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    backgroundColor: "rgba(128,128,128,0.1)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(128,128,128,0.1)',
+    borderBottomColor: "rgba(128,128,128,0.1)",
   },
   worldNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   infoIcon: {
@@ -262,28 +377,28 @@ const styles = StyleSheet.create({
   },
   cardWorldName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flexShrink: 1, // アイコンと並べた時にテキストがはみ出さないように
   },
   cardMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 4,
     gap: 8,
   },
   cardMetaText: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: "#94a3b8",
   },
   badge: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: "rgba(255,255,255,0.1)",
     paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 4,
   },
   badgeText: {
     fontSize: 10,
-    color: '#cbd5e1',
+    color: "#cbd5e1",
   },
   cardBody: {
     padding: spacing.medium,
@@ -292,82 +407,82 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   playerInfoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 2,
   },
   playerName: {
     fontSize: 12,
-    maxWidth: '70%',
+    maxWidth: "70%",
   },
   playerDuration: {
     fontSize: 10,
-    color: '#64748b',
+    color: "#64748b",
   },
   timelineTrack: {
     height: 6,
-    backgroundColor: 'rgba(128,128,128,0.2)',
+    backgroundColor: "rgba(128,128,128,0.2)",
     borderRadius: 3,
-    position: 'relative',
-    overflow: 'hidden',
+    position: "relative",
+    overflow: "hidden",
   },
   timelineFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: 3,
   },
   othersContainer: {
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(128,128,128,0.1)',
+    borderTopColor: "rgba(128,128,128,0.1)",
   },
   othersLabel: {
     fontSize: 10,
-    color: '#64748b',
-    textTransform: 'uppercase',
+    color: "#64748b",
+    textTransform: "uppercase",
     marginBottom: 6,
   },
   emptyText: {
     fontSize: 12,
-    color: '#64748b',
-    fontStyle: 'italic',
+    color: "#64748b",
+    fontStyle: "italic",
   },
 
   // --- Modal Styles ---
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContent: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
     borderRadius: 16,
     borderWidth: 1,
     padding: 20,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalInfoBox: {
-    backgroundColor: 'rgba(128,128,128,0.1)',
+    backgroundColor: "rgba(128,128,128,0.1)",
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
   },
   modalLabel: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   modalValue: {
@@ -375,8 +490,8 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     gap: 12,
   },
   modalButton: {
@@ -384,25 +499,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     minWidth: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   inviteButton: {
-    backgroundColor: '#007AFF', // 青系のアクセントカラー
-    flexDirection: 'row',
+    backgroundColor: "#007AFF", // 青系のアクセントカラー
+    flexDirection: "row",
     gap: 6,
   },
   inviteButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+    color: "#FFFFFF",
+    fontWeight: "bold",
     fontSize: 14,
   },
   disabledButton: {
-    backgroundColor: 'rgba(128,128,128,0.3)',
+    backgroundColor: "rgba(128,128,128,0.3)",
   },
   disabledButtonText: {
-    color: 'rgba(255,255,255,0.5)',
-    fontWeight: 'bold',
+    color: "rgba(255,255,255,0.5)",
+    fontWeight: "bold",
     fontSize: 14,
   },
 });

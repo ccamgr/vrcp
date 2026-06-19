@@ -30,8 +30,9 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [statusDescription, setStatusDescription] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<UserStatus>(UserStatus.Offline);
-
+  const [selectedStatus, setSelectedStatus] = useState<UserStatus>(
+    UserStatus.Offline,
+  );
 
   const statusOptions = [
     UserStatus.JoinMe,
@@ -39,7 +40,7 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
     UserStatus.AskMe,
     UserStatus.Busy,
     // UserStatus.Offline
-  ]
+  ];
   const handleSubmitChange = async () => {
     if (!currentUser.data) return;
     if (isLoading) return;
@@ -79,44 +80,76 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
       color: theme.colors.primary,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
       {currentUser.data && (
         <View style={styles.container}>
           <View style={styles.statusOptionAreaContainer}>
-            {statusOptions.map(status => (
+            {statusOptions.map((status) => (
               <TouchableEx
                 key={`status_option_${status}`}
-                style={[styles.statusOptionItem, selectedStatus === status && { borderColor: theme.colors.primary }]}
+                style={[
+                  styles.statusOptionItem,
+                  selectedStatus === status && {
+                    borderColor: theme.colors.primary,
+                  },
+                ]}
                 onPress={() => setSelectedStatus(status)}
               >
-                <IconSymbol name="circle" size={12} color={getStatusColor(status)} style={{ marginRight: spacing.mini }} />
-                <Text style={{ fontWeight: selectedStatus === status ? "bold" : "normal" }}>{status}</Text>
+                <IconSymbol
+                  name="circle"
+                  size={12}
+                  color={getStatusColor(status)}
+                  style={{ marginRight: spacing.mini }}
+                />
+                <Text
+                  style={{
+                    fontWeight: selectedStatus === status ? "bold" : "normal",
+                  }}
+                >
+                  {status}
+                </Text>
               </TouchableEx>
             ))}
           </View>
           <View style={styles.descriptionAreaContainer}>
             <TextInput
-              style={[styles.descriptionInput, { color: theme.colors.text, borderColor: theme.colors.subText }]}
+              style={[
+                styles.descriptionInput,
+                { color: theme.colors.text, borderColor: theme.colors.subText },
+              ]}
               value={statusDescription}
-              onChange={e => setStatusDescription(e.nativeEvent.text)}
+              onChange={(e) => setStatusDescription(e.nativeEvent.text)}
               // autoFocus
               placeholder={t("components.changeStatusModal.placeholder")}
-
             />
             <FlatList
               style={styles.descriptionHistory}
               data={currentUser.data.statusHistory}
               keyExtractor={(_, index) => `status_history_${index}`}
               renderItem={({ item }) => (
-                <TouchableEx onPress={() => setStatusDescription(item)} style={styles.descriptionHistoryItem}>
+                <TouchableEx
+                  onPress={() => setStatusDescription(item)}
+                  style={styles.descriptionHistoryItem}
+                >
                   <Text style={styles.descriptionHistoryItemText}>{item}</Text>
                 </TouchableEx>
               )}
               ListEmptyComponent={() => (
-                <Text style={[globalStyles.text, { fontStyle: "italic", color: theme.colors.subText }]}>No status history</Text>
+                <Text
+                  style={[
+                    globalStyles.text,
+                    { fontStyle: "italic", color: theme.colors.subText },
+                  ]}
+                >
+                  No status history
+                </Text>
               )}
               contentContainerStyle={styles.descriptionHistorylistInner}
             />
@@ -172,7 +205,7 @@ const styles = StyleSheet.create({
   },
   descriptionHistoryItemText: {
     fontSize: fontSize.medium,
-  }
+  },
 });
 
 export default ChangeStatusModal;

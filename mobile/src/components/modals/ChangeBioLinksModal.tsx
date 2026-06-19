@@ -8,7 +8,9 @@ import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
-import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 import { TextInput } from "react-native-gesture-handler";
 import DraggableFlatListItem from "@/components/view/DraggableFlatListItem";
 import { useToast } from "@/contexts/ToastContext";
@@ -67,14 +69,26 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
       color: theme.colors.primary,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
       {currentUser.data && (
         <View style={styles.container}>
           <TextInput
-            style={[globalStyles.input, styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
+            style={[
+              globalStyles.input,
+              styles.input,
+              {
+                backgroundColor: theme.colors.card,
+                color: theme.colors.text,
+                borderColor: theme.colors.border,
+              },
+            ]}
             defaultValue=""
             placeholder={t("components.changeBioLinksModal.placeholder")}
             placeholderTextColor={theme.colors.text + "99"}
@@ -103,7 +117,9 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
                 }}
                 deletable={true}
                 onDelete={() => {
-                  const newData = bioLinks.filter((_, i) => i !== (getIndex() ?? 0));
+                  const newData = bioLinks.filter(
+                    (_, i) => i !== (getIndex() ?? 0),
+                  );
                   setBioLinks(newData);
                 }}
               />
@@ -126,8 +142,7 @@ const styles = StyleSheet.create({
   draggableList: {
     marginTop: spacing.medium,
     gap: spacing.small,
-  }
-
+  },
 });
 
 export default ChangeBioLinksModal;

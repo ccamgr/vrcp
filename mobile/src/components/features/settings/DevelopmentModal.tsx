@@ -12,7 +12,6 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-
 interface SectionProps {
   title: string;
   items: SettingItemProps[];
@@ -30,7 +29,9 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
         {
           icon: "bug-outline",
           title: t("components.developmentModal.itemLabel_sendLogs"),
-          description: t("components.developmentModal.itemDescription_sendLogs"),
+          description: t(
+            "components.developmentModal.itemDescription_sendLogs",
+          ),
           leading: (
             <Switch
               value={settings.otherOptions_sendDebugLogs}
@@ -38,7 +39,7 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
                 saveSettings({ otherOptions_sendDebugLogs: value });
               }}
             />
-          )
+          ),
         },
         {
           icon: "code",
@@ -51,17 +52,15 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
                 saveSettings({ otherOptions_enableJsonViewer: value });
               }}
             />
-          )
+          ),
         },
-      ]
+      ],
     },
     {
       title: t("components.developmentModal.groupLabel_feature"),
-      items: [
-
-      ]
-    }
-  ]
+      items: [],
+    },
+  ];
 
   return (
     <GenericModal
@@ -74,15 +73,25 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
       {sectionItems.map((section, index) => (
         <View key={`section-${index}`}>
           <View style={styles.sectionHeaderContainer}>
-            <Text style={[styles.sectionHeaderText, { color: theme.colors.text }]}>
+            <Text
+              style={[styles.sectionHeaderText, { color: theme.colors.text }]}
+            >
               {section.title}
             </Text>
-            <View style={[styles.sectionHeaderDivider, { borderBottomColor: theme.colors.border }]} />
+            <View
+              style={[
+                styles.sectionHeaderDivider,
+                { borderBottomColor: theme.colors.border },
+              ]}
+            />
           </View>
           <View style={styles.settingItemContainer}>
             {section.items.map((item, idx) => (
               <SettingItem
-                style={[styles.settingItem, { borderBottomColor: theme.colors.border }]}
+                style={[
+                  styles.settingItem,
+                  { borderBottomColor: theme.colors.border },
+                ]}
                 key={`section-${index}-item-${idx}`}
                 icon={item.icon}
                 title={item.title}
@@ -97,7 +106,6 @@ const DevelopmentModal = ({ open, setOpen }: Props) => {
     </GenericModal>
   );
 };
-
 
 const styles = StyleSheet.create({
   sectionHeaderContainer: {
@@ -132,8 +140,6 @@ const styles = StyleSheet.create({
     height: 24,
     borderWidth: 1,
   },
-
 });
-
 
 export default DevelopmentModal;

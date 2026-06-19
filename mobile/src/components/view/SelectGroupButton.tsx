@@ -16,7 +16,6 @@ interface Props<T> {
   [key: string]: any; // for additional props
 }
 
-
 const SelectGroupButton = <T extends unknown>({
   data,
   value,
@@ -60,7 +59,9 @@ const SelectGroupButton = <T extends unknown>({
               {
                 width: `${95 / data.length}%`,
                 backgroundColor: theme.colors.card,
-                borderColor: _isEqual(value, item) ? theme.colors.primary : theme.colors.card,
+                borderColor: _isEqual(value, item)
+                  ? theme.colors.primary
+                  : theme.colors.card,
                 borderWidth: 1,
               },
             ]}

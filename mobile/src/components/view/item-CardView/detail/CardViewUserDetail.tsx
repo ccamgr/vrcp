@@ -1,5 +1,11 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
-import { getStatusColor, getTrustRankColor, getUserIconUrl, getUserProfilePicUrl, UserLike } from "@/lib/vrchat";
+import {
+  getStatusColor,
+  getTrustRankColor,
+  getUserIconUrl,
+  getUserProfilePicUrl,
+  UserLike,
+} from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
@@ -96,7 +102,6 @@ const styles = StyleSheet.create({
     left: 0,
     // for status spacing
     paddingBottom: fontSize.large + spacing.small * 2,
-
   },
   icon: {
     aspectRatio: 1,
@@ -110,7 +115,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-
   },
   statusContainer: {
     display: "flex",

@@ -15,13 +15,28 @@ interface Props extends Partial<RenderItemParams<string>> {
   onChangeText?: (text: string) => void;
 }
 
-const DraggableFlatListItem = ({ item, drag, isActive, deletable = false , allowInput = false, onChangeText, onDelete }: Props) => {
+const DraggableFlatListItem = ({
+  item,
+  drag,
+  isActive,
+  deletable = false,
+  allowInput = false,
+  onChangeText,
+  onDelete,
+}: Props) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   return (
-    <View style={[styles.container, { opacity: isActive ? 0.8 : 1}]}>
-      <View style={[styles.innerContainer, { backgroundColor: theme.colors.card}]}>
-        <IconButton name="drag-handle" size={20} color={isActive ? theme.colors.primary : theme.colors.text} onPressIn={drag} />
+    <View style={[styles.container, { opacity: isActive ? 0.8 : 1 }]}>
+      <View
+        style={[styles.innerContainer, { backgroundColor: theme.colors.card }]}
+      >
+        <IconButton
+          name="drag-handle"
+          size={20}
+          color={isActive ? theme.colors.primary : theme.colors.text}
+          onPressIn={drag}
+        />
         {allowInput && isEditing ? (
           <TextInput
             value={item}
@@ -29,15 +44,29 @@ const DraggableFlatListItem = ({ item, drag, isActive, deletable = false , allow
             autoFocus
             onBlur={() => setIsEditing(false)}
             onSubmitEditing={() => setIsEditing(false)}
-            style={[styles.text, styles.textContainer, { color: theme.colors.text}]}
+            style={[
+              styles.text,
+              styles.textContainer,
+              { color: theme.colors.text },
+            ]}
           />
         ) : (
-          <TouchableEx style={styles.textContainer} onPress={() => setIsEditing(true)}>
-            <Text style={[styles.text, { color: theme.colors.text}]}>{item}</Text>
+          <TouchableEx
+            style={styles.textContainer}
+            onPress={() => setIsEditing(true)}
+          >
+            <Text style={[styles.text, { color: theme.colors.text }]}>
+              {item}
+            </Text>
           </TouchableEx>
         )}
-        { deletable && (
-          <IconButton name="delete" size={20} color={theme.colors.subText} onPress={onDelete} />
+        {deletable && (
+          <IconButton
+            name="delete"
+            size={20}
+            color={theme.colors.subText}
+            onPress={onDelete}
+          />
         )}
       </View>
     </View>
@@ -61,8 +90,8 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.small,
     paddingVertical: spacing.small,
     fontSize: fontSize.medium,
-    textAlign : "left",
-  }
+    textAlign: "left",
+  },
 });
 
 export default DraggableFlatListItem;

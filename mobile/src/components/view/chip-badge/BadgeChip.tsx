@@ -12,7 +12,15 @@ const BadgeChip = ({ badge, ...rest }: Props) => {
   return (
     <CachedImage
       src={badge.badgeImageUrl}
-      style={[{ margin: spacing.mini, aspectRatio: 1, height: 32, opacity: badge.hidden ? 0.5 : 1 }, rest.style]}
+      style={[
+        {
+          margin: spacing.mini,
+          aspectRatio: 1,
+          height: 32,
+          opacity: badge.hidden ? 0.5 : 1,
+        },
+        rest.style,
+      ]}
       {...omitObject(rest, "style")}
     />
   );

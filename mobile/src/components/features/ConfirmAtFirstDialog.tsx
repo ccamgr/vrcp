@@ -34,7 +34,7 @@ const ConfirmAtFirstDialog = () => {
         showToast("error", "Failed to check confirmation status.");
         setOpen(true);
       }
-    }
+    };
     checkConfirmed();
   }, []);
 
@@ -45,7 +45,7 @@ const ConfirmAtFirstDialog = () => {
     } catch (error) {
       showToast("error", "Failed to save confirmation status.");
     }
-  }
+  };
 
   const footerButtons: ButtonItemForFooter[] = [
     {
@@ -53,25 +53,22 @@ const ConfirmAtFirstDialog = () => {
       onPress: handleConfirm,
       color: theme.colors.primary,
     },
-  ]
+  ];
   return (
     <GenericModal
       closeOnOutside={false}
       showCloseButton={false}
       buttonItems={footerButtons}
       open={open}
-    // onClose={() => {}}
+      // onClose={() => {}}
     >
-      <View style={styles.container}>
-
-      </View>
+      <View style={styles.container}></View>
     </GenericModal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
 });
 
 export default ConfirmAtFirstDialog;

@@ -20,35 +20,48 @@ export default function Analytics() {
   const { settings } = useSetting();
 
   // 状態管理
-  const [targetDate, setTargetDate] = useState<string>(formatDate(new Date().getTime())); // YYYY-MM-DD形式
+  const [targetDate, setTargetDate] = useState<string>(
+    formatDate(new Date().getTime()),
+  ); // YYYY-MM-DD形式
   const [sessions, setSessions] = useState<WorldSession[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
+  const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
   // hookから isSyncing も取り出します
   const { getLocalLogs, getLastSync, syncLogs, isSyncing } = useLogManager();
 
   // データ取得 (UIブロックを避けるため loading は初回のみ)
-  const fetchLogs = useCallback(async (silent: boolean = false) => {
-    if (!silent) setLoading(true);
-    try {
-      const [year, month, day] = targetDate.split('-').map(Number);
-      const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
-      const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+  const fetchLogs = useCallback(
+    async (silent: boolean = false) => {
+      if (!silent) setLoading(true);
+      try {
+        const [year, month, day] = targetDate.split("-").map(Number);
+        const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
+        const endOfDay = new Date(
+          year,
+          month - 1,
+          day,
+          23,
+          59,
+          59,
+          999,
+        ).getTime();
 
-      const localLogs = await getLocalLogs(startOfDay, endOfDay);
-      const analyzedSessions = analyzeSessions(localLogs, {
-        start: startOfDay,
-        end: endOfDay
-      });
+        const localLogs = await getLocalLogs(startOfDay, endOfDay);
+        const analyzedSessions = analyzeSessions(localLogs, {
+          start: startOfDay,
+          end: endOfDay,
+        });
 
-      setSessions(analyzedSessions);
-    } catch (error) {
-      console.error("Failed to analyze local logs:", error);
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }, [targetDate, getLocalLogs]);
+        setSessions(analyzedSessions);
+      } catch (error) {
+        console.error("Failed to analyze local logs:", error);
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [targetDate, getLocalLogs],
+  );
 
   // 日付が変更された時、または初回マウント時にローカルDBから読み込む
   useEffect(() => {
@@ -87,7 +100,7 @@ export default function Analytics() {
         isMounted = false;
         clearInterval(intervalId);
       };
-    }, [targetDate, fetchLogs, getLastSync, syncLogs])
+    }, [targetDate, fetchLogs, getLastSync, syncLogs]),
   );
 
   // 日付操作ハンドラ
@@ -99,37 +112,69 @@ export default function Analytics() {
 
   return (
     <GenericScreen>
-      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
         {/* --- Header Control --- */}
         <View style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={[styles.headerTitle, { color: theme.colors.text }]}>History</Text>
+            <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+              History
+            </Text>
           </View>
 
           <View style={styles.controlsRow}>
             {/* Mode Switcher */}
             <View style={styles.modeSwitch}>
               <TouchableEx
-                style={[styles.modeBtn, viewMode === 'list' && styles.modeBtnActive]}
-                onPress={() => setViewMode('list')}
+                style={[
+                  styles.modeBtn,
+                  viewMode === "list" && styles.modeBtnActive,
+                ]}
+                onPress={() => setViewMode("list")}
               >
-                <Text style={[styles.modeBtnText, viewMode === 'list' && styles.modeBtnTextActive]}>List</Text>
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    viewMode === "list" && styles.modeBtnTextActive,
+                  ]}
+                >
+                  List
+                </Text>
               </TouchableEx>
               <TouchableEx
-                style={[styles.modeBtn, viewMode === 'timeline' && styles.modeBtnActive]}
-                onPress={() => setViewMode('timeline')}
+                style={[
+                  styles.modeBtn,
+                  viewMode === "timeline" && styles.modeBtnActive,
+                ]}
+                onPress={() => setViewMode("timeline")}
               >
-                <Text style={[styles.modeBtnText, viewMode === 'timeline' && styles.modeBtnTextActive]}>Timeline</Text>
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    viewMode === "timeline" && styles.modeBtnTextActive,
+                  ]}
+                >
+                  Timeline
+                </Text>
               </TouchableEx>
             </View>
 
             {/* Date Controls */}
             <View style={styles.dateControl}>
-              <TouchableEx onPress={() => handleDateChange(-1)} style={styles.dateBtn}>
+              <TouchableEx
+                onPress={() => handleDateChange(-1)}
+                style={styles.dateBtn}
+              >
                 <Text style={styles.dateBtnText}>{"<"}</Text>
               </TouchableEx>
-              <Text style={[styles.dateText, { color: theme.colors.text }]}>{targetDate}</Text>
-              <TouchableEx onPress={() => handleDateChange(1)} style={styles.dateBtn}>
+              <Text style={[styles.dateText, { color: theme.colors.text }]}>
+                {targetDate}
+              </Text>
+              <TouchableEx
+                onPress={() => handleDateChange(1)}
+                style={styles.dateBtn}
+              >
                 <Text style={styles.dateBtnText}>{">"}</Text>
               </TouchableEx>
             </View>
@@ -144,15 +189,15 @@ export default function Analytics() {
             </View>
           ) : sessions.length === 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={[styles.noDataText, { color: theme.colors.text }]}>No activity recorded on this day.</Text>
+              <Text style={[styles.noDataText, { color: theme.colors.text }]}>
+                No activity recorded on this day.
+              </Text>
             </View>
+          ) : viewMode === "list" ? (
+            <HistoryListView sessions={sessions} targetDate={targetDate} />
           ) : (
-            viewMode === 'list' ? (
-              <HistoryListView sessions={sessions} targetDate={targetDate} />
-            ) : (
-              // タイムラインモード
-              <HistoryTimeline sessions={sessions} targetDate={targetDate} />
-            )
+            // タイムラインモード
+            <HistoryTimeline sessions={sessions} targetDate={targetDate} />
           )}
         </View>
       </View>
@@ -167,26 +212,26 @@ const styles = StyleSheet.create({
   header: {
     padding: spacing.medium,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(128,128,128,0.2)',
+    borderBottomColor: "rgba(128,128,128,0.2)",
   },
   titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     marginBottom: spacing.small,
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   controlsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   modeSwitch: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    flexDirection: "row",
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 8,
     padding: 2,
   },
@@ -196,20 +241,20 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   modeBtnActive: {
-    backgroundColor: '#3b82f6', // blue-500
+    backgroundColor: "#3b82f6", // blue-500
   },
   modeBtnText: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: "#94a3b8",
   },
   modeBtnTextActive: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   dateControl: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 8,
     padding: 2,
   },
@@ -217,22 +262,22 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   dateBtnText: {
-    color: '#cbd5e1',
+    color: "#cbd5e1",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   dateText: {
     paddingHorizontal: 8,
     fontSize: 14,
-    fontVariant: ['tabular-nums'],
+    fontVariant: ["tabular-nums"],
   },
   contentArea: {
     flex: 1,
   },
   centerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   noDataText: {
     fontSize: 16,

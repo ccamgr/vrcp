@@ -36,7 +36,7 @@ const BaseListView = <T,>({
   const subTitleStyles = resolvedSubtitles?.map((subtitle) =>
     subtitle.startsWith("*") && subtitle.endsWith("*")
       ? { fontStyle: "italic", color: theme.colors.subText }
-      : {}
+      : {},
   );
   return (
     <View
@@ -46,7 +46,7 @@ const BaseListView = <T,>({
         "style",
         "ContainerStyle",
         "TitleStyle",
-        "SubtitleStyle"
+        "SubtitleStyle",
       )}
     >
       <TouchableEx

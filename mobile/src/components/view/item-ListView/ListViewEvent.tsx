@@ -7,9 +7,6 @@ import BaseListView from "./BaseListView";
 import CachedImage from "@/components/CachedImage";
 import { formatTime } from "@/lib/date";
 
-
-
-
 interface Props {
   event: CalendarEvent;
   onPress?: () => void;
@@ -17,19 +14,13 @@ interface Props {
 
   [key: string]: any;
 }
-const extractTitle = (data: CalendarEvent) =>
-  `${data.title}`;
+const extractTitle = (data: CalendarEvent) => `${data.title}`;
 const extractSubtitles = (data: CalendarEvent) => [
-  `${formatTime(data.startsAt ?? "")} - ${formatTime(data.endsAt ?? "")}`,
+  `${formatTime(new Date(data.startsAt ?? "").getTime())} - ${formatTime(new Date(data.endsAt ?? "").getTime())}`,
   data.description ?? "",
 ];
 
-const ListViewEvent = ({
-  event,
-  onPress,
-  onLongPress,
-  ...rest
-}: Props) => {
+const ListViewEvent = ({ event, onPress, onLongPress, ...rest }: Props) => {
   return (
     <BaseListView
       data={event}
@@ -41,7 +32,9 @@ const ListViewEvent = ({
       TitleStyle={styles.title}
       SubtitleStyle={styles.subtitle}
       OverlapComponents={
-        event.imageUrl ? <CachedImage src={event.imageUrl} style={styles.image} /> : null
+        event.imageUrl ? (
+          <CachedImage src={event.imageUrl} style={styles.image} />
+        ) : null
       }
       {...rest}
     />
@@ -53,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     height: _defaultHeight,
     padding: spacing.medium,
-    marginLeft: _defaultHeight * 16 / 9,
+    marginLeft: (_defaultHeight * 16) / 9,
   },
   title: {
     // borderColor: "blue", borderStyle: "dotted", borderWidth: 1

@@ -3,16 +3,31 @@ import DetailItemContainer from "@/components/features/DetailItemContainer";
 import LinkChip from "@/components/view/chip-badge/LinkChip";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
+import {
+  fontSize,
+  navigationBarHeight,
+  radius,
+  spacing,
+} from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
-import { getFriendRequestStatus, getInstanceType, getUserIconUrl, getUserProfilePicUrl, parseLocationString } from "@/lib/vrchat";
+import {
+  getFriendRequestStatus,
+  getInstanceType,
+  getUserIconUrl,
+  getUserProfilePicUrl,
+  parseLocationString,
+} from "@/lib/vrchat";
 import { User } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { routeToInstance, routeToUserGroups, routeToUserWorlds } from "@/lib/route";
+import {
+  routeToInstance,
+  routeToUserGroups,
+  routeToUserWorlds,
+} from "@/lib/route";
 import BadgeChip from "@/components/view/chip-badge/BadgeChip";
 import ImagePreview from "@/components/view/ImagePreview";
 import { MenuItem } from "@/components/layout/type";
@@ -56,14 +71,14 @@ export default function UserDetail() {
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { data: user, refetch, isFetching } = useUser(id);
 
-  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "friend");
-
+  const isFavorite = favorites?.some(
+    (fav) => fav.favoriteId === id && fav.type === "friend",
+  );
 
   const fetchLocationInfo = async () => {
     if (!user?.location) return;
-    const { isOffline, isPrivate, isTraveling, parsedLocation } = parseLocationString(
-      user?.location
-    );
+    const { isOffline, isPrivate, isTraveling, parsedLocation } =
+      parseLocationString(user?.location);
     if (isOffline) {
       setLocationInfo({
         baseInfo: t("pages.detail_user.userLocation_offline"),
@@ -93,7 +108,11 @@ export default function UserDetail() {
           });
         }
       } catch (error) {
-        showToast("error", "Error fetching current location", extractErrMsg(error));
+        showToast(
+          "error",
+          "Error fetching current location",
+          extractErrMsg(error),
+        );
       }
     } else {
       setLocationInfo({
@@ -103,8 +122,9 @@ export default function UserDetail() {
   };
 
   useEffect(() => {
-    refetch()
-      .catch((e) => showToast("error", "Error fetching user data", extractErrMsg(e)));
+    refetch().catch((e) =>
+      showToast("error", "Error fetching user data", extractErrMsg(e)),
+    );
   }, []);
 
   useEffect(() => {
@@ -113,66 +133,80 @@ export default function UserDetail() {
 
   const freReqStatus = user ? getFriendRequestStatus(user) : "null";
 
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: freReqStatus === "completed" ? "account-minus" : freReqStatus === "null" ? "account-plus" : "account-cancel",
-      title: freReqStatus === "completed" ? t("pages.detail_user.menuLabel_friend_remove")
-        : freReqStatus === "null" ? t("pages.detail_user.menuLabel_friend_sendRequest")
-          : t("pages.detail_user.menuLabel_friend_cancelRequest"),
-      onPress: () => setOpenChangeFriend(true)
-    },
-    {
-      icon: isFavorite ? "heart" : "heart-plus",
-      title: isFavorite ? t("pages.detail_user.menuLabel_favoriteGroup_edit") : t("pages.detail_user.menuLabel_favoriteGroup_add"),
-      onPress: () => setOpenChangeFavorite(true),
-      hidden: freReqStatus !== "completed"
-    },
-    {
-      icon: "note-edit-outline",
-      title: t("pages.detail_user.menuLabel_note_edit"),
-      onPress: () => setOpenChangeNote(true),
-    },
-    {
-      type: "divider",
-      hidden: freReqStatus !== "completed"
-    },
-    {
-      icon: "circle-medium",
-      title: locationInfo?.iId ? t("pages.detail_user.menuLabel_invite_me") : t("pages.detail_user.menuLabel_invite_request"),
-      // onPress: () => {},
-      hidden: freReqStatus !== "completed"
-    },
-    {
-      icon: "circle-medium",
-      title: t("pages.detail_user.menuLabel_invite_send"),
-      // onPress: () => {},
-      hidden: freReqStatus !== "completed"
-    },
-    {
-      type: "divider",
-    },
-    {
-      icon: "forest",
-      title: t("pages.detail_user_worlds.label"),
-      onPress: () => user && routeToUserWorlds(user.id),
-    },
-    {
-      icon: "diversity-3",
-      title: t("pages.detail_user_groups.label"),
-      onPress: () => user && routeToUserGroups(user.id),
-    },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
-    {
-      icon: "code-json",
-      title: t("pages.detail_user.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-      hidden: !enableJsonViewer,
-    },
-
-  ], [freReqStatus, isFavorite, locationInfo, enableJsonViewer, t]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon:
+          freReqStatus === "completed"
+            ? "account-minus"
+            : freReqStatus === "null"
+              ? "account-plus"
+              : "account-cancel",
+        title:
+          freReqStatus === "completed"
+            ? t("pages.detail_user.menuLabel_friend_remove")
+            : freReqStatus === "null"
+              ? t("pages.detail_user.menuLabel_friend_sendRequest")
+              : t("pages.detail_user.menuLabel_friend_cancelRequest"),
+        onPress: () => setOpenChangeFriend(true),
+      },
+      {
+        icon: isFavorite ? "heart" : "heart-plus",
+        title: isFavorite
+          ? t("pages.detail_user.menuLabel_favoriteGroup_edit")
+          : t("pages.detail_user.menuLabel_favoriteGroup_add"),
+        onPress: () => setOpenChangeFavorite(true),
+        hidden: freReqStatus !== "completed",
+      },
+      {
+        icon: "note-edit-outline",
+        title: t("pages.detail_user.menuLabel_note_edit"),
+        onPress: () => setOpenChangeNote(true),
+      },
+      {
+        type: "divider",
+        hidden: freReqStatus !== "completed",
+      },
+      {
+        icon: "circle-medium",
+        title: locationInfo?.iId
+          ? t("pages.detail_user.menuLabel_invite_me")
+          : t("pages.detail_user.menuLabel_invite_request"),
+        // onPress: () => {},
+        hidden: freReqStatus !== "completed",
+      },
+      {
+        icon: "circle-medium",
+        title: t("pages.detail_user.menuLabel_invite_send"),
+        // onPress: () => {},
+        hidden: freReqStatus !== "completed",
+      },
+      {
+        type: "divider",
+      },
+      {
+        icon: "forest",
+        title: t("pages.detail_user_worlds.label"),
+        onPress: () => user && routeToUserWorlds(user.id),
+      },
+      {
+        icon: "diversity-3",
+        title: t("pages.detail_user_groups.label"),
+        onPress: () => user && routeToUserGroups(user.id),
+      },
+      {
+        type: "divider",
+        hidden: !enableJsonViewer,
+      },
+      {
+        icon: "code-json",
+        title: t("pages.detail_user.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+        hidden: !enableJsonViewer,
+      },
+    ],
+    [freReqStatus, isFavorite, locationInfo, enableJsonViewer, t],
+  );
 
   useSideMenu(menuItems);
 
@@ -182,25 +216,37 @@ export default function UserDetail() {
         <View style={{ flex: 1 }}>
           <CardViewUserDetail
             user={user}
-            onPress={() => user && setPreview({ imageUrl: getUserProfilePicUrl(user, true), open: true })}
-            onPressIcon={() => user && setPreview({ imageUrl: getUserIconUrl(user, true), open: true })}
+            onPress={() =>
+              user &&
+              setPreview({
+                imageUrl: getUserProfilePicUrl(user, true),
+                open: true,
+              })
+            }
+            onPressIcon={() =>
+              user &&
+              setPreview({ imageUrl: getUserIconUrl(user, true), open: true })
+            }
             style={[styles.cardView]}
           />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={refetch}
-              />
+              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
             }
           >
-
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_location")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_location")}
+            >
               {locationInfo ? (
                 <TouchableEx
                   style={styles.location}
-                  onPress={(locationInfo.wId && locationInfo.iId) ? () => routeToInstance(locationInfo.wId!, locationInfo.iId!) : undefined}
+                  onPress={
+                    locationInfo.wId && locationInfo.iId
+                      ? () =>
+                          routeToInstance(locationInfo.wId!, locationInfo.iId!)
+                      : undefined
+                  }
                 >
                   {locationInfo?.image && (
                     <CachedImage
@@ -210,17 +256,26 @@ export default function UserDetail() {
                   )}
                   <View style={styles.detailItemContent}>
                     {locationInfo?.baseInfo && (
-                      <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                      <Text
+                        numberOfLines={1}
+                        style={{ color: theme.colors.text }}
+                      >
                         {locationInfo?.baseInfo}
                       </Text>
                     )}
                     {locationInfo?.instType && (
-                      <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                      <Text
+                        numberOfLines={1}
+                        style={{ color: theme.colors.text }}
+                      >
                         {locationInfo?.instType}
                       </Text>
                     )}
                     {locationInfo?.capacity && (
-                      <Text numberOfLines={1} style={{ color: theme.colors.text }}>
+                      <Text
+                        numberOfLines={1}
+                        style={{ color: theme.colors.text }}
+                      >
                         {locationInfo?.capacity}
                       </Text>
                     )}
@@ -229,22 +284,27 @@ export default function UserDetail() {
               ) : (
                 <LoadingIndicator size={30} />
               )}
-
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_note")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_note")}
+            >
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>{user.note}</Text>
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_bio")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_bio")}
+            >
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>{user.bio}</Text>
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_bio_links")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_bio_links")}
+            >
               <View style={styles.detailItemContent}>
                 {user.bioLinks.map((link, index) => (
                   <LinkChip key={index} url={link} />
@@ -252,7 +312,9 @@ export default function UserDetail() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_badges")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_badges")}
+            >
               <View style={[styles.detailItemContent, styles.horizontal]}>
                 {user.badges?.map((badge) => (
                   <BadgeChip key={badge.badgeId} badge={badge} />
@@ -260,19 +322,24 @@ export default function UserDetail() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_user.sectionLabel_info")}>
+            <DetailItemContainer
+              title={t("pages.detail_user.sectionLabel_info")}
+            >
               <View style={styles.detailItemContent}>
                 {user.last_activity && (
                   <Text style={{ color: theme.colors.text }}>
-                    {t("pages.detail_user.section_info_last_activity", { date: new Date(user.last_activity) })}
+                    {t("pages.detail_user.section_info_last_activity", {
+                      date: new Date(user.last_activity),
+                    })}
                   </Text>
                 )}
                 <Text style={{ color: theme.colors.text }}>
-                  {t("pages.detail_user.section_info_joined", { date: new Date(user.date_joined) })}
+                  {t("pages.detail_user.section_info_joined", {
+                    date: new Date(user.date_joined),
+                  })}
                 </Text>
               </View>
             </DetailItemContainer>
-
           </ScrollView>
         </View>
       ) : (
@@ -338,7 +405,7 @@ const styles = StyleSheet.create({
   noteInput: {
     borderWidth: 1,
     borderRadius: radius.small,
-    padding: spacing.small
+    padding: spacing.small,
   },
   detailItemContent: {
     flex: 1,

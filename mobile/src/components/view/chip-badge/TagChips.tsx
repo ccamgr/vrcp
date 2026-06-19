@@ -15,8 +15,13 @@ const TagChips = ({ tags, onPress, ...rest }: Props) => {
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
       {tags.map((tag) => (
-        <TouchableEx key={tag} onPress={onPress ? () => onPress(tag) : undefined}>
-          <Text style={[styles.tag, { backgroundColor: theme.colors.card }]}>{tag}</Text>
+        <TouchableEx
+          key={tag}
+          onPress={onPress ? () => onPress(tag) : undefined}
+        >
+          <Text style={[styles.tag, { backgroundColor: theme.colors.card }]}>
+            {tag}
+          </Text>
         </TouchableEx>
       ))}
     </View>

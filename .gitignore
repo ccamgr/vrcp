@@ -1,3 +1,7 @@
 .vscode/
 node_modules
-.aider*
+
+
+# ai agents
+AGENTS.md
+.agents/

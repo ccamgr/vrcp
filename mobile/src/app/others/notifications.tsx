@@ -20,7 +20,9 @@ import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 const NotificationItem = ({ item }: { item: Notification }) => {
   const theme = useTheme();
   const { title, contents } = extractNotificationContent(item);
-  const timestamp = item.created_at ? formatDateTimeShort(new Date(item.created_at).getTime()) : "";
+  const timestamp = item.created_at
+    ? formatDateTimeShort(new Date(item.created_at).getTime())
+    : "";
 
   // Parse details safely
   const details = useMemo(() => {
@@ -57,11 +59,18 @@ const NotificationItem = ({ item }: { item: Notification }) => {
   };
 
   return (
-    <View style={[styles.notificationCard, { borderBottomColor: theme.colors.border }]}>
-
+    <View
+      style={[
+        styles.notificationCard,
+        { borderBottomColor: theme.colors.border },
+      ]}
+    >
       {/* 1. Top Row: Notification Type and Timestamp */}
       <View style={styles.topRow}>
-        <Text style={[styles.typeText, { color: theme.colors.text }]} numberOfLines={1}>
+        <Text
+          style={[styles.typeText, { color: theme.colors.text }]}
+          numberOfLines={1}
+        >
           {title}
         </Text>
         <Text style={[styles.timestamp, { color: theme.colors.text }]}>
@@ -92,7 +101,6 @@ const NotificationItem = ({ item }: { item: Notification }) => {
           </Text>
         ))}
       </View>
-
     </View>
   );
 };

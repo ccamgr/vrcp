@@ -5,7 +5,7 @@ import { openBrowserAsync } from "expo-web-browser";
 import { Platform } from "react-native";
 
 interface Props {
-  href: Href & string | string;
+  href: (Href & string) | string;
   children?: React.ReactNode;
   [key: string]: any;
 }

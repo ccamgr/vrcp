@@ -40,39 +40,49 @@ export default function Favorites() {
 
   const favoriteGroupsMap = useMemo(
     () => ({
-      worlds: favoriteGroups
-        ?.filter((group) => group.type === "world")
-        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
-      friends: favoriteGroups
-        ?.filter((group) => group.type === "friend")
-        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
-      avatars: favoriteGroups
-        ?.filter((group) => group.type === "avatar")
-        ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+      worlds:
+        favoriteGroups
+          ?.filter((group) => group.type === "world")
+          ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+      friends:
+        favoriteGroups
+          ?.filter((group) => group.type === "friend")
+          ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+      avatars:
+        favoriteGroups
+          ?.filter((group) => group.type === "avatar")
+          ?.sort((a, b) => a.name.localeCompare(b.name)) || [],
     }),
-    [favoriteGroups]
+    [favoriteGroups],
   );
 
   const WorldsTab = () => {
     const { data: favorites } = useFavorites();
     const { data: favWorlds, refetch } = useFavWorlds();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
-      null
+      null,
     );
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const favWorldMap = useMemo(
-      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
-        fvrt.type === "world" &&
-        fvrt.tags.includes(selectedGroup.name)
-      )
-        ?.map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites]
+      () =>
+        new Map(
+          favorites
+            ?.filter(
+              (fvrt) =>
+                selectedGroup &&
+                fvrt.type === "world" &&
+                fvrt.tags.includes(selectedGroup.name),
+            )
+            ?.map((fvrt) => [fvrt.favoriteId, true]),
+        ),
+      [selectedGroup, favorites],
     );
 
-    const worlds = useMemo(() => favWorlds?.filter(
-      (w) => favWorldMap.has(w.id)
-    ), [favWorlds, favWorldMap]);
+    const worlds = useMemo(
+      () => favWorlds?.filter((w) => favWorldMap.has(w.id)),
+      [favWorlds, favWorldMap],
+    );
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.worlds[0] || null);
@@ -81,7 +91,13 @@ export default function Favorites() {
     const refresh = () => {
       setIsLoading(true);
       refetch()
-        .catch((e) => showToast("error", "Error refreshing favorite worlds", extractErrMsg(e)))
+        .catch((e) =>
+          showToast(
+            "error",
+            "Error refreshing favorite worlds",
+            extractErrMsg(e),
+          ),
+        )
         .finally(() => setIsLoading(false));
     };
 
@@ -123,23 +139,29 @@ export default function Favorites() {
     const { data: favorites } = useFavorites();
     const { data: favFriends, refetch } = useFavFriends();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
-      null
+      null,
     );
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-
     const favFriendMap = useMemo(
-      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
-        fvrt.type === "friend" &&
-        fvrt.tags.includes(selectedGroup.name)
-      )
-        .map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites]
+      () =>
+        new Map(
+          favorites
+            ?.filter(
+              (fvrt) =>
+                selectedGroup &&
+                fvrt.type === "friend" &&
+                fvrt.tags.includes(selectedGroup.name),
+            )
+            .map((fvrt) => [fvrt.favoriteId, true]),
+        ),
+      [selectedGroup, favorites],
     );
 
-    const friends = useMemo(() => favFriends?.filter(
-      (f) => favFriendMap.has(f.id)
-    ), [favFriends, favFriendMap]);
+    const friends = useMemo(
+      () => favFriends?.filter((f) => favFriendMap.has(f.id)),
+      [favFriends, favFriendMap],
+    );
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.friends[0] || null);
@@ -148,7 +170,13 @@ export default function Favorites() {
     const refresh = () => {
       setIsLoading(true);
       refetch()
-        .catch((e) => showToast("error", "Error refreshing favorite friends", extractErrMsg(e)))
+        .catch((e) =>
+          showToast(
+            "error",
+            "Error refreshing favorite friends",
+            extractErrMsg(e),
+          ),
+        )
         .finally(() => setIsLoading(false));
     };
 
@@ -190,23 +218,29 @@ export default function Favorites() {
     const { data: favorites } = useFavorites();
     const { data: favAvatars, refetch } = useFavAvatars();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
-      null
+      null,
     );
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-
     const favAvatarMap = useMemo(
-      () => new Map(favorites?.filter((fvrt) => selectedGroup &&
-        fvrt.type === "avatar" &&
-        fvrt.tags.includes(selectedGroup.name)
-      )
-        .map((fvrt) => [fvrt.favoriteId, true])
-      ), [selectedGroup, favorites]
+      () =>
+        new Map(
+          favorites
+            ?.filter(
+              (fvrt) =>
+                selectedGroup &&
+                fvrt.type === "avatar" &&
+                fvrt.tags.includes(selectedGroup.name),
+            )
+            .map((fvrt) => [fvrt.favoriteId, true]),
+        ),
+      [selectedGroup, favorites],
     );
 
-    const avatars = useMemo(() => favAvatars?.filter(
-      (a) => favAvatarMap.has(a.id)
-    ), [favAvatars, favAvatarMap]);
+    const avatars = useMemo(
+      () => favAvatars?.filter((a) => favAvatarMap.has(a.id)),
+      [favAvatars, favAvatarMap],
+    );
 
     useEffect(() => {
       setSelectedGroup(favoriteGroupsMap.avatars[0] || null);
@@ -215,7 +249,13 @@ export default function Favorites() {
     const refresh = () => {
       setIsLoading(true);
       refetch()
-        .catch((e) => showToast("error", "Error refreshing favorite avatars", extractErrMsg(e)))
+        .catch((e) =>
+          showToast(
+            "error",
+            "Error refreshing favorite avatars",
+            extractErrMsg(e),
+          ),
+        )
         .finally(() => setIsLoading(false));
     };
 

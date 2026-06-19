@@ -56,11 +56,14 @@ const Context = createContext<SettingContextType | undefined>(undefined);
 
 export const useSetting = () => {
   const context = useContext(Context);
-  if (!context) throw new Error("useSetting must be used within a SettingProvider");
+  if (!context)
+    throw new Error("useSetting must be used within a SettingProvider");
   return context;
 };
 
-export const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   const [settings, setSettings] = useState<Setting>(defaultSettings);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -74,15 +77,16 @@ export const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({ chil
   const saveSettings = async (newSettings: Partial<Setting>) => {
     const updatedSettings = { ...settings, ...newSettings };
     setSettings(updatedSettings);
-    const entries = Object.entries(newSettings).map(([key, value]) => [
-      key,
-      JSON.stringify(value),
-    ] as [string, string]);
+    const entries = Object.entries(newSettings).map(
+      ([key, value]) => [key, JSON.stringify(value)] as [string, string],
+    );
     await StorageWrapper.multiSet(entries);
   };
 
   const loadSettings = async (): Promise<Setting> => {
-    const storedSettings = await StorageWrapper.multiGet(Object.keys(defaultSettings));
+    const storedSettings = await StorageWrapper.multiGet(
+      Object.keys(defaultSettings),
+    );
     const newSettings = { ...defaultSettings };
 
     storedSettings.forEach(([key, value]) => {
@@ -100,7 +104,15 @@ export const SettingProvider: React.FC<{ children?: React.ReactNode }> = ({ chil
   };
 
   return (
-    <Context.Provider value={{ settings, defaultSettings, saveSettings, loadSettings, isLoaded }}>
+    <Context.Provider
+      value={{
+        settings,
+        defaultSettings,
+        saveSettings,
+        loadSettings,
+        isLoaded,
+      }}
+    >
       {/* Wait for settings to load before rendering children to prevent UI flash */}
       {isLoaded ? children : null}
     </Context.Provider>

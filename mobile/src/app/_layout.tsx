@@ -11,7 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { use, useCallback, useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from "expo-splash-screen";
 
 import GlobalDrawer from "@/components/layout/GlobalDrawer";
 import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
@@ -22,30 +22,28 @@ import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
 // tanstack
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { persistOptions, queryClient } from "@/lib/queryClient";
 
-import '@/i18n'; // i18n 初期化
+import "@/i18n"; // i18n 初期化
 import { PipelineProvider } from "@/contexts/PipelineContext";
 import { routeToHome, routeToIndex } from "@/lib/route";
 
-
 // Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync()
+SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
-
   const auth = useAuth();
   const pathname = usePathname();
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
-  const isReady = !auth.isLoading && success || error;
+  const isReady = (!auth.isLoading && success) || error;
 
   useEffect(() => {
     if (isReady) {
       SplashScreen.hideAsync();
     }
-  }, [isReady])
+  }, [isReady]);
 
   useEffect(() => {
     // Wait until initialization is complete
@@ -63,10 +61,12 @@ function RootLayout() {
     }
   }, [auth.user, isReady, pathname]);
 
-
   return (
     <View style={{ flex: 1 }}>
-      <Stack initialRouteName="index" screenOptions={{ headerShown: false, gestureEnabled: true }}>
+      <Stack
+        initialRouteName="index"
+        screenOptions={{ headerShown: false, gestureEnabled: true }}
+      >
         <Stack.Screen name="maintabs" options={{ headerShown: false }} />
         <Stack.Screen name="details" options={{ headerShown: false }} />
         <Stack.Screen name="settings" options={{ headerShown: false }} />
@@ -80,8 +80,7 @@ function RootLayout() {
 
 export default function Root() {
   const cs = useColorScheme();
-  const theme = useMemo(() => cs !== "dark" ? lightTheme : darkTheme, [cs]);
-
+  const theme = useMemo(() => (cs !== "dark" ? lightTheme : darkTheme), [cs]);
 
   useEffect(() => {
     // init tasks
@@ -92,15 +91,15 @@ export default function Root() {
     <SettingProvider>
       <VRChatProvider>
         <AuthProvider>
-          <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={persistOptions}
+          >
             <PipelineProvider>
               <SafeAreaProvider>
                 {/* <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}> */}
                 <GestureHandlerRootView style={{ flex: 1 }}>
-                  <ThemeProvider
-                    value={theme}
-                  >
+                  <ThemeProvider value={theme}>
                     <AppMenuProvider>
                       <ToastProvider>
                         <GlobalDrawer>
@@ -114,7 +113,6 @@ export default function Root() {
                 {/* </SafeAreaView> */}
               </SafeAreaProvider>
             </PipelineProvider>
-
           </PersistQueryClientProvider>
         </AuthProvider>
       </VRChatProvider>

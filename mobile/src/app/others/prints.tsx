@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { TouchableEx, ButtonEx } from "@/components/CustomElements";
@@ -32,29 +38,40 @@ export default function Prints() {
   const offset = useRef(0);
   const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
 
-  const [preview, setPreview] = useState<{ idx: number; open: boolean }>({ idx: 0, open: false });
+  const [preview, setPreview] = useState<{ idx: number; open: boolean }>({
+    idx: 0,
+    open: false,
+  });
   const [previewImageUrls, setPreviewImageUrls] = useState<string[]>([]);
   // prints, ...etc
   const fetchPrints = async () => {
     try {
       if (fetchingRef.current || offset.current < 0) return;
       fetchingRef.current = true;
-      const res = await vrc.printsApi.getUserPrints({
-        userId: currentUser?.id || "",
-      }, {
-        // API仕様にはないがoffsetとnを指定できるっぽい
-        params: {
-          offset: offset.current,
-          n: NumPerReq,
-          sort: SortOption.Updated,
-          order: OrderOption.Descending,
-        }
-      });
+      const res = await vrc.printsApi.getUserPrints(
+        {
+          userId: currentUser?.id || "",
+        },
+        {
+          // API仕様にはないがoffsetとnを指定できるっぽい
+          params: {
+            offset: offset.current,
+            n: NumPerReq,
+            sort: SortOption.Updated,
+            order: OrderOption.Descending,
+          },
+        },
+      );
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data
       } else {
-        setPrints(prev => [...prev, ...res.data]);
-        setPreviewImageUrls(prev => [...prev, ...res.data.map(print => print.files.image || "").filter(url => url.length > 0)]);
+        setPrints((prev) => [...prev, ...res.data]);
+        setPreviewImageUrls((prev) => [
+          ...prev,
+          ...res.data
+            .map((print) => print.files.image || "")
+            .filter((url) => url.length > 0),
+        ]);
         offset.current += NumPerReq;
       }
     } catch (e) {
@@ -73,16 +90,26 @@ export default function Prints() {
     fetchPrints();
   };
 
-  const renderItem = useCallback(({ item, index }: { item: Print; index: number }) => (
-    <CardViewPrint print={item} style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]} onPress={() => setPreview({ idx: index, open: true })} />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>
-        {t("pages.prints.no_prints")}
-      </Text>
-    </View>
-  ), []);
+  const renderItem = useCallback(
+    ({ item, index }: { item: Print; index: number }) => (
+      <CardViewPrint
+        print={item}
+        style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
+        onPress={() => setPreview({ idx: index, open: true })}
+      />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.prints.no_prints")}
+        </Text>
+      </View>
+    ),
+    [],
+  );
 
   return (
     <GenericScreen>
@@ -102,11 +129,15 @@ export default function Prints() {
       />
 
       {/* dialog and modals */}
-      <ImagePreview imageUrls={previewImageUrls} initialIdx={preview.idx} open={preview.open} onClose={() => setPreview(prev => ({ ...prev, open: false }))} />
+      <ImagePreview
+        imageUrls={previewImageUrls}
+        initialIdx={preview.idx}
+        open={preview.open}
+        onClose={() => setPreview((prev) => ({ ...prev, open: false }))}
+      />
     </GenericScreen>
   );
 }
-
 
 const styles = StyleSheet.create({
   cardView: {

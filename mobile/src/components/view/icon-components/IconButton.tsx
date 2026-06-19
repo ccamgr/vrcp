@@ -15,7 +15,16 @@ interface Props {
   [key: string]: any;
 }
 
-const IconButton = ({ onPress, onPressIn, onPressOut, onLongPress, name, color, size, ...rest }: Props) => {
+const IconButton = ({
+  onPress,
+  onPressIn,
+  onPressOut,
+  onLongPress,
+  name,
+  color,
+  size,
+  ...rest
+}: Props) => {
   const theme = useTheme();
   return (
     <TouchableEx

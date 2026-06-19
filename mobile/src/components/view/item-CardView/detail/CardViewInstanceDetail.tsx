@@ -5,7 +5,7 @@ import {
   getInstanceType,
   InstanceLike,
   parseInstanceId,
-  parseLocationString
+  parseLocationString,
 } from "@/lib/vrchat";
 import BaseCardView from "../BaseCardView";
 import { useWorld } from "@/hooks/vrc/useWorld";
@@ -29,27 +29,46 @@ const extractImageUrl = (data: InstanceLike, world?: any) => {
  * Extract title string including instance type, name, and world name
  */
 const extractTitle = (data: InstanceLike, world?: any) => {
-  const location = data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId;
+  const location =
+    data.instanceId ??
+    data.id ??
+    parseLocationString(data.location).parsedLocation?.instanceId;
   const parsedInstance = parseInstanceId(location);
   const worldName = data.world?.name ?? world?.name ?? "Unknown";
 
   if (parsedInstance) {
-    const instType = getInstanceType(parsedInstance.type, parsedInstance.groupAccessType);
+    const instType = getInstanceType(
+      parsedInstance.type,
+      parsedInstance.groupAccessType,
+    );
     const displayName = data.displayName ? ` (${data.displayName})` : "";
     return `${instType} #${parsedInstance.name}${displayName}\n${worldName}`;
   }
   return worldName;
 };
 
-const CardViewInstanceDetail = ({ instance, onPress, onLongPress, ...rest }: Props) => {
+const CardViewInstanceDetail = ({
+  instance,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   // 1. Fetch world data if not present in the instance object
-  const { data: fetchedWorld } = useWorld(instance.world ? undefined : instance.worldId);
+  const { data: fetchedWorld } = useWorld(
+    instance.world ? undefined : instance.worldId,
+  );
 
   // 2. Resolve the world object
-  const world = useMemo(() => instance.world ?? fetchedWorld, [instance.world, fetchedWorld]);
+  const world = useMemo(
+    () => instance.world ?? fetchedWorld,
+    [instance.world, fetchedWorld],
+  );
 
   // 3. Declarative data extraction
-  const imageUrl = useMemo(() => extractImageUrl(instance, world), [instance, world]);
+  const imageUrl = useMemo(
+    () => extractImageUrl(instance, world),
+    [instance, world],
+  );
   const title = useMemo(() => extractTitle(instance, world), [instance, world]);
 
   return (

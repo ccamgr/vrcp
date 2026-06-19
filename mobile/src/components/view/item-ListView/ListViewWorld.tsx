@@ -6,9 +6,6 @@ import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
 import CachedImage from "@/components/CachedImage";
 
-
-
-
 interface Props {
   world: WorldLike;
   onPress?: () => void;
@@ -16,16 +13,10 @@ interface Props {
 
   [key: string]: any;
 }
-const extractTitle = (data: WorldLike) =>
-  `${data.name}`;
+const extractTitle = (data: WorldLike) => `${data.name}`;
 const extractSubtitles = (data: WorldLike) => [];
 
-const ListViewWorld = ({
-  world,
-  onPress,
-  onLongPress,
-  ...rest
-}: Props) => {
+const ListViewWorld = ({ world, onPress, onLongPress, ...rest }: Props) => {
   return (
     <BaseListView
       data={world}
@@ -49,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     height: _defaultHeight,
     padding: spacing.medium,
-    marginLeft: _defaultHeight * 16 / 9,
+    marginLeft: (_defaultHeight * 16) / 9,
   },
   title: {
     // borderColor: "blue", borderStyle: "dotted", borderWidth: 1

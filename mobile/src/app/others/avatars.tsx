@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { TouchableEx, ButtonEx } from "@/components/CustomElements";
@@ -7,7 +13,12 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/contexts/ToastContext";
 import { useSetting } from "@/contexts/SettingContext";
-import { Avatar, OrderOption, ReleaseStatus, SortOption } from "@/generated/vrcapi";
+import {
+  Avatar,
+  OrderOption,
+  ReleaseStatus,
+  SortOption,
+} from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
 import CardViewAvatar from "@/components/view/item-CardView/CardViewAvatar";
 import { routeToAvatar } from "@/lib/route";
@@ -44,7 +55,7 @@ export default function MyAvatars() {
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data
       } else {
-        setAvatars(prev => [...prev, ...res.data]);
+        setAvatars((prev) => [...prev, ...res.data]);
         offset.current += NumPerReq;
       }
     } catch (e) {
@@ -64,20 +75,26 @@ export default function MyAvatars() {
     fetchAvatars();
   };
 
-  const renderItem = useCallback(({ item }: { item: Avatar }) => (
-    <CardViewAvatar
-      avatar={item}
-      style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
-      onPress={() => routeToAvatar(item.id)}
-    />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>
-        {t("pages.avatars.no_avatars")}
-      </Text>
-    </View>
-  ), []);
+  const renderItem = useCallback(
+    ({ item }: { item: Avatar }) => (
+      <CardViewAvatar
+        avatar={item}
+        style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
+        onPress={() => routeToAvatar(item.id)}
+      />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.avatars.no_avatars")}
+        </Text>
+      </View>
+    ),
+    [],
+  );
 
   return (
     <GenericScreen>
@@ -98,7 +115,6 @@ export default function MyAvatars() {
     </GenericScreen>
   );
 }
-
 
 const styles = StyleSheet.create({
   cardView: {

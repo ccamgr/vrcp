@@ -18,7 +18,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import * as Clipboard from 'expo-clipboard';
+import * as Clipboard from "expo-clipboard";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { ButtonEx } from "@/components/CustomElements";
@@ -43,7 +43,6 @@ export default function Login() {
   const [modeTFA, setModeTFA] = useState<"totp" | "email">("totp");
   const [openTFA, setOpenTFA] = useState(false);
   const [openLinks, setOpenLinks] = useState(false);
-
 
   const handleLogin = async () => {
     if (!username) {
@@ -98,14 +97,9 @@ export default function Login() {
         Alert.alert("Login failed", t("pages.login.login_failed_error"));
       }
     } else if (res === "failed") {
-      Alert.alert(
-        "2FA verification failed",
-        t("pages.login.tfa_failed_error")
-      );
+      Alert.alert("2FA verification failed", t("pages.login.tfa_failed_error"));
     } else if (res === "disabled") {
-      Alert.alert(
-        t("pages.login.tfa_disabled_error")
-      );
+      Alert.alert(t("pages.login.tfa_disabled_error"));
       setOpenTFA(false);
     } else {
       Alert.alert("2FA verification error", "please try again later");
@@ -121,12 +115,12 @@ export default function Login() {
       }
     } catch (err) {
       console.log("Auto-fill TFA code failed:", err);
-    };
+    }
   };
 
   const logoAnim = useRef(new Animated.Value(0)).current; //
   const [logoMsg, setLogoMsg] = useState<string | null>(null);
-  const logoMsgTimeoutRef = useRef<number | null>(null)
+  const logoMsgTimeoutRef = useRef<number | null>(null);
   const onPressInLogo = () => {
     Animated.timing(logoAnim, {
       toValue: 1,
@@ -147,33 +141,31 @@ export default function Login() {
         headers: { "User-Agent": getUserAgent() },
       },
     });
-    new MiscellaneousApi(conf).getCurrentOnlineUsers()
+    new MiscellaneousApi(conf)
+      .getCurrentOnlineUsers()
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         const msg = t("pages.login.online_count_message", { count: res.data });
         setLogoMsg(msg);
         if (logoMsgTimeoutRef.current) clearTimeout(logoMsgTimeoutRef.current);
         logoMsgTimeoutRef.current = setTimeout(() => {
-          setLogoMsg(null)
-          logoMsgTimeoutRef.current = null
+          setLogoMsg(null);
+          logoMsgTimeoutRef.current = null;
         }, 3000);
       })
       .catch((err) => {
         console.log("Failed to get online users:", err);
       });
-
-  }
+  };
   const onLongPressLogo = () => {
-    auth.autoLogin()
+    auth.autoLogin();
   };
 
   return (
-
     <GenericScreen>
       {auth.isLoading && <LoadingIndicator absolute />}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.containerCentered}>
-
           <View style={styles.logoPopup}>
             {logoMsg && (
               <Text
@@ -239,7 +231,9 @@ export default function Login() {
               onChangeText={setUsername}
               inputMode="email"
             />
-            <View style={[styles.passwordContainer, styles.repeatingitemVertical]}>
+            <View
+              style={[styles.passwordContainer, styles.repeatingitemVertical]}
+            >
               <TextInput
                 ref={passwordRef}
                 style={[styles.passwordInput, { color: theme.colors.text }]}
@@ -259,11 +253,10 @@ export default function Login() {
                 onPress={() => setShowPassword((prev) => !prev)}
               />
             </View>
-            <View style={[styles.containerHorizontal, styles.repeatingitemVertical]}>
-              <Switch
-                value={saveSecret}
-                onValueChange={setSaveSecret}
-              />
+            <View
+              style={[styles.containerHorizontal, styles.repeatingitemVertical]}
+            >
+              <Switch value={saveSecret} onValueChange={setSaveSecret} />
               <Text style={[styles.description, { color: theme.colors.text }]}>
                 {t("pages.login.save_credentials")}
               </Text>
@@ -294,7 +287,13 @@ export default function Login() {
       </KeyboardAvoidingView>
 
       <View style={styles.disclaimerContainer}>
-        <Text style={{ color: theme.colors.subText, fontSize: fontSize.small, textAlign: "center" }}>
+        <Text
+          style={{
+            color: theme.colors.subText,
+            fontSize: fontSize.small,
+            textAlign: "center",
+          }}
+        >
           {t("pages.login.disclaimer")}
         </Text>
       </View>
@@ -303,8 +302,15 @@ export default function Login() {
       <GenericModal
         title="Two-Factor Authentication"
         buttonItems={[
-          { title: t("pages.login.button_tfa_close"), onPress: () => setOpenTFA(false) },
-          { title: t("pages.login.button_tfa_verify"), onPress: handleVerify, flex: 1 }
+          {
+            title: t("pages.login.button_tfa_close"),
+            onPress: () => setOpenTFA(false),
+          },
+          {
+            title: t("pages.login.button_tfa_verify"),
+            onPress: handleVerify,
+            flex: 1,
+          },
         ]}
         open={openTFA}
         onClose={() => setOpenTFA(false)}
@@ -312,8 +318,7 @@ export default function Login() {
         <Text style={[styles.text, { color: theme.colors.text }]}>
           {modeTFA === "totp"
             ? t("pages.login.tfa_modal_text_totp")
-            : t("pages.login.tfa_modal_text_email")
-          }
+            : t("pages.login.tfa_modal_text_email")}
         </Text>
         <TextInput
           ref={TFACodeRef}
@@ -333,16 +338,17 @@ export default function Login() {
       {/* links to vrchat modal */}
       <GenericModal
         title={t("pages.login.linksModal_title")}
-        buttonItems={[{ title: t("pages.login.button_links_close"), onPress: () => setOpenLinks(false), flex: 1 }]}
+        buttonItems={[
+          {
+            title: t("pages.login.button_links_close"),
+            onPress: () => setOpenLinks(false),
+            flex: 1,
+          },
+        ]}
         open={openLinks}
         onClose={() => setOpenLinks(false)}
       >
-        <View
-          style={[
-            styles.containerVertical,
-            { padding: spacing.medium },
-          ]}
-        >
+        <View style={[styles.containerVertical, { padding: spacing.medium }]}>
           <Text
             style={[
               styles.text,
@@ -369,12 +375,15 @@ export default function Login() {
             ]}
           >
             {t("pages.login.linksModal_text2")}
-            <Atag href={constants.externalLinks.vrc_forgot_password}>{t("pages.login.linksModal_passwordLinkText")}</Atag>
+            <Atag href={constants.externalLinks.vrc_forgot_password}>
+              {t("pages.login.linksModal_passwordLinkText")}
+            </Atag>
             {" / "}
-            <Atag href={constants.externalLinks.vrc_forgot_email}>{t("pages.login.linksModal_emailLinkText")}</Atag>
+            <Atag href={constants.externalLinks.vrc_forgot_email}>
+              {t("pages.login.linksModal_emailLinkText")}
+            </Atag>
           </Text>
         </View>
-
       </GenericModal>
     </GenericScreen>
   );
@@ -395,18 +404,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    width: '100%',
+    width: "100%",
     padding: spacing.small,
   },
   containerHorizontal: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: '100%',
+    width: "100%",
     padding: spacing.small,
   },
   headerContainer: {
-    width: '100%',
+    width: "100%",
     padding: spacing.small,
     textAlign: "center",
     // borderColor: 'blue', borderWidth: 1, borderStyle: 'solid',
@@ -425,7 +434,7 @@ const styles = StyleSheet.create({
   description: {
     marginLeft: spacing.medium,
     fontSize: fontSize.small,
-    fontWeight: "normal"
+    fontWeight: "normal",
   },
   disclaimerContainer: {
     position: "absolute",
@@ -436,15 +445,15 @@ const styles = StyleSheet.create({
 
   // form elements
   input: {
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    width: '100%',
+    width: "100%",
     padding: spacing.medium,
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
   },
   passwordInput: {
@@ -458,9 +467,8 @@ const styles = StyleSheet.create({
 
   logoPopup: {
     position: "absolute",
-    top: "10%"
+    top: "10%",
   },
-
 
   // repeating items except for the first one
   repeatingitemVertical: {
@@ -469,4 +477,4 @@ const styles = StyleSheet.create({
   repeatingitemHorizontal: {
     marginLeft: spacing.small,
   },
-})
+});

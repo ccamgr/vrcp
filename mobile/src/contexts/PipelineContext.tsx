@@ -3,7 +3,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useVRChat } from "./VRChatContext";
 import { useSetting } from "./SettingContext";
-import { PipelineMessage, PipelineType, PipelineContent } from "@/generated/vrcpipline/type";
+import {
+  PipelineMessage,
+  PipelineType,
+  PipelineContent,
+} from "@/generated/vrcpipline/type";
 import { LimitedUserFriend } from "@/generated/vrcapi";
 import { convertToLimitedUserFriend } from "@/lib/vrchat";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
@@ -12,9 +16,13 @@ interface PipelineContextType {
   messages: PipelineMessage[];
 }
 
-const PipelineContext = createContext<PipelineContextType | undefined>(undefined);
+const PipelineContext = createContext<PipelineContextType | undefined>(
+  undefined,
+);
 
-export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const vrc = useVRChat();
   const { settings } = useSetting();
   const queryClient = useQueryClient();
@@ -39,7 +47,10 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     // Avoid duplicate processing (check timestamp and type)
     const lastStored = messages[0];
-    if (msg.timestamp === lastStored?.timestamp && msg.type === lastStored?.type) {
+    if (
+      msg.timestamp === lastStored?.timestamp &&
+      msg.type === lastStored?.type
+    ) {
       return;
     }
 
@@ -52,14 +63,17 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const updateHistory = (msg: PipelineMessage) => {
     setMessages((prev) => {
       const next = [msg, ...prev].slice(0, settings.pipelineOptions_keepMsgNum);
-      StorageWrapper.setItemAsync("vrc_state_pipelineHistory", JSON.stringify(next));
+      StorageWrapper.setItemAsync(
+        "vrc_state_pipelineHistory",
+        JSON.stringify(next),
+      );
       return next;
     });
   };
 
-  const handleMessage = <T extends typeof PipelineType[number]>(
+  const handleMessage = <T extends (typeof PipelineType)[number]>(
     type: T,
-    content: PipelineContent<T>
+    content: PipelineContent<T>,
   ) => {
     switch (type) {
       case "friend-online":
@@ -69,14 +83,17 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const data = content as any;
         const userId = data.userId;
         const user = data.user;
-        const location = type === "friend-location" ? data.location : (user.location ?? "offline");
+        const location =
+          type === "friend-location"
+            ? data.location
+            : (user.location ?? "offline");
 
         queryClient.setQueryData<LimitedUserFriend[]>(FRIENDS_KEY, (prev) => {
           if (!prev) return prev;
           const exists = prev.some((f) => f.id === userId);
           if (exists) {
             return prev.map((f) =>
-              f.id === userId ? { ...f, ...user, location } : f
+              f.id === userId ? { ...f, ...user, location } : f,
             );
           }
           // New friend from pipeline (rare but possible)
@@ -90,7 +107,7 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         queryClient.setQueryData<LimitedUserFriend[]>(FRIENDS_KEY, (prev) => {
           if (!prev) return prev;
           return prev.map((f) =>
-            f.id === data.userId ? { ...f, location: "offline" } : f
+            f.id === data.userId ? { ...f, location: "offline" } : f,
           );
         });
         break;
@@ -128,6 +145,7 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
 export const usePipeline = () => {
   const context = useContext(PipelineContext);
-  if (!context) throw new Error("usePipeline must be used within PipelineProvider");
+  if (!context)
+    throw new Error("usePipeline must be used within PipelineProvider");
   return context;
 };

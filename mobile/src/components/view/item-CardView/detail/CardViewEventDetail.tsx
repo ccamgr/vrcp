@@ -13,7 +13,12 @@ interface Props {
   [key: string]: any;
 }
 
-const CardViewEventDetail = ({ event, onPress, onLongPress, ...rest }: Props) => {
+const CardViewEventDetail = ({
+  event,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   const { t } = useTranslation();
 
   // 1. Image URL derivation

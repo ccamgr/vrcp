@@ -37,7 +37,7 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
           targetUserId: user.id,
           note: note,
         },
-      })
+      });
       onSuccess?.();
       setOpen(false);
     } catch (error) {
@@ -64,14 +64,25 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
       color: theme.colors.primary,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
-      { user && (
+      {user && (
         <View style={styles.container}>
           <TextInput
-            style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}
+            style={[
+              styles.input,
+              {
+                color: theme.colors.text,
+                backgroundColor: theme.colors.card,
+                borderColor: theme.colors.border,
+              },
+            ]}
             value={note}
             onChangeText={setNote}
             placeholder={t("components.changeNoteModal.placeholder")}
@@ -85,12 +96,10 @@ const ChangeNoteModal = ({ open, setOpen, user, onSuccess }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   input: {
     borderRadius: radius.input,
   },
-
 });
 
 export default ChangeNoteModal;

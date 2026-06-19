@@ -9,11 +9,7 @@ interface Props {
 }
 
 const WithQuickMenu = ({ items, onOpen, open, setOpen, children }: Props) => {
-  return (
-    <>
-      {children}
-    </>
-  )
-}
+  return <>{children}</>;
+};
 
 export default WithQuickMenu;

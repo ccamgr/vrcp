@@ -1,14 +1,14 @@
-import BackButtonForHeader from '@/components/layout/BackButtonForHeader';
-import { Stack } from 'expo-router';
-import MenuButtonForHeader from '@/components/layout/MenuButtonForHeader';
-import { useTranslation } from 'react-i18next';
+import BackButtonForHeader from "@/components/layout/BackButtonForHeader";
+import { Stack } from "expo-router";
+import MenuButtonForHeader from "@/components/layout/MenuButtonForHeader";
+import { useTranslation } from "react-i18next";
 
 export default function ModalLayout() {
   const { t } = useTranslation();
   return (
     <Stack
       screenOptions={{
-        presentation: 'modal',
+        presentation: "modal",
         // headerShown: false,
         headerLeft: BackButtonForHeader,
         headerRight: MenuButtonForHeader,
@@ -51,13 +51,19 @@ export default function ModalLayout() {
       />
       <Stack.Screen
         name="notifications"
-        options={{ title: t("pages.notifications.label"), headerRight: undefined }} // no menu button
+        options={{
+          title: t("pages.notifications.label"),
+          headerRight: undefined,
+        }} // no menu button
       />
 
       {/* Home */}
       <Stack.Screen
         name="friendlocations"
-        options={{ title: t("pages.friendlocations.label"), headerRight: undefined }} // no menu button
+        options={{
+          title: t("pages.friendlocations.label"),
+          headerRight: undefined,
+        }} // no menu button
       />
       <Stack.Screen
         name="search"

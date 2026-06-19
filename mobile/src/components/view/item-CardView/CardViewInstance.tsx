@@ -3,9 +3,14 @@ import { LimitedUserInstance } from "@/generated/vrcapi";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import BaseCardView from "./BaseCardView";
-import { getInstanceType, InstanceLike, parseInstanceId, parseLocationString } from "@/lib/vrchat";
+import {
+  getInstanceType,
+  InstanceLike,
+  parseInstanceId,
+  parseLocationString,
+} from "@/lib/vrchat";
 import UserOrGroupChip from "../chip-badge/UserOrGroupChip";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useWorld } from "@/hooks/vrc/useWorld";
@@ -18,33 +23,54 @@ interface Props {
 }
 
 const extractImageUrl = (data: InstanceLike, world?: any) => {
-  const url = data?.world?.thumbnailImageUrl ?? data?.world?.imageUrl ?? world?.thumbnailImageUrl ?? world?.imageUrl;
+  const url =
+    data?.world?.thumbnailImageUrl ??
+    data?.world?.imageUrl ??
+    world?.thumbnailImageUrl ??
+    world?.imageUrl;
   return url && url.length > 0 ? url : "";
 };
 
 const extractTitle = (data: InstanceLike, world?: any) => {
-  const parsedInstance = parseInstanceId(data.instanceId ?? data.id ?? parseLocationString(data.location).parsedLocation?.instanceId);
+  const parsedInstance = parseInstanceId(
+    data.instanceId ??
+      data.id ??
+      parseLocationString(data.location).parsedLocation?.instanceId,
+  );
   const worldName = data.world?.name ?? world?.name ?? "Unknown";
 
   if (parsedInstance) {
-    const instType = getInstanceType(parsedInstance.type, parsedInstance.groupAccessType);
+    const instType = getInstanceType(
+      parsedInstance.type,
+      parsedInstance.groupAccessType,
+    );
     return `${instType} #${parsedInstance.name}\n${worldName}`;
   }
   return worldName;
 };
 
-const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) => {
+const CardViewInstance = ({
+  instance,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
   // 1. Fetch world data if it's not present in the instance object
   // If instance.world already exists, we don't need to trigger the hook's fetch
-  const { data: fetchedWorld } = useWorld(instance.world ? undefined : instance.worldId);
+  const { data: fetchedWorld } = useWorld(
+    instance.world ? undefined : instance.worldId,
+  );
 
   // 2. Derive visual data using useMemo
   const world = instance.world ?? fetchedWorld;
 
-  const imageUrl = useMemo(() => extractImageUrl(instance, world), [instance, world]);
+  const imageUrl = useMemo(
+    () => extractImageUrl(instance, world),
+    [instance, world],
+  );
   const title = useMemo(() => extractTitle(instance, world), [instance, world]);
 
   const friends = useMemo(() => {
@@ -64,7 +90,12 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
       OverlapComponents={
         <>
           <LinearGradient
-            colors={['transparent', 'transparent', 'rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.8)']}
+            colors={[
+              "transparent",
+              "transparent",
+              "rgba(0, 0, 0, 0.6)",
+              "rgba(0, 0, 0, 0.8)",
+            ]}
             start={{ x: 1.0, y: 0.0 }}
             end={{ x: 0.0, y: 0.0 }}
             locations={[0.0, 0.3, 0.6, 1.0]}
@@ -72,11 +103,18 @@ const CardViewInstance = ({ instance, onPress, onLongPress, ...rest }: Props) =>
           />
           <View style={styles.friendsContainer}>
             {friends.slice(0, 3).map((friend) => (
-              <UserOrGroupChip key={friend.id} data={friend} size={fontSize.large * 1.2} textSize={fontSize.medium} />
+              <UserOrGroupChip
+                key={friend.id}
+                data={friend}
+                size={fontSize.large * 1.2}
+                textSize={fontSize.medium}
+              />
             ))}
             {friends.length > 3 && (
               <Text style={[styles.moreText, { color: theme.colors.text }]}>
-                {t("pages.home.friendLocation.more_friends_count", { count: friends.length - 3 })}
+                {t("pages.home.friendLocation.more_friends_count", {
+                  count: friends.length - 3,
+                })}
               </Text>
             )}
           </View>

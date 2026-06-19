@@ -13,7 +13,7 @@ import {
 } from "react";
 import { useVRChat } from "./VRChatContext";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
-
+import axios from "axios";
 
 type AuthUser = {
   id?: string;
@@ -71,7 +71,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     try {
       const res = await api.getCurrentUser();
       const requiredTFA = Object(res.data).hasOwnProperty(
-        "requiresTwoFactorAuth"
+        "requiresTwoFactorAuth",
       );
       if (requiredTFA) {
         // two factor auth
@@ -90,7 +90,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         console.log("Login successful");
         // save user data to storage
         StorageWrapper.setItemAsync("auth_user_id", res.data.id);
-        StorageWrapper.setItemAsync("auth_user_displayName", res.data.displayName);
+        StorageWrapper.setItemAsync(
+          "auth_user_displayName",
+          res.data.displayName,
+        );
         StorageWrapper.setItemAsync("auth_user_icon", res.data.userIcon);
 
         if (param.saveSecret) {
@@ -226,7 +229,18 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         icon: storedData[2] || undefined,
       };
       if (storedUser.id) {
-        const verified = (await api.verifyAuthToken()).data.ok;
+        let verified = false;
+        try {
+          verified = (await api.verifyAuthToken()).data.ok;
+        } catch (e: any) {
+          if (axios.isAxiosError(e) && !e.response) {
+            console.log("Network error, assuming user is logged in.");
+            setUser(storedUser);
+            setIsLoading(false);
+            return;
+          }
+          console.log("Token verification failed, will attempt re-login...");
+        }
 
         if (verified) {
           const authCookie = storedData[3];
@@ -234,11 +248,28 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
             vrc.configurePipeline(authCookie); // set auth cookie to pipeline
           }
           setUser(storedUser);
-          console.log(`logged in as ${storedUser.displayName}: ${storedUser.id}`);
+          console.log(
+            `logged in as ${storedUser.displayName}: ${storedUser.id}`,
+          );
           setIsLoading(false);
           return;
         } else {
-          console.log("token expired.");
+          console.log("token expired or invalid, attempting re-login.");
+          if (secret[0] && secret[1]) {
+            const loginRes = await login({
+              username: secret[0],
+              password: secret[1],
+              saveSecret: true,
+            });
+            if (loginRes === "success") {
+              console.log("Re-login successful.");
+              return; // login() handles state update
+            }
+            console.log(
+              "Re-login required user interaction or failed:",
+              loginRes,
+            );
+          }
         }
       }
       // api.logout(); // clear session in library just in case
@@ -246,17 +277,25 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       setIsLoading(false);
     } catch (e) {
       console.log("Error loading auth data:", extractErrMsg(e));
-      setUser(undefined);
+      if (axios.isAxiosError(e) && !e.response) {
+        console.log(
+          "Network error at top level, assuming user is logged in if we have stored user.",
+        );
+      } else {
+        setUser(undefined);
+      }
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    autoLogin()
+    autoLogin();
   }, []);
 
   return (
-    <Context.Provider value={{ user, login, logout, verify, autoLogin, isLoading }}>
+    <Context.Provider
+      value={{ user, login, logout, verify, autoLogin, isLoading }}
+    >
       {children}
     </Context.Provider>
   );

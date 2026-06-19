@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { TouchableEx, ButtonEx } from "@/components/CustomElements";
@@ -12,7 +18,14 @@ import { FlatList } from "react-native-gesture-handler";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import CardViewWorld from "@/components/view/item-CardView/CardViewWorld";
 import { routeToGroup, routeToWorld } from "@/lib/route";
-import { Group, LimitedUserGroups, LimitedWorld, OrderOption, ReleaseStatus, SortOption } from "@/generated/vrcapi";
+import {
+  Group,
+  LimitedUserGroups,
+  LimitedWorld,
+  OrderOption,
+  ReleaseStatus,
+  SortOption,
+} from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
 import { useLocalSearchParams } from "expo-router";
 import CardViewGroup from "@/components/view/item-CardView/CardViewGroup";
@@ -42,7 +55,7 @@ export default function UserGroups() {
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data
       } else {
-        setGroups(prev => [...prev, ...res.data]);
+        setGroups((prev) => [...prev, ...res.data]);
         offset.current += NumPerReq;
       }
     } catch (e) {
@@ -60,22 +73,28 @@ export default function UserGroups() {
     offset.current = 0;
     setGroups([]);
     fetchGroups();
-  }
+  };
 
-  const renderItem = useCallback(({ item, index }: { item: LimitedUserGroups; index: number }) => (
-    <CardViewGroup
-      group={item}
-      style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
-      onPress={() => item.id && routeToGroup(item.id)}
-    />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>
-        {t("pages.detail_user_groups.no_groups_found")}
-      </Text>
-    </View>
-  ), []);
+  const renderItem = useCallback(
+    ({ item, index }: { item: LimitedUserGroups; index: number }) => (
+      <CardViewGroup
+        group={item}
+        style={[styles.cardView, { width: `${100 / cardViewColumns}%` }]}
+        onPress={() => item.id && routeToGroup(item.id)}
+      />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.detail_user_groups.no_groups_found")}
+        </Text>
+      </View>
+    ),
+    [],
+  );
 
   return (
     <GenericScreen>
@@ -93,7 +112,6 @@ export default function UserGroups() {
     </GenericScreen>
   );
 }
-
 
 const styles = StyleSheet.create({
   cardView: {

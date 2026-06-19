@@ -54,8 +54,17 @@ const BaseCardView = <T,>({
           contentFit="cover"
           style={[styles.image, rest.ImageStyle]}
         />
-        <View style={[styles.footer, rest.FooterStyle, { backgroundColor: theme.colors.card }]}>
-          <Text style={[styles.title, rest.TitleStyle]} numberOfLines={numberOfLines}>
+        <View
+          style={[
+            styles.footer,
+            rest.FooterStyle,
+            { backgroundColor: theme.colors.card },
+          ]}
+        >
+          <Text
+            style={[styles.title, rest.TitleStyle]}
+            numberOfLines={numberOfLines}
+          >
             {resolvedTitle}
           </Text>
         </View>
@@ -64,7 +73,6 @@ const BaseCardView = <T,>({
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   root: {

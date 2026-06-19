@@ -29,8 +29,8 @@ interface Props {
 const AboutModal = ({ open, setOpen }: Props) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [ licenseModal, setLicenseModal ] = useState<boolean>(false);
-  const [ changeLogModal, setChangeLogModal ] = useState<boolean>(false);
+  const [licenseModal, setLicenseModal] = useState<boolean>(false);
+  const [changeLogModal, setChangeLogModal] = useState<boolean>(false);
 
   const devInfo = {
     version: Constants.expoConfig?.version,
@@ -72,43 +72,45 @@ const AboutModal = ({ open, setOpen }: Props) => {
       open={open}
       onClose={() => setOpen(false)}
     >
-
       <Text style={[globalStyles.text, { color: theme.colors.text }]}>
         {Object.entries(devInfo)
           .map(([key, value]) => `${key}:   ${value}`)
           .join("\n")}
       </Text>
 
-      <View style={{ marginTop: spacing.medium, gap: spacing.small }} >
-      {buttonItems.map((item, index) => (
-        <View key={index}>
-          <TouchableEx
-            onPress={item.onPress}
-            style={{
-              flexDirection: "row", alignItems: "center", justifyContent: "center",
-              paddingVertical: spacing.small,
-              borderColor: theme.colors.border,
-              borderWidth: 1,
-              borderRadius: 8,
-            }}
-          >
-            <Text style={[globalStyles.text, { fontSize: 16 }]}>{item.title}</Text>
-            {item.icon && <IconSymbol name={item.icon} size={16} style={{ marginLeft: spacing.small }} />}
-          </TouchableEx>
-        </View>
-      ))}
+      <View style={{ marginTop: spacing.medium, gap: spacing.small }}>
+        {buttonItems.map((item, index) => (
+          <View key={index}>
+            <TouchableEx
+              onPress={item.onPress}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: spacing.small,
+                borderColor: theme.colors.border,
+                borderWidth: 1,
+                borderRadius: 8,
+              }}
+            >
+              <Text style={[globalStyles.text, { fontSize: 16 }]}>
+                {item.title}
+              </Text>
+              {item.icon && (
+                <IconSymbol
+                  name={item.icon}
+                  size={16}
+                  style={{ marginLeft: spacing.small }}
+                />
+              )}
+            </TouchableEx>
+          </View>
+        ))}
       </View>
 
       {/* Modal */}
-      <LicenseModal
-        open={licenseModal}
-        setOpen={setLicenseModal}
-      />
-      <ChangeLogModal
-        open={changeLogModal}
-        setOpen={setChangeLogModal}
-      />
-
+      <LicenseModal open={licenseModal} setOpen={setLicenseModal} />
+      <ChangeLogModal open={changeLogModal} setOpen={setChangeLogModal} />
     </GenericModal>
   );
 };

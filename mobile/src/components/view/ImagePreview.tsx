@@ -1,20 +1,18 @@
 import { getUserAgent } from "@/lib/utils";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import {
-  View,
-  Modal,
-  FlatList,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { View, Modal, FlatList, Dimensions, StyleSheet } from "react-native";
 import {
   Gesture,
   PinchGestureHandler,
   PinchGestureHandlerGestureEvent,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import IconButton from "./icon-components/IconButton";
 import { radius } from "@/configs/styles";
 
@@ -38,14 +36,17 @@ const { width, height } = Dimensions.get("window");
 const AnimatedExpoImage = Animated.createAnimatedComponent(Image);
 
 // ZoomableImageItem コンポーネント
-const ZoomableImageItem = ({ uri, headers, index, rotate, zoomEnabled }: ZoomableImageItemProps) => {
+const ZoomableImageItem = ({
+  uri,
+  headers,
+  index,
+  rotate,
+  zoomEnabled,
+}: ZoomableImageItemProps) => {
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { rotate: `${rotate || 0}deg` },
-    ],
+    transform: [{ scale: scale.value }, { rotate: `${rotate || 0}deg` }],
   }));
 
   const isRotateVert = rotate % 180 !== 0;
@@ -63,12 +64,22 @@ const ZoomableImageItem = ({ uri, headers, index, rotate, zoomEnabled }: Zoomabl
   };
 
   return (
-    <View style={{ width, height, justifyContent: "center", alignItems: "center" }}>
-      <Animated.View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{ width, height, justifyContent: "center", alignItems: "center" }}
+    >
+      <Animated.View
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <AnimatedExpoImage
           source={{ uri, headers }}
           contentFit="contain"
-          style={[{ width:isRotateVert ? height : width, height:isRotateVert ? width : height }, animatedStyle]}
+          style={[
+            {
+              width: isRotateVert ? height : width,
+              height: isRotateVert ? width : height,
+            },
+            animatedStyle,
+          ]}
         />
       </Animated.View>
     </View>
@@ -84,7 +95,6 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
 
   const headers = { "User-Agent": getUserAgent() };
 
-
   useEffect(() => {
     if (!open) {
       setRotateMap({});
@@ -94,7 +104,8 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
   const rotateImage = (direction: "left" | "right") => {
     setRotateMap((prev) => {
       const current = prev[currentIndex] || 0;
-      const next = direction === "right" ? (current + 90) % 360 : (current + 270) % 360;
+      const next =
+        direction === "right" ? (current + 90) % 360 : (current + 270) % 360;
       return { ...prev, [currentIndex]: next };
     });
   };
@@ -122,7 +133,11 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
             />
           )}
           initialScrollIndex={initialIdx}
-          getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
           onMomentumScrollEnd={(e) => {
             const index = Math.round(e.nativeEvent.contentOffset.x / width);
             setCurrentIndex(index);
@@ -165,7 +180,7 @@ const ImagePreview = ({ imageUrls, initialIdx = 0, open, onClose }: Props) => {
 const styles = StyleSheet.create({
   gesturehandlerRoot: {
     flex: 1,
-    position: "absolute"
+    position: "absolute",
   },
   topRightButtons: {
     position: "absolute",

@@ -1,6 +1,11 @@
 import { radius, spacing } from "@/configs/styles";
 import CachedImage from "@/components/CachedImage";
-import { getStatusColor, getUserIconUrl, getUserProfilePicUrl, UserLike } from "@/lib/vrchat";
+import {
+  getStatusColor,
+  getUserIconUrl,
+  getUserProfilePicUrl,
+  UserLike,
+} from "@/lib/vrchat";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import BaseCardView from "./BaseCardView";

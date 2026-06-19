@@ -7,8 +7,6 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
-
-
 interface Props {
   title: string;
   onPress?: () => void;
@@ -21,25 +19,20 @@ const SeeMoreContainer = ({ title, onPress, children, ...rest }: Props) => {
   const { t } = useTranslation();
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
-      <View style={[styles.card, {backgroundColor: theme.colors.paper}]} >
+      <View style={[styles.card, { backgroundColor: theme.colors.paper }]}>
         <View style={styles.header}>
           <Text style={globalStyles.subheader}>{title}</Text>
           {onPress && (
-            <ButtonEx
-              onPress={onPress}
-              variant="plain"
-            >
+            <ButtonEx onPress={onPress} variant="plain">
               {t("pages.home.see_more") + "  >"}
             </ButtonEx>
           )}
         </View>
-        <View style={styles.children}>
-          {children}
-        </View>
+        <View style={styles.children}>{children}</View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -49,8 +42,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.small,
     height: "100%",
   },
-  header:{
-    display:"flex",
+  header: {
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

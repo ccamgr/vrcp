@@ -18,11 +18,17 @@ import { isSameMonth, set } from "date-fns";
 import { se } from "date-fns/locale";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, RefreshControl, ScrollView, SectionList, StyleSheet, View, ViewToken } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  SectionList,
+  StyleSheet,
+  View,
+  ViewToken,
+} from "react-native";
 
-
-
-export default function EventCalendar () {
+export default function EventCalendar() {
   const auth = useAuth();
   const theme = useTheme();
   const vrc = useVRChat();
@@ -31,8 +37,13 @@ export default function EventCalendar () {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [selectedMonth, setSelectedMonth] = useState<Date>(today);
-  const sectionListRef = useRef<SectionList<CalendarEvent, { key: string, data: CalendarEvent[] }>>(null);
-  const [ eventsByDate, setEventsByDate ] = useState<Record<string, CalendarEvent[]>>({});
+  const sectionListRef =
+    useRef<SectionList<CalendarEvent, { key: string; data: CalendarEvent[] }>>(
+      null,
+    );
+  const [eventsByDate, setEventsByDate] = useState<
+    Record<string, CalendarEvent[]>
+  >({});
   const offset = useRef(0);
   const eventsRef = useRef<CalendarEvent[]>([]); // all fetched events
   const fetchingRef = useRef(false); // to all fetch
@@ -41,8 +52,8 @@ export default function EventCalendar () {
 
   const groupEventsByDate = (events: CalendarEvent[]) => {
     const grouped: Record<string, CalendarEvent[]> = {};
-    events.forEach(event => {
-      const date = getDateKey(new Date(event.startsAt ?? ""))
+    events.forEach((event) => {
+      const date = getDateKey(new Date(event.startsAt ?? ""));
       if (!grouped[date]) {
         grouped[date] = [];
       }
@@ -57,7 +68,9 @@ export default function EventCalendar () {
     try {
       // adjust to UTC to avoid timezone issues
       const targetMonth = new Date(selectedMonth.getTime());
-      targetMonth.setMinutes(targetMonth.getMinutes() - targetMonth.getTimezoneOffset());
+      targetMonth.setMinutes(
+        targetMonth.getMinutes() - targetMonth.getTimezoneOffset(),
+      );
 
       while (fetchingRef.current) {
         const res = await vrc.calendarApi.getCalendarEvents({
@@ -67,9 +80,15 @@ export default function EventCalendar () {
         });
         const paginated: PaginatedCalendarEventList = res.data;
         if (paginated.results) {
-          eventsRef.current = [...eventsRef.current, ...paginated.results ?? []];
+          eventsRef.current = [
+            ...eventsRef.current,
+            ...(paginated.results ?? []),
+          ];
         }
-        if (paginated.hasNext && (paginated.totalCount ?? 0 > offset.current + npr)) {
+        if (
+          paginated.hasNext &&
+          (paginated.totalCount ?? 0 > offset.current + npr)
+        ) {
           offset.current += npr;
         } else {
           setEventsByDate(groupEventsByDate(eventsRef.current)); // update grouped events
@@ -93,16 +112,15 @@ export default function EventCalendar () {
   useEffect(() => {
     if (!auth.user) return;
     reload();
-  },[auth.user, selectedMonth]);
-
+  }, [auth.user, selectedMonth]);
 
   const sections = useMemo(() => {
     const res = Object.entries(eventsByDate)
-      .filter(([key, _]) => (isSameMonth(restoreDateKey(key), selectedMonth)))
+      .filter(([key, _]) => isSameMonth(restoreDateKey(key), selectedMonth))
       .map(([key, events]) => ({
-      data: events,
-      key: key,
-    }))
+        data: events,
+        key: key,
+      }));
     return res;
   }, [eventsByDate]);
 
@@ -110,7 +128,9 @@ export default function EventCalendar () {
     setSelectedDate(date);
     // Find the section index (first section with after or equal date)
     const dateKey = getDateKey(date);
-    const sectionIndex = sections.findIndex(section => section.key >= dateKey);
+    const sectionIndex = sections.findIndex(
+      (section) => section.key >= dateKey,
+    );
     if (sectionIndex !== -1) {
       setTimeout(() => {
         sectionListRef.current?.scrollToLocation({
@@ -122,20 +142,31 @@ export default function EventCalendar () {
     }
   };
 
-  const renderDateContent = useCallback((date: Date) => {
-    if (isSameMonth(date, selectedMonth)) {
-      const dateKey = getDateKey(date);
-      const events = eventsByDate[dateKey] || [];
-      if (events.length > 0) {
-        return (
-          <Text style={{ fontSize: 10, color: theme.colors.warning, paddingHorizontal: spacing.mini }}>
-            {t("pages.calendar.calendar_date_event_count", { count: events.length })}
-          </Text>
-        );
+  const renderDateContent = useCallback(
+    (date: Date) => {
+      if (isSameMonth(date, selectedMonth)) {
+        const dateKey = getDateKey(date);
+        const events = eventsByDate[dateKey] || [];
+        if (events.length > 0) {
+          return (
+            <Text
+              style={{
+                fontSize: 10,
+                color: theme.colors.warning,
+                paddingHorizontal: spacing.mini,
+              }}
+            >
+              {t("pages.calendar.calendar_date_event_count", {
+                count: events.length,
+              })}
+            </Text>
+          );
+        }
       }
-    }
-    return null;
-  }, [eventsByDate]);
+      return null;
+    },
+    [eventsByDate],
+  );
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
     return (
@@ -148,28 +179,50 @@ export default function EventCalendar () {
     );
   }, []);
 
-  const renderSectionHeader = useCallback(({section}: { section: { key: string; data: CalendarEvent[] } }) => (
-    <View >
-      <Text style={[styles.sectionHeader, { color: (section.key === getDateKey(selectedDate)) ? theme.colors.primary : theme.colors.text }]}>
-        {t("pages.calendar.selected_month_events_day_label", { date: restoreDateKey(section.key ?? "") })}
-      </Text>
-    </View>
-  ), [selectedDate]);
+  const renderSectionHeader = useCallback(
+    ({ section }: { section: { key: string; data: CalendarEvent[] } }) => (
+      <View>
+        <Text
+          style={[
+            styles.sectionHeader,
+            {
+              color:
+                section.key === getDateKey(selectedDate)
+                  ? theme.colors.primary
+                  : theme.colors.text,
+            },
+          ]}
+        >
+          {t("pages.calendar.selected_month_events_day_label", {
+            date: restoreDateKey(section.key ?? ""),
+          })}
+        </Text>
+      </View>
+    ),
+    [selectedDate],
+  );
 
-  const emptyComponent = useCallback(() => (
-    <View style={{ alignItems: "center", marginTop: spacing.large }}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.calendar.no_events")}</Text>
-    </View>
-  ), [theme.colors.text, t]);
+  const emptyComponent = useCallback(
+    () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.calendar.no_events")}
+        </Text>
+      </View>
+    ),
+    [theme.colors.text, t],
+  );
 
-
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: "circle-medium",
-      title: "SUBSCRIBING EVENTS",
-      // onPress: () => {},
-    }
-  ], []);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: "circle-medium",
+        title: "SUBSCRIBING EVENTS",
+        // onPress: () => {},
+      },
+    ],
+    [],
+  );
   useSideMenu(menuItems);
 
   return (
@@ -183,7 +236,17 @@ export default function EventCalendar () {
           renderDateContent={renderDateContent}
         />
       </View>
-      <Text style={[{ marginTop: spacing.medium, marginLeft: spacing.small, color: theme.colors.text, fontWeight: "bold", fontSize: 16 }]}>
+      <Text
+        style={[
+          {
+            marginTop: spacing.medium,
+            marginLeft: spacing.small,
+            color: theme.colors.text,
+            fontWeight: "bold",
+            fontSize: 16,
+          },
+        ]}
+      >
         {t("pages.calendar.selected_month_events", { date: selectedMonth })}
       </Text>
 
@@ -196,7 +259,6 @@ export default function EventCalendar () {
         ref={sectionListRef}
         contentContainerStyle={styles.scrollViewContentContainer}
       />
-
     </GenericScreen>
   );
 }
@@ -213,7 +275,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingTop: spacing.medium,
     paddingBottom: spacing.mini,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   scrollViewContentContainer: {
     paddingBottom: navigationBarHeight,

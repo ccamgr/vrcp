@@ -27,7 +27,7 @@ const GenericDialog = ({
   colorCancel,
   cancelOnOutside = true,
 }: // children
-  Props) => {
+Props) => {
   const theme = useTheme();
   return (
     <Modal

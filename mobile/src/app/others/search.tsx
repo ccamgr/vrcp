@@ -6,7 +6,12 @@ import SearchBox from "@/components/view/SearchBox";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
-import { routeToAvatar, routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
+import {
+  routeToAvatar,
+  routeToGroup,
+  routeToUser,
+  routeToWorld,
+} from "@/lib/route";
 import {
   Avatar,
   AvatarsApi,
@@ -42,13 +47,12 @@ export default function Search() {
     setSearch(search);
   };
 
-
   // Worlds Tab (search)
   const ResultWorldsTab = () => {
     const [worlds, setWorlds] = useState<LimitedWorld[]>([]);
     const offset = useRef(0);
     const fetchingRef = useRef(false);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const fetchWorlds = async () => {
       try {
         if (fetchingRef.current) return; // Prevent multiple simultaneous fetches
@@ -74,17 +78,20 @@ export default function Search() {
       fetchWorlds();
     }, [search]);
 
-    const emptyComponent = useCallback(() => (
-      <View style={{ alignItems: "center", marginTop: spacing.large }}>
-        <Text style={{ color: theme.colors.text }}>
-          {t("pages.search.no_worlds_found", { search: search })}
-        </Text>
-      </View>
-    ), [search, t, theme.colors.text]);
+    const emptyComponent = useCallback(
+      () => (
+        <View style={{ alignItems: "center", marginTop: spacing.large }}>
+          <Text style={{ color: theme.colors.text }}>
+            {t("pages.search.no_worlds_found", { search: search })}
+          </Text>
+        </View>
+      ),
+      [search, t, theme.colors.text],
+    );
 
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
           data={worlds}
           keyExtractor={(item) => item.id}
@@ -110,7 +117,7 @@ export default function Search() {
     const [users, setUsers] = useState<LimitedUserSearch[]>([]);
     const offset = useRef(0);
     const fetchingRef = useRef(false);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const fetchUsers = async () => {
       try {
         if (fetchingRef.current) return;
@@ -135,16 +142,19 @@ export default function Search() {
       fetchUsers();
     }, [search]);
 
-    const emptyComponent = useCallback(() => (
-      <View style={{ alignItems: "center", marginTop: spacing.large }}>
-        <Text style={{ color: theme.colors.text }}>
-          {t("pages.search.no_users_found", { search: search })}
-        </Text>
-      </View>
-    ), [search, t, theme.colors.text]);
+    const emptyComponent = useCallback(
+      () => (
+        <View style={{ alignItems: "center", marginTop: spacing.large }}>
+          <Text style={{ color: theme.colors.text }}>
+            {t("pages.search.no_users_found", { search: search })}
+          </Text>
+        </View>
+      ),
+      [search, t, theme.colors.text],
+    );
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
           data={users}
           keyExtractor={(item) => item.id}
@@ -170,7 +180,7 @@ export default function Search() {
     const [groups, setGroups] = useState<LimitedGroup[]>([]);
     const offset = useRef(0);
     const fetchingRef = useRef(false);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchGroups = async () => {
       try {
@@ -196,17 +206,20 @@ export default function Search() {
       fetchGroups();
     }, [search]);
 
-    const emptyComponent = useCallback(() => (
-      <View style={{ alignItems: "center", marginTop: spacing.large }}>
-        <Text style={{ color: theme.colors.text }}>
-          {t("pages.search.no_groups_found", { search: search })}
-        </Text>
-      </View>
-    ), [search, t, theme.colors.text]);
+    const emptyComponent = useCallback(
+      () => (
+        <View style={{ alignItems: "center", marginTop: spacing.large }}>
+          <Text style={{ color: theme.colors.text }}>
+            {t("pages.search.no_groups_found", { search: search })}
+          </Text>
+        </View>
+      ),
+      [search, t, theme.colors.text],
+    );
 
     return (
       <>
-        { isLoading && <LoadingIndicator absolute /> }
+        {isLoading && <LoadingIndicator absolute />}
         <FlatList
           data={groups}
           keyExtractor={(item, index) => item.id || `unknown-${index}`}

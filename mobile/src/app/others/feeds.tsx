@@ -10,24 +10,31 @@ import { View } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
-
 export default function Feeds() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { messages } = usePipeline();
 
-  const renderItem = useCallback(({ item }: { item: PipelineMessage }) => (
-    <ListViewPipelineMessage message={item} style={styles.feed} />
-  ), []);
-  const emptyComponent = useCallback(() => (
-    <View style={styles.empty}>
-      <Text style={{ color: theme.colors.text }}>{t("pages.feeds.no_feeds")}</Text>
-    </View>
-  ), []);
+  const renderItem = useCallback(
+    ({ item }: { item: PipelineMessage }) => (
+      <ListViewPipelineMessage message={item} style={styles.feed} />
+    ),
+    [],
+  );
+  const emptyComponent = useCallback(
+    () => (
+      <View style={styles.empty}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.feeds.no_feeds")}
+        </Text>
+      </View>
+    ),
+    [],
+  );
 
   return (
     <GenericScreen>
-      <View style={styles.container} >
+      <View style={styles.container}>
         <FlatList
           data={messages}
           keyExtractor={(item) => `${item.timestamp}-${item.type}`}
@@ -39,7 +46,7 @@ export default function Feeds() {
       </View>
     </GenericScreen>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -56,6 +63,6 @@ const styles = StyleSheet.create({
   },
   empty: {
     alignItems: "center",
-    marginTop: spacing.large
-  }
+    marginTop: spacing.large,
+  },
 });

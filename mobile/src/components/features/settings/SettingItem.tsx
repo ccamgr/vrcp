@@ -24,13 +24,20 @@ const SettingItem = ({
   leading,
   onPress,
   ...rest
-}: SettingItemProps ) => {
+}: SettingItemProps) => {
   const theme = useTheme();
   return (
-    <TouchableEx onPress={onPress}  >
-      <View style={[styles.container, rest.style]} {...omitObject(rest, 'style')}>
+    <TouchableEx onPress={onPress}>
+      <View
+        style={[styles.container, rest.style]}
+        {...omitObject(rest, "style")}
+      >
         <View style={styles.icon}>
-          <IconSymbol name={icon} size={fontSize.large * 1.3} color={iconColor ?? theme.colors.text} />
+          <IconSymbol
+            name={icon}
+            size={fontSize.large * 1.3}
+            color={iconColor ?? theme.colors.text}
+          />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={[styles.title, { color: theme.colors.text }]}>
@@ -44,9 +51,7 @@ const SettingItem = ({
       </View>
     </TouchableEx>
   );
-}
-
-
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -56,16 +61,16 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.small,
   },
   icon: {
-    marginRight: spacing.medium
+    marginRight: spacing.medium,
   },
   title: {
     fontSize: fontSize.medium,
-    fontWeight: "normal"
+    fontWeight: "normal",
   },
   description: {
     fontSize: fontSize.small,
-    fontWeight: "normal"
+    fontWeight: "normal",
   },
 });
 
-export default SettingItem
+export default SettingItem;

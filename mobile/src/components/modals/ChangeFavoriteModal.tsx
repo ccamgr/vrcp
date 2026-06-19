@@ -6,7 +6,14 @@ import globalStyles, { fontSize, radius, spacing } from "@/configs/styles";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { getTintedColor } from "@/lib/utils";
-import { Avatar, FavoriteGroup, FavoriteType, User, UserStatus, World } from "@/generated/vrcapi";
+import {
+  Avatar,
+  FavoriteGroup,
+  FavoriteType,
+  User,
+  UserStatus,
+  World,
+} from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -24,7 +31,13 @@ interface Props {
   onSuccess?: () => void;
 }
 
-const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) => {
+const ChangeFavoriteModal = ({
+  open,
+  setOpen,
+  item,
+  onSuccess,
+  type,
+}: Props) => {
   const theme = useTheme();
   const vrc = useVRChat();
   const { t } = useTranslation();
@@ -36,10 +49,14 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
   const [groups, setGroups] = useState<FavoriteGroup[]>([]);
   const [group, setGroup] = useState<FavoriteGroup | null>(null);
 
-
-  const getInitial = (): { group: FavoriteGroup | null, groups: FavoriteGroup[] } => {
+  const getInitial = (): {
+    group: FavoriteGroup | null;
+    groups: FavoriteGroup[];
+  } => {
     if (!item) return { group: null, groups: [] };
-    const groups = favoriteGroups.data?.filter(g => g.type == type).sort((a, b) => a.name.localeCompare(b.name));
+    const groups = favoriteGroups.data
+      ?.filter((g) => g.type == type)
+      .sort((a, b) => a.name.localeCompare(b.name));
     const fav = favorites.data?.find((fav) => fav.favoriteId === item.id);
     if (fav) {
       const group = groups?.find((g) => fav.tags.includes(g.name));
@@ -59,13 +76,14 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       const res = await vrc.favoritesApi.removeFavorite({
         favoriteId: item.id,
       });
-      if (group) {// add
+      if (group) {
+        // add
         const res = await vrc.favoritesApi.addFavorite({
           addFavoriteRequest: {
             favoriteId: item.id,
             type: type,
             tags: [group.name],
-          }
+          },
         });
       }
       onSuccess?.();
@@ -97,23 +115,49 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
       // disabled: !group,
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
       {groups.map((g) => (
         <View key={g.id}>
           <TouchableEx onPress={() => setGroup(g)}>
-            <View style={[styles.group, { backgroundColor: theme.colors.card }, group?.id == g.id && { borderColor: theme.colors.primary }]}>
-              <Text style={[g.displayName.length ? { color: theme.colors.text } : { fontStyle: "italic", color: theme.colors.subText }]}>{g.displayName.length > 0 ? g.displayName : "*No Name*"}</Text>
+            <View
+              style={[
+                styles.group,
+                { backgroundColor: theme.colors.card },
+                group?.id == g.id && { borderColor: theme.colors.primary },
+              ]}
+            >
+              <Text
+                style={[
+                  g.displayName.length
+                    ? { color: theme.colors.text }
+                    : { fontStyle: "italic", color: theme.colors.subText },
+                ]}
+              >
+                {g.displayName.length > 0 ? g.displayName : "*No Name*"}
+              </Text>
             </View>
           </TouchableEx>
         </View>
       ))}
       {/* remove */}
       <TouchableEx onPress={() => setGroup(null)}>
-        <View style={[styles.group, { backgroundColor: getTintedColor(theme.colors.error) }, group === null && { borderColor: theme.colors.error }]}>
-          <Text style={[{ color: theme.colors.text }]}>{t("components.changeFavoriteModal.button_unselect")}</Text>
+        <View
+          style={[
+            styles.group,
+            { backgroundColor: getTintedColor(theme.colors.error) },
+            group === null && { borderColor: theme.colors.error },
+          ]}
+        >
+          <Text style={[{ color: theme.colors.text }]}>
+            {t("components.changeFavoriteModal.button_unselect")}
+          </Text>
         </View>
       </TouchableEx>
     </GenericModal>
@@ -121,8 +165,7 @@ const ChangeFavoriteModal = ({ open, setOpen, item, onSuccess, type }: Props) =>
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   group: {
     marginBottom: spacing.small,
     padding: spacing.medium,
@@ -130,7 +173,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.small,
     borderColor: "transparent",
   },
-
 });
 
 export default ChangeFavoriteModal;

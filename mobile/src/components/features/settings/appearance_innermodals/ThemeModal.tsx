@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-type ColorSchema = Setting["uiOptions"]["theme"]["colorSchema"];
+type ColorSchema = Setting["uiOptions_colorSchema"];
 
 interface Props {
   open: boolean;
@@ -22,43 +22,44 @@ interface Props {
 }
 
 export const getIconName = (v: ColorSchema): SupportedIconNames => {
-  if (v === 'light') return 'sunny';
-  if (v === 'dark') return 'dark-mode';
-  if (v === 'system') return 'theme-light-dark';
-  return 'theme-light-dark';
+  if (v === "light") return "sunny";
+  if (v === "dark") return "dark-mode";
+  if (v === "system") return "theme-light-dark";
+  return "theme-light-dark";
 };
-
-
 
 const ThemeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [ selectedValue, setSelectedValue ] = useState<ColorSchema>(defaultValue || 'system');
+  const [selectedValue, setSelectedValue] = useState<ColorSchema>(
+    defaultValue || "system",
+  );
 
   useEffect(() => {
     if (!defaultValue) return;
     setSelectedValue(defaultValue);
   }, [defaultValue]);
 
-
   const getButtonText = (v: ColorSchema): string => {
     switch (v) {
-      case 'light':
+      case "light":
         return t("pages.setting_appearance.innerModals.theme.option_light");
-      case 'dark':
+      case "dark":
         return t("pages.setting_appearance.innerModals.theme.option_dark");
-      case 'system':
+      case "system":
         return t("pages.setting_appearance.innerModals.theme.option_system");
       default:
         return "";
     }
-  }
+  };
 
   const buttonItems: ButtonItemForFooter[] = [
     {
       // use button as text display only
       type: "text",
-      title: t("pages.setting_appearance.innerModals.theme.maybe_requireRestart"),
+      title: t(
+        "pages.setting_appearance.innerModals.theme.maybe_requireRestart",
+      ),
       flex: 1,
     },
     {
@@ -71,40 +72,47 @@ const ThemeModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
   ];
 
   return (
-      <GenericModal
-        size="large"
-        showCloseButton
-        open={open}
-        onClose={() => setOpen(false)}
-        buttonItems={buttonItems}
-      >
-        <View style={styles.container}>
-          {['light', 'system', 'dark'].map((value) => (
-            <TouchableEx
-              key={`color-schema-option-${value}`}
-              style={[styles.item, { borderColor: value === selectedValue ? theme.colors.primary : theme.colors.border }]}
-              onPress={() => {
-                setSelectedValue(value as ColorSchema);
-              }}
-            >
-              <IconSymbol
-                name={getIconName(value as ColorSchema)}
-                size={48}
-                color={theme.colors.text}
-              />
-              <Text style={[{ color: theme.colors.text }]}>
-                {getButtonText(value as ColorSchema)}
-              </Text>
-            </TouchableEx>
-          ))}
-        </View>
-      </GenericModal>
-
-  )
-}
+    <GenericModal
+      size="large"
+      showCloseButton
+      open={open}
+      onClose={() => setOpen(false)}
+      buttonItems={buttonItems}
+    >
+      <View style={styles.container}>
+        {["light", "system", "dark"].map((value) => (
+          <TouchableEx
+            key={`color-schema-option-${value}`}
+            style={[
+              styles.item,
+              {
+                borderColor:
+                  value === selectedValue
+                    ? theme.colors.primary
+                    : theme.colors.border,
+              },
+            ]}
+            onPress={() => {
+              setSelectedValue(value as ColorSchema);
+            }}
+          >
+            <IconSymbol
+              name={getIconName(value as ColorSchema)}
+              size={48}
+              color={theme.colors.text}
+            />
+            <Text style={[{ color: theme.colors.text }]}>
+              {getButtonText(value as ColorSchema)}
+            </Text>
+          </TouchableEx>
+        ))}
+      </View>
+    </GenericModal>
+  );
+};
 
 const styles = StyleSheet.create({
-    // innermodal styles
+  // innermodal styles
   container: {
     display: "flex",
     flexDirection: "row",
@@ -121,6 +129,5 @@ const styles = StyleSheet.create({
   },
   icon: {},
 });
-
 
 export default ThemeModal;

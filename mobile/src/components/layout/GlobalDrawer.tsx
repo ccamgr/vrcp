@@ -8,12 +8,7 @@ import { MenuItem } from "./type";
 import { Drawer } from "react-native-drawer-layout";
 import { useAppMenu } from "@/contexts/AppMenuContext";
 
-
-const GlobalDrawer = ({
-  children
-}: {
-  children: React.ReactNode;
-}) => {
+const GlobalDrawer = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
   const { openMenu, setOpenMenu, menuItems } = useAppMenu();
   return (
@@ -29,10 +24,8 @@ const GlobalDrawer = ({
     >
       {children}
     </Drawer>
-  )
+  );
 };
-
-
 
 const DrawerContent = ({
   menuItems,
@@ -55,24 +48,39 @@ const DrawerContent = ({
       </View>
       {/* menu contents */}
       {menuItems?.map((item, index) => {
-        if (item.hidden) { // skip hidden items
+        if (item.hidden) {
+          // skip hidden items
           return null;
         }
         // handle divider
         if (item.type === "divider") {
           return (
-            <View key={`menu-item-${index}-${item.title}`} style={[styles.drawerItemDivider, { borderBottomColor: theme.colors.subText }]} />
+            <View
+              key={`menu-item-${index}-${item.title}`}
+              style={[
+                styles.drawerItemDivider,
+                { borderBottomColor: theme.colors.subText },
+              ]}
+            />
           );
         }
         // handle normal item(= button)
         const onPress = () => {
           item.onPress?.();
           setOpenMenu(false);
-        }
+        };
         return (
-          <TouchableEx key={`menu-item-${index}-${item.title}`} onPress={onPress} style={styles.drawerItemContainer}>
+          <TouchableEx
+            key={`menu-item-${index}-${item.title}`}
+            onPress={onPress}
+            style={styles.drawerItemContainer}
+          >
             {item.icon && (
-              <IconSymbol name={item.icon} size={20} color={theme.colors.text} />
+              <IconSymbol
+                name={item.icon}
+                size={20}
+                color={theme.colors.text}
+              />
             )}
             <Text style={{ color: theme.colors.text }}>{item.title}</Text>
           </TouchableEx>
@@ -80,8 +88,7 @@ const DrawerContent = ({
       })}
     </View>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   drawer: {
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
   drawerHeader: {
     marginTop: spacing.large,
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   closeButton: {
     padding: spacing.medium,

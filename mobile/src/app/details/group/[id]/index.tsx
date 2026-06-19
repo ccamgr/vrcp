@@ -2,7 +2,12 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
+import {
+  fontSize,
+  navigationBarHeight,
+  radius,
+  spacing,
+} from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { Group } from "@/generated/vrcapi";
@@ -31,43 +36,45 @@ export default function GroupDetail() {
 
   const { data: group, refetch, isFetching } = useGroup(id);
 
-
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: "circle-medium",
-      title: "(REQUEST) JOIN GROUP or LEAVE GROUP",
-    },
-    {
-      icon: "circle-medium",
-      title: "GROUP INSTANCES",
-    },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
-    {
-      icon: "code-json",
-      title: t("pages.detail_group.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-      hidden: !enableJsonViewer,
-    },
-  ], [enableJsonViewer, t]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: "circle-medium",
+        title: "(REQUEST) JOIN GROUP or LEAVE GROUP",
+      },
+      {
+        icon: "circle-medium",
+        title: "GROUP INSTANCES",
+      },
+      {
+        type: "divider",
+        hidden: !enableJsonViewer,
+      },
+      {
+        icon: "code-json",
+        title: t("pages.detail_group.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+        hidden: !enableJsonViewer,
+      },
+    ],
+    [enableJsonViewer, t],
+  );
 
   useSideMenu(menuItems);
 
   const tabItems: {
     label: string;
-    value: typeof mode,
+    value: typeof mode;
   }[] = [
-      {
-        label: "INFO",
-        value: "info",
-      },
-      {
-        label: "ACTIVITY",
-        value: "instances",
-      },
-    ];
+    {
+      label: "INFO",
+      value: "info",
+    },
+    {
+      label: "ACTIVITY",
+      value: "instances",
+    },
+  ];
 
   return (
     <GenericScreen>
@@ -77,10 +84,7 @@ export default function GroupDetail() {
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={refetch}
-              />
+              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
             }
           >
             <DetailItemContainer title="Title1">
@@ -92,13 +96,12 @@ export default function GroupDetail() {
 
             <DetailItemContainer
               title="Title2"
-              iconButtonConfig={[{ name: "edit", onPress: () => { } }]}
+              iconButtonConfig={[{ name: "edit", onPress: () => {} }]}
             >
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>text2-1</Text>
               </View>
             </DetailItemContainer>
-
           </ScrollView>
         </View>
       ) : (
@@ -107,7 +110,6 @@ export default function GroupDetail() {
 
       {/* Modals */}
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={group} />
-
     </GenericScreen>
   );
 }

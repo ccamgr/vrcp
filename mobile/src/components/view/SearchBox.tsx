@@ -36,14 +36,14 @@ const SearchBox = ({
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           timeoutRef.current = setTimeout(
             () => onChangeText(text),
-            changeTextTimeout
+            changeTextTimeout,
           );
         } else {
           onChangeText(text);
         }
       }
     },
-    [changeTextTimeout, onChangeText]
+    [changeTextTimeout, onChangeText],
   );
 
   const handleSubmit = useCallback(() => {

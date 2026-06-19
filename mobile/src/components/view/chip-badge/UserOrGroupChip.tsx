@@ -1,6 +1,13 @@
 import { fontSize, radius, spacing } from "@/configs/styles";
 import { omitObject } from "@/lib/utils";
-import { getStatusColor, getTrustRankColor, getUserIconUrl, GroupLike, isGroupLike, UserLike } from "@/lib/vrchat";
+import {
+  getStatusColor,
+  getTrustRankColor,
+  getUserIconUrl,
+  GroupLike,
+  isGroupLike,
+  UserLike,
+} from "@/lib/vrchat";
 import { Text } from "@react-navigation/elements";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -8,7 +15,6 @@ import IconSymbol from "../icon-components/IconView";
 import { useTheme } from "@react-navigation/native";
 import { SupportedIconNames } from "../icon-components/utils";
 import CachedImage from "@/components/CachedImage";
-
 
 interface Props {
   data: UserLike | GroupLike;
@@ -20,34 +26,50 @@ interface Props {
   [key: string]: any;
 }
 
-const UserOrGroupChip = ({ data, icon, textSize, textColor, size = 32, IconStyle, ...rest }: Props) => {
-  const theme = useTheme()
+const UserOrGroupChip = ({
+  data,
+  icon,
+  textSize,
+  textColor,
+  size = 32,
+  IconStyle,
+  ...rest
+}: Props) => {
+  const theme = useTheme();
   const isGroupData = isGroupLike(data);
   return (
-    <View style={[styles.container, rest.style]} {...omitObject(rest, "style", "IconStyle")}>
-
-      {icon && (
-        <IconSymbol name={icon} size={size / 2} style={styles.option} />
-      )}
+    <View
+      style={[styles.container, rest.style]}
+      {...omitObject(rest, "style", "IconStyle")}
+    >
+      {icon && <IconSymbol name={icon} size={size / 2} style={styles.option} />}
 
       <CachedImage
-        src={isGroupData ? data.iconUrl ?? "" : getUserIconUrl(data)}
+        src={isGroupData ? (data.iconUrl ?? "") : getUserIconUrl(data)}
         style={[
           isGroupData ? styles.squareIcon : styles.icon,
           {
             height: size,
-            borderColor: isGroupData ? theme.colors.text : getStatusColor(data)
+            borderColor: isGroupData ? theme.colors.text : getStatusColor(data),
           },
-          IconStyle
+          IconStyle,
         ]}
       />
-      <Text numberOfLines={1} style={[styles.text, { color: textColor ?? theme.colors.text, fontSize: textSize ?? fontSize.medium }]}>
+      <Text
+        numberOfLines={1}
+        style={[
+          styles.text,
+          {
+            color: textColor ?? theme.colors.text,
+            fontSize: textSize ?? fontSize.medium,
+          },
+        ]}
+      >
         {isGroupData ? data.name : data.displayName}
       </Text>
-
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -65,20 +87,20 @@ const styles = StyleSheet.create({
     borderRadius: radius.all,
     borderWidth: 1.5,
     aspectRatio: 1,
-    margin: spacing.small
+    margin: spacing.small,
   },
   squareIcon: {
     borderRadius: radius.mini,
     borderWidth: 1.5,
     aspectRatio: 1,
-    margin: spacing.small
+    margin: spacing.small,
   },
   option: {
     position: "absolute",
     top: 0,
     left: 0,
     zIndex: 1,
-  }
+  },
 });
 
 export default React.memo(UserOrGroupChip);

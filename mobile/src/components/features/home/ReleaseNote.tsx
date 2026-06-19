@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 // ルートの json を読み込み
-import rawVersions from '@/../versions.json';
-import GenericModal from '@/components/layout/GenericModal';
-import { isNewVersion, updateLastVersion } from '@/lib/utils';
-import { radius, spacing } from '@/configs/styles';
-import { useTranslation } from 'react-i18next';
-import { TouchableEx } from '@/components/CustomElements';
+import rawVersions from "@/../versions.json";
+import GenericModal from "@/components/layout/GenericModal";
+import { isNewVersion, updateLastVersion } from "@/lib/utils";
+import { radius, spacing } from "@/configs/styles";
+import { useTranslation } from "react-i18next";
+import { TouchableEx } from "@/components/CustomElements";
 
 export default function ReleaseNote() {
   const theme = useTheme();
@@ -27,7 +27,7 @@ export default function ReleaseNote() {
   const handleClose = () => {
     setOpen(false);
     updateLastVersion();
-  }
+  };
 
   // 最新のバージョンブロック（配列の先頭）を取得
   const latestVersion = useMemo(() => {
@@ -38,7 +38,7 @@ export default function ReleaseNote() {
 
   return (
     <GenericModal
-      title={t('components.releaseNote.label')}
+      title={t("components.releaseNote.label")}
       open={open}
       onClose={handleClose}
       showCloseButton={false}
@@ -53,10 +53,15 @@ export default function ReleaseNote() {
           </View>
         </View>
 
-        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
+        <View
+          style={[styles.divider, { backgroundColor: theme.colors.border }]}
+        />
 
         {/* コンテンツ部分: 更新内容のリスト */}
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
           {latestVersion.updates.map((update, index) => (
             <View key={index} style={styles.updateItem}>
               <Text style={[styles.date, { color: theme.colors.notification }]}>
@@ -71,10 +76,15 @@ export default function ReleaseNote() {
 
         {/* フッター: 閉じるボタン */}
         <TouchableEx
-          style={[styles.closeButton, { backgroundColor: theme.colors.primary }]}
+          style={[
+            styles.closeButton,
+            { backgroundColor: theme.colors.primary },
+          ]}
           onPress={handleClose}
         >
-          <Text style={styles.closeButtonText}>{t('components.releaseNote.button_close')}</Text>
+          <Text style={styles.closeButtonText}>
+            {t("components.releaseNote.button_close")}
+          </Text>
         </TouchableEx>
       </View>
     </GenericModal>
@@ -87,23 +97,23 @@ const styles = StyleSheet.create({
     maxHeight: 500,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: spacing.medium,
     // justifyContent: 'center',
   },
   updateText: {
     fontSize: 14,
     opacity: 0.7,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   versionText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   divider: {
     height: 1,
-    width: '100%',
+    width: "100%",
     marginBottom: 16,
     opacity: 0.5,
   },
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: spacing.small,
   },
   message: {
@@ -128,8 +138,8 @@ const styles = StyleSheet.create({
   closeButton: {
     paddingVertical: spacing.medium,
     borderRadius: radius.small,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -137,8 +147,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   closeButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

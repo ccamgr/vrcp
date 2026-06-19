@@ -8,7 +8,7 @@ import { radius, spacing } from "@/configs/styles";
 
 interface Props {
   size?: number;
-  platforms: {platform: string, avatarPerformance?: string}[];
+  platforms: { platform: string; avatarPerformance?: string }[];
   [key: string]: any;
 }
 const PlatformChips = ({ size, platforms, ...rest }: Props) => {
@@ -16,14 +16,17 @@ const PlatformChips = ({ size, platforms, ...rest }: Props) => {
   return (
     <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
       {platforms.map((platform) => (
-        <View key={platform.platform} >
+        <View key={platform.platform}>
           <IconSymbol
             size={size || 32}
             name={getIconNamebyPlatform(platform.platform)}
             style={{ color: getIconColorbyPlatform(platform.platform) }}
           />
           {platform.avatarPerformance && (
-            <PerformanceChip size={size || 32} performance={platform.avatarPerformance} />
+            <PerformanceChip
+              size={size || 32}
+              performance={platform.avatarPerformance}
+            />
           )}
         </View>
       ))}
@@ -31,23 +34,32 @@ const PlatformChips = ({ size, platforms, ...rest }: Props) => {
   );
 };
 
-const PerformanceChip = ({ size, performance }: { size: number; performance: string }) => {
+const PerformanceChip = ({
+  size,
+  performance,
+}: {
+  size: number;
+  performance: string;
+}) => {
   const theme = useTheme();
   // アイコンのほうがいいか？ (文字列としてはツールチップで？)
   return (
-    <Text style={[
-      styles.performance,
-      {
-        fontSize: size * 0.3,
-        marginTop: - size * 0.3,
-        marginLeft: size * 0.3,
-        color: theme.colors.text,
-        backgroundColor: getChipColorbyPerformance(performance),
-      }]}>
+    <Text
+      style={[
+        styles.performance,
+        {
+          fontSize: size * 0.3,
+          marginTop: -size * 0.3,
+          marginLeft: size * 0.3,
+          color: theme.colors.text,
+          backgroundColor: getChipColorbyPerformance(performance),
+        },
+      ]}
+    >
       {performance}
     </Text>
-  )
-}
+  );
+};
 
 const getIconNamebyPlatform = (platform: string): SupportedIconNames => {
   switch (platform) {
@@ -100,8 +112,10 @@ const styles = StyleSheet.create({
   performance: {
     borderRadius: radius.all,
     paddingHorizontal: spacing.small,
-    borderStyle:"dotted", borderColor:"red",borderWidth:1
-  }
+    borderStyle: "dotted",
+    borderColor: "red",
+    borderWidth: 1,
+  },
 });
 
 export default PlatformChips;

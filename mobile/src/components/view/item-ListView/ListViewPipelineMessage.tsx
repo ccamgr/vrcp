@@ -31,9 +31,12 @@ const ListViewPipelineMessage = ({
   const content = message.content as any;
   const userId = content.userId as string | undefined;
   const location = content.location as string | undefined;
-  const worldId = useMemo(() =>
-    location ? parseLocationString(location)?.parsedLocation?.worldId : undefined,
-    [location]
+  const worldId = useMemo(
+    () =>
+      location
+        ? parseLocationString(location)?.parsedLocation?.worldId
+        : undefined,
+    [location],
   );
 
   // 2. フックを使用して詳細データを取得

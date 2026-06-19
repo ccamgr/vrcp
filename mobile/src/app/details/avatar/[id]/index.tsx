@@ -2,7 +2,12 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewAvatarDetail from "@/components/view/item-CardView/detail/CardViewAvatarDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
+import {
+  fontSize,
+  navigationBarHeight,
+  radius,
+  spacing,
+} from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { Avatar, User } from "@/generated/vrcapi";
@@ -17,7 +22,10 @@ import PlatformChips from "@/components/view/chip-badge/PlatformChips";
 import TagChips from "@/components/view/chip-badge/TagChips";
 import { MenuItem } from "@/components/layout/type";
 import ChangeFavoriteModal from "@/components/modals/ChangeFavoriteModal";
-import { enableExperimentalWebImplementation, RefreshControl } from "react-native-gesture-handler";
+import {
+  enableExperimentalWebImplementation,
+  RefreshControl,
+} from "react-native-gesture-handler";
 import JsonDataModal from "@/components/modals/JsonDataModal";
 import ChangeAvatarModal from "@/components/modals/ChangeAvatarModal";
 import { useToast } from "@/contexts/ToastContext";
@@ -46,43 +54,52 @@ export default function AvatarDetail() {
   const { data: avatar, refetch, isFetching } = useAvatar(id);
   const { data: author } = useUser(avatar?.authorId);
 
-  const isFavorite = favorites?.some(fav => fav.favoriteId === id && fav.type === "avatar");
-
+  const isFavorite = favorites?.some(
+    (fav) => fav.favoriteId === id && fav.type === "avatar",
+  );
 
   useEffect(() => {
-    refetch()
-      .catch((e) => showToast("error", "Error fetching avatar data", extractErrMsg(e)));
+    refetch().catch((e) =>
+      showToast("error", "Error fetching avatar data", extractErrMsg(e)),
+    );
   }, []);
 
   const isCurrentAvatar = currentUser?.currentAvatar === avatar?.id;
 
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: isFavorite ? "heart" : "heart-plus",
-      title: isFavorite ? t("pages.detail_avatar.menuLabel_favoriteGroup_edit") : t("pages.detail_avatar.menuLabel_favoriteGroup_add"),
-      onPress: () => setOpenChangeFavorite(true),
-    },
-    {
-      type: "divider",
-      hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
-    },
-    {
-      icon: isCurrentAvatar ? "tshirt-crew-outline" : "tshirt-crew",
-      title: isCurrentAvatar ? t("pages.detail_avatar.menuLabel_avatar_nowUsing") : t("pages.detail_avatar.menuLabel_avatar_changeTo"),
-      onPress: () => !isCurrentAvatar && setOpenChangeAvatar(true),
-      hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
-    },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
-    {
-      icon: "code-json",
-      title: t("pages.detail_avatar.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-      hidden: !enableJsonViewer,
-    },
-  ], [isFavorite, isCurrentAvatar, avatar, enableJsonViewer, t, currentUser?.id]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: isFavorite ? "heart" : "heart-plus",
+        title: isFavorite
+          ? t("pages.detail_avatar.menuLabel_favoriteGroup_edit")
+          : t("pages.detail_avatar.menuLabel_favoriteGroup_add"),
+        onPress: () => setOpenChangeFavorite(true),
+      },
+      {
+        type: "divider",
+        hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
+      },
+      {
+        icon: isCurrentAvatar ? "tshirt-crew-outline" : "tshirt-crew",
+        title: isCurrentAvatar
+          ? t("pages.detail_avatar.menuLabel_avatar_nowUsing")
+          : t("pages.detail_avatar.menuLabel_avatar_changeTo"),
+        onPress: () => !isCurrentAvatar && setOpenChangeAvatar(true),
+        hidden: !isFavorite && avatar?.authorId !== currentUser?.id,
+      },
+      {
+        type: "divider",
+        hidden: !enableJsonViewer,
+      },
+      {
+        icon: "code-json",
+        title: t("pages.detail_avatar.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+        hidden: !enableJsonViewer,
+      },
+    ],
+    [isFavorite, isCurrentAvatar, avatar, enableJsonViewer, t, currentUser?.id],
+  );
 
   useSideMenu(menuItems);
 
@@ -94,20 +111,20 @@ export default function AvatarDetail() {
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={refetch}
-              />
+              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
             }
           >
-
-            <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_platform")}>
+            <DetailItemContainer
+              title={t("pages.detail_avatar.sectionLabel_platform")}
+            >
               <View style={styles.detailItemContent}>
                 <PlatformChips platforms={getPlatform(avatar)} />
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_description")}>
+            <DetailItemContainer
+              title={t("pages.detail_avatar.sectionLabel_description")}
+            >
               <View style={styles.detailItemContent}>
                 <Text style={{ color: theme.colors.text }}>
                   {avatar.description}
@@ -115,29 +132,33 @@ export default function AvatarDetail() {
               </View>
             </DetailItemContainer>
 
-            <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_tags")}>
+            <DetailItemContainer
+              title={t("pages.detail_avatar.sectionLabel_tags")}
+            >
               <View style={styles.detailItemContent}>
                 <TagChips tags={getAuthorTags(avatar)} />
               </View>
             </DetailItemContainer>
 
-
-            <DetailItemContainer title={t("pages.detail_avatar.sectionLabel_author")}>
+            <DetailItemContainer
+              title={t("pages.detail_avatar.sectionLabel_author")}
+            >
               {author && (
                 <View style={styles.detailItemContent}>
-                  <TouchableEx onPress={() => routeToUser(author.id)}  >
-                    <UserOrGroupChip data={author} textColor={getTrustRankColor(author, true, false)} />
+                  <TouchableEx onPress={() => routeToUser(author.id)}>
+                    <UserOrGroupChip
+                      data={author}
+                      textColor={getTrustRankColor(author, true, false)}
+                    />
                   </TouchableEx>
                 </View>
               )}
             </DetailItemContainer>
-
           </ScrollView>
         </View>
       ) : (
         <LoadingIndicator absolute />
       )}
-
 
       {/* dialog and modals */}
 

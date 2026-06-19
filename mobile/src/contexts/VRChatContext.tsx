@@ -14,7 +14,10 @@ import {
   UsersApi,
   WorldsApi,
 } from "@/generated/vrcapi";
-import { PipelineMessage, PipelineRawMessage } from "@/generated/vrcpipline/type";
+import {
+  PipelineMessage,
+  PipelineRawMessage,
+} from "@/generated/vrcpipline/type";
 import {
   createContext,
   ReactNode,
@@ -24,7 +27,7 @@ import {
   useRef,
   useState,
 } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { getUserAgent } from "@/lib/utils";
 
 const BASE_PIPELINE_URL = "wss://pipeline.vrchat.cloud";
@@ -72,7 +75,8 @@ const Context = createContext<VRChatContextType | undefined>(undefined);
 
 const useVRChat = () => {
   const context = useContext(Context);
-  if (!context) throw new Error("useVRChat must be used within a VRChatProvider");
+  if (!context)
+    throw new Error("useVRChat must be used within a VRChatProvider");
   return context;
 };
 
@@ -108,7 +112,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     createSocket();
     console.log(
       "Configure VRChatContext with authToken:",
-      authTokenRef.current
+      authTokenRef.current,
     );
   };
 
@@ -126,8 +130,15 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     pipelineRef.current.onmessage = (event) => {
       try {
         const raw = JSON.parse(event.data) as PipelineRawMessage;
-        if (raw.type == lastJsonMessage?.type && event.timeStamp == lastJsonMessage?.timestamp) {
-          console.log("Duplicate message, ignoring:", raw.type, event.timeStamp);
+        if (
+          raw.type == lastJsonMessage?.type &&
+          event.timeStamp == lastJsonMessage?.timestamp
+        ) {
+          console.log(
+            "Duplicate message, ignoring:",
+            raw.type,
+            event.timeStamp,
+          );
           return;
         }
         const parsed: PipelineMessage = {
@@ -175,7 +186,6 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       pipelineRef.current = null;
     }
   };
-
 
   const _axios = axios.create({
     withCredentials: true, // クッキーを送受信するために重要

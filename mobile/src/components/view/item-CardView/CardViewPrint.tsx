@@ -16,15 +16,22 @@ interface Props {
 
 const extractImageUrl = (data: Print) => data.files.image || "";
 const extractTitle = (data: Print) => {
-  if (!data.timestamp && !data.authorName && !data.worldName) return "Unknown Print";
-  const titles = []
-  if (data.timestamp.length > 0) titles.push(formatDate(data.timestamp));
+  if (!data.timestamp && !data.authorName && !data.worldName)
+    return "Unknown Print";
+  const titles = [];
+  if (data.timestamp.length > 0)
+    titles.push(formatDate(new Date(data.timestamp).getTime()));
   // if (data.authorName.length > 0) titles.push(`by ${data.authorName}`);
   if (data.worldName.length > 0) titles.push(`in ${data.worldName}`);
   return titles.join(" ");
 };
 
-const CardViewPrint = ({ print: world, onPress, onLongPress, ...rest }: Props) => {
+const CardViewPrint = ({
+  print: world,
+  onPress,
+  onLongPress,
+  ...rest
+}: Props) => {
   const theme = useTheme();
   return (
     <BaseCardView
@@ -44,6 +51,6 @@ const styles = StyleSheet.create({
     // 白い部分をトリミング
     transform: [{ translateY: "10%" }, { scale: 1.35 }],
     resizeMode: "contain",
-  }
+  },
 });
 export default React.memo(CardViewPrint);

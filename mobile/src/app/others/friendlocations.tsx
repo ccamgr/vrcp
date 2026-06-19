@@ -17,8 +17,6 @@ import { TouchableEx } from "@/components/CustomElements";
 import { useFriends } from "@/hooks/vrc/useFriends";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
 
-
-
 export default function FriendLocations() {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -29,7 +27,9 @@ export default function FriendLocations() {
   const refresh = () => {
     setIsLoading(true);
     refetch()
-      .catch((e) => showToast("error", "Error refreshing friends", extractErrMsg(e)))
+      .catch((e) =>
+        showToast("error", "Error refreshing friends", extractErrMsg(e)),
+      )
       .finally(() => setIsLoading(false));
   };
 
@@ -37,56 +37,97 @@ export default function FriendLocations() {
     return calcFriendsLocations(friends ?? [], true);
   }, [friends, favorites]);
 
-
-  const renderInstItem = useCallback(({ item, index }: { item: InstanceLike[], index: number }) => (
-    <View style={styles.chunk}>
-      {item.map((instance: InstanceLike) => (
-        <CardViewInstance key={instance.id} instance={instance} style={styles.cardView} onPress={() => routeToInstance(instance.worldId, instance.instanceId)} />
-      ))}
-    </View>
-  ), []);
-  const renderUnlocItem = useCallback(({ item, index }: { item: LimitedUserFriend[], index: number }) => (
-    <View style={styles.chunk}>
-      {item.map((friend: LimitedUserFriend) => (
-        <TouchableEx key={friend.id} style={styles.userChip} onPress={() => routeToUser(friend.id)}  >
-          <UserOrGroupChip data={friend} />
-        </TouchableEx>
-      ))}
-    </View>
-  ), []);
-  const renderSecHeader = useCallback(({ section: { title } }: { section: { title: string } }) => (
-    <View style={[styles.sectionHeader, { borderBottomColor: theme.colors.border }]}>
-      <Text style={{ fontWeight: "bold", color: theme.colors.text }}>{title}</Text>
-    </View>
-  ), [theme.colors.border, theme.colors.text]);
+  const renderInstItem = useCallback(
+    ({ item, index }: { item: InstanceLike[]; index: number }) => (
+      <View style={styles.chunk}>
+        {item.map((instance: InstanceLike) => (
+          <CardViewInstance
+            key={instance.id}
+            instance={instance}
+            style={styles.cardView}
+            onPress={() =>
+              routeToInstance(instance.worldId, instance.instanceId)
+            }
+          />
+        ))}
+      </View>
+    ),
+    [],
+  );
+  const renderUnlocItem = useCallback(
+    ({ item, index }: { item: LimitedUserFriend[]; index: number }) => (
+      <View style={styles.chunk}>
+        {item.map((friend: LimitedUserFriend) => (
+          <TouchableEx
+            key={friend.id}
+            style={styles.userChip}
+            onPress={() => routeToUser(friend.id)}
+          >
+            <UserOrGroupChip data={friend} />
+          </TouchableEx>
+        ))}
+      </View>
+    ),
+    [],
+  );
+  const renderSecHeader = useCallback(
+    ({ section: { title } }: { section: { title: string } }) => (
+      <View
+        style={[
+          styles.sectionHeader,
+          { borderBottomColor: theme.colors.border },
+        ]}
+      >
+        <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
+          {title}
+        </Text>
+      </View>
+    ),
+    [theme.colors.border, theme.colors.text],
+  );
 
   const chunkInstances = useMemo(() => chunkArray(instances, 2), [instances]);
-  const chunkUnlocatableFriends = useMemo(() => chunkArray(unlocatableFriends, 3), [unlocatableFriends]);
+  const chunkUnlocatableFriends = useMemo(
+    () => chunkArray(unlocatableFriends, 3),
+    [unlocatableFriends],
+  );
 
   const sections: {
     title: string;
     data: any[];
     keyExtractor: (item: any, index: number) => string;
-    renderItem: ({ item, index }: { item: any, index: number }) => React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | null
-  }[] = useMemo(() => [
-    {
-      title: t("pages.friendlocations.sectionLabel_instances"),
-      data: chunkInstances,
-      renderItem: renderInstItem,
-      keyExtractor: (_, index) => `friend-instance-chunk-${index}`
-    },
-    {
-      title: t("pages.friendlocations.sectionLabel_private"),
-      data: chunkUnlocatableFriends,
-      renderItem: renderUnlocItem,
-      keyExtractor: (_, index) => `private-friend-chunk-${index}`
-    },
-  ], [chunkInstances, chunkUnlocatableFriends]);
+    renderItem: ({
+      item,
+      index,
+    }: {
+      item: any;
+      index: number;
+    }) => React.ReactElement<
+      unknown,
+      string | React.JSXElementConstructor<any>
+    > | null;
+  }[] = useMemo(
+    () => [
+      {
+        title: t("pages.friendlocations.sectionLabel_instances"),
+        data: chunkInstances,
+        renderItem: renderInstItem,
+        keyExtractor: (_, index) => `friend-instance-chunk-${index}`,
+      },
+      {
+        title: t("pages.friendlocations.sectionLabel_private"),
+        data: chunkUnlocatableFriends,
+        renderItem: renderUnlocItem,
+        keyExtractor: (_, index) => `private-friend-chunk-${index}`,
+      },
+    ],
+    [chunkInstances, chunkUnlocatableFriends],
+  );
 
   return (
     <GenericScreen>
-      <View style={styles.container} >
-        {isLoading && (<LoadingIndicator absolute />)}
+      <View style={styles.container}>
+        {isLoading && <LoadingIndicator absolute />}
         <SectionList
           sections={sections}
           renderSectionHeader={renderSecHeader}
@@ -98,7 +139,6 @@ export default function FriendLocations() {
     </GenericScreen>
   );
 }
-
 
 const chunkArray = <T,>(array: T[], size: number): T[][] => {
   const chunkedArr: T[][] = [];

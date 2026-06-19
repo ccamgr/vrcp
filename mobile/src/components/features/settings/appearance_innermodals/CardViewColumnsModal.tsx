@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
-type CardViewColumns = Setting["uiOptions"]["layouts"]["cardViewColumns"];
+type CardViewColumns = Setting["uiOptions_cardViewColumns"];
 
 interface Props {
   open: boolean;
@@ -20,20 +20,24 @@ interface Props {
   onSubmit?: (value: CardViewColumns) => void;
 }
 
-
 export const getIconName = (v: CardViewColumns): SupportedIconNames => {
-  if (v === 1) return 'looks-one';
-  if (v === 2) return 'looks-two';
-  if (v === 3) return 'looks-3';
-  return 'square';
+  if (v === 1) return "looks-one";
+  if (v === 2) return "looks-two";
+  if (v === 3) return "looks-3";
+  return "square";
 };
 
-
-
-const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) => {
+const CardViewColumnsModal = ({
+  open,
+  setOpen,
+  defaultValue,
+  onSubmit,
+}: Props) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [ selectedValue, setSelectedValue ] = useState<CardViewColumns>(defaultValue || 2);
+  const [selectedValue, setSelectedValue] = useState<CardViewColumns>(
+    defaultValue || 2,
+  );
 
   useEffect(() => {
     if (!defaultValue) return;
@@ -41,27 +45,37 @@ const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) 
   }, [defaultValue]);
 
   const getButtonText = (v: CardViewColumns): string => {
-  switch (v) {
-    case 1:
-      return t("pages.setting_appearance.innerModals.cardViewColumns.option_1_columns");
-    case 2:
-      return t("pages.setting_appearance.innerModals.cardViewColumns.option_2_columns");
-    case 3:
-      return t("pages.setting_appearance.innerModals.cardViewColumns.option_3_columns");
-    default:
-      return "";
-  }
-}
+    switch (v) {
+      case 1:
+        return t(
+          "pages.setting_appearance.innerModals.cardViewColumns.option_1_columns",
+        );
+      case 2:
+        return t(
+          "pages.setting_appearance.innerModals.cardViewColumns.option_2_columns",
+        );
+      case 3:
+        return t(
+          "pages.setting_appearance.innerModals.cardViewColumns.option_3_columns",
+        );
+      default:
+        return "";
+    }
+  };
 
   const buttonItems: ButtonItemForFooter[] = [
     {
       // use button as text display only
       type: "text",
-      title: t("pages.setting_appearance.innerModals.cardViewColumns.maybe_requireRestart"),
+      title: t(
+        "pages.setting_appearance.innerModals.cardViewColumns.maybe_requireRestart",
+      ),
       flex: 1,
     },
     {
-      title: t("pages.setting_appearance.innerModals.cardViewColumns.button_apply"),
+      title: t(
+        "pages.setting_appearance.innerModals.cardViewColumns.button_apply",
+      ),
       onPress: () => {
         onSubmit?.(selectedValue);
         setOpen(false);
@@ -69,46 +83,48 @@ const CardViewColumnsModal = ({ open, setOpen, defaultValue, onSubmit }: Props) 
     },
   ];
 
-
-
-
   return (
-      <GenericModal
-        size="large"
-        showCloseButton
-        open={open}
-        onClose={() => setOpen(false)}
-        buttonItems={buttonItems}
-      >
-        <View style={styles.container}>
-          {Array.from([1, 2, 3]).map((v) => (
-            <TouchableEx
-              key={`color-schema-option-${v}`}
-              style={[styles.item, { borderColor: v === selectedValue ? theme.colors.primary : theme.colors.border }]}
-              onPress={() => {
-                setSelectedValue(v as CardViewColumns);
-              }}
-            >
-              <IconSymbol
-                name={getIconName(v as CardViewColumns)}
-                size={48}
-                color={theme.colors.text}
-              />
-              <Text style={[{ color: theme.colors.text }]}>
-                {getButtonText(v as CardViewColumns)}
-              </Text>
-            </TouchableEx>
-          ))}
-        </View>
-      </GenericModal>
-  )
-}
-
-
-
+    <GenericModal
+      size="large"
+      showCloseButton
+      open={open}
+      onClose={() => setOpen(false)}
+      buttonItems={buttonItems}
+    >
+      <View style={styles.container}>
+        {Array.from([1, 2, 3]).map((v) => (
+          <TouchableEx
+            key={`color-schema-option-${v}`}
+            style={[
+              styles.item,
+              {
+                borderColor:
+                  v === selectedValue
+                    ? theme.colors.primary
+                    : theme.colors.border,
+              },
+            ]}
+            onPress={() => {
+              setSelectedValue(v as CardViewColumns);
+            }}
+          >
+            <IconSymbol
+              name={getIconName(v as CardViewColumns)}
+              size={48}
+              color={theme.colors.text}
+            />
+            <Text style={[{ color: theme.colors.text }]}>
+              {getButtonText(v as CardViewColumns)}
+            </Text>
+          </TouchableEx>
+        ))}
+      </View>
+    </GenericModal>
+  );
+};
 
 const styles = StyleSheet.create({
-    // innermodal styles
+  // innermodal styles
   container: {
     display: "flex",
     flexDirection: "row",
@@ -125,6 +141,5 @@ const styles = StyleSheet.create({
   },
   icon: {},
 });
-
 
 export default CardViewColumnsModal;

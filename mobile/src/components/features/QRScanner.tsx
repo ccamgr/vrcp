@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useTheme } from '@react-navigation/native';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+} from "react-native";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { useTheme } from "@react-navigation/native";
 
 type Props = {
   open: boolean;
@@ -17,7 +25,12 @@ type Props = {
  * @param continuous 連続スキャンモードを有効にするかどうかのフラグ。trueの場合、スキャン成功後もモーダルが閉じず、再度スキャン可能になる。
  *
  */
-export default function QRScanner({ open, setOpen, onScan, continuous = false }: Props) {
+export default function QRScanner({
+  open,
+  setOpen,
+  onScan,
+  continuous = false,
+}: Props) {
   const theme = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -44,7 +57,7 @@ export default function QRScanner({ open, setOpen, onScan, continuous = false }:
         Alert.alert(
           "カメラの使用許可が必要です",
           "QRコードを読み取るには設定からカメラの許可をオンにしてください。",
-          [{ text: "閉じる", onPress: () => setOpen(false) }]
+          [{ text: "閉じる", onPress: () => setOpen(false) }],
         );
       }
     };
@@ -97,7 +110,10 @@ export default function QRScanner({ open, setOpen, onScan, continuous = false }:
         <SafeAreaView style={styles.overlay}>
           {/* 閉じるボタン */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => setOpen(false)} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={() => setOpen(false)}
+              style={styles.closeButton}
+            >
               <Text style={{ color: theme.colors.text, fontSize: 24 }}>×</Text>
             </TouchableOpacity>
           </View>
@@ -114,33 +130,33 @@ export default function QRScanner({ open, setOpen, onScan, continuous = false }:
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'black' },
-  loadingContainer: { flex: 1, backgroundColor: 'black' }, // 権限チェック中の背景
-  overlay: { flex: 1, justifyContent: 'space-between' },
-  header: { alignItems: 'flex-end', padding: 20 },
+  container: { flex: 1, backgroundColor: "black" },
+  loadingContainer: { flex: 1, backgroundColor: "black" }, // 権限チェック中の背景
+  overlay: { flex: 1, justifyContent: "space-between" },
+  header: { alignItems: "flex-end", padding: 20 },
   closeButton: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
     padding: 10,
     borderRadius: 20,
   },
-  centerContent: { alignItems: 'center', paddingBottom: 100 },
+  centerContent: { alignItems: "center", paddingBottom: 100 },
   scanFrame: {
     width: 250,
     height: 250,
     borderWidth: 2,
-    borderColor: '#00FF00',
+    borderColor: "#00FF00",
     borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   guideText: {
-    color: 'white',
+    color: "white",
     marginTop: 20,
     fontSize: 16,
-    fontWeight: 'bold',
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    fontWeight: "bold",
+    backgroundColor: "rgba(0,0,0,0.6)",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 });

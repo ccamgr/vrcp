@@ -2,7 +2,12 @@ import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/DetailItemContainer";
 import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { fontSize, navigationBarHeight, radius, spacing } from "@/configs/styles";
+import {
+  fontSize,
+  navigationBarHeight,
+  radius,
+  spacing,
+} from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { CalendarEvent } from "@/generated/vrcapi";
@@ -44,35 +49,41 @@ export default function EventDetail() {
   const fetchEvent = () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
-    vrc.calendarApi.getGroupCalendarEvent({
-      groupId: groupId ?? "",
-      calendarId: calendarId ?? "",
-    })
+    vrc.calendarApi
+      .getGroupCalendarEvent({
+        groupId: groupId ?? "",
+        calendarId: calendarId ?? "",
+      })
       .then((res) => setEvent(res.data))
-      .catch((e) => showToast("error", "Error fetching event data", extractErrMsg(e)))
-      .finally(() => fetchingRef.current = false);
+      .catch((e) =>
+        showToast("error", "Error fetching event data", extractErrMsg(e)),
+      )
+      .finally(() => (fetchingRef.current = false));
   };
   useEffect(() => {
     fetchEvent();
   }, []);
 
-  const menuItems: MenuItem[] = useMemo(() => [
-    {
-      icon: "circle-medium",
-      title: "SUBSCRIBE or UNSUBSCRIBE THIS EVENT", // notify me
-      // onPress: () => {},
-    },
-    {
-      type: "divider",
-      hidden: !enableJsonViewer,
-    },
-    {
-      icon: "code-json",
-      title: t("pages.detail_event.menuLabel_json"),
-      onPress: () => setOpenJson(true),
-      hidden: !enableJsonViewer,
-    },
-  ], [enableJsonViewer, t]);
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        icon: "circle-medium",
+        title: "SUBSCRIBE or UNSUBSCRIBE THIS EVENT", // notify me
+        // onPress: () => {},
+      },
+      {
+        type: "divider",
+        hidden: !enableJsonViewer,
+      },
+      {
+        icon: "code-json",
+        title: t("pages.detail_event.menuLabel_json"),
+        onPress: () => setOpenJson(true),
+        hidden: !enableJsonViewer,
+      },
+    ],
+    [enableJsonViewer, t],
+  );
   useSideMenu(menuItems);
 
   return (
@@ -83,29 +94,33 @@ export default function EventDetail() {
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl
-                refreshing={isLoading}
-                onRefresh={fetchEvent}
-              />
+              <RefreshControl refreshing={isLoading} onRefresh={fetchEvent} />
             }
           >
-
             {ownerGroup && ownerGroup.id && (
-              <DetailItemContainer title={t("pages.detail_event.sectionLabel_owner")}>
+              <DetailItemContainer
+                title={t("pages.detail_event.sectionLabel_owner")}
+              >
                 <View style={styles.detailItemContent}>
-                  <TouchableEx style={styles.ownerChip} onPress={() => ownerGroup.id && routeToGroup(ownerGroup.id)}>
+                  <TouchableEx
+                    style={styles.ownerChip}
+                    onPress={() => ownerGroup.id && routeToGroup(ownerGroup.id)}
+                  >
                     <UserOrGroupChip data={ownerGroup} />
                   </TouchableEx>
                 </View>
               </DetailItemContainer>
             )}
 
-            <DetailItemContainer title={t("pages.detail_event.sectionLabel_description")}>
+            <DetailItemContainer
+              title={t("pages.detail_event.sectionLabel_description")}
+            >
               <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>{event.description}</Text>
+                <Text style={{ color: theme.colors.text }}>
+                  {event.description}
+                </Text>
               </View>
             </DetailItemContainer>
-
           </ScrollView>
         </View>
       ) : (
@@ -114,7 +129,6 @@ export default function EventDetail() {
 
       {/* Modals */}
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={event} />
-
     </GenericScreen>
   );
 }
@@ -130,7 +144,7 @@ const styles = StyleSheet.create({
     gap: spacing.small,
   },
   ownerChip: {
-    flex: 1
+    flex: 1,
   },
   cardView: {
     position: "relative",

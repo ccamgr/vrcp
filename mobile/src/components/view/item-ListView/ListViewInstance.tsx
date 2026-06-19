@@ -5,9 +5,6 @@ import { StyleSheet, View } from "react-native";
 import RegionBadge from "../chip-badge/RegionBadge";
 import BaseListView from "./BaseListView";
 
-
-
-
 interface Props {
   instance: InstanceLike;
   onPress?: () => void;

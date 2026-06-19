@@ -10,12 +10,11 @@ const CachedImage = ({
   localUriRef?: React.RefObject<string | null>; // to get current local-uri
   [key: string]: any;
 }) => {
-
   return (
     <ExpoImage
       source={{
         uri: remoteUri,
-        headers: { 'User-Agent': getUserAgent() },
+        headers: { "User-Agent": getUserAgent() },
       }}
       style={[{ contentFit: "cover" }, rest.style]}
       {...omitObject(rest, "style")}

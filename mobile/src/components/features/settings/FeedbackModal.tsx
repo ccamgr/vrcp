@@ -5,7 +5,10 @@ import SelectGroupButton from "@/components/view/SelectGroupButton";
 import { fontSize, spacing } from "@/configs/styles";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/contexts/ToastContext";
-import { FeedbackType, sendFeedbacktoDevelopper } from "@/lib/funcs/sendFeedbackToDevelopper";
+import {
+  FeedbackType,
+  sendFeedbacktoDevelopper,
+} from "@/lib/funcs/sendFeedbackToDevelopper";
 import { useTheme } from "@react-navigation/native";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,8 +37,14 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
 
     try {
       setIsLoading(true);
-      const logfilePath = type == "bug-report" ? logger.getRecentLogFilePath() : null;
-      const res = await sendFeedbacktoDevelopper(type, email, content, logfilePath);
+      const logfilePath =
+        type == "bug-report" ? logger.getRecentLogFilePath() : null;
+      const res = await sendFeedbacktoDevelopper(
+        type,
+        email,
+        content,
+        logfilePath,
+      );
       if (res.ok) {
         showToast("success", "Thank you for your feedback!");
         setOpen(false);
@@ -48,7 +57,6 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
     } finally {
       setIsLoading(false);
     }
-
   };
 
   const buttonItems: ButtonItemForFooter[] = [
@@ -67,10 +75,10 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
     label: string;
     value: FeedbackType;
   }[] = [
-      { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
-      { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
-      { label: t("components.feedbackModal.type_request"), value: "request" },
-    ];
+    { label: t("components.feedbackModal.type_bug"), value: "bug-report" },
+    { label: t("components.feedbackModal.type_feedback"), value: "feedback" },
+    { label: t("components.feedbackModal.type_request"), value: "request" },
+  ];
 
   return (
     <GenericModal
@@ -81,7 +89,7 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
       open={open}
       onClose={() => setOpen(false)}
     >
-      {isLoading && (<LoadingIndicator absolute />)}
+      {isLoading && <LoadingIndicator absolute />}
 
       <SelectGroupButton
         style={styles.typeSelector}
@@ -117,7 +125,6 @@ const FeedbackModal = ({ open, setOpen }: Props) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   // container styles
   container: {
@@ -128,29 +135,29 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: fontSize.medium,
-    fontWeight: "normal"
+    fontWeight: "normal",
   },
   description: {
     fontSize: fontSize.small,
-    fontWeight: "normal"
+    fontWeight: "normal",
   },
 
   // form elements
   input: {
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    width: '100%',
+    width: "100%",
     padding: spacing.medium,
   },
   mlinput: {
     height: 150,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    width: '100%',
+    width: "100%",
     padding: spacing.medium,
     marginTop: spacing.small,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
-})
+});
 
 export default FeedbackModal;

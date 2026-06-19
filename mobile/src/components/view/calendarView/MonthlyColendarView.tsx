@@ -8,8 +8,6 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
-
-
 interface CalendarViewProps {
   renderDateContent?: (date: Date) => React.ReactNode;
   initialDate?: Date;
@@ -21,7 +19,7 @@ const MonthlyCalendarView = ({
   renderDateContent,
   initialDate = new Date(),
   onSelectDate,
-  onChangeMonth
+  onChangeMonth,
 }: CalendarViewProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -56,7 +54,7 @@ const MonthlyCalendarView = ({
     const newMonth = new Date(
       selectedMonth.getFullYear(),
       selectedMonth.getMonth() + monthOffset,
-      1
+      1,
     );
     setSelectedMonth(newMonth);
     onChangeMonth?.(newMonth);
@@ -65,7 +63,7 @@ const MonthlyCalendarView = ({
   const handleTapDate = (date: Date) => {
     setSelectedDate(date);
     onSelectDate?.(date);
-  }
+  };
 
   const getDateColor = (date: Date) => {
     if (isSameDay(date, today)) {
@@ -79,15 +77,15 @@ const MonthlyCalendarView = ({
     }
 
     if (date.getMonth() !== selectedMonth.getMonth()) {
-      dateColor = getTintedColor(dateColor, 0.60);
-    };
+      dateColor = getTintedColor(dateColor, 0.6);
+    }
     return dateColor;
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={[ styles.header ,{ color: theme.colors.text }]}>
+        <Text style={[styles.header, { color: theme.colors.text }]}>
           {t("pages.calendar.calendar_month_label", { date: selectedMonth })}
         </Text>
         <View style={[styles.buttons]}>
@@ -95,31 +93,53 @@ const MonthlyCalendarView = ({
             style={styles.button}
             onPress={() => handleChangeMonth(-1)}
             color={theme.colors.text}
-          > {"<"} </ButtonEx>
+          >
+            {" "}
+            {"<"}{" "}
+          </ButtonEx>
           <ButtonEx
             style={styles.button}
             onPress={() => handleChangeMonth(1)}
             color={theme.colors.text}
-          > {">"} </ButtonEx>
+          >
+            {" "}
+            {">"}{" "}
+          </ButtonEx>
         </View>
       </View>
-      <View style={[styles.calendarContainer, styles.border]} >
-      {calendarWeeks.map((week, weekIndex) => (
-        <View key={weekIndex} style={[styles.weekContainer, { height: `${100 / calendarWeeks.length}%` }]}>
-          {week.map((date, dateIndex) => (
-            <TouchableEx style={[styles.border, styles.dateContainer, isSameDay(date, selectedDate) ? styles.selectedDate : null]} onPress={() => handleTapDate(date)} key={dateIndex} >
-              <Text style={[styles.dateNumber, {color: getDateColor(date) }]}>{date.getDate()}</Text>
-              {renderDateContent ? renderDateContent(date) : null}
-            </TouchableEx>
-          ))}
-        </View>
-      ))}
+      <View style={[styles.calendarContainer, styles.border]}>
+        {calendarWeeks.map((week, weekIndex) => (
+          <View
+            key={weekIndex}
+            style={[
+              styles.weekContainer,
+              { height: `${100 / calendarWeeks.length}%` },
+            ]}
+          >
+            {week.map((date, dateIndex) => (
+              <TouchableEx
+                style={[
+                  styles.border,
+                  styles.dateContainer,
+                  isSameDay(date, selectedDate) ? styles.selectedDate : null,
+                ]}
+                onPress={() => handleTapDate(date)}
+                key={dateIndex}
+              >
+                <Text
+                  style={[styles.dateNumber, { color: getDateColor(date) }]}
+                >
+                  {date.getDate()}
+                </Text>
+                {renderDateContent ? renderDateContent(date) : null}
+              </TouchableEx>
+            ))}
+          </View>
+        ))}
       </View>
     </View>
   );
-
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -145,7 +165,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.large * 2,
   },
   calendarContainer: {
-    flex:1
+    flex: 1,
   },
   weekContainer: {
     flexDirection: "row",
@@ -169,7 +189,6 @@ const styles = StyleSheet.create({
     borderColor: "cornflowerblue",
     backgroundColor: "rgba(100, 149, 237, 0.2)", // cornflowerblue with opacity
   },
-
 });
 
 export default MonthlyCalendarView;

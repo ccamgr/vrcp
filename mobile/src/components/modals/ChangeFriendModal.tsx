@@ -28,21 +28,23 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
 
   const friReqStatus = user ? getFriendRequestStatus(user) : "null"; // "null" | "outgoing" | "completed"
 
-
   const handleSubmitChange = async () => {
     if (!user) return;
     if (isLoading) return;
     try {
       setIsLoading(true);
-      if (friReqStatus === "completed") { // unfriend
+      if (friReqStatus === "completed") {
+        // unfriend
         const res = await vrc.friendsApi.unfriend({
           userId: user.id,
         });
-      } else if (friReqStatus === "outgoing") { // delete friend request
+      } else if (friReqStatus === "outgoing") {
+        // delete friend request
         const res = await vrc.friendsApi.deleteFriendRequest({
           userId: user.id,
         });
-      } else if (friReqStatus === "null") { // send friend request
+      } else if (friReqStatus === "null") {
+        // send friend request
         const res = await vrc.friendsApi.friend({
           userId: user.id,
         });
@@ -63,12 +65,15 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
 
   const getActionTitle = (user: User | undefined) => {
     if (user) {
-      if (friReqStatus === "completed") return t("components.changeFriendModal.button_confirm_remove");
-      if (friReqStatus === "outgoing") return t("components.changeFriendModal.button_confirm_cancel");
-      if (friReqStatus === "null") return t("components.changeFriendModal.button_confirm_send");
+      if (friReqStatus === "completed")
+        return t("components.changeFriendModal.button_confirm_remove");
+      if (friReqStatus === "outgoing")
+        return t("components.changeFriendModal.button_confirm_cancel");
+      if (friReqStatus === "null")
+        return t("components.changeFriendModal.button_confirm_send");
     }
     return t("components.changeFriendModal.button_confirm_send");
-  }
+  };
   const getActionColor = (user: User | undefined) => {
     if (user) {
       if (friReqStatus === "completed") return theme.colors.error;
@@ -76,7 +81,7 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
       if (friReqStatus === "null") return theme.colors.primary;
     }
     return theme.colors.primary;
-  }
+  };
 
   const footerButtons: ButtonItemForFooter[] = [
     {
@@ -90,16 +95,29 @@ const ChangeFriendModal = ({ open, setOpen, user, onSuccess }: Props) => {
       color: getActionColor(user),
       flex: 1,
     },
-  ]
+  ];
   return (
-    <GenericModal buttonItems={footerButtons} open={open} onClose={() => setOpen(false)}>
+    <GenericModal
+      buttonItems={footerButtons}
+      open={open}
+      onClose={() => setOpen(false)}
+    >
       {isLoading && <LoadingIndicator absolute />}
-      { user && (
+      {user && (
         <View style={styles.container}>
-          <Text style={[styles.text, {color: theme.colors.text}]}>
-            {friReqStatus === "completed" && t("components.changeFriendModal.confirm_text_remove", { userName: user.displayName })}
-            {friReqStatus === "outgoing" && t("components.changeFriendModal.confirm_text_cancel", { userName: user.displayName })}
-            {friReqStatus === "null" && t("components.changeFriendModal.confirm_text_send", { userName: user.displayName })}
+          <Text style={[styles.text, { color: theme.colors.text }]}>
+            {friReqStatus === "completed" &&
+              t("components.changeFriendModal.confirm_text_remove", {
+                userName: user.displayName,
+              })}
+            {friReqStatus === "outgoing" &&
+              t("components.changeFriendModal.confirm_text_cancel", {
+                userName: user.displayName,
+              })}
+            {friReqStatus === "null" &&
+              t("components.changeFriendModal.confirm_text_send", {
+                userName: user.displayName,
+              })}
           </Text>
         </View>
       )}
@@ -116,8 +134,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: fontSize.medium,
-  }
-
+  },
 });
 
 export default ChangeFriendModal;
