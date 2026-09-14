@@ -140,8 +140,7 @@ export function analyzeSessions(logs: LogPayload[], range?: { start: number; end
   });
 
   // ループ終了時にまだセッションが続いている
-  // (rust側でInvalidAppStopを挿入しているので, "セッションが続く" = VRC起動中 となる)の場合、
-  // range.end or 現在時刻で閉じる
+  // A session without an explicit stop is treated as active.
   if (currentSession) {
     const endTime = range ? Math.min(Date.now(), range.end) : Date.now();
     closeSession(endTime);

@@ -2,10 +2,9 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use vrcp_lib::db::repositories::logs::LogsRepository;
 use vrcp_lib::db::DB;
-use vrcp_lib::modules::watcher::VrcLogEvent::{AppStart, AppStop, InvalidAppStop};
-use vrcp_lib::modules::watcher::{create_invalid_app_stop_payload, parse_log_line};
+
+use vrcp_lib::modules::watcher::parse_log_line;
 
 /**
  * This program imports log files into the database.
@@ -20,7 +19,6 @@ pub async fn import_logs(identifier: String, files: Vec<String>) {
     // 2. データベース接続 (アプリと同じDBを開く)
     println!("Connecting to database...");
     let db = DB::new(app_dir).await.expect("failed to open database");
-    let log_repo = db.logs();
 
     // 3. ファイルごとの処理
     let mut total_imported = 0;
@@ -33,7 +31,7 @@ pub async fn import_logs(identifier: String, files: Vec<String>) {
         }
 
         println!("Processing: {:?}", path);
-        match process_file(path, &log_repo).await {
+        match process_file(path, &db).await {
             Ok((count, ecount)) => {
                 println!("  -> Imported {} lines. ({} skipped)", count, ecount);
                 total_imported += count;
@@ -42,20 +40,19 @@ pub async fn import_logs(identifier: String, files: Vec<String>) {
         }
     }
 
+    if let Err(error) = db.backfill_sessions().await {
+        eprintln!("Session backfill failed after import: {error}");
+    }
+
     println!("Done! Total imported lines: {}", total_imported);
 }
 
-async fn process_file(
-    path: &Path,
-    log_repo: &LogsRepository,
-) -> Result<(i32, i32), Box<dyn std::error::Error>> {
+async fn process_file(path: &Path, db: &DB) -> Result<(i32, i32), Box<dyn std::error::Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let mut count = 0;
     let mut ecount = 0;
 
-    let mut is_running = false;
-    let mut last_timestamp = 0i64;
     // トランザクションを使うと高速ですが、今回はシンプルに1行ずつ処理
     // 必要なら db.conn.lock().unwrap().transaction() ... を実装してください
 
@@ -64,43 +61,12 @@ async fn process_file(
 
         // watcherのリファクタリングした関数を使用
         if let Some(payload) = parse_log_line(&line) {
-            // チェックはDB側のUNIQUE制約(INSERT OR IGNORE等)や
-            // insert_logの実装に任せる (エラーが出ても止まらないようにする)
-            last_timestamp = payload.timestamp;
-            match &payload.event {
-                AppStart => {
-                    is_running = true;
+            match db.record_log(&payload).await {
+                Ok(()) => count += 1,
+                Err(error) => {
+                    eprintln!("\tinsert error: {error}");
+                    ecount += 1;
                 }
-                AppStop | InvalidAppStop => {
-                    is_running = false;
-                }
-                _ => {}
-            }
-            match log_repo.insert_log(&payload).await {
-                Ok(count_inserted) => {
-                    count += count_inserted;
-                    if count_inserted == 0 {
-                        ecount += 1; // 重複等で挿入されなかった場合をエラーとしてカウント
-                    }
-                }
-                Err(e) => {
-                    eprintln!("\tinsert error: {}", e);
-                }
-            }
-        }
-    }
-    if is_running {
-        println!("  -> Warning: Log ended while app was still running. (inserted InvalidAppStop)");
-        let crash_payload = create_invalid_app_stop_payload(last_timestamp);
-        match log_repo.insert_log(&crash_payload).await {
-            Ok(count_inserted) => {
-                count += count_inserted;
-                if count_inserted == 0 {
-                    ecount += 1; // 重複等で挿入されなかった場合をエラーとしてカウント
-                }
-            }
-            Err(e) => {
-                eprintln!("\tinsert error: {}", e);
             }
         }
     }

@@ -135,7 +135,7 @@ export function analyzeSessions(logs: LogPayload[]): WorldSession[] {
   });
 
   // ループ終了時にまだセッションが続いている
-  // (rust側でInvalidAppStopを挿入しているので, "セッションが続く" = VRC起動中 となる)の場合、現在時刻で閉じる
+  // A session without an explicit stop is treated as active.
   if (currentSession) {
     closeSession(Date.now());
   }

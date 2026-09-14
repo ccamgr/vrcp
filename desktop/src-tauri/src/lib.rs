@@ -67,6 +67,13 @@ pub fn run() {
 
             let db = tauri::async_runtime::block_on(db::DB::new(app_data_dir.clone()))?;
 
+            let backfill_db = db.clone();
+            tauri::async_runtime::spawn(async move {
+                if let Err(error) = backfill_db.backfill_sessions().await {
+                    eprintln!("Session backfill failed: {error}");
+                }
+            });
+
             app.manage(db.clone()); // グローバルステートとしてDBを登録
 
             // VRCAPI サービス初期化

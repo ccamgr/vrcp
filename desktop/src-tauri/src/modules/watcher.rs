@@ -240,17 +240,6 @@ fn get_latest_log_path() -> Option<PathBuf> {
     logs.last().cloned()
 }
 
-// 💡 引数を i64 に変更
-pub fn create_invalid_app_stop_payload(last_timestamp: i64) -> LogPayload {
-    let event = VrcLogEvent::InvalidAppStop;
-    let hash = gen_hash(last_timestamp, &event);
-    LogPayload {
-        event,
-        timestamp: last_timestamp,
-        hash,
-    }
-}
-
 async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherStatus>>) {
     let mut rotation_check_interval = tokio::time::interval(Duration::from_secs(5));
     let mut current_log_path = get_latest_log_path();
@@ -285,31 +274,12 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                 if let Ok(file) = File::open(&old_path) {
                     let reader = BufReader::new(file);
 
-                    let mut temp_is_running = false;
-                    let mut temp_last_ts: i64 = 0; // 💡 i64
-
                     for l in reader.lines().map_while(Result::ok) {
-                        if let Some(ts) = extract_timestamp(&l) {
-                            temp_last_ts = ts;
-                        }
-
                         if let Some(payload) = parse_log_line(&l) {
-                            match payload.event {
-                                VrcLogEvent::AppStart => temp_is_running = true,
-                                VrcLogEvent::AppStop => temp_is_running = false,
-                                _ => {}
+                            if let Err(error) = db.record_log(&payload).await {
+                                eprintln!("Failed to record rescanned log: {error}");
                             }
-                            let _ = db.logs().insert_log(&payload).await;
                         }
-                    }
-
-                    if temp_is_running {
-                        println!(
-                            "Crash detected in old log. Inserting InvalidAppStop at {}",
-                            i64_to_str(temp_last_ts)
-                        );
-                        let crash_payload = create_invalid_app_stop_payload(temp_last_ts);
-                        let _ = db.logs().insert_log(&crash_payload).await;
                     }
                 }
             } else {
@@ -381,7 +351,9 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             _ => {}
                         }
                         let _ = LogPayload::emit(&payload, &app);
-                        let _ = db.logs().insert_log(&payload).await;
+                        if let Err(error) = db.record_log(&payload).await {
+                            eprintln!("Failed to record watched log: {error}");
+                        }
                     }
 
                     if let Ok(mut status) = shared_status.write() {
@@ -419,11 +391,6 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
                 if latest != current_log_path {
                     println!("Log rotation detected!");
-                    if is_app_running {
-                        let crash_payload = create_invalid_app_stop_payload(last_seen_timestamp);
-                        let _ = db.logs().insert_log(&crash_payload).await;
-                        let _ = LogPayload::emit(&crash_payload, &app);
-                    }
 
                     current_log_path = latest.clone();
                     is_app_running = false;

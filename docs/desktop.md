@@ -57,3 +57,7 @@ Watcher ──> SQLite (SeaORM) ──> Tauri コマンド / イベント ──
 - Rust の Tauri コマンドまたはイベントを変更した場合は、`make gen-bindings` で型定義を更新します。
 - DB スキーマを変更する場合は SeaORM のマイグレーションを追加します。
 - アプリ全体の起動は `make run`、フロントエンドのみの起動は `make run-front`、静的解析・整形は `make lint` を使用します。
+
+## 関連設計
+
+- [Session DB Migration 設計](./desktop-session-db-migration.md)

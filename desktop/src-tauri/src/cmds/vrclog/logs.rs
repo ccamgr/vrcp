@@ -25,8 +25,7 @@ pub async fn get_logs(
 pub async fn delete_all_logs(state: tauri::State<'_, Ctx>) -> Result<(), String> {
     state
         .db
-        .logs()
-        .delete_all_logs()
+        .delete_all_log_data()
         .await
         .map_err(|e| e.to_string())?;
     Ok(())
