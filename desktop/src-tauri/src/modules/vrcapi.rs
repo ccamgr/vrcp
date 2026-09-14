@@ -2,8 +2,6 @@ use crate::utils::constants;
 use keyring::Entry;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStoreMutex;
-use std::fs::File;
-use std::io::BufReader;
 use std::path::PathBuf;
 use std::sync::Arc;
 use vrchatapi::apis::configuration::Configuration;
@@ -27,9 +25,7 @@ impl VrcApiService {
                 .map_err(|e| format!("Failed to create app dir: {}", e))?;
         }
 
-        let cookie_path = app_dir.join("cookies.json");
-
-        let cookie_store = match load_cookie_store(&cookie_path) {
+        let cookie_store = match load_cookie_store() {
             Ok(store) => store,
             Err(error) => {
                 let message =
@@ -85,26 +81,11 @@ fn cookie_entry() -> Result<Entry, String> {
         .map_err(|e| format!("Failed to initialize the OS credential store: {e}"))
 }
 
-fn load_cookie_store(
-    cookie_path: &std::path::Path,
-) -> Result<reqwest_cookie_store::CookieStore, String> {
+fn load_cookie_store() -> Result<reqwest_cookie_store::CookieStore, String> {
     let entry = cookie_entry()?;
     match entry.get_secret() {
         Ok(serialized) => serde_json::from_slice(&serialized)
             .map_err(|e| format!("Failed to read cookies from the OS credential store: {e}")),
-        Err(keyring::Error::NoEntry) if cookie_path.exists() => {
-            let file = File::open(cookie_path).map_err(|e| e.to_string())?;
-            let store = serde_json::from_reader(BufReader::new(file))
-                .map_err(|e| format!("Failed to read legacy cookie file: {e}"))?;
-            let serialized = serde_json::to_vec(&store).map_err(|e| e.to_string())?;
-            entry.set_secret(&serialized).map_err(|e| {
-                format!("Failed to migrate cookies to the OS credential store: {e}")
-            })?;
-            std::fs::remove_file(cookie_path).map_err(|e| {
-                format!("Cookies were migrated but the legacy file could not be removed: {e}")
-            })?;
-            Ok(store)
-        }
         Err(keyring::Error::NoEntry) => Ok(reqwest_cookie_store::CookieStore::default()),
         Err(e) => Err(format!("Failed to access the OS credential store: {e}")),
     }
