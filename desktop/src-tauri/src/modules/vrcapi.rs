@@ -1,18 +1,21 @@
 use crate::utils::constants;
+use keyring::Entry;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::fs::File;
-use std::io::{BufReader, BufWriter};
+use std::io::BufReader;
 use std::path::PathBuf;
 use std::sync::Arc;
 use vrchatapi::apis::configuration::Configuration;
+
+const KEYRING_SERVICE: &str = "cc.amgr.vrcp.desktop";
+const KEYRING_ACCOUNT: &str = "vrchat-cookie-store";
 
 // Service struct to manage VRChat API state
 #[derive(Clone)]
 pub struct VrcApiService {
     pub config: Arc<tokio::sync::Mutex<Configuration>>,
     cookie_store: Arc<CookieStoreMutex>,
-    cookie_path: PathBuf,
 }
 
 impl VrcApiService {
@@ -26,14 +29,7 @@ impl VrcApiService {
 
         let cookie_path = app_dir.join("cookies.json");
 
-        // 2. Load existing cookies from file, or create a new store
-        let cookie_store = if cookie_path.exists() {
-            let file = File::open(&cookie_path).map_err(|e| e.to_string())?;
-            let reader = BufReader::new(file);
-            serde_json::from_reader(reader).unwrap_or_default()
-        } else {
-            reqwest_cookie_store::CookieStore::default()
-        };
+        let cookie_store = load_cookie_store(&cookie_path)?;
 
         let cookie_store = Arc::new(CookieStoreMutex::new(cookie_store));
 
@@ -51,16 +47,16 @@ impl VrcApiService {
         Ok(Self {
             config: Arc::new(tokio::sync::Mutex::new(config)),
             cookie_store,
-            cookie_path,
         })
     }
 
     // Call this method to save cookies to disk after login or operations
     pub fn save_cookies(&self) -> Result<(), String> {
-        let file = File::create(&self.cookie_path).map_err(|e| e.to_string())?;
-        let mut writer = BufWriter::new(file);
         let store = self.cookie_store.lock().unwrap();
-        serde_json::to_writer(&mut writer, &*store).map_err(|e| e.to_string())?;
+        let serialized = serde_json::to_vec(&*store).map_err(|e| e.to_string())?;
+        cookie_entry()?
+            .set_secret(&serialized)
+            .map_err(|e| format!("Failed to save cookies to the OS credential store: {e}"))?;
         Ok(())
     }
 
@@ -69,6 +65,38 @@ impl VrcApiService {
             let mut store = self.cookie_store.lock().unwrap();
             store.clear(); // reqwest_cookie_store の中身を空にする
         }
-        self.save_cookies() // 空になった状態を cookies.json に上書き保存
+        cookie_entry()?
+            .delete_credential()
+            .map_err(|e| format!("Failed to remove cookies from the OS credential store: {e}"))
+    }
+}
+
+fn cookie_entry() -> Result<Entry, String> {
+    Entry::new(KEYRING_SERVICE, KEYRING_ACCOUNT)
+        .map_err(|e| format!("Failed to initialize the OS credential store: {e}"))
+}
+
+fn load_cookie_store(
+    cookie_path: &std::path::Path,
+) -> Result<reqwest_cookie_store::CookieStore, String> {
+    let entry = cookie_entry()?;
+    match entry.get_secret() {
+        Ok(serialized) => serde_json::from_slice(&serialized)
+            .map_err(|e| format!("Failed to read cookies from the OS credential store: {e}")),
+        Err(keyring::Error::NoEntry) if cookie_path.exists() => {
+            let file = File::open(cookie_path).map_err(|e| e.to_string())?;
+            let store = serde_json::from_reader(BufReader::new(file))
+                .map_err(|e| format!("Failed to read legacy cookie file: {e}"))?;
+            let serialized = serde_json::to_vec(&store).map_err(|e| e.to_string())?;
+            entry.set_secret(&serialized).map_err(|e| {
+                format!("Failed to migrate cookies to the OS credential store: {e}")
+            })?;
+            std::fs::remove_file(cookie_path).map_err(|e| {
+                format!("Cookies were migrated but the legacy file could not be removed: {e}")
+            })?;
+            Ok(store)
+        }
+        Err(keyring::Error::NoEntry) => Ok(reqwest_cookie_store::CookieStore::default()),
+        Err(e) => Err(format!("Failed to access the OS credential store: {e}")),
     }
 }

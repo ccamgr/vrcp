@@ -12,10 +12,16 @@ const PROJECTION_VERSION_KEY: &str = "session_projection_version";
 const PROJECTION_STATUS_KEY: &str = "session_projection_status";
 const PROJECTION_TIMESTAMP_KEY: &str = "session_projection_last_timestamp";
 const PROJECTION_LOG_ID_KEY: &str = "session_projection_last_log_id";
+const PROJECTION_LAST_ERROR_KEY: &str = "session_projection_last_error";
 const CHUNK_SIZE: u64 = 500;
 
 pub struct SessionsRepository {
     db: DatabaseConnection,
+}
+
+pub struct RecordLogResult {
+    pub inserted: bool,
+    pub rebuild_required: bool,
 }
 
 impl SessionsRepository {
@@ -23,11 +29,13 @@ impl SessionsRepository {
         Self { db }
     }
 
-    pub async fn record_log(&self, payload: &LogPayload) -> Result<bool, DbErr> {
+    pub async fn record_log(&self, payload: &LogPayload) -> Result<RecordLogResult, DbErr> {
         let txn = self.db.begin().await?;
         let inserted = insert_raw_log(&txn, payload).await?;
         let mut rebuild_required = false;
+        let mut was_inserted = false;
         if let Some(log) = inserted {
+            was_inserted = true;
             let version = get_setting(&txn, PROJECTION_VERSION_KEY).await?;
             let status = get_setting(&txn, PROJECTION_STATUS_KEY).await?;
             let last_timestamp = get_setting(&txn, PROJECTION_TIMESTAMP_KEY)
@@ -55,7 +63,11 @@ impl SessionsRepository {
                 }
             }
         }
-        txn.commit().await.map(|_| rebuild_required)
+        txn.commit().await?;
+        Ok(RecordLogResult {
+            inserted: was_inserted,
+            rebuild_required,
+        })
     }
 
     pub async fn backfill(&self) -> Result<(), DbErr> {
@@ -74,6 +86,7 @@ impl SessionsRepository {
             set_setting(&txn, PROJECTION_STATUS_KEY, "running").await?;
             set_setting(&txn, PROJECTION_TIMESTAMP_KEY, &i64::MIN.to_string()).await?;
             set_setting(&txn, PROJECTION_LOG_ID_KEY, "0").await?;
+            set_setting(&txn, PROJECTION_LAST_ERROR_KEY, "").await?;
             txn.commit().await?;
         }
 
@@ -108,17 +121,27 @@ impl SessionsRepository {
 
             let txn = self.db.begin().await?;
             for row in &rows {
-                let event = serde_json::from_str(&row.data)
-                    .map_err(|error| DbErr::Custom(format!("Invalid stored log event: {error}")))?;
-                project_event(
-                    &txn,
-                    &LogPayload {
-                        event,
-                        timestamp: row.timestamp,
-                        hash: row.hash,
-                    },
-                )
-                .await?;
+                match serde_json::from_str(&row.data) {
+                    Ok(event) => {
+                        project_event(
+                            &txn,
+                            &LogPayload {
+                                event,
+                                timestamp: row.timestamp,
+                                hash: row.hash,
+                            },
+                        )
+                        .await?;
+                    }
+                    Err(error) => {
+                        set_setting(
+                            &txn,
+                            PROJECTION_LAST_ERROR_KEY,
+                            &format!("Skipped invalid log {}: {error}", row.id),
+                        )
+                        .await?;
+                    }
+                }
             }
             let last = rows.last().expect("rows is not empty");
             last_timestamp = last.timestamp;
@@ -172,12 +195,44 @@ impl SessionsRepository {
             .order_by_asc(instance_sessions::Column::Id)
             .all(&self.db)
             .await?;
+        if sessions.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let app_ids = sessions
+            .iter()
+            .map(|session| session.app_session_id)
+            .collect::<Vec<_>>();
+        let apps = app_sessions::Entity::find()
+            .filter(app_sessions::Column::Id.is_in(app_ids))
+            .all(&self.db)
+            .await?
+            .into_iter()
+            .map(|app| (app.id, app))
+            .collect::<HashMap<_, _>>();
+        let instance_ids = sessions
+            .iter()
+            .map(|session| session.id)
+            .collect::<Vec<_>>();
+        let mut users_by_instance = HashMap::<i32, Vec<user_sessions::Model>>::new();
+        for user in user_sessions::Entity::find()
+            .filter(user_sessions::Column::InstanceSessionId.is_in(instance_ids))
+            .order_by_asc(user_sessions::Column::InstanceSessionId)
+            .order_by_asc(user_sessions::Column::JoinTime)
+            .order_by_asc(user_sessions::Column::Id)
+            .all(&self.db)
+            .await?
+        {
+            users_by_instance
+                .entry(user.instance_session_id)
+                .or_default()
+                .push(user);
+        }
 
         let mut payloads = Vec::with_capacity(sessions.len());
         for session in sessions {
-            let app = app_sessions::Entity::find_by_id(session.app_session_id)
-                .one(&self.db)
-                .await?
+            let app = apps
+                .get(&session.app_session_id)
                 .ok_or_else(|| DbErr::Custom("Missing parent app session".to_string()))?;
             let mut start_time = session.start_time;
             let mut end_time = session
@@ -187,13 +242,7 @@ impl SessionsRepository {
             let mut players: HashMap<String, PlayerAccumulator> = HashMap::new();
             let mut self_intervals = Vec::new();
 
-            for user in user_sessions::Entity::find()
-                .filter(user_sessions::Column::InstanceSessionId.eq(session.id))
-                .order_by_asc(user_sessions::Column::JoinTime)
-                .order_by_asc(user_sessions::Column::Id)
-                .all(&self.db)
-                .await?
-            {
+            for user in users_by_instance.remove(&session.id).unwrap_or_default() {
                 let interval = Interval {
                     start: user.join_time,
                     end: user.leave_time.unwrap_or(end_time).max(user.join_time),
@@ -236,7 +285,7 @@ impl SessionsRepository {
                 start_time,
                 end_time,
                 duration_ms: end_time - start_time,
-                username: app.username,
+                username: app.username.clone(),
                 players: player_payloads,
             });
         }
@@ -715,6 +764,65 @@ mod tests {
             .expect("app session loads")
             .expect("app session exists");
         assert_eq!(app.is_graceful, Some(false));
+
+        drop(db);
+        std::fs::remove_dir_all(path).expect("temporary database is removed");
+    }
+
+    #[tokio::test]
+    async fn skips_corrupt_legacy_logs_and_completes_the_backfill() {
+        let path = temporary_database_path("corrupt-log");
+        let db = DB::new(path.clone()).await.expect("database opens");
+        logs::Entity::insert(logs::ActiveModel {
+            timestamp: Set(100),
+            event_type: Set("Unknown".to_string()),
+            data: Set("not valid JSON".to_string()),
+            hash: Set(100),
+            ..Default::default()
+        })
+        .exec(&db.connection)
+        .await
+        .expect("corrupt legacy log is inserted");
+        for event in [
+            payload(VrcLogEvent::AppStart, 110, 101),
+            payload(
+                VrcLogEvent::WorldEnter {
+                    world_name: "Recovered World".to_string(),
+                },
+                120,
+                102,
+            ),
+            payload(
+                VrcLogEvent::InstanceJoin {
+                    world_id: "wrld_recovered".to_string(),
+                    instance_id: "wrld_recovered:1".to_string(),
+                },
+                130,
+                103,
+            ),
+            payload(VrcLogEvent::AppStop, 140, 104),
+        ] {
+            db.logs()
+                .insert_log(&event)
+                .await
+                .expect("legacy log is inserted");
+        }
+
+        db.backfill_sessions()
+            .await
+            .expect("backfill skips corrupt logs");
+
+        let sessions = db
+            .get_sessions(Some(0), Some(200))
+            .await
+            .expect("sessions load");
+        assert_eq!(sessions.len(), 1);
+        assert_eq!(sessions[0].world_name, "Recovered World");
+        let error = get_setting(&db.connection, PROJECTION_LAST_ERROR_KEY)
+            .await
+            .expect("projection error setting loads")
+            .expect("projection error is recorded");
+        assert!(error.starts_with("Skipped invalid log"));
 
         drop(db);
         std::fs::remove_dir_all(path).expect("temporary database is removed");

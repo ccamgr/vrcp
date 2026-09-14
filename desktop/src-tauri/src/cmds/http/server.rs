@@ -6,7 +6,12 @@ use local_ip_address::local_ip;
 pub async fn get_server_url(state: tauri::State<'_, Ctx>) -> Result<String, String> {
     let ip = local_ip().map_err(|e| e.to_string())?;
 
-    let port = *state.srv.port.lock().unwrap();
+    let port = state
+        .srv
+        .port
+        .lock()
+        .unwrap()
+        .ok_or_else(|| "HTTP server is not running".to_string())?;
     Ok(format!("http://{}:{}", ip, port))
 }
 
@@ -18,7 +23,7 @@ pub async fn set_server_port(state: tauri::State<'_, Ctx>, port: u16) -> Result<
         return Err("Port 0 is not allowed".to_string());
     }
     let current_port = *state.srv.port.lock().unwrap();
-    if port == current_port {
+    if current_port == Some(port) {
         return Ok(()); // 変更なし
     }
     state
@@ -33,6 +38,10 @@ pub async fn set_server_port(state: tauri::State<'_, Ctx>, port: u16) -> Result<
 #[tauri::command]
 #[specta::specta]
 pub async fn get_server_port(state: tauri::State<'_, Ctx>) -> Result<u16, String> {
-    let port = *state.srv.port.lock().unwrap();
-    Ok(port)
+    state
+        .srv
+        .port
+        .lock()
+        .unwrap()
+        .ok_or_else(|| "HTTP server is not running".to_string())
 }

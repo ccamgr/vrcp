@@ -59,8 +59,12 @@ export default function Settings() {
     }
 
     try {
-      await commands.setServerPort(portNum);
-      await message("Port settings saved.\nPlease restart the app to apply.");
+      const result = await commands.setServerPort(portNum);
+      if (result.status === "error") {
+        await message(`Failed to save: ${result.error}`);
+        return;
+      }
+      await message("Port settings saved.");
     } catch (e) {
       console.error(e);
       await message(`Failed to save: ${e}`);
@@ -82,12 +86,11 @@ export default function Settings() {
       // 2. Rustへパスを渡して書き出し実行
       const result = await commands.exportLogs(filePath);
 
-      if (typeof result === "number") {
-        await message(`Export successful!\nSaved ${result} records.`);
-      } else {
-        // Result型でラップされている場合 (bindingsの生成設定による)
-        // await message("Export complete.");
+      if (result.status === "error") {
+        await message(`Export failed: ${result.error}`);
+        return;
       }
+      await message(`Export successful!\nSaved ${result.data} records.`);
     } catch (e) {
       console.error(e);
       await message(`Export failed: ${e}`);
@@ -110,7 +113,11 @@ export default function Settings() {
 
     setIsProcessing(true);
     try {
-      await commands.deleteAllLogs();
+      const result = await commands.deleteAllLogs();
+      if (result.status === "error") {
+        await message(`Failed to clear database: ${result.error}`);
+        return;
+      }
       await message("Database cleared successfully.");
     } catch (e) {
       console.error(e);

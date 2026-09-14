@@ -17,10 +17,14 @@ export default function Analytics() {
 
   // 日付変更時にデータ取得
   useEffect(() => {
-    fetchLogsByDate(targetDate);
+    let cancelled = false;
+    fetchLogsByDate(targetDate, () => cancelled);
+    return () => {
+      cancelled = true;
+    };
   }, [targetDate]);
 
-  const fetchLogsByDate = async (dateStr: string) => {
+  const fetchLogsByDate = async (dateStr: string, isCancelled: () => boolean) => {
     setLoading(true);
     try {
       // 注意: new Date("2026-04-20") とするとUTC基準になってズレるため、ハイフンで割って手動生成します
@@ -41,14 +45,14 @@ export default function Analytics() {
       // const result = await commands.getLogs(start, end);
 
       if (result.status === "ok") {
-        setSessions(result.data);
+        if (!isCancelled()) setSessions(result.data);
       } else {
         console.error(result.error);
       }
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false);
     }
   };
 

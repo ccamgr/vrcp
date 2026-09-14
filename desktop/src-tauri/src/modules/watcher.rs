@@ -350,9 +350,14 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             }
                             _ => {}
                         }
-                        let _ = LogPayload::emit(&payload, &app);
-                        if let Err(error) = db.record_log(&payload).await {
-                            eprintln!("Failed to record watched log: {error}");
+                        match db.record_log(&payload).await {
+                            Ok(true) => {
+                                if let Err(error) = LogPayload::emit(&payload, &app) {
+                                    eprintln!("Failed to emit watched log: {error}");
+                                }
+                            }
+                            Ok(false) => {}
+                            Err(error) => eprintln!("Failed to record watched log: {error}"),
                         }
                     }
 
@@ -375,7 +380,9 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     last_timestamp: i64_to_str(last_seen_timestamp), // 💡 DB保存用に文字列化
                     last_position: current_position,
                 };
-                let _ = db.settings().save_watcher_state(&state).await;
+                if let Err(error) = db.settings().save_watcher_state(&state).await {
+                    eprintln!("Failed to save watcher state: {error}");
+                }
                 last_db_sync = Instant::now();
             }
         }
@@ -402,12 +409,14 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     }
 
                     if let Some(path) = &current_log_path {
-                        let _ = db.settings().save_watcher_state(&WatcherState {
+                        if let Err(error) = db.settings().save_watcher_state(&WatcherState {
                             log_path: path.to_string_lossy().to_string(),
                             is_running: false,
-                            last_timestamp: i64_to_str(last_seen_timestamp), // 💡 DB保存用に文字列化
+                            last_timestamp: i64_to_str(last_seen_timestamp),
                             last_position: 0,
-                        }).await;
+                        }).await {
+                            eprintln!("Failed to save watcher state after log rotation: {error}");
+                        }
                     }
 
                     if let Some(path) = latest {

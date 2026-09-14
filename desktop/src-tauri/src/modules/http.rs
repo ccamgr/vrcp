@@ -4,52 +4,58 @@ use axum::{
     routing::get,
     Json, Router,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::CorsLayer;
 
 use crate::db::DB;
 
 use super::watcher::LogPayload;
 
 pub const SERVER_PORT: u16 = 8727;
+const DEFAULT_LOG_PAGE_SIZE: u64 = 1_000;
+const MAX_LOG_PAGE_SIZE: u64 = 1_000;
 
 pub struct HttpSrv {
     pub handle: Mutex<Option<JoinHandle<()>>>,
-    pub port: Mutex<u16>,
-    pub running: Mutex<bool>,
+    pub port: Mutex<Option<u16>>,
 }
 
 impl HttpSrv {
-    pub fn new(db: DB) -> Self {
-        let handle = spawn_server(db.clone());
-        Self {
-            handle: Mutex::new(Some(handle)),
-            port: Mutex::new(SERVER_PORT),
-            running: Mutex::new(false),
+    pub async fn new(db: DB) -> Self {
+        let configured_port = configured_port(&db).await;
+        match spawn_server(db, configured_port).await {
+            Ok(handle) => Self {
+                handle: Mutex::new(Some(handle)),
+                port: Mutex::new(Some(configured_port)),
+            },
+            Err(error) => {
+                eprintln!("Failed to start HTTP server: {error}");
+                Self {
+                    handle: Mutex::new(None),
+                    port: Mutex::new(None),
+                }
+            }
         }
     }
+
     pub async fn restart(&self, db: DB, new_port: u16) -> Result<(), String> {
-        // 1. Save new port to DB first so spawn_server can read it
-        db.settings()
+        let new_handle = spawn_server(db.clone(), new_port).await?;
+        if let Err(error) = db
+            .settings()
             .set_setting("port", &new_port.to_string())
             .await
-            .map_err(|e| format!("Failed to save new port to DB: {}", e))?;
-
-        // 2. Kill the old server task if it exists
-        if let Some(handle) = self.handle.lock().unwrap().take() {
-            handle.abort();
-            println!("Old HTTP server task aborted.");
+        {
+            new_handle.abort();
+            return Err(format!("Failed to save new port to DB: {error}"));
         }
 
-        // 3. Update the in-memory port
-        *self.port.lock().unwrap() = new_port;
-
-        // 4. Spawn a new server and save the new handle
-        let new_handle = spawn_server(db);
-        *self.handle.lock().unwrap() = Some(new_handle);
+        if let Some(handle) = self.handle.lock().unwrap().replace(new_handle) {
+            handle.abort();
+        }
+        *self.port.lock().unwrap() = Some(new_port);
         Ok(())
     }
 }
@@ -61,19 +67,42 @@ struct LogParams {
     /// Optional: if missing, returns all logs (or you can set a default limit).
     start: Option<i64>,
     end: Option<i64>,
+    cursor: Option<String>,
+    limit: Option<u64>,
+}
+
+#[derive(Serialize)]
+struct LogPage {
+    logs: Vec<LogPayload>,
+    #[serde(rename = "nextCursor")]
+    next_cursor: Option<String>,
 }
 
 /// Handler for GET /logs
 async fn handle_get_logs(
     State(db): State<DB>,
     Query(params): Query<LogParams>,
-) -> Result<Json<Vec<LogPayload>>, StatusCode> {
+) -> Result<Json<LogPage>, StatusCode> {
+    let cursor = match params.cursor.as_deref().map(parse_cursor).transpose() {
+        Ok(cursor) => cursor,
+        Err(error) => {
+            eprintln!("Invalid log page cursor: {error}");
+            return Err(StatusCode::BAD_REQUEST);
+        }
+    };
+    let limit = params
+        .limit
+        .unwrap_or(DEFAULT_LOG_PAGE_SIZE)
+        .clamp(1, MAX_LOG_PAGE_SIZE);
     match db
         .logs()
-        .get_session_expanded_logs(params.start.as_ref(), params.end.as_ref())
+        .get_logs_page(params.start, params.end, cursor, limit)
         .await
     {
-        Ok(logs) => Ok(Json(logs)),
+        Ok((logs, next_cursor)) => Ok(Json(LogPage {
+            logs,
+            next_cursor: next_cursor.map(|(timestamp, id)| format!("{timestamp}:{id}")),
+        })),
         Err(e) => {
             eprintln!("Failed to fetch logs from DB: {}", e);
             Err(StatusCode::INTERNAL_SERVER_ERROR)
@@ -81,38 +110,54 @@ async fn handle_get_logs(
     }
 }
 
-/// Start the HTTP server in a background task
-pub fn spawn_server(db: DB) -> JoinHandle<()> {
-    tauri::async_runtime::spawn(async move {
-        // Read port from settings
-        let port_str = db.settings().get_setting("port").await.unwrap_or(None);
-        let port: u16 = port_str
-            .as_deref()
-            .unwrap_or(&SERVER_PORT.to_string())
+fn parse_cursor(cursor: &str) -> Result<(i64, i32), String> {
+    let (timestamp, id) = cursor
+        .split_once(':')
+        .ok_or_else(|| "cursor must contain a timestamp and row id".to_string())?;
+    Ok((
+        timestamp
             .parse()
-            .unwrap_or(SERVER_PORT);
-        let cors = CorsLayer::new()
-            .allow_origin([
-                "http://localhost"
-                    .parse::<axum::http::HeaderValue>()
-                    .unwrap(),
-                "http://localhost:8081"
-                    .parse::<axum::http::HeaderValue>()
-                    .unwrap(),
-            ])
-            .allow_methods(Any)
-            .allow_headers(Any);
+            .map_err(|_| "cursor timestamp is invalid".to_string())?,
+        id.parse()
+            .map_err(|_| "cursor row id is invalid".to_string())?,
+    ))
+}
 
-        let app = Router::new()
-            .route("/logs", get(handle_get_logs))
-            .with_state(db) // Share the DB instance with handlers
-            .layer(cors); // Restrict CORS instead of permissive
+async fn configured_port(db: &DB) -> u16 {
+    db.settings()
+        .get_setting("port")
+        .await
+        .ok()
+        .flatten()
+        .and_then(|value| value.parse().ok())
+        .filter(|port| *port != 0)
+        .unwrap_or(SERVER_PORT)
+}
 
-        // Listen on 0.0.0.0 to accept connections from LAN (Mobile)
-        let addr = SocketAddr::from(([0, 0, 0, 0], port));
-        println!("HTTP Server listening on http://{}", addr);
+async fn spawn_server(db: DB, port: u16) -> Result<JoinHandle<()>, String> {
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .map_err(|error| format!("Failed to bind HTTP server on port {port}: {error}"))?;
+    let cors = CorsLayer::new()
+        .allow_origin([
+            "http://localhost"
+                .parse::<axum::http::HeaderValue>()
+                .expect("localhost is a valid origin"),
+            "http://localhost:8081"
+                .parse::<axum::http::HeaderValue>()
+                .expect("localhost origin is valid"),
+        ])
+        .allow_methods([axum::http::Method::GET]);
+    let app = Router::new()
+        .route("/logs", get(handle_get_logs))
+        .with_state(db)
+        .layer(cors);
 
-        let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-        axum::serve(listener, app).await.unwrap();
-    })
+    println!("HTTP Server listening on http://{addr}");
+    Ok(tauri::async_runtime::spawn(async move {
+        if let Err(error) = axum::serve(listener, app).await {
+            eprintln!("HTTP server stopped unexpectedly: {error}");
+        }
+    }))
 }

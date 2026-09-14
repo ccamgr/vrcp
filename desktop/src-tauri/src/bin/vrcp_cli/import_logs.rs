@@ -32,8 +32,8 @@ pub async fn import_logs(identifier: String, files: Vec<String>) {
 
         println!("Processing: {:?}", path);
         match process_file(path, &db).await {
-            Ok((count, ecount)) => {
-                println!("  -> Imported {} lines. ({} skipped)", count, ecount);
+            Ok((count, skipped, ecount)) => {
+                println!("  -> Imported {count} lines. ({skipped} duplicates, {ecount} errors)");
                 total_imported += count;
             }
             Err(e) => eprintln!("  -> Error processing file: {}", e),
@@ -47,10 +47,11 @@ pub async fn import_logs(identifier: String, files: Vec<String>) {
     println!("Done! Total imported lines: {}", total_imported);
 }
 
-async fn process_file(path: &Path, db: &DB) -> Result<(i32, i32), Box<dyn std::error::Error>> {
+async fn process_file(path: &Path, db: &DB) -> Result<(i32, i32, i32), Box<dyn std::error::Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let mut count = 0;
+    let mut skipped = 0;
     let mut ecount = 0;
 
     // トランザクションを使うと高速ですが、今回はシンプルに1行ずつ処理
@@ -62,7 +63,8 @@ async fn process_file(path: &Path, db: &DB) -> Result<(i32, i32), Box<dyn std::e
         // watcherのリファクタリングした関数を使用
         if let Some(payload) = parse_log_line(&line) {
             match db.record_log(&payload).await {
-                Ok(()) => count += 1,
+                Ok(true) => count += 1,
+                Ok(false) => skipped += 1,
                 Err(error) => {
                     eprintln!("\tinsert error: {error}");
                     ecount += 1;
@@ -71,5 +73,5 @@ async fn process_file(path: &Path, db: &DB) -> Result<(i32, i32), Box<dyn std::e
         }
     }
 
-    Ok((count, ecount))
+    Ok((count, skipped, ecount))
 }

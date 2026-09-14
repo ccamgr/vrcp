@@ -50,7 +50,6 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec!["--minimized"]), // with minimize on auto-start
         ))
-        .plugin(tauri_plugin_opener::init())
         .invoke_handler(builder.invoke_handler())
         .on_window_event(|window, event| {
             modules::systray::handle_window_event(window, event);
@@ -84,7 +83,7 @@ pub fn run() {
             // ログ監視開始
             let watcher = modules::watcher::spawn_log_watcher(app.handle().clone(), db.clone());
             // http srv 起動
-            let srv = modules::http::HttpSrv::new(db.clone());
+            let srv = tauri::async_runtime::block_on(modules::http::HttpSrv::new(db.clone()));
             // 常駐化設定
             modules::systray::setup_tray(app.handle())?;
 

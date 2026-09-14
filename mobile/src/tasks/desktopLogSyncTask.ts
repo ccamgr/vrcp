@@ -12,9 +12,10 @@ TaskManager.defineTask(DESKTOP_LOG_SYNC_TASK_NAME, async () => {
 
   try {
     // Retrieve the desktop app URL from storage directly
-    const desktopUrl = await StorageWrapper.getItemAsync("otherOptions_desktopAppURL");
+    const storedDesktopUrl = await StorageWrapper.getItemAsync("otherOptions_desktopAppURL");
+    const desktopUrl = storedDesktopUrl ? JSON.parse(storedDesktopUrl) : null;
 
-    if (!desktopUrl) {
+    if (typeof desktopUrl !== "string" || !desktopUrl) {
       console.log("[Desktop Log Sync Task] Desktop URL not configured. Skipping sync.");
       return BackgroundTask.BackgroundTaskResult.Success;
     }

@@ -115,6 +115,59 @@ impl LogsRepository {
         Ok(payloads)
     }
 
+    pub async fn get_logs_page(
+        &self,
+        start_timestamp: Option<i64>,
+        end_timestamp: Option<i64>,
+        cursor: Option<(i64, i32)>,
+        limit: u64,
+    ) -> Result<(Vec<LogPayload>, Option<(i64, i32)>), DbErr> {
+        let start = start_timestamp.unwrap_or(i64::MIN);
+        let end = end_timestamp.unwrap_or(i64::MAX);
+        let mut query = logs::Entity::find()
+            .filter(logs::Column::Timestamp.gte(start))
+            .filter(logs::Column::Timestamp.lte(end));
+        if let Some((timestamp, id)) = cursor {
+            query = query.filter(
+                Condition::any()
+                    .add(logs::Column::Timestamp.gt(timestamp))
+                    .add(
+                        Condition::all()
+                            .add(logs::Column::Timestamp.eq(timestamp))
+                            .add(logs::Column::Id.gt(id)),
+                    ),
+            );
+        }
+        let mut rows = query
+            .order_by_asc(logs::Column::Timestamp)
+            .order_by_asc(logs::Column::Id)
+            .limit(limit + 1)
+            .all(&self.db)
+            .await?;
+        let has_next_page = rows.len() as u64 > limit;
+        if has_next_page {
+            rows.pop();
+        }
+        let next_cursor = if has_next_page {
+            rows.last().map(|row| (row.timestamp, row.id))
+        } else {
+            None
+        };
+        let payloads = rows
+            .into_iter()
+            .map(|row| {
+                let event = serde_json::from_str(&row.data)
+                    .map_err(|error| DbErr::Custom(format!("JSON Parse Error: {error}")))?;
+                Ok(LogPayload {
+                    event,
+                    timestamp: row.timestamp,
+                    hash: row.hash,
+                })
+            })
+            .collect::<Result<Vec<_>, DbErr>>()?;
+        Ok((payloads, next_cursor))
+    }
+
     pub async fn delete_all_logs(&self) -> Result<(), DbErr> {
         logs::Entity::delete_many().exec(&self.db).await?;
 

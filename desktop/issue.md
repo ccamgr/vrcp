@@ -2,11 +2,22 @@
 
 2026-09-14 に、Desktop（Tauri/Rust/React）のコード規約、セキュリティ、DB/API 設計、ロジックおよびパフォーマンスを読み取り専用でレビューした記録です。優先度は P1（優先対応）、P2（早期対応）、P3（改善候補）です。
 
+## 対応状況
+
+- 対応済み: session projection の破損ログ耐性・読み取り準備待ち、HTTP port の起動／切替失敗処理、HTTP log paging、session 取得の N+1、watcher と UI のログ整合性、Monitor の表示上限、Settings の command 結果判定、session/log 検索 index、CSP/capability 最小化、OS 資格情報ストアへの Cookie 移行、CLI import 件数。
+- 保留: LAN API 認証、export のストリーミング、Windows の実機資格情報ストア検証、旧 raw-log 書込み API の整理。
+
+## 保留（仕様検討が必要）
+
+| 観点 | 指摘 | 方針 |
+| --- | --- | --- |
+| Security / API | LAN 向け HTTP API の無認証アクセス | 現状の Mobile との互換性を維持するため、現時点では変更しない。QR による token pairing、token の失効・再発行、旧 Mobile の移行方針を決めた後に対応する。 |
+| Security / Test | Windows Credential Manager の実機確認 | Linux 上では keyring 保存層の compile/test までを確認する。Windows runner または実機で、Cookie の保存・再起動後の読出し・logout 時の削除・旧 `cookies.json` からの移行を確認して完了とする。 |
+
 ## P1
 
 | 観点 | 指摘 | 対象 |
 | --- | --- | --- |
-| Security / API | LAN 向け HTTP サーバーが `0.0.0.0` で listen し、`GET /logs` に認証・ペアリング・レート制限がない。CORS はネイティブクライアントや curl を防がないため、同一 LAN の任意端末がユーザー ID、名前、ワールド、活動時刻を取得できる。 | `src-tauri/src/modules/http.rs:67`, `src-tauri/src/modules/http.rs:111` |
 | Security | VRChat の認証 Cookie を平文の `cookies.json` として保存しており、明示的な所有者限定パーミッションもない。端末の他ユーザーやバックアップ経由で露出した場合、セッション悪用につながる。 | `src-tauri/src/modules/vrcapi.rs:60` |
 | DB / Reliability | 保存済みログに壊れた JSON・未知のイベントが 1 件あると、session projection のバックフィルがその行で永続的に停止する。checkpoint は進まず、部分投影を UI が正常データとして読み得る。 | `src-tauri/src/db/repositories/sessions.rs:68`, `src-tauri/src/db/repositories/sessions.rs:109` |
 | API / Reliability | 保存済み port で HTTP サーバーを起動しても、メモリ上の port は常に `8727` で初期化されるため、再起動後に実際の listen port とモバイルへ返す URL が不一致になる。 | `src-tauri/src/modules/http.rs:25`, `src-tauri/src/cmds/http/server.rs:9` |

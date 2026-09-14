@@ -14,6 +14,7 @@ interface LogContextType {
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined);
+const MAX_VISIBLE_LOGS = 1_000;
 
 export function LogProvider({ children }: { children: ReactNode }) {
   const [logs, setLogs] = useState<LogPayload[]>([]);
@@ -38,7 +39,7 @@ export function LogProvider({ children }: { children: ReactNode }) {
 
     // 2. ログ監視開始
     const unlistenPromise = events.logPayload.listen((event) => {
-      setLogs((prev) => [...prev, event.payload]);
+      setLogs((prev) => [...prev, event.payload].slice(-MAX_VISIBLE_LOGS));
     });
 
     return () => {

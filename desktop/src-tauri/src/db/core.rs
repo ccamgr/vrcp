@@ -62,15 +62,18 @@ impl DB {
         SessionsRepository::new(self.connection.clone())
     }
 
-    pub async fn record_log(&self, payload: &crate::modules::watcher::LogPayload) -> DbResult<()> {
-        let rebuild_required = {
+    pub async fn record_log(
+        &self,
+        payload: &crate::modules::watcher::LogPayload,
+    ) -> DbResult<bool> {
+        let result = {
             let _guard = self.projection_lock.lock().await;
             self.sessions().record_log(payload).await?
         };
-        if rebuild_required {
+        if result.rebuild_required {
             self.backfill_sessions().await?;
         }
-        Ok(())
+        Ok(result.inserted)
     }
 
     pub async fn backfill_sessions(&self) -> DbResult<()> {
@@ -83,6 +86,7 @@ impl DB {
         start: Option<i64>,
         end: Option<i64>,
     ) -> Result<Vec<crate::cmds::vrclog::sessions::SessionPayload>, DbErr> {
+        self.backfill_sessions().await?;
         let _guard = self.projection_lock.lock().await;
         self.sessions().get_sessions(start, end).await
     }
