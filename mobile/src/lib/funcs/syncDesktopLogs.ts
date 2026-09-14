@@ -77,3 +77,7 @@ export async function getLastSyncTime(): Promise<number | null> {
   }
   return null;
 }
+
+export async function clearLastSyncTime(): Promise<void> {
+  await StorageWrapper.removeItemAsync(LAST_SYNC_KEY);
+}

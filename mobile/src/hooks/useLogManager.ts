@@ -1,6 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useSetting } from "@/contexts/SettingContext";
-import { syncDesktopLogs, getLastSyncTime } from "@/lib/funcs/syncDesktopLogs";
+import {
+  clearLastSyncTime,
+  getLastSyncTime,
+  syncDesktopLogs,
+} from "@/lib/funcs/syncDesktopLogs";
 import { logsRepo } from "@/db/repogitories";
 import { LogPayload } from "@/generated/desktopapi/type";
 import * as Network from 'expo-network';
@@ -11,6 +15,7 @@ export const useLogManager = () => {
   // Sync state
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState<string>("");
+  const syncInFlightRef = useRef(false);
 
   // Stats state
   const [logStats, setLogStats] = useState<{ count: number } | null>(null);
@@ -28,6 +33,7 @@ export const useLogManager = () => {
   // Clear all logs
   const clearLogs = useCallback(async () => {
     try {
+      await clearLastSyncTime();
       await logsRepo.deleteAll();
       await measureLogs(); // Refresh count after deletion
     } catch (error) {
@@ -38,18 +44,20 @@ export const useLogManager = () => {
 
   // Sync logs
   const syncLogs = useCallback(async (isFullSync: boolean = false) => {
+    if (syncInFlightRef.current) return;
+
+    syncInFlightRef.current = true;
     setIsSyncing(true);
     setSyncProgress("Starting sync...");
     console.log("Initiating log sync with desktop app...");
 
-    const networkState = await Network.getNetworkStateAsync();
-    if (!networkState.isConnected) {
-      setSyncProgress("No network connection. Please connect to the internet and try again.");
-      setIsSyncing(false);
-      return;
-    }
-
     try {
+      const networkState = await Network.getNetworkStateAsync();
+      if (!networkState.isConnected) {
+        setSyncProgress("No network connection. Please connect to the internet and try again.");
+        return;
+      }
+
       await syncDesktopLogs(
         settings.otherOptions_desktopAppURL || "",
         isFullSync,
@@ -61,6 +69,7 @@ export const useLogManager = () => {
     } catch (error) {
       throw error;
     } finally {
+      syncInFlightRef.current = false;
       setIsSyncing(false);
     }
   }, [settings.otherOptions_desktopAppURL, measureLogs]);

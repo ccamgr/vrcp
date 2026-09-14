@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 
-const SYNC_INTERVAL = 10 * 1000; // 5分
+const SYNC_INTERVAL = 5 * 60 * 1000;
 
 export default function Analytics() {
   const theme = useTheme();
@@ -81,8 +81,12 @@ export default function Analytics() {
           const lastSyncTime = await getLastSync();
           const now = Date.now();
           if (!lastSyncTime || now - lastSyncTime > SYNC_INTERVAL) {
-            await syncLogs(false);
-            if (isMounted) await fetchLogs(true);
+            try {
+              await syncLogs(false);
+              if (isMounted) await fetchLogs(true);
+            } catch (error) {
+              console.error("Automatic log sync failed:", error);
+            }
           }
         }
       };

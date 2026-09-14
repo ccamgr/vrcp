@@ -89,26 +89,39 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         return "error"; // no supported 2FA method
       } else if (res.data.id) {
         console.log("Login successful");
-        // save user data to storage
-        StorageWrapper.setItemAsync("auth_user_id", res.data.id);
-        StorageWrapper.setItemAsync(
-          "auth_user_displayName",
-          res.data.displayName,
-        );
-        StorageWrapper.setItemAsync("auth_user_icon", res.data.userIcon);
-
-        if (param.saveSecret) {
-          SecureStore.setItemAsync("auth_secret_username", param.username);
-          SecureStore.setItemAsync("auth_secret_password", param.password);
-        } else {
-          SecureStore.deleteItemAsync("auth_secret_username");
-          SecureStore.deleteItemAsync("auth_secret_password");
-        }
-
         const authCookie = extractAuthCookie(res.headers?.["set-cookie"]?.[0]);
         const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
-        if (authCookie) SecureStore.setItemAsync("auth_authCookie", authCookie);
-        if (tfaCookie) SecureStore.setItemAsync("auth_2faCookie", tfaCookie);
+
+        try {
+          await StorageWrapper.multiSet([
+            ["auth_user_id", res.data.id],
+            ["auth_user_displayName", res.data.displayName],
+            ["auth_user_icon", res.data.userIcon],
+          ]);
+
+          if (param.saveSecret) {
+            await Promise.all([
+              SecureStore.setItemAsync("auth_secret_username", param.username),
+              SecureStore.setItemAsync("auth_secret_password", param.password),
+            ]);
+          } else {
+            await Promise.all([
+              SecureStore.deleteItemAsync("auth_secret_username"),
+              SecureStore.deleteItemAsync("auth_secret_password"),
+            ]);
+          }
+
+          await Promise.all([
+            authCookie
+              ? SecureStore.setItemAsync("auth_authCookie", authCookie)
+              : Promise.resolve(),
+            tfaCookie
+              ? SecureStore.setItemAsync("auth_2faCookie", tfaCookie)
+              : Promise.resolve(),
+          ]);
+        } catch (error) {
+          console.error("Failed to persist authentication data", extractErrMsg(error));
+        }
 
         if (authCookie) {
           vrc.configurePipeline(authCookie); // set auth cookie to pipeline
@@ -192,6 +205,8 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     // [ToDo] use SecureStore of expo
     await SecureStore.deleteItemAsync("auth_authCookie");
     await SecureStore.deleteItemAsync("auth_2faCookie");
+    await SecureStore.deleteItemAsync("auth_secret_username");
+    await SecureStore.deleteItemAsync("auth_secret_password");
     setUser(undefined);
     console.log("Logged out successfully");
     setIsLoading(false);
@@ -204,7 +219,6 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         SecureStore.getItemAsync("auth_secret_username"),
         SecureStore.getItemAsync("auth_secret_password"),
       ]);
-      console.log("Auto login : ", secret[0]);
       if (!secret[0] || !secret[1]) {
         console.log("No secret found for auto login");
         setIsLoading(false);

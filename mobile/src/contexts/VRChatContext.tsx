@@ -91,6 +91,15 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const MAX_RECONNECT_ATTEMPTS = 10;
   const reconnectAttemptsRef = useRef(0);
   const shouldReconnectRef = useRef(true);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const socketGenerationRef = useRef(0);
+
+  const clearReconnectTimer = () => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
+  };
 
   const configureAPI = (user: { username?: string; password?: string }) => {
     const newConfig = new Configuration({
@@ -110,13 +119,12 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     authTokenRef.current = authToken;
     shouldReconnectRef.current = true;
     createSocket();
-    console.log(
-      "Configure VRChatContext with authToken:",
-      authTokenRef.current,
-    );
+    console.log("Configure VRChatContext pipeline");
   };
 
   const createSocket = () => {
+    clearReconnectTimer();
+    const generation = ++socketGenerationRef.current;
     if (pipelineRef.current) {
       pipelineRef.current.close();
       pipelineRef.current = null;
@@ -128,6 +136,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     });
 
     pipelineRef.current.onmessage = (event) => {
+      if (generation !== socketGenerationRef.current) return;
       try {
         const raw = JSON.parse(event.data) as PipelineRawMessage;
         if (
@@ -148,32 +157,40 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         };
         setLastJsonMessage(parsed);
       } catch (e) {
-        console.log("Failed to parse pipeline message:", event.data);
+        console.log("Failed to parse pipeline message");
       }
     };
     pipelineRef.current.onopen = () => {
+      if (generation !== socketGenerationRef.current) return;
       console.log("Pipeline connected");
       reconnectAttemptsRef.current = 0;
     };
     pipelineRef.current.onclose = (event) => {
+      if (generation !== socketGenerationRef.current) return;
       console.log("Pipeline closed:", event.reason);
-    };
-    pipelineRef.current.onerror = (error) => {
-      console.log("Pipeline error:", error);
-      // try reconnect
       if (
         shouldReconnectRef.current &&
         reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS
       ) {
         const timeout = Math.pow(2, reconnectAttemptsRef.current) * 1000; // exponential backoff
         console.log(`Reconnecting in ${timeout / 1000} seconds...`);
-        setTimeout(() => {
+        reconnectTimerRef.current = setTimeout(() => {
+          if (
+            generation !== socketGenerationRef.current ||
+            !shouldReconnectRef.current
+          ) {
+            return;
+          }
           reconnectAttemptsRef.current += 1;
           createSocket();
         }, timeout);
       } else {
         console.log("Max reconnect attempts reached. Giving up.");
       }
+    };
+    pipelineRef.current.onerror = (error) => {
+      if (generation !== socketGenerationRef.current) return;
+      console.log("Pipeline error:", error);
     };
   };
 
@@ -182,6 +199,8 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     setConfig(undefined);
     authTokenRef.current = null;
     shouldReconnectRef.current = false;
+    socketGenerationRef.current += 1;
+    clearReconnectTimer();
     if (pipelineRef.current) {
       pipelineRef.current.close();
       pipelineRef.current = null;

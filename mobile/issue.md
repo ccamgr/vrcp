@@ -2,6 +2,13 @@
 
 2026-09-14 に、Mobile（Expo/React Native/Drizzle）のコード規約、セキュリティ、DB/API 設計、ロジックおよびパフォーマンスを読み取り専用でレビューした記録です。優先度は P1（優先対応）、P2（早期対応）、P3（改善候補）です。
 
+## 仕様として保留
+
+| 観点 | 指摘 | 方針 |
+| --- | --- | --- |
+| Security / API | Desktop 接続 URL の接続先が無制限 | 手入力・QR で任意 URL を接続先として使える現行仕様を維持する。接続先 allowlist は導入しない。 |
+| Security / Feedback | `EXPO_PUBLIC_*` に Discord webhook を置く | Discord 側の受信 action を使う現行構成を維持する。配布 bundle から URL を抽出できる点と、第三者が webhook を呼び出せる点は受容する。 |
+
 ## P1
 
 | 観点 | 指摘 | 対象 |

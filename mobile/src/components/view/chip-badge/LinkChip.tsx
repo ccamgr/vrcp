@@ -14,8 +14,15 @@ const LinkChip = ({ url, text }: Props) => {
     <IconButton
       name="link"
       size={fontSize.large}
-      onPress={() => {
-        if (url) Linking.openURL(url);
+      onPress={async () => {
+        if (!url) return;
+        try {
+          const parsed = new URL(url);
+          if (parsed.protocol !== "https:") return;
+          await Linking.openURL(parsed.toString());
+        } catch {
+          return;
+        }
       }}
     >
       <Text
