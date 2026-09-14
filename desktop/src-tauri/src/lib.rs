@@ -2,6 +2,11 @@ pub mod cmds;
 pub mod db;
 pub mod modules;
 pub mod utils;
+use std::{
+    fs::{self, OpenOptions},
+    io::Write,
+    time::{SystemTime, UNIX_EPOCH},
+};
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 
@@ -10,6 +15,36 @@ pub struct Ctx {
     srv: modules::HttpSrv,
     watcher: modules::WatcherService,
     vrcapi: modules::VrcApiService,
+}
+
+pub(crate) fn append_startup_error(message: &str) {
+    let Some(data_dir) = dirs::data_local_dir() else {
+        return;
+    };
+    let log_dir = data_dir.join("VRCP");
+    if fs::create_dir_all(&log_dir).is_err() {
+        return;
+    }
+
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or_default();
+    if let Ok(mut file) = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(log_dir.join("startup-error.log"))
+    {
+        let _ = writeln!(file, "[{timestamp}] {message}");
+    }
+}
+
+fn install_startup_panic_hook() {
+    let default_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |panic_info| {
+        append_startup_error(&format!("panic: {panic_info}"));
+        default_hook(panic_info);
+    }));
 }
 
 // ---------------------------------------------------------
@@ -42,9 +77,10 @@ pub fn create_specta_builder() -> SpectaBuilder {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    install_startup_panic_hook();
     let builder = create_specta_builder();
 
-    tauri::Builder::default()
+    let result = tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
@@ -110,6 +146,9 @@ pub fn run() {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .run(tauri::generate_context!());
+
+    if let Err(error) = result {
+        append_startup_error(&format!("Tauri runtime error: {error}"));
+    }
 }

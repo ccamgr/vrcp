@@ -29,7 +29,16 @@ impl VrcApiService {
 
         let cookie_path = app_dir.join("cookies.json");
 
-        let cookie_store = load_cookie_store(&cookie_path)?;
+        let cookie_store = match load_cookie_store(&cookie_path) {
+            Ok(store) => store,
+            Err(error) => {
+                let message =
+                    format!("Failed to load cookies from the OS credential store: {error}");
+                eprintln!("{message}");
+                crate::append_startup_error(&message);
+                reqwest_cookie_store::CookieStore::default()
+            }
+        };
 
         let cookie_store = Arc::new(CookieStoreMutex::new(cookie_store));
 
