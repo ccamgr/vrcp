@@ -31,7 +31,7 @@ Desktop アプリは、VRChat の生ログを読むたびにセッション情�
 | `id` | Integer PK | セッション ID |
 | `start_time` | BigInt | `AppStart` の時刻（ms） |
 | `end_time` | BigInt nullable | 終了時刻。未終了時は `NULL` |
-| `last_event_time` | BigInt | この app session 内で処理した最終ログ時刻 |
+| `last_event_time` | BigInt | この app session の最終確認ログ時刻 |
 | `is_graceful` | Boolean nullable | 通常終了は `true`、異常終了は `false`、未終了は `NULL` |
 | `user_id` | String nullable | `Login` で確定する自身のユーザー ID |
 | `username` | String nullable | `Login` で確定する表示名 |
@@ -47,7 +47,7 @@ Desktop アプリは、VRChat の生ログを読むたびにセッション情�
 | `instance_id` | String | VRChat instance ID |
 | `start_time` | BigInt | `InstanceJoin` の時刻（ms） |
 | `end_time` | BigInt nullable | 終了時刻。未終了時は `NULL` |
-| `last_event_time` | BigInt | この instance session 内で処理した最終ログ時刻 |
+| `last_event_time` | BigInt | この instance session の最終確認ログ時刻 |
 | `is_graceful` | Boolean nullable | 正常な切替・終了は `true`、異常終了は `false`、未終了は `NULL` |
 
 ### `user_sessions`
@@ -71,7 +71,7 @@ Desktop アプリは、VRChat の生ログを読むたびにセッション情�
 
 ### 共通の書き込み入口
 
-Watcher と CLI import は、共通の `record_log` 相当の DB API だけを使用する。この API は次を単一トランザクションで実行する。
+Watcher と CLI import は、共通の `record_log` 相当の DB API を使用する。Watcher はこれに加え、セッション状態を変えないタイムスタンプ付きログ行を受けたときだけ、現在のセッションの最終確認時刻を更新する。この API は次を単一トランザクションで実行する。
 
 1. `logs` へ挿入する。ハッシュ重複なら後続処理を行わない。
 2. 新規ログをセッション投影へ適用する。
@@ -100,7 +100,7 @@ Watcher と CLI import は、共通の `record_log` 相当の DB API だけを�
 
 ### 時系列と並行処理
 
-投影順は `(timestamp, logs.id)` の昇順とする。進捗には同じ組を保存し、同時時刻のログも安定して再生する。各受理イベントで、現在の app session と instance session の `last_event_time` を単調に更新する。これにより、異常終了時に別 session のログ時刻を誤用しない。
+投影順は `(timestamp, logs.id)` の昇順とする。進捗には同じ組を保存し、同時時刻のログも安定して再生する。各受理イベントで、現在の app session と instance session の `last_event_time` を単調に更新する。さらに Watcher は、セッション状態を変えないタイムスタンプ付きログ行でも、現在の app session と instance session の `last_event_time` を単調に更新する。これにより、異常終了時に別 session のログ時刻を誤用せず、最後に確認できたログ時刻を終了時刻として使える。
 
 CLI import やログローテーションにより、既に投影したログより古いログが新規挿入される場合がある。その場合は差分適用せず、投影を `rebuild_required` にし、全生ログから再構築する。これにより時系列が逆転した状態を永続化しない。
 
@@ -155,3 +155,4 @@ CLI import やログローテーションにより、既に投影したログよ
 8. `SessionPayload` の world、instance、username、players、intervals、duration が既存形式と一致すること。
 9. `get_logs`、`export_logs`、HTTP `/logs` が既存 JSON の `InvalidAppStop` を返せること。
 10. `start > end`、範囲境界ちょうど、DST 日、親不在イベント、重複 Join / Left が安全に扱われること。
+11. セッション状態を変えないタイムスタンプ付きログ行の後、次の `AppStart` による異常終了の終了時刻が、その最終ログ時刻になること。

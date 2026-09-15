@@ -81,6 +81,11 @@ impl DB {
         self.sessions().backfill().await
     }
 
+    pub async fn touch_active_session(&self, timestamp: i64) -> DbResult<()> {
+        let _guard = self.projection_lock.lock().await;
+        self.sessions().touch_active_session(timestamp).await
+    }
+
     pub async fn get_sessions(
         &self,
         start: Option<i64>,

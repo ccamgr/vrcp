@@ -154,6 +154,16 @@ impl SessionsRepository {
         set_setting(&self.db, PROJECTION_STATUS_KEY, "complete").await
     }
 
+    pub async fn touch_active_session(&self, timestamp: i64) -> Result<(), DbErr> {
+        let txn = self.db.begin().await?;
+        if let Some(app) = touch_active_app(&txn, timestamp).await? {
+            if let Some(instance) = active_instance(&txn, app.id).await? {
+                touch_instance(&txn, instance, timestamp).await?;
+            }
+        }
+        txn.commit().await
+    }
+
     pub async fn delete_all(&self) -> Result<(), DbErr> {
         let txn = self.db.begin().await?;
         user_sessions::Entity::delete_many().exec(&txn).await?;
@@ -714,6 +724,74 @@ mod tests {
         assert_eq!(app.is_graceful, Some(true));
 
         drop(db);
+        std::fs::remove_dir_all(path).expect("temporary database is removed");
+    }
+
+    #[tokio::test]
+    async fn closes_an_unfinished_session_when_the_next_app_start_is_recorded() {
+        let path = temporary_database_path("crash-recovery");
+        let db = DB::new(path.clone()).await.expect("database opens");
+        for event in [
+            payload(VrcLogEvent::AppStart, 100, 201),
+            payload(
+                VrcLogEvent::WorldEnter {
+                    world_name: "Crash Recovery World".to_string(),
+                },
+                110,
+                202,
+            ),
+            payload(
+                VrcLogEvent::InstanceJoin {
+                    world_id: "wrld_crash_recovery".to_string(),
+                    instance_id: "wrld_crash_recovery:1".to_string(),
+                },
+                120,
+                203,
+            ),
+            payload(
+                VrcLogEvent::PlayerJoin {
+                    player_name: "Friend".to_string(),
+                    user_id: "usr_friend".to_string(),
+                },
+                130,
+                204,
+            ),
+        ] {
+            db.record_log(&event).await.expect("event is recorded");
+        }
+        db.backfill_sessions()
+            .await
+            .expect("session projection is complete");
+        db.touch_active_session(140)
+            .await
+            .expect("activity timestamp is recorded");
+        drop(db);
+
+        let recovered_db = DB::new(path.clone()).await.expect("database reopens");
+        recovered_db
+            .record_log(&payload(VrcLogEvent::AppStart, 200, 205))
+            .await
+            .expect("next app start is recorded");
+
+        let sessions = recovered_db
+            .get_sessions(Some(0), Some(300))
+            .await
+            .expect("sessions load");
+        assert_eq!(sessions.len(), 1);
+        assert_eq!(sessions[0].end_time, 140);
+        assert_eq!(sessions[0].players[0].intervals[0].end, 140);
+
+        let apps = app_sessions::Entity::find()
+            .order_by_asc(app_sessions::Column::Id)
+            .all(&recovered_db.connection)
+            .await
+            .expect("app sessions load");
+        assert_eq!(apps.len(), 2);
+        assert_eq!(apps[0].end_time, Some(140));
+        assert_eq!(apps[0].is_graceful, Some(false));
+        assert_eq!(apps[1].end_time, None);
+
+        drop(recovered_db);
         std::fs::remove_dir_all(path).expect("temporary database is removed");
     }
 

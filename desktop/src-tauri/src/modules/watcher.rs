@@ -321,6 +321,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
     let mut line = String::new();
     let mut last_db_sync = Instant::now();
+    let mut last_session_activity_timestamp = last_seen_timestamp;
 
     loop {
         let mut read_success = false;
@@ -332,13 +333,11 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                 Ok(bytes_read) => {
                     current_position += bytes_read as u64;
 
-                    if let Some(ts) = extract_timestamp(&line) {
-                        if ts != last_seen_timestamp {
-                            last_seen_timestamp = ts;
-                        }
-                    }
+                    let timestamp = extract_timestamp(&line);
+                    let mut records_activity = false;
 
                     if let Some(payload) = parse_log_line(&line) {
+                        records_activity = matches!(&payload.event, VrcLogEvent::SelfLeft);
                         match payload.event {
                             VrcLogEvent::AppStart => {
                                 is_app_running = true;
@@ -358,6 +357,26 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             }
                             Ok(false) => {}
                             Err(error) => eprintln!("Failed to record watched log: {error}"),
+                        }
+                    } else {
+                        records_activity = true;
+                    }
+
+                    if records_activity {
+                        if let Some(timestamp) = timestamp
+                            .filter(|timestamp| *timestamp > last_session_activity_timestamp)
+                        {
+                            if let Err(error) = db.touch_active_session(timestamp).await {
+                                eprintln!("Failed to record session activity: {error}");
+                            } else {
+                                last_session_activity_timestamp = timestamp;
+                            }
+                        }
+                    }
+
+                    if let Some(timestamp) = timestamp {
+                        if timestamp != last_seen_timestamp {
+                            last_seen_timestamp = timestamp;
                         }
                     }
 
