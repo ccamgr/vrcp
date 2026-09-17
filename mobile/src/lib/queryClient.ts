@@ -4,12 +4,16 @@ import { PersistQueryClientProviderProps } from "@tanstack/react-query-persist-c
 import AsyncStorage from "expo-sqlite/kv-store";
 
 export const TANSTACK_STORAGE_KEY = "TANSTACK_STATE_CACHE";
+export const TANSTACK_CACHE_BUSTER = "vrcapi-1.21-account-scoped";
 
 // 1. 公式 Persister が期待するインターフェースに合わせるための Shim
 const storageShim = {
   getItem: (key: string) => AsyncStorage.getItemAsync(key),
-  setItem: (key: string, value: string) => AsyncStorage.setItemAsync(key, value),
-  removeItem: (key: string) => { AsyncStorage.removeItemAsync(key); },
+  setItem: (key: string, value: string) =>
+    AsyncStorage.setItemAsync(key, value),
+  removeItem: (key: string) => {
+    AsyncStorage.removeItemAsync(key);
+  },
 };
 
 export const queryClient = new QueryClient({
@@ -21,6 +25,11 @@ export const queryClient = new QueryClient({
   },
 });
 
+export const clearAccountQueries = async () => {
+  await queryClient.cancelQueries({ queryKey: ["vrc", "account"] });
+  queryClient.removeQueries({ queryKey: ["vrc", "account"] });
+};
+
 // 2. 公式のファクトリ関数を使用して Persister を作成
 export const persister = createAsyncStoragePersister({
   storage: storageShim,
@@ -28,12 +37,16 @@ export const persister = createAsyncStoragePersister({
   throttleTime: 1000,
 });
 
-export const persistOptions: PersistQueryClientProviderProps["persistOptions"] = {
-  persister,
-  dehydrateOptions: {
-    shouldDehydrateQuery: (query) => {
-      const [key0, key1] = query.queryKey as string[];
-      return key0 === "vrc" && key1 === "state";
+export const persistOptions: PersistQueryClientProviderProps["persistOptions"] =
+  {
+    persister,
+    buster: TANSTACK_CACHE_BUSTER,
+    dehydrateOptions: {
+      shouldDehydrateQuery: (query) => {
+        const [key0, key1] = query.queryKey as string[];
+        return (
+          key0 === "vrc" && key1 === "state" && query.meta?.persist !== false
+        );
+      },
     },
-  },
-};
+  };

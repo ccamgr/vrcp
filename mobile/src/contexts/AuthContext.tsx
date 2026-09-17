@@ -1,19 +1,23 @@
 import { extractErrMsg } from "@/lib/utils";
 import { AuthenticationApi } from "@/generated/vrcapi";
-import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { useVRChat } from "./VRChatContext";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import axios from "axios";
+import {
+  clearAccountQueries,
+  queryClient,
+  TANSTACK_STORAGE_KEY,
+} from "@/lib/queryClient";
+import { isCurrentAccount, isRequiresTwoFactorAuth } from "@/lib/vrcapiModels";
+import { usersRepo } from "@/db/repogitories";
 
 type AuthUser = {
   id?: string;
@@ -33,12 +37,15 @@ interface VerifyParam {
 
 type LoginRes = "success" | "tfa-totp" | "tfa-email" | "error";
 type VerifyRes = "success" | "failed" | "disabled" | "error";
+type TfaMode = "totp" | "email";
 
 interface AuthContextType {
   user: AuthUser | undefined;
   isLoading: boolean;
+  pendingTFA: TfaMode | undefined;
+  cancelPendingTFA: () => void;
   login: (param: LoginParam) => Promise<LoginRes>;
-  logout: () => void;
+  logout: () => Promise<void>;
   verify: (param: VerifyParam) => Promise<VerifyRes>;
   autoLogin: () => Promise<void>;
 }
@@ -55,6 +62,42 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const vrc = useVRChat();
   const [user, setUser] = useState<AuthUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [pendingTFA, setPendingTFA] = useState<TfaMode | undefined>(undefined);
+
+  const clearAccountCache = async () => {
+    await Promise.all([
+      clearAccountQueries(),
+      queryClient.cancelQueries({ queryKey: ["vrc", "state"] }),
+      queryClient.cancelQueries({ queryKey: ["vrc", "db", "user"] }),
+    ]);
+    queryClient.removeQueries({ queryKey: ["vrc", "state"] });
+    queryClient.removeQueries({ queryKey: ["vrc", "db", "user"] });
+    await Promise.all([
+      StorageWrapper.removeItemAsync(TANSTACK_STORAGE_KEY),
+      usersRepo.clearAll(),
+    ]);
+  };
+
+  const clearStoredAuthentication = async () => {
+    const results = await Promise.allSettled([
+      StorageWrapper.removeItemAsync("auth_user_id"),
+      StorageWrapper.removeItemAsync("auth_user_displayName"),
+      StorageWrapper.removeItemAsync("auth_user_icon"),
+      SecureStore.deleteItemAsync("auth_authCookie"),
+      SecureStore.deleteItemAsync("auth_2faCookie"),
+      SecureStore.deleteItemAsync("auth_secret_username"),
+      SecureStore.deleteItemAsync("auth_secret_password"),
+    ]);
+    const failures = results.filter((result) => result.status === "rejected");
+    if (failures.length > 0) {
+      console.error("Failed to clear some local authentication data", failures);
+    }
+    setPendingTFA(undefined);
+  };
+
+  const cancelPendingTFA = () => {
+    setPendingTFA(undefined);
+  };
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
     setIsLoading(true);
@@ -70,33 +113,34 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     }
     try {
       const res = await api.getCurrentUser();
-      const requiredTFA = Object(res.data).hasOwnProperty(
-        "requiresTwoFactorAuth",
-      );
-      if (requiredTFA) {
-        // two factor auth
-        const allowedTFA = Object(res.data).requiresTwoFactorAuth;
-        if (Array.isArray(allowedTFA)) {
-          if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
-            setIsLoading(false);
-            return "tfa-totp"; // return for TOTP 2FA
-          } else if (allowedTFA.includes("emailOtp")) {
-            setIsLoading(false);
-            return "tfa-email"; // return for Email 2FA
-          }
+      if (isRequiresTwoFactorAuth(res.data)) {
+        const allowedTFA = res.data.requiresTwoFactorAuth;
+        if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
+          setPendingTFA("totp");
+          setIsLoading(false);
+          return "tfa-totp";
+        }
+        if (allowedTFA.includes("emailOtp")) {
+          setPendingTFA("email");
+          setIsLoading(false);
+          return "tfa-email";
         }
         setIsLoading(false);
-        return "error"; // no supported 2FA method
-      } else if (res.data.id) {
+        return "error";
+      }
+
+      if (isCurrentAccount(res.data)) {
+        const currentAccount = res.data;
         console.log("Login successful");
         const authCookie = extractAuthCookie(res.headers?.["set-cookie"]?.[0]);
         const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
 
         try {
+          await clearAccountCache();
           await StorageWrapper.multiSet([
-            ["auth_user_id", res.data.id],
-            ["auth_user_displayName", res.data.displayName],
-            ["auth_user_icon", res.data.userIcon],
+            ["auth_user_id", currentAccount.id],
+            ["auth_user_displayName", currentAccount.displayName ?? ""],
+            ["auth_user_icon", currentAccount.iconUrl ?? ""],
           ]);
 
           if (param.saveSecret) {
@@ -120,7 +164,14 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
               : Promise.resolve(),
           ]);
         } catch (error) {
-          console.error("Failed to persist authentication data", extractErrMsg(error));
+          console.error(
+            "Failed to persist authentication data",
+            extractErrMsg(error),
+          );
+          vrc.unConfigure();
+          setUser(undefined);
+          setIsLoading(false);
+          return "error";
         }
 
         if (authCookie) {
@@ -128,11 +179,14 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         }
 
         setUser({
-          id: res.data.id,
-          displayName: res.data.displayName,
-          icon: res.data.userIcon,
+          id: currentAccount.id,
+          displayName: currentAccount.displayName ?? "",
+          icon: currentAccount.iconUrl ?? "",
         });
-        console.log(`login as ${res.data.displayName}: ${res.data.id}`);
+        setPendingTFA(undefined);
+        console.log(
+          `login as ${currentAccount.displayName}: ${currentAccount.id}`,
+        );
 
         setIsLoading(false);
         return "success";
@@ -192,24 +246,25 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await vrc.authenticationApi.logout();
-    } catch (e) {
-      console.error("Logout failed", e);
+      try {
+        await vrc.authenticationApi.logout();
+      } catch (error) {
+        console.error("Logout request failed", error);
+      }
+      vrc.unConfigure();
+      try {
+        await clearAccountCache();
+      } catch (error) {
+        console.error("Failed to clear account cache", error);
+      }
+      await clearStoredAuthentication();
+      console.log("Logged out successfully");
+    } catch (error) {
+      console.error("Failed to clear local authentication data", error);
+    } finally {
+      setUser(undefined);
+      setIsLoading(false);
     }
-    vrc.unConfigure();
-    // logout logic
-    await StorageWrapper.removeItemAsync("auth_user_id");
-    await StorageWrapper.removeItemAsync("auth_user_displayName");
-    await StorageWrapper.removeItemAsync("auth_user_icon");
-
-    // [ToDo] use SecureStore of expo
-    await SecureStore.deleteItemAsync("auth_authCookie");
-    await SecureStore.deleteItemAsync("auth_2faCookie");
-    await SecureStore.deleteItemAsync("auth_secret_username");
-    await SecureStore.deleteItemAsync("auth_secret_password");
-    setUser(undefined);
-    console.log("Logged out successfully");
-    setIsLoading(false);
   };
 
   const autoLogin = async () => {
@@ -246,14 +301,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         let verified = false;
         try {
           verified = (await api.verifyAuthToken()).data.ok;
-        } catch (e: any) {
+        } catch (e: unknown) {
           if (axios.isAxiosError(e) && !e.response) {
-            console.log("Network error, assuming user is logged in.");
-            const authCookie = storedData[3];
-            if (authCookie) {
-              vrc.configurePipeline(authCookie);
-            }
-            setUser(storedUser);
+            console.log("Network error while verifying the auth token.");
+            setUser(undefined);
             setIsLoading(false);
             return;
           }
@@ -261,13 +312,46 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         }
 
         if (verified) {
+          const currentUserRes = await api.getCurrentUser();
+          if (isRequiresTwoFactorAuth(currentUserRes.data)) {
+            const mode = currentUserRes.data.requiresTwoFactorAuth.includes(
+              "emailOtp",
+            )
+              ? "email"
+              : "totp";
+            setPendingTFA(mode);
+            setUser(undefined);
+            setIsLoading(false);
+            return;
+          }
+          if (!isCurrentAccount(currentUserRes.data)) {
+            await clearAccountCache();
+            await clearStoredAuthentication();
+            setUser(undefined);
+            setIsLoading(false);
+            return;
+          }
+
+          const currentAccount = currentUserRes.data;
+          if (storedUser.id !== currentAccount.id) {
+            await clearAccountCache();
+          }
+          await StorageWrapper.multiSet([
+            ["auth_user_id", currentAccount.id],
+            ["auth_user_displayName", currentAccount.displayName ?? ""],
+            ["auth_user_icon", currentAccount.iconUrl ?? ""],
+          ]);
           const authCookie = storedData[3];
           if (authCookie) {
             vrc.configurePipeline(authCookie); // set auth cookie to pipeline
           }
-          setUser(storedUser);
+          setUser({
+            id: currentAccount.id,
+            displayName: currentAccount.displayName ?? "",
+            icon: currentAccount.iconUrl ?? "",
+          });
           console.log(
-            `logged in as ${storedUser.displayName}: ${storedUser.id}`,
+            `logged in as ${currentAccount.displayName}: ${currentAccount.id}`,
           );
           setIsLoading(false);
           return;
@@ -287,6 +371,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
               "Re-login required user interaction or failed:",
               loginRes,
             );
+            if (loginRes === "error") {
+              await clearAccountCache();
+              await clearStoredAuthentication();
+            }
           }
         }
       }
@@ -312,7 +400,16 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
 
   return (
     <Context.Provider
-      value={{ user, login, logout, verify, autoLogin, isLoading }}
+      value={{
+        user,
+        login,
+        logout,
+        verify,
+        autoLogin,
+        isLoading,
+        pendingTFA,
+        cancelPendingTFA,
+      }}
     >
       {children}
     </Context.Provider>

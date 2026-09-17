@@ -51,7 +51,7 @@ const getSubtitles = (data: UserLike, world?: World) => {
       locationText = `${instanceType} ${instanceStr}  ${worldName}`.trim();
     }
   }
-  return [statusText, locationText];
+  return [statusText ?? "", locationText];
 };
 
 const ListViewUser = ({ user, onPress, onLongPress, ...rest }: Props) => {

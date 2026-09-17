@@ -43,7 +43,9 @@ import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
 import { useUser } from "@/hooks/vrc/useUser";
+import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
 import CachedImage from "@/components/CachedImage";
+import { toUserPresentation } from "@/lib/vrcapiModels";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -70,6 +72,16 @@ export default function UserDetail() {
 
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { data: user, refetch, isFetching } = useUser(id);
+  const {
+    data: publicProfile,
+    isFetching: isFetchingPublicProfile,
+    isError: isPublicProfileError,
+    refetch: refetchPublicProfile,
+  } = usePublicProfile(id);
+  const displayUser = useMemo(
+    () => (user ? toUserPresentation(user, publicProfile) : undefined),
+    [user, publicProfile],
+  );
 
   const isFavorite = favorites?.some(
     (fav) => fav.favoriteId === id && fav.type === "friend",
@@ -212,27 +224,35 @@ export default function UserDetail() {
 
   return (
     <GenericScreen>
-      {user ? (
+      {user && displayUser ? (
         <View style={{ flex: 1 }}>
           <CardViewUserDetail
-            user={user}
+            user={displayUser}
             onPress={() =>
               user &&
               setPreview({
-                imageUrl: getUserProfilePicUrl(user, true),
+                imageUrl: getUserProfilePicUrl(displayUser, true),
                 open: true,
               })
             }
             onPressIcon={() =>
               user &&
-              setPreview({ imageUrl: getUserIconUrl(user, true), open: true })
+              setPreview({
+                imageUrl: getUserIconUrl(displayUser, true),
+                open: true,
+              })
             }
             style={[styles.cardView]}
           />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+              <RefreshControl
+                refreshing={isFetching || isFetchingPublicProfile}
+                onRefresh={() => {
+                  void Promise.all([refetch(), refetchPublicProfile()]);
+                }}
+              />
             }
           >
             <DetailItemContainer
@@ -298,7 +318,17 @@ export default function UserDetail() {
               title={t("pages.detail_user.sectionLabel_bio")}
             >
               <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>{user.bio}</Text>
+                {isPublicProfileError ? (
+                  <TouchableEx onPress={() => void refetchPublicProfile()}>
+                    <Text style={{ color: theme.colors.subText }}>
+                      {t("pages.profile.profile_load_error")}
+                    </Text>
+                  </TouchableEx>
+                ) : (
+                  <Text style={{ color: theme.colors.text }}>
+                    {publicProfile?.bio ?? ""}
+                  </Text>
+                )}
               </View>
             </DetailItemContainer>
 
@@ -306,7 +336,7 @@ export default function UserDetail() {
               title={t("pages.detail_user.sectionLabel_bio_links")}
             >
               <View style={styles.detailItemContent}>
-                {user.bioLinks.map((link, index) => (
+                {(publicProfile?.bioLinks ?? []).map((link, index) => (
                   <LinkChip key={index} url={link} />
                 ))}
               </View>
@@ -316,7 +346,7 @@ export default function UserDetail() {
               title={t("pages.detail_user.sectionLabel_badges")}
             >
               <View style={[styles.detailItemContent, styles.horizontal]}>
-                {user.badges?.map((badge) => (
+                {publicProfile?.badges?.map((badge) => (
                   <BadgeChip key={badge.badgeId} badge={badge} />
                 ))}
               </View>

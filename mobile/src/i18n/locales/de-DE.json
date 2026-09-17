@@ -56,7 +56,8 @@
       "sectionLabel_badges": "Abzeichen",
       "sectionLabel_info": "Info",
       "section_info_last_activity": "Letzte Aktivität: {{date, dd.MM.yyyy HH:mm}}",
-      "section_info_joined": "Beigetreten am: {{date, dd.MM.yyyy}}"
+      "section_info_joined": "Beigetreten am: {{date, dd.MM.yyyy}}",
+      "profile_load_error": "Profil konnte nicht geladen werden. Zum Wiederholen tippen."
     },
     "others": {
       "label": "Sonstiges",

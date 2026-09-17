@@ -53,6 +53,7 @@
       "sectionLabel_info": "資訊",
       "section_info_last_activity": "最後活動: {{date, yyyy年MM月dd日 HH:mm}}",
       "section_info_joined": "加入日期: {{date, yyyy年MM月dd日}}",
+      "profile_load_error": "無法載入個人檔案。點選以重試。",
       "menuLabel_route_avatars": "Avatar",
       "menuLabel_route_groups": "群組",
       "menuLabel_route_prints": "照片",

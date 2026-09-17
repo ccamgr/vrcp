@@ -6,7 +6,6 @@ import RegionBadge from "@/components/view/chip-badge/RegionBadge";
 import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewUserDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, radius, spacing } from "@/configs/styles";
-import { useVRChat } from "@/contexts/VRChatContext";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -19,6 +18,7 @@ import {
 } from "react-native";
 import ImagePreview from "@/components/view/ImagePreview";
 import { getUserIconUrl, getUserProfilePicUrl } from "@/lib/vrchat";
+import { toUserPresentation } from "@/lib/vrcapiModels";
 import ChangeStatusModal from "@/components/modals/ChangeStatusModal";
 import { MenuItem } from "@/components/layout/type";
 import ChangeBioModal from "@/components/modals/ChangeBioModal";
@@ -35,17 +35,29 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
+import { TouchableEx } from "@/components/CustomElements";
 
 export default function Profile() {
-  const vrc = useVRChat();
   const { t } = useTranslation();
   const theme = useTheme();
   const { data: currentUser, isFetching, refetch } = useCurrentUser();
+  const {
+    data: publicProfile,
+    isFetching: isFetchingPublicProfile,
+    isError: isPublicProfileError,
+    refetch: refetchPublicProfile,
+  } = usePublicProfile(currentUser?.id, true);
   const [preview, setPreview] = useState({ imageUrl: "", open: false });
   const [openJson, setOpenJson] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [openChangeBio, setOpenChangeBio] = useState(false);
   const [openChangeBioLinks, setOpenChangeBioLinks] = useState(false);
+  const profileUser = useMemo(
+    () =>
+      currentUser ? toUserPresentation(currentUser, publicProfile) : undefined,
+    [currentUser, publicProfile],
+  );
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -119,22 +131,22 @@ export default function Profile() {
 
   return (
     <GenericScreen>
-      {currentUser ? (
+      {currentUser && profileUser ? (
         <View style={{ height: "100%" }}>
           <CardViewUserDetail
-            user={currentUser}
+            user={profileUser}
             style={[styles.cardView]}
             onPress={() =>
               currentUser &&
               setPreview({
-                imageUrl: getUserProfilePicUrl(currentUser, true),
+                imageUrl: getUserProfilePicUrl(profileUser, true),
                 open: true,
               })
             }
             onPressIcon={() =>
               currentUser &&
               setPreview({
-                imageUrl: getUserIconUrl(currentUser, true),
+                imageUrl: getUserIconUrl(profileUser, true),
                 open: true,
               })
             }
@@ -142,14 +154,27 @@ export default function Profile() {
 
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+              <RefreshControl
+                refreshing={isFetching || isFetchingPublicProfile}
+                onRefresh={() => {
+                  void Promise.all([refetch(), refetchPublicProfile()]);
+                }}
+              />
             }
           >
             <DetailItemContainer title={t("pages.profile.sectionLabel_bio")}>
               <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>
-                  {currentUser.bio}
-                </Text>
+                {isPublicProfileError ? (
+                  <TouchableEx onPress={() => void refetchPublicProfile()}>
+                    <Text style={{ color: theme.colors.subText }}>
+                      {t("pages.profile.profile_load_error")}
+                    </Text>
+                  </TouchableEx>
+                ) : (
+                  <Text style={{ color: theme.colors.text }}>
+                    {publicProfile?.bio ?? ""}
+                  </Text>
+                )}
               </View>
             </DetailItemContainer>
 
@@ -157,7 +182,7 @@ export default function Profile() {
               title={t("pages.profile.sectionLabel_bio_links")}
             >
               <View style={styles.detailItemContent}>
-                {currentUser.bioLinks.map((link, index) => (
+                {(publicProfile?.bioLinks ?? []).map((link, index) => (
                   <LinkChip key={index} url={link} />
                 ))}
               </View>
@@ -165,7 +190,7 @@ export default function Profile() {
 
             <DetailItemContainer title={t("pages.profile.sectionLabel_badges")}>
               <View style={[styles.detailItemContent, styles.horizontal]}>
-                {currentUser.badges?.map((badge) => (
+                {publicProfile?.badges?.map((badge) => (
                   <BadgeChip key={badge.badgeId} badge={badge} />
                 ))}
               </View>

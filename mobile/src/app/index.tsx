@@ -54,6 +54,12 @@ export default function Login() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!auth.pendingTFA) return;
+    setModeTFA(auth.pendingTFA);
+    setOpenTFA(true);
+  }, [auth.pendingTFA]);
+
   const handleLogin = async () => {
     if (!username) {
       Alert.alert("Error", t("pages.login.username_empty_error"));
@@ -95,14 +101,22 @@ export default function Login() {
       mode: modeTFA,
     });
     if (res === "success") {
-      setOpenTFA(false);
       console.log("2FA verified successfully");
-      const res = await auth.login({
+      const loginRes = await auth.login({
         username: username,
         password: password,
+        saveSecret,
       });
-      if (res === "success") {
+      if (loginRes === "success") {
+        setOpenTFA(false);
+        setTFACode("");
         console.log("logged in successfully");
+      } else if (loginRes === "tfa-totp") {
+        setModeTFA("totp");
+        setTFACode("");
+      } else if (loginRes === "tfa-email") {
+        setModeTFA("email");
+        setTFACode("");
       } else {
         Alert.alert("Login failed", t("pages.login.login_failed_error"));
       }
@@ -314,7 +328,10 @@ export default function Login() {
         buttonItems={[
           {
             title: t("pages.login.button_tfa_close"),
-            onPress: () => setOpenTFA(false),
+            onPress: () => {
+              auth.cancelPendingTFA();
+              setOpenTFA(false);
+            },
           },
           {
             title: t("pages.login.button_tfa_verify"),
@@ -323,7 +340,10 @@ export default function Login() {
           },
         ]}
         open={openTFA}
-        onClose={() => setOpenTFA(false)}
+        onClose={() => {
+          auth.cancelPendingTFA();
+          setOpenTFA(false);
+        }}
       >
         <Text style={[styles.text, { color: theme.colors.text }]}>
           {modeTFA === "totp"

@@ -1,37 +1,121 @@
 import { vrcColors, vrcTexts } from "@/configs/vrchat";
-import { Avatar, AvatarPerformance, CalendarEvent, CurrentUser, FavoritedWorld, Group, GroupAccessType, Instance, InstanceRegion, InstanceType, LimitedGroup, LimitedUserFriend, LimitedUserInstance, LimitedUserSearch, LimitedWorld, User, UserState, UserStatus, World } from "@/generated/vrcapi";
-export type UserLike = LimitedUserSearch | LimitedUserFriend | LimitedUserInstance | User | CurrentUser
-export type WorldLike = LimitedWorld | FavoritedWorld | World
-export type GroupLike = LimitedGroup | Group
-export type AvatarLike = Avatar
-export type InstanceLike = MinInstance | Instance
+import {
+  Avatar,
+  AvatarPerformance,
+  CalendarEvent,
+  FavoritedWorld,
+  Group,
+  GroupAccessType,
+  Instance,
+  InstanceRegion,
+  InstanceType,
+  LimitedGroup,
+  LimitedUserFriend,
+  LimitedUserInstance,
+  LimitedWorld,
+  User,
+  UserState,
+  UserStatus,
+  World,
+} from "@/generated/vrcapi";
+export type UserLike = {
+  id: string;
+  displayName: string;
+  tags?: string[];
+  isFriend?: boolean;
+  status?: UserStatus;
+  statusDescription?: string;
+  location?: string;
+  last_activity?: string | null;
+  last_login?: string | null;
+  last_mobile?: string | null;
+  last_platform?: string;
+  platform?: string;
+  friendKey?: string;
+  friendRequestStatus?: string;
+  note?: string;
+  state?: UserState;
+  date_joined?: string;
+  currentAvatar?: string;
+  currentAvatarImageUrl?: string;
+  currentAvatarThumbnailImageUrl?: string;
+  profilePicOverride?: string;
+  profilePicOverrideThumbnail?: string;
+  iconUrl?: string;
+  userIcon?: string;
+};
+export type WorldLike = LimitedWorld | FavoritedWorld | World;
+export type GroupLike = LimitedGroup | Group;
+export type AvatarLike = Avatar;
+export type InstanceLike = MinInstance | Instance;
 
-
-
-type StatusGettableUser = Exclude<UserLike, LimitedUserInstance>
+type StatusGettableUser = UserLike;
 
 // 最低限のInstance情報だけを持つ型 (Worldに付随した部分的なInstance情報に対応)
-type MinInstance = Pick<Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">
-  & Partial<Exclude<Instance, "id" | "instanceId" | "worldId" | "name" | "n_users" | "capacity" | "type" | "groupAccessType" | "region">>;
+type MinInstance = Pick<
+  Instance,
+  | "id"
+  | "instanceId"
+  | "worldId"
+  | "name"
+  | "n_users"
+  | "capacity"
+  | "type"
+  | "groupAccessType"
+  | "region"
+> &
+  Partial<
+    Exclude<
+      Instance,
+      | "id"
+      | "instanceId"
+      | "worldId"
+      | "name"
+      | "n_users"
+      | "capacity"
+      | "type"
+      | "groupAccessType"
+      | "region"
+    >
+  >;
 
 /** Checker */
 export function isUserLike(data: any): data is UserLike {
-  return data && typeof data === "object" && "id" in data && data.id.startsWith("usr_");
+  return (
+    data &&
+    typeof data === "object" &&
+    "id" in data &&
+    data.id.startsWith("usr_")
+  );
 }
 export function isWorldLike(data: any): data is WorldLike {
-  return data && typeof data === "object" && "id" in data && data.id.startsWith("wrld_") && !("instanceId" in data);
+  return (
+    data &&
+    typeof data === "object" &&
+    "id" in data &&
+    data.id.startsWith("wrld_") &&
+    !("instanceId" in data)
+  );
 }
 export function isGroupLike(data: any): data is GroupLike {
-  return data && typeof data === "object" && "id" in data && data.id.startsWith("grp_");
+  return (
+    data &&
+    typeof data === "object" &&
+    "id" in data &&
+    data.id.startsWith("grp_")
+  );
 }
 export function isAvatarLike(data: any): data is AvatarLike {
-  return data && typeof data === "object" && "id" in data && data.id.startsWith("avtr_");
+  return (
+    data &&
+    typeof data === "object" &&
+    "id" in data &&
+    data.id.startsWith("avtr_")
+  );
 }
 export function isInstanceLike(data: any): data is InstanceLike {
   return data && typeof data === "object" && "instanceId" in data;
 }
-
-
 
 //** User */
 // get ImageUrls from user
@@ -39,10 +123,16 @@ export function getUserIconUrl(user: UserLike, highRes = false): string {
   if (user.userIcon) {
     return user.userIcon;
   }
+  if (user.iconUrl) {
+    return user.iconUrl;
+  }
   if (highRes) {
     if (user.profilePicOverride) {
       return user.profilePicOverride;
-    } else if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
+    } else if (
+      "profilePicOverrideThumbnail" in user &&
+      user.profilePicOverrideThumbnail
+    ) {
       return user.profilePicOverrideThumbnail;
     }
     if (user.currentAvatarImageUrl) {
@@ -51,7 +141,10 @@ export function getUserIconUrl(user: UserLike, highRes = false): string {
       return user.currentAvatarThumbnailImageUrl;
     }
   } else {
-    if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
+    if (
+      "profilePicOverrideThumbnail" in user &&
+      user.profilePicOverrideThumbnail
+    ) {
       return user.profilePicOverrideThumbnail;
     } else if (user.profilePicOverride) {
       return user.profilePicOverride;
@@ -68,7 +161,10 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
   if (highRes) {
     if (user.profilePicOverride) {
       return user.profilePicOverride;
-    } else if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
+    } else if (
+      "profilePicOverrideThumbnail" in user &&
+      user.profilePicOverrideThumbnail
+    ) {
       return user.profilePicOverrideThumbnail;
     }
     if (user.currentAvatarImageUrl) {
@@ -77,7 +173,10 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
       return user.currentAvatarThumbnailImageUrl;
     }
   } else {
-    if ("profilePicOverrideThumbnail" in user && user.profilePicOverrideThumbnail) {
+    if (
+      "profilePicOverrideThumbnail" in user &&
+      user.profilePicOverrideThumbnail
+    ) {
       return user.profilePicOverrideThumbnail;
     } else if (user.profilePicOverride) {
       return user.profilePicOverride;
@@ -87,6 +186,9 @@ export function getUserProfilePicUrl(user: UserLike, highRes = false): string {
     } else if (user.currentAvatarImageUrl) {
       return user.currentAvatarImageUrl;
     }
+  }
+  if (user.iconUrl) {
+    return user.iconUrl;
   }
   return "www";
 }
@@ -100,7 +202,7 @@ export function parseLocationString(location: string | undefined): {
   parsedLocation?: {
     worldId?: string;
     instanceId?: string;
-  }
+  };
 } {
   try {
     if (!location || location.length === 0) return {};
@@ -108,7 +210,8 @@ export function parseLocationString(location: string | undefined): {
     if (location == "private") return { isPrivate: true };
     if (location == "traveling") return { isTraveling: true };
     const splited = location.split(":");
-    let worldId = undefined, instanceId = undefined;
+    let worldId = undefined,
+      instanceId = undefined;
     if (splited.length < 2) {
       if (splited[0].startsWith("wrld_")) {
         worldId = splited[0];
@@ -120,60 +223,73 @@ export function parseLocationString(location: string | undefined): {
       instanceId = splited[1];
     }
     return {
-      parsedLocation: { worldId, instanceId }
+      parsedLocation: { worldId, instanceId },
     };
   } catch (e) {
     return {};
   }
 }
 // parse instanceId string
-export function parseInstanceId(instanceId: string | undefined): {
-  name: string;
-  type: InstanceType;
-  groupAccessType?: GroupAccessType;
-  region?: InstanceRegion
+export function parseInstanceId(instanceId: string | undefined):
+  | {
+      name: string;
+      type: InstanceType;
+      groupAccessType?: GroupAccessType;
+      region?: InstanceRegion;
 
-  hidden?: string;
-  friends?: string;
-  private?: string;
-  group?: string;
-} | undefined {
+      hidden?: string;
+      friends?: string;
+      private?: string;
+      group?: string;
+    }
+  | undefined {
   if (!instanceId) return undefined;
   const splitedInst = instanceId.split("~");
   const name = splitedInst[0]; //
 
   const parseByReg = (type: string) => {
-    const regRes = splitedInst.find(s => s.startsWith(`${type}(`))?.match(/\((.+?)\)/)
+    const regRes = splitedInst
+      .find((s) => s.startsWith(`${type}(`))
+      ?.match(/\((.+?)\)/);
     return regRes && regRes.length > 1 ? regRes[1] : undefined;
-  }
+  };
 
   const parsed = {
     region: (parseByReg("region") ?? "unknown") as InstanceRegion,
-    groupAccessType: parseByReg("groupAccessType") as GroupAccessType | undefined,
+    groupAccessType: parseByReg("groupAccessType") as
+      | GroupAccessType
+      | undefined,
     // types
     hidden: parseByReg("hidden"),
     friends: parseByReg("friends"),
     private: parseByReg("private"),
     group: parseByReg("group"),
-  }
+  };
 
-  const type = parsed.hidden ? "hidden"
-    : parsed.friends ? "friends"
-      : parsed.private ? "private"
-        : parsed.group ? "group"
+  const type = parsed.hidden
+    ? "hidden"
+    : parsed.friends
+      ? "friends"
+      : parsed.private
+        ? "private"
+        : parsed.group
+          ? "group"
           : "public"; // default to public (no-type provide)
 
   return { name, type, ...parsed };
 }
 
-
 // Get instance type with DisplayName (ex.Friends+)
-export function getInstanceType(type: InstanceType, groupAccessType?: GroupAccessType) {
+export function getInstanceType(
+  type: InstanceType,
+  groupAccessType?: GroupAccessType,
+) {
   if (type === "public") return vrcTexts.instanceType.public;
   if (type === "hidden") return vrcTexts.instanceType.friends_plus;
   if (type === "friends") return vrcTexts.instanceType.friends;
   if (type === "private") return vrcTexts.instanceType.private; // Invite or Invite+
-  if (type === "group") {// GroupOnly or Group+ or GroupPublic
+  if (type === "group") {
+    // GroupOnly or Group+ or GroupPublic
     if (groupAccessType === "members") return vrcTexts.instanceType.group;
     if (groupAccessType === "plus") return vrcTexts.instanceType.group_plus;
     if (groupAccessType === "public") return vrcTexts.instanceType.group_public;
@@ -190,7 +306,8 @@ export function getState(user: LimitedUserFriend): UserState | undefined {
 }
 // get user status color
 export function getStatusColor(userOrStr: StatusGettableUser | string): string {
-  const status = typeof userOrStr === "string" ? userOrStr : userOrStr.status;
+  const status =
+    typeof userOrStr === "string" ? userOrStr : (userOrStr.status ?? "offline");
   if (status == "join me") return vrcColors.userStatus.join_me; // join me
   if (status == "active") return vrcColors.userStatus.online; // online
   if (status == "ask me") return vrcColors.userStatus.ask_me; // ask me
@@ -200,25 +317,30 @@ export function getStatusColor(userOrStr: StatusGettableUser | string): string {
 }
 
 // get trust rank color (and friend color)
-export function getTrustRankColor(user: UserLike, useFriendColor: boolean = false, useRankColor: boolean = true): string {
+export function getTrustRankColor(
+  user: UserLike,
+  useFriendColor: boolean = false,
+  useRankColor: boolean = true,
+): string {
   if (useFriendColor && user.isFriend) return vrcColors.friend; // friend
   if (useRankColor) {
-    const tags = user.tags;
+    const tags = user.tags ?? [];
     if (tags.includes("system_troll")) return vrcColors.trustRank.nuisance; // Nuisance
 
     if (tags.includes("system_trust_legend")) return vrcColors.trustRank.legend; // legend (unused?)
-    if (tags.includes("system_trust_veteran")) return vrcColors.trustRank.trusted; // trusted
+    if (tags.includes("system_trust_veteran"))
+      return vrcColors.trustRank.trusted; // trusted
     if (tags.includes("system_trust_trusted")) return vrcColors.trustRank.known; // known
     if (tags.includes("system_trust_known")) return vrcColors.trustRank.user; // User
-    if (tags.includes("system_trust_basic")) return vrcColors.trustRank.new_user; // NewUser
+    if (tags.includes("system_trust_basic"))
+      return vrcColors.trustRank.new_user; // NewUser
   }
   return vrcColors.trustRank.visitor; // Visitor
 }
 
-
 // get trust rank string from Tags
 export function getTrustRank(user: UserLike) {
-  const tags = user.tags;
+  const tags = user.tags ?? [];
   if (tags.includes("system_troll")) return vrcTexts.trustRank.nuisance;
   if (tags.includes("system_trust_legend")) return vrcTexts.trustRank.legend;
   if (tags.includes("system_trust_veteran")) return vrcTexts.trustRank.trusted;
@@ -230,12 +352,14 @@ export function getTrustRank(user: UserLike) {
 
 // VRC+ Subscriber
 export function isSupporter(user: UserLike): boolean {
-  const tags = user.tags;
+  const tags = user.tags ?? [];
   return tags.includes("system_supporter");
 }
 
 // get friendRequestStatus
-export function getFriendRequestStatus(user: User): "null" | "outgoing" | "completed" {
+export function getFriendRequestStatus(
+  user: User,
+): "null" | "outgoing" | "completed" {
   if (user.friendRequestStatus === "completed") return "completed";
   if (user.friendRequestStatus === "outgoing") return "outgoing";
   if (user.friendRequestStatus === "null") return "null";
@@ -245,10 +369,9 @@ export function getFriendRequestStatus(user: User): "null" | "outgoing" | "compl
 // Avatar or World
 
 export function getAuthorTags(data: AvatarLike | WorldLike): string[] {
-  const tags = data.tags?.filter(t => t.startsWith("author_tag_"));
-  return tags?.map(t => t.replace("author_tag_", "")) ?? [];
+  const tags = data.tags?.filter((t) => t.startsWith("author_tag_"));
+  return tags?.map((t) => t.replace("author_tag_", "")) ?? [];
 }
-
 
 export function getReleaseStatusColor(data: AvatarLike | WorldLike) {
   if (data.releaseStatus == "public") return vrcColors.releaseStatus.public; // public
@@ -262,49 +385,97 @@ export function getPlatform(data: AvatarLike | WorldLike): {
   avatarPerformance?: string;
 }[] {
   const platforms: { platform: string; avatarPerformance?: string }[] = [];
-  if ("performance" in data) { // Avatar
-    if (data.performance.standalonewindows) platforms.push({ platform: "standalonewindows", avatarPerformance: data.performance.standalonewindows });
-    if (data.performance.android) platforms.push({ platform: "android", avatarPerformance: data.performance.android });
-    if (data.performance.ios) platforms.push({ platform: "ios", avatarPerformance: data.performance.ios });
-  } else if ("unityPackages" in data) { // World
-    if (data.unityPackages?.some(pkg => pkg.platform == "standalonewindows")) platforms.push({ platform: "standalonewindows" });
-    if (data.unityPackages?.some(pkg => pkg.platform == "android")) platforms.push({ platform: "android" });
-    if (data.unityPackages?.some(pkg => pkg.platform == "ios")) platforms.push({ platform: "ios" });
+  if ("performance" in data) {
+    // Avatar
+    if (data.performance.standalonewindows)
+      platforms.push({
+        platform: "standalonewindows",
+        avatarPerformance: data.performance.standalonewindows,
+      });
+    if (data.performance.android)
+      platforms.push({
+        platform: "android",
+        avatarPerformance: data.performance.android,
+      });
+    if (data.performance.ios)
+      platforms.push({
+        platform: "ios",
+        avatarPerformance: data.performance.ios,
+      });
+  } else if ("unityPackages" in data) {
+    // World
+    if (data.unityPackages?.some((pkg) => pkg.platform == "standalonewindows"))
+      platforms.push({ platform: "standalonewindows" });
+    if (data.unityPackages?.some((pkg) => pkg.platform == "android"))
+      platforms.push({ platform: "android" });
+    if (data.unityPackages?.some((pkg) => pkg.platform == "ios"))
+      platforms.push({ platform: "ios" });
   }
   return platforms;
 }
-
 
 // converter
 // Convert User to LimitedUserFriend (for DataContext etc...)
 export function convertToLimitedUserFriend(user: UserLike): LimitedUserFriend {
   return {
     ...user,
-    imageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? ("profilePicOverrideThumbnail" in user ? (user as any).profilePicOverrideThumbnail : undefined) ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
+    imageUrl:
+      user?.currentAvatarThumbnailImageUrl ??
+      user?.currentAvatarImageUrl ??
+      ("profilePicOverrideThumbnail" in user
+        ? (user as any).profilePicOverrideThumbnail
+        : undefined) ??
+      ("profilePicOverride" in user
+        ? (user as any).profilePicOverride
+        : undefined) ??
+      "",
     location: "location" in user ? (user as any).location : "offline",
     friendKey: "friendKey" in user ? (user as any).friendKey : "",
     last_mobile: "last_mobile" in user ? (user as any).last_mobile : "",
     last_login: "last_login" in user ? (user as any).last_login : "",
     last_activity: "last_activity" in user ? (user as any).last_activity : "",
     platform: "platform" in user ? (user as any).platform : "",
-
-  };
+  } as unknown as LimitedUserFriend;
 }
 // Convert User to LimitedUserInstance (for DataContext etc...)
-export function convertToLimitedUserInstance(user: UserLike): LimitedUserInstance {
+export function convertToLimitedUserInstance(
+  user: UserLike,
+): LimitedUserInstance {
   return {
     ...user,
     pronouns: "pronouns" in user ? (user as any).pronouns : "",
-    currentAvatarImageUrl: user?.currentAvatarImageUrl ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
-    currentAvatarThumbnailImageUrl: user?.currentAvatarThumbnailImageUrl ?? user?.currentAvatarImageUrl ?? ("profilePicOverrideThumbnail" in user ? (user as any).profilePicOverrideThumbnail : undefined) ?? ("profilePicOverride" in user ? (user as any).profilePicOverride : undefined) ?? "",
-    currentAvatarTags: "currentAvatarTags" in user ? (user as any).currentAvatarTags : [],
-    ageVerified: "ageVerificationStatus" in user ? (user as any).ageVerificationStatus : false,
-    ageVerificationStatus: "ageVerificationStatus" in user ? (user as any).ageVerificationStatus : "hidden",
-    allowAvatarCopying: "allowAvatarCopying" in user ? (user as any).allowAvatarCopying : false,
+    currentAvatarImageUrl:
+      user?.currentAvatarImageUrl ??
+      ("profilePicOverride" in user
+        ? (user as any).profilePicOverride
+        : undefined) ??
+      "",
+    currentAvatarThumbnailImageUrl:
+      user?.currentAvatarThumbnailImageUrl ??
+      user?.currentAvatarImageUrl ??
+      ("profilePicOverrideThumbnail" in user
+        ? (user as any).profilePicOverrideThumbnail
+        : undefined) ??
+      ("profilePicOverride" in user
+        ? (user as any).profilePicOverride
+        : undefined) ??
+      "",
+    currentAvatarTags:
+      "currentAvatarTags" in user ? (user as any).currentAvatarTags : [],
+    ageVerified:
+      "ageVerificationStatus" in user
+        ? (user as any).ageVerificationStatus
+        : false,
+    ageVerificationStatus:
+      "ageVerificationStatus" in user
+        ? (user as any).ageVerificationStatus
+        : "hidden",
+    allowAvatarCopying:
+      "allowAvatarCopying" in user ? (user as any).allowAvatarCopying : false,
     date_joined: "date_joined" in user ? (user as any).date_joined : "",
     friendKey: "friendKey" in user ? (user as any).friendKey : "",
     state: "state" in user ? (user as any).state : undefined,
     last_mobile: "last_mobile" in user ? (user as any).last_mobile : "",
     last_activity: "last_activity" in user ? (user as any).last_activity : "",
-  };
+  } as LimitedUserInstance;
 }

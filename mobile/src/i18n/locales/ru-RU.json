@@ -56,7 +56,8 @@
       "sectionLabel_badges": "Значки",
       "sectionLabel_info": "Информация",
       "section_info_last_activity": "Последняя активность: {{date, dd.MM.yyyy HH:mm}}",
-      "section_info_joined": "Дата регистрации: {{date, dd.MM.yyyy}}"
+      "section_info_joined": "Дата регистрации: {{date, dd.MM.yyyy}}",
+      "profile_load_error": "Не удалось загрузить профиль. Нажмите, чтобы повторить."
     },
     "others": {
       "label": "Другое",

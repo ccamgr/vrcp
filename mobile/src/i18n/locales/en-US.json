@@ -56,7 +56,8 @@
       "sectionLabel_badges": "Badges",
       "sectionLabel_info": "Info",
       "section_info_last_activity": "Last Activity: {{date, yyyy/MM/dd HH:mm}}",
-      "section_info_joined": "Joined date: {{date, yyyy/MM/dd}}"
+      "section_info_joined": "Joined date: {{date, yyyy/MM/dd}}",
+      "profile_load_error": "Unable to load profile. Tap to retry."
     },
     "others": {
       "label": "Others",

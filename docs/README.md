@@ -15,11 +15,11 @@ vrcp/
 
 ## サブプロジェクト一覧
 
-| 対象 | 役割 | 主な技術 | 詳細 |
-| --- | --- | --- | --- |
-| Desktop | PC 向けクライアント、VRChat ログ監視・分析、モバイル連携 | Tauri 2, Rust, React, Vite, SQLite | [desktop.md](./desktop.md) |
-| Mobile | モバイル向け VRChat API クライアント、デスクトップとの連携 | Expo, React Native, Expo Router, Drizzle ORM | [mobile.md](./mobile.md) |
-| Pages | 紹介ページ、利用規約、プライバシーポリシーなどの公開サイト | Astro, Starlight | [pages.md](./pages.md) |
+| 対象    | 役割                                                       | 主な技術                                     | 詳細                       |
+| ------- | ---------------------------------------------------------- | -------------------------------------------- | -------------------------- |
+| Desktop | PC 向けクライアント、VRChat ログ監視・分析、モバイル連携   | Tauri 2, Rust, React, Vite, SQLite           | [desktop.md](./desktop.md) |
+| Mobile  | モバイル向け VRChat API クライアント、デスクトップとの連携 | Expo, React Native, Expo Router, Drizzle ORM | [mobile.md](./mobile.md)   |
+| Pages   | 紹介ページ、利用規約、プライバシーポリシーなどの公開サイト | Astro, Starlight                             | [pages.md](./pages.md)     |
 
 ## サブプロジェクト間の関係
 
@@ -43,3 +43,9 @@ Pages: アプリ群の紹介・公開ドキュメントを静的配信
 - 時刻データは原則として Unix time のミリ秒単位で扱います。
 
 AI エージェントによる作業では、[`.agent/README.md`](../.agent/README.md) にある共通の作業規約とルーティングを参照してください。
+
+## 関連設計
+
+- [Mobile vrcapi 1.21.0 移行設計](./mobile-vrcapi-1.21-migration.md)
+- [Mobile VRChat API / Pipeline 型生成の互換調整](./mobile-vrchat-api-generation.md)
+- [Desktop Session DB Migration 設計](./desktop-session-db-migration.md)

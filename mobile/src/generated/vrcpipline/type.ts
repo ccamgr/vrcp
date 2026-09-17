@@ -276,7 +276,7 @@ export type GroupLeftPipelineContent = {
 }
 
 export type GroupMemberUpdatedPipelineContent = {
-  member: _API.GroupLimitedMember;
+  member: _API.GroupMember;
 }
 
 export type GroupRoleUpdatedPipelineContent = {

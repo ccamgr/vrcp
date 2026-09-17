@@ -1,6 +1,15 @@
 {
   "versions": [
     {
+      "nativeVersion": "0.0.2",
+      "updates": [
+        {
+          "date": "2026-09-17",
+          "message": "[Draft] Initial release for v0.0.2"
+        }
+      ]
+    },
+    {
       "nativeVersion": "0.0.1",
       "updates": [
         {

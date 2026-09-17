@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
 
 interface Props {
   open: boolean;
@@ -26,22 +27,24 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const currentUser = useCurrentUser();
+  const publicProfile = usePublicProfile(currentUser.data?.id, true);
   const [isLoading, setIsLoading] = useState(false);
 
   const [bio, setBio] = useState<string>("");
+  const [isDirty, setIsDirty] = useState(false);
 
   const handleSubmitChange = async () => {
     if (!currentUser.data) return;
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const res = await vrc.usersApi.updateUser({
+      const res = await vrc.usersApi.updateProfile({
         userId: currentUser.data.id,
-        updateUserRequest: {
+        updateProfileRequest: {
           bio: bio,
         },
       });
-      currentUser.refetch();
+      publicProfile.setProfile(res.data);
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update bio.");
@@ -51,9 +54,13 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
   };
 
   useEffect(() => {
-    if (!open) return;
-    setBio(currentUser.data?.bio || "");
-  }, [open]);
+    if (!open) {
+      setIsDirty(false);
+      return;
+    }
+    if (isDirty || !publicProfile.data) return;
+    setBio(publicProfile.data?.bio ?? "");
+  }, [open, isDirty, publicProfile.data]);
 
   const footerButtons: ButtonItemForFooter[] = [
     {
@@ -87,7 +94,10 @@ const ChangeBioModal = ({ open, setOpen }: Props) => {
               },
             ]}
             value={bio}
-            onChangeText={setBio}
+            onChangeText={(value) => {
+              setIsDirty(true);
+              setBio(value);
+            }}
             placeholder={t("components.changeBioModal.placeholder")}
             multiline
             numberOfLines={10}

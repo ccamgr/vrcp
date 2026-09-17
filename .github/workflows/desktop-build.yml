@@ -34,20 +34,19 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
-      # バージョン情報を取得 (Node.jsのワンライナーを使用)
+      - name: Sync version metadata
+        run: npx tsx tools/sync-version.ts
+
       - name: Extract Version
         id: version
         shell: bash
         run: |
-          # tauri.conf.json からバージョンを取得 (v2のパスに合わせて調整)
           VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
           echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
 
-          # Artifact受け渡し用にファイルにも書き出す
           mkdir -p build_assets
           echo "$VERSION" > build_assets/version.txt
 
-      # ビルド実行 (Tauri Actionを使わず直接叩く)
       - name: Build Tauri App
         run: npm run tauri build -- --verbose
 

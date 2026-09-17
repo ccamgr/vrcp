@@ -16,6 +16,7 @@ import DraggableFlatListItem from "@/components/view/DraggableFlatListItem";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
 
 interface Props {
   open: boolean;
@@ -28,22 +29,24 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const currentUser = useCurrentUser();
+  const publicProfile = usePublicProfile(currentUser.data?.id, true);
   const [isLoading, setIsLoading] = useState(false);
 
   const [bioLinks, setBioLinks] = useState<string[]>([]);
+  const [isDirty, setIsDirty] = useState(false);
 
   const handleSubmitChange = async () => {
     if (!currentUser.data) return;
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const res = await vrc.usersApi.updateUser({
+      const res = await vrc.usersApi.updateProfile({
         userId: currentUser.data.id,
-        updateUserRequest: {
+        updateProfileRequest: {
           bioLinks: bioLinks,
         },
       });
-      currentUser.refetch();
+      publicProfile.setProfile(res.data);
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update bio links.");
@@ -53,9 +56,13 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
   };
 
   useEffect(() => {
-    if (!open) return;
-    setBioLinks(currentUser.data?.bioLinks || []);
-  }, [open]);
+    if (!open) {
+      setIsDirty(false);
+      return;
+    }
+    if (isDirty || !publicProfile.data) return;
+    setBioLinks(publicProfile.data?.bioLinks ?? []);
+  }, [open, isDirty, publicProfile.data]);
 
   const footerButtons: ButtonItemForFooter[] = [
     {
@@ -96,13 +103,17 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
             onSubmitEditing={(e) => {
               const text = e.nativeEvent.text;
               if (text.trim() === "") return;
+              setIsDirty(true);
               setBioLinks([...bioLinks, text.trim()]);
             }}
           />
           <DraggableFlatList
             style={styles.draggableList}
             data={bioLinks}
-            onDragEnd={({ data }) => setBioLinks(data)}
+            onDragEnd={({ data }) => {
+              setIsDirty(true);
+              setBioLinks(data);
+            }}
             keyExtractor={(item, index) => `draggable-item-${index}-${item}`}
             renderItem={({ item, drag, isActive, getIndex }) => (
               <DraggableFlatListItem
@@ -113,6 +124,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
                 onChangeText={(text) => {
                   const newData = [...bioLinks];
                   newData[getIndex() ?? 0] = text;
+                  setIsDirty(true);
                   setBioLinks(newData);
                 }}
                 deletable={true}
@@ -120,6 +132,7 @@ const ChangeBioLinksModal = ({ open, setOpen }: Props) => {
                   const newData = bioLinks.filter(
                     (_, i) => i !== (getIndex() ?? 0),
                   );
+                  setIsDirty(true);
                   setBioLinks(newData);
                 }}
               />

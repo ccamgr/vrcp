@@ -2,6 +2,7 @@ import { useQuery, useQueryClient, onlineManager } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { usersRepo } from "@/db/repogitories";
 import { User } from "@/generated/vrcapi";
+import { toUserCore } from "@/lib/vrcapiModels";
 
 const EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -20,8 +21,6 @@ export const useUser = (userId?: string, forceRefetch: boolean = false) => {
     queryKey: QUERY_KEY,
     queryFn: async () => {
       if (!userId) throw new Error("User ID is required");
-      const now = Date.now();
-
       // 1. Get current cache (regardless of expiration)
       const cached = await usersRepo.getWithTTL(userId);
 
@@ -43,9 +42,10 @@ export const useUser = (userId?: string, forceRefetch: boolean = false) => {
         const res = await vrc.usersApi.getUser({ userId });
 
         // Update SQLite cache (Fire and forget)
-        usersRepo.setWithTTL(res.data, EXPIRATION).catch(console.error);
+        const user = toUserCore(res.data);
+        usersRepo.setWithTTL(user, EXPIRATION).catch(console.error);
 
-        return res.data;
+        return user;
       } catch (error) {
         // 5. Offline Fallback: If API fails but we have an expired cache, use it
         if (cached) {
@@ -57,12 +57,9 @@ export const useUser = (userId?: string, forceRefetch: boolean = false) => {
     },
     enabled: !!userId && !!vrc.usersApi,
     staleTime: EXPIRATION,
-    networkMode: 'offlineFirst',
+    networkMode: "offlineFirst",
   });
-  const refetch = async () => {
-    await queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-    query.refetch();
-  };
+  const refetch = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
   const setUser = (updater: (prev: User | undefined) => User) => {
     queryClient.setQueryData<User>(QUERY_KEY, updater);
   };

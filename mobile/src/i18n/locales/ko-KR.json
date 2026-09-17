@@ -56,7 +56,8 @@
       "sectionLabel_badges": "배지",
       "sectionLabel_info": "정보",
       "section_info_last_activity": "최근 활동: {{date, yyyy년 MM월 dd일 HH:mm}}",
-      "section_info_joined": "가입일: {{date, yyyy년 MM월 dd일}}"
+      "section_info_joined": "가입일: {{date, yyyy년 MM월 dd일}}",
+      "profile_load_error": "프로필을 불러올 수 없습니다. 탭하여 다시 시도하세요."
     },
     "others": {
       "label": "기타",

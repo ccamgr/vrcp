@@ -53,6 +53,7 @@
       "sectionLabel_info": "情報",
       "section_info_last_activity": "最終アクティビティ: {{date, yyyy年MM月dd日 HH:mm}}",
       "section_info_joined": "登録日: {{date, yyyy年MM月dd日}}",
+      "profile_load_error": "プロフィールを読み込めません。タップして再試行します。",
       "menuLabel_route_avatars": "アバター",
       "menuLabel_route_groups": "グループ",
       "menuLabel_route_prints": "プリント",

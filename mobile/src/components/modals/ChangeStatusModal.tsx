@@ -15,6 +15,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { queryClient } from "@/lib/queryClient";
 
 interface Props {
   open: boolean;
@@ -46,14 +47,14 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const res = await vrc.usersApi.updateUser({
+      await vrc.usersApi.updateUser({
         userId: currentUser.data.id,
         updateUserRequest: {
           status: selectedStatus,
           statusDescription: statusDescription,
         },
       });
-      currentUser.refetch();
+      await queryClient.invalidateQueries({ queryKey: ["vrc", "account"] });
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update status.");

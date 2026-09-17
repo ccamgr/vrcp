@@ -23,7 +23,8 @@ gen-vrcapi:  # generate the vrcapi types and clients from openapi spec
 		-i ./src/generated/openapi.yaml \
 		-g typescript-axios \
 		-o ./src/generated/vrcapi/ \
-		--additional-properties="useSingleRequestParameter=true"
+		--additional-properties="useSingleRequestParameter=true" \
+		--inline-schema-name-mappings "Transaction_agreement=TransactionAgreementValue"
 	@rm -f ./src/generated/openapi.yaml
 
 gen-vrcpipe: # generate the vrcpipe types from websocket spec

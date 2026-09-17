@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
-import { CurrentUser } from "@/generated/vrcapi";
 import { useAuth } from "@/contexts/AuthContext";
+import { isCurrentAccount } from "@/lib/vrcapiModels";
 
 /**
  * On-memory
@@ -12,13 +12,19 @@ export const useCurrentUser = () => {
   const auth = useAuth();
 
   return useQuery({
-    queryKey: ["vrc", "state", "currentUser"],
+    queryKey: ["vrc", "account", auth.user?.id, "current"],
     queryFn: async () => {
       const res = await vrc.authenticationApi.getCurrentUser();
+      if (!isCurrentAccount(res.data)) {
+        throw new Error(
+          "Current user request returned a two-factor authentication response",
+        );
+      }
       return res.data;
     },
-    enabled: !!auth.user,
+    enabled: !!auth.user?.id,
     // Short staleTime for real-time data
     staleTime: 60 * 1000,
+    meta: { persist: false },
   });
 };
