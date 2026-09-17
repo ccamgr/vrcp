@@ -5,7 +5,7 @@
       "updates": [
         {
           "date": "2026-09-17",
-          "message": "[Draft] Initial release for v0.0.2"
+          "message": "Update for VRChat API v1.21.0 compatibility"
         }
       ]
     },

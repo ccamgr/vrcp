@@ -37,10 +37,13 @@ migrate/down:  # run database migrations down
 .PHONY : version-bump/major version-bump/minor version-bump/patch
 version-bump/major:  # generate draft of versions.json with major bump
 	@npx tsx ./tools/version-bump.ts major
+	@npx tsx ./tools/sync-version.ts
 version-bump/minor:  # generate draft of versions.json with minor bump
 	@npx tsx ./tools/version-bump.ts minor
+	@npx tsx ./tools/sync-version.ts
 version-bump/patch:  # generate draft of versions.json with patch bump
 	@npx tsx ./tools/version-bump.ts patch
+	@npx tsx ./tools/sync-version.ts
 
 
 .PHONY: lint
