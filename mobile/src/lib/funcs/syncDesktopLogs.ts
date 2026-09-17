@@ -1,18 +1,21 @@
 // src/services/logSyncService.ts
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import { extractErrMsg } from "@/lib/utils";
-import { logsRepo } from "@/db/repogitories/logs";
-import { LogPayload } from "@/generated/desktopapi/type";
-import { getDesktopLogPage } from "@/lib/desktopApi";
+import { sessionsRepo } from "@/db/repogitories/sessions";
+import { StoredSession } from "@/db/schema/sessions";
+import { getDesktopSessions } from "@/lib/desktopApi";
 
 const LAST_SYNC_KEY = "DESKTOP_LOG_LAST_SYNC_TIME";
-const SYNC_OVERLAP_MS = 60 * 1000;
-const LOG_PAGE_SIZE = 1000;
+const SESSION_GENERATION_KEY = "DESKTOP_SESSION_GENERATION";
+const SESSION_SOURCE_KEY = "DESKTOP_SESSION_SOURCE";
+const SYNC_LOOKBACK_MS = 7 * 24 * 60 * 60 * 1000;
+const SESSION_PAGE_SIZE = 200;
 
 export async function syncDesktopLogs(
   desktopUrl: string,
   isFullSync: boolean = false,
-  onProgress?: (msg: string) => void
+  onProgress?: (msg: string) => void,
+  retryCount: number = 0,
 ) {
   if (!desktopUrl) {
     throw new Error("Desktop App URL is not configured.");
@@ -21,47 +24,71 @@ export async function syncDesktopLogs(
   onProgress?.("Calculating sync period...");
 
   try {
-    let startTimestamp: number | undefined = undefined;
-
-    if (!isFullSync) {
-      const lastSyncTime = await getLastSyncTime() || 0;
-      const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      startTimestamp = Math.max(lastSyncTime - SYNC_OVERLAP_MS, oneWeekAgo);
-    }
+    const startTimestamp = isFullSync ? undefined : Date.now() - SYNC_LOOKBACK_MS;
+    const [savedGeneration, savedSource] = await StorageWrapper.multiGet([
+      SESSION_GENERATION_KEY,
+      SESSION_SOURCE_KEY,
+    ]);
 
     onProgress?.("Fetching data from desktop...");
 
     let cursor: string | undefined;
-    let syncedCount = 0;
-    let latestSourceTimestamp: number | undefined;
+    let generation: number | undefined;
+    let source: string | undefined;
+    const items: StoredSession[] = [];
+    const cursors = new Set<string>();
     do {
-      const response = await getDesktopLogPage(desktopUrl, {
+      const response = await getDesktopSessions(desktopUrl, {
         start: startTimestamp,
         cursor,
-        limit: LOG_PAGE_SIZE,
+        limit: SESSION_PAGE_SIZE,
       });
-      const newLogs: LogPayload[] = response.data.logs;
-      if (newLogs.length > 0) {
-        onProgress?.(`Saving ${syncedCount + newLogs.length} records to local database...`);
-        await logsRepo.bulkUpsert(newLogs);
-        syncedCount += newLogs.length;
-        latestSourceTimestamp = Math.max(
-          latestSourceTimestamp ?? Number.MIN_SAFE_INTEGER,
-          ...newLogs.map((log) => log.timestamp),
-        );
+      if (generation !== undefined && generation !== response.data.generation) {
+        if (retryCount >= 2) throw new Error("Desktop session data changed during synchronization.");
+        return syncDesktopLogs(desktopUrl, true, onProgress, retryCount + 1);
       }
+      const pageSource = response.data.source;
+      if (source !== undefined && source !== pageSource) {
+        if (retryCount >= 2) throw new Error("Desktop source changed during synchronization.");
+        return syncDesktopLogs(desktopUrl, true, onProgress, retryCount + 1);
+      }
+      generation = response.data.generation;
+      source = pageSource;
+      items.push(...response.data.sessions.map((session) => ({
+        sourceId: `${pageSource}:${generation}:${session.sourceId}`,
+        worldName: session.worldName,
+        location: session.instanceId,
+        startTime: session.startTime,
+        endTime: session.endTime,
+        durationMs: session.durationMs,
+        username: session.username,
+        players: session.players,
+      })));
       cursor = response.data.nextCursor ?? undefined;
+      if (cursor && (cursors.has(cursor) || cursors.size >= 10_000)) {
+        throw new Error("Desktop returned an invalid session page cursor.");
+      }
+      if (cursor) cursors.add(cursor);
     } while (cursor);
-
-    if (latestSourceTimestamp !== undefined) {
-      await StorageWrapper.setItemAsync(
-        LAST_SYNC_KEY,
-        latestSourceTimestamp.toString(),
-      );
+    const mustReplaceAll = isFullSync
+      || savedSource[1] !== source
+      || (savedGeneration[1] !== null && savedGeneration[1] !== String(generation));
+    if (mustReplaceAll && !isFullSync) {
+      return syncDesktopLogs(desktopUrl, true, onProgress);
     }
-    onProgress?.(`Success! ${syncedCount} logs synced.`);
-
-    return syncedCount;
+    onProgress?.(`Saving ${items.length} sessions to local database...`);
+    if (mustReplaceAll) {
+      await sessionsRepo.replaceAll(items);
+    } else {
+      await sessionsRepo.replaceRange(items, startTimestamp!, Date.now());
+    }
+    await StorageWrapper.multiSet([
+      [LAST_SYNC_KEY, Date.now().toString()],
+      [SESSION_GENERATION_KEY, String(generation)],
+      [SESSION_SOURCE_KEY, source],
+    ]);
+    onProgress?.(`Success! ${items.length} sessions synced.`);
+    return items.length;
 
   } catch (error) {
     console.error("Log sync error:", error);

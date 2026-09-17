@@ -18,31 +18,39 @@ export default function HistoryTimeline({
     null,
   );
 
-  // 1日の開始・終了時間を固定 (00:00 - 24:00)
-  const { dayStart, totalDuration } = useMemo(() => {
-    const start = new Date(`${targetDate}T00:00:00`).getTime();
+  const { displayStart, displayEnd, totalDuration } = useMemo(() => {
+    const [year, month, day] = targetDate.split("-").map(Number);
+    const start = new Date(year, month - 1, day).getTime();
+    const nextDay = new Date(year, month - 1, day + 1).getTime();
+    const earliest = sessions.reduce((time, session) => Math.min(time, session.startTime), start);
+    const latest = sessions.reduce((time, session) => Math.max(time, session.endTime), nextDay);
+    const rangeStart = Math.min(start, earliest);
+    const rangeEnd = Math.max(nextDay, latest);
     return {
-      dayStart: start,
-      totalDuration: 24 * 60 * 60 * 1000,
+      displayStart: rangeStart,
+      displayEnd: rangeEnd,
+      totalDuration: rangeEnd - rangeStart,
     };
-  }, [targetDate]);
+  }, [sessions, targetDate]);
 
   // 時間マーカー (1時間刻み)
   const timeMarkers = useMemo(() => {
     const markers = [];
-    const step = 60 * 60 * 1000; // 1時間
-    for (let i = 0; i <= 24; i++) {
+    const marker = new Date(displayStart);
+    marker.setMinutes(0, 0, 0);
+    while (marker.getTime() <= displayEnd) {
       markers.push({
-        time: dayStart + i * step,
-        label: `${i.toString().padStart(2, "0")}:00`,
+        time: marker.getTime(),
+        label: `${marker.getHours().toString().padStart(2, "0")}:00`,
       });
+      marker.setHours(marker.getHours() + 1);
     }
     return markers;
-  }, [dayStart]);
+  }, [displayEnd, displayStart]);
 
   // 画面全体の高さ設定 (24時間をどれくらいの高さで表示するか)
   const HOUR_HEIGHT = 120;
-  const DAY_HEIGHT = 24 * HOUR_HEIGHT;
+  const DAY_HEIGHT = Math.ceil(totalDuration / (60 * 60 * 1000)) * HOUR_HEIGHT;
   const MIN_VISIBLE_DURATION_MS = 5 * 60 * 1000; // これ以下の滞在は表示しない (1分未満)
   const MIN_SESSION_HEIGHT_MS = 10 * 60 * 1000; // 表示される場合に最小でもこの時間分の高さを表示する
 
@@ -55,7 +63,7 @@ export default function HistoryTimeline({
           {/* 背景グリッド線 & 時間ラベル */}
           {timeMarkers.map((marker, index) => {
             // top位置の計算 (%)
-            const topPercent = ((marker.time - dayStart) / totalDuration) * 100;
+            const topPercent = ((marker.time - displayStart) / totalDuration) * 100;
 
             return (
               <View
@@ -77,11 +85,9 @@ export default function HistoryTimeline({
               // 位置計算
               // 日付を跨ぐ場合の考慮（簡易的）: startがdayStartより前なら0にする等のガードが必要ですが、
               // 今回は単一日表示前提で計算します。
-              const startRelative = Math.max(0, session.startTime - dayStart);
+              const startRelative = session.startTime - displayStart;
               const topPercent = (startRelative / totalDuration) * 100;
-              const todayDurationMs =
-                session.durationMs + Math.min(0, session.startTime - dayStart);
-              const heightPercent = (todayDurationMs / totalDuration) * 100;
+              const heightPercent = (session.durationMs / totalDuration) * 100;
 
               // 最小高さを確保 (短すぎる滞在も見逃さないように)
               const minHeightPercent =

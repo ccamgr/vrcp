@@ -96,6 +96,32 @@ impl DB {
         self.sessions().get_sessions(start, end).await
     }
 
+    pub async fn get_sessions_page(
+        &self,
+        start: Option<i64>,
+        end: Option<i64>,
+        cursor: Option<(i64, i32)>,
+        limit: u64,
+    ) -> Result<
+        (
+            Vec<crate::cmds::vrclog::sessions::SessionPayload>,
+            Option<(i64, i32)>,
+            i64,
+            String,
+        ),
+        DbErr,
+    > {
+        self.backfill_sessions().await?;
+        let _guard = self.projection_lock.lock().await;
+        let sessions = self.sessions();
+        let (payloads, next_cursor) = sessions
+            .get_sessions_page(start, end, cursor, limit)
+            .await?;
+        let generation = sessions.sync_generation().await?;
+        let source = sessions.sync_source().await?;
+        Ok((payloads, next_cursor, generation, source))
+    }
+
     pub async fn delete_all_log_data(&self) -> DbResult<()> {
         let _guard = self.projection_lock.lock().await;
         self.sessions().delete_all().await?;

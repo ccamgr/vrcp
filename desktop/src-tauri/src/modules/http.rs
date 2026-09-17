@@ -10,6 +10,7 @@ use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
 use tower_http::cors::CorsLayer;
 
+use crate::cmds::vrclog::sessions::SessionPayload;
 use crate::db::DB;
 
 use super::watcher::LogPayload;
@@ -78,6 +79,23 @@ struct LogPage {
     next_cursor: Option<String>,
 }
 
+#[derive(Deserialize)]
+struct SessionParams {
+    start: Option<i64>,
+    end: Option<i64>,
+    cursor: Option<String>,
+    limit: Option<u64>,
+}
+
+#[derive(Serialize)]
+struct SessionPage {
+    sessions: Vec<SessionPayload>,
+    #[serde(rename = "nextCursor")]
+    next_cursor: Option<String>,
+    generation: i64,
+    source: String,
+}
+
 /// Handler for GET /logs
 async fn handle_get_logs(
     State(db): State<DB>,
@@ -108,6 +126,41 @@ async fn handle_get_logs(
             Err(StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
+}
+
+async fn handle_get_sessions(
+    State(db): State<DB>,
+    Query(params): Query<SessionParams>,
+) -> Result<Json<SessionPage>, StatusCode> {
+    if matches!((params.start, params.end), (Some(start), Some(end)) if start > end) {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+    let cursor = params
+        .cursor
+        .as_deref()
+        .map(parse_cursor)
+        .transpose()
+        .map_err(|error| {
+            eprintln!("Invalid session page cursor: {error}");
+            StatusCode::BAD_REQUEST
+        })?;
+    let limit = params
+        .limit
+        .unwrap_or(DEFAULT_LOG_PAGE_SIZE)
+        .clamp(1, MAX_LOG_PAGE_SIZE);
+    let (sessions, next_cursor, generation, source) = db
+        .get_sessions_page(params.start, params.end, cursor, limit)
+        .await
+        .map_err(|error| {
+            eprintln!("Failed to fetch sessions: {error}");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    Ok(Json(SessionPage {
+        sessions,
+        next_cursor: next_cursor.map(|(timestamp, id)| format!("{timestamp}:{id}")),
+        generation,
+        source,
+    }))
 }
 
 fn parse_cursor(cursor: &str) -> Result<(i64, i32), String> {
@@ -151,6 +204,7 @@ async fn spawn_server(db: DB, port: u16) -> Result<JoinHandle<()>, String> {
         .allow_methods([axum::http::Method::GET]);
     let app = Router::new()
         .route("/logs", get(handle_get_logs))
+        .route("/sessions", get(handle_get_sessions))
         .with_state(db)
         .layer(cors);
 

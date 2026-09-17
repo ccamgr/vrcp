@@ -1,6 +1,5 @@
 import { defaultDatabaseDirectory, openDatabaseSync } from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
-import { avatars, worlds, groups, users, logs } from "./schema";
 import { eq, and, like, lt, not, sql } from "drizzle-orm";
 import migrations from "./migration/migrations";
 import { migrate } from "drizzle-orm/expo-sqlite/migrator";

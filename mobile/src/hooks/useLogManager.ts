@@ -5,8 +5,8 @@ import {
   getLastSyncTime,
   syncDesktopLogs,
 } from "@/lib/funcs/syncDesktopLogs";
-import { logsRepo } from "@/db/repogitories";
-import { LogPayload } from "@/generated/desktopapi/type";
+import { sessionsRepo } from "@/db/repogitories";
+import { StoredSession } from "@/db/schema/sessions";
 import * as Network from 'expo-network';
 
 export const useLogManager = () => {
@@ -23,7 +23,7 @@ export const useLogManager = () => {
   // Measure log count
   const measureLogs = useCallback(async () => {
     try {
-      const count = await logsRepo.count();
+      const count = await sessionsRepo.count();
       setLogStats({ count });
     } catch (error) {
       console.error("Failed to count desktop logs", error);
@@ -34,7 +34,7 @@ export const useLogManager = () => {
   const clearLogs = useCallback(async () => {
     try {
       await clearLastSyncTime();
-      await logsRepo.deleteAll();
+      await sessionsRepo.deleteAll();
       await measureLogs(); // Refresh count after deletion
     } catch (error) {
       console.error("Failed to clear desktop logs", error);
@@ -74,11 +74,11 @@ export const useLogManager = () => {
     }
   }, [settings.otherOptions_desktopAppURL, measureLogs]);
 
-  const getLocalLogs = useCallback(async (startMs: number, endMs: number): Promise<LogPayload[]> => {
+  const getLocalSessions = useCallback(async (startMs: number, endMs: number): Promise<StoredSession[]> => {
     try {
-      return await logsRepo.getLogsByRange(startMs, endMs);
+      return await sessionsRepo.getByRange(startMs, endMs);
     } catch (error) {
-      console.error("Failed to fetch local logs by range", error);
+      console.error("Failed to fetch local sessions by range", error);
       return [];
     }
   }, []);
@@ -96,7 +96,7 @@ export const useLogManager = () => {
     isSyncing,
     syncProgress,
     syncLogs,
-    getLocalLogs,
+    getLocalSessions,
     logStats,
     measureLogs,
     clearLogs,

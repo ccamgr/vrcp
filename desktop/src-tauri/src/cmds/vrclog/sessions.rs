@@ -18,6 +18,8 @@ pub struct PlayerInterval {
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
 pub struct SessionPayload {
+    #[serde(rename = "sourceId")]
+    pub source_id: i32,
     #[serde(rename = "worldName")]
     pub world_name: String,
     #[serde(rename = "instanceId")]

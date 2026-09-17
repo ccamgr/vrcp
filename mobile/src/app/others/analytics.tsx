@@ -6,7 +6,7 @@ import { spacing } from "@/configs/styles";
 import { useSetting } from "@/contexts/SettingContext";
 import { useLogManager } from "@/hooks/useLogManager";
 import { formatDate } from "@/lib/date";
-import { analyzeSessions, WorldSession } from "@/lib/funcs/analizeSessions";
+import { WorldSession } from "@/lib/funcs/analizeSessions";
 import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ export default function Analytics() {
   const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
   // hookから isSyncing も取り出します
-  const { getLocalLogs, getLastSync, syncLogs, isSyncing } = useLogManager();
+  const { getLocalSessions, getLastSync, syncLogs, isSyncing } = useLogManager();
 
   // データ取得 (UIブロックを避けるため loading は初回のみ)
   const fetchLogs = useCallback(
@@ -47,20 +47,15 @@ export default function Analytics() {
           999,
         ).getTime();
 
-        const localLogs = await getLocalLogs(startOfDay, endOfDay);
-        const analyzedSessions = analyzeSessions(localLogs, {
-          start: startOfDay,
-          end: endOfDay,
-        });
-
-        setSessions(analyzedSessions);
+        const localSessions = await getLocalSessions(startOfDay, endOfDay);
+        setSessions(localSessions);
       } catch (error) {
-        console.error("Failed to analyze local logs:", error);
+        console.error("Failed to load local sessions:", error);
       } finally {
         if (!silent) setLoading(false);
       }
     },
-    [targetDate, getLocalLogs],
+    [targetDate, getLocalSessions],
   );
 
   // 日付が変更された時、または初回マウント時にローカルDBから読み込む
@@ -109,7 +104,8 @@ export default function Analytics() {
 
   // 日付操作ハンドラ
   const handleDateChange = (offset: number) => {
-    const d = new Date(targetDate);
+    const [year, month, day] = targetDate.split("-").map(Number);
+    const d = new Date(year, month - 1, day);
     d.setDate(d.getDate() + offset);
     setTargetDate(formatDate(d.getTime()));
   };

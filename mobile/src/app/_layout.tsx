@@ -9,7 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -18,6 +18,7 @@ import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { registerBackgroundTaskAsync } from "@/tasks";
 
 import { db } from "@/db";
+import { migrateLegacyLogs } from "@/db/migrateLegacyLogs";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
@@ -37,7 +38,17 @@ function RootLayout() {
   const pathname = usePathname();
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
-  const isReady = (!auth.isLoading && success) || error;
+  const [legacyMigrationComplete, setLegacyMigrationComplete] = useState(false);
+  const isReady = (!auth.isLoading && success && legacyMigrationComplete) || error;
+
+  useEffect(() => {
+    if (!success) return;
+    migrateLegacyLogs()
+      .catch((migrationError) => {
+        console.error("Failed to migrate legacy desktop logs", migrationError);
+      })
+      .then(() => setLegacyMigrationComplete(true));
+  }, [success]);
 
   useEffect(() => {
     if (isReady) {

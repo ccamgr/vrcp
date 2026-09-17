@@ -334,10 +334,8 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     current_position += bytes_read as u64;
 
                     let timestamp = extract_timestamp(&line);
-                    let mut records_activity = false;
-
-                    if let Some(payload) = parse_log_line(&line) {
-                        records_activity = matches!(&payload.event, VrcLogEvent::SelfLeft);
+                    let records_activity = if let Some(payload) = parse_log_line(&line) {
+                        let records_activity = matches!(&payload.event, VrcLogEvent::SelfLeft);
                         match payload.event {
                             VrcLogEvent::AppStart => {
                                 is_app_running = true;
@@ -358,9 +356,10 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             Ok(false) => {}
                             Err(error) => eprintln!("Failed to record watched log: {error}"),
                         }
+                        records_activity
                     } else {
-                        records_activity = true;
-                    }
+                        true
+                    };
 
                     if records_activity {
                         if let Some(timestamp) = timestamp

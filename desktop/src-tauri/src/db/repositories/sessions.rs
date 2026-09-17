@@ -13,6 +13,8 @@ const PROJECTION_STATUS_KEY: &str = "session_projection_status";
 const PROJECTION_TIMESTAMP_KEY: &str = "session_projection_last_timestamp";
 const PROJECTION_LOG_ID_KEY: &str = "session_projection_last_log_id";
 const PROJECTION_LAST_ERROR_KEY: &str = "session_projection_last_error";
+const SESSION_SYNC_GENERATION_KEY: &str = "session_sync_generation";
+const SESSION_SYNC_SOURCE_KEY: &str = "session_sync_source";
 const CHUNK_SIZE: u64 = 500;
 
 pub struct SessionsRepository {
@@ -82,6 +84,7 @@ impl SessionsRepository {
         if should_reset {
             let txn = self.db.begin().await?;
             clear_projection(&txn).await?;
+            increment_sync_generation(&txn).await?;
             set_setting(&txn, PROJECTION_VERSION_KEY, PROJECTION_VERSION).await?;
             set_setting(&txn, PROJECTION_STATUS_KEY, "running").await?;
             set_setting(&txn, PROJECTION_TIMESTAMP_KEY, &i64::MIN.to_string()).await?;
@@ -174,7 +177,31 @@ impl SessionsRepository {
             .filter(settings::Column::Key.starts_with("session_projection_"))
             .exec(&txn)
             .await?;
+        increment_sync_generation(&txn).await?;
         txn.commit().await
+    }
+
+    pub async fn sync_generation(&self) -> Result<i64, DbErr> {
+        Ok(get_setting(&self.db, SESSION_SYNC_GENERATION_KEY)
+            .await?
+            .and_then(|value| value.parse().ok())
+            .unwrap_or(0))
+    }
+
+    pub async fn sync_source(&self) -> Result<String, DbErr> {
+        if let Some(source) = get_setting(&self.db, SESSION_SYNC_SOURCE_KEY).await? {
+            return Ok(source);
+        }
+        let source = format!(
+            "{:x}-{:x}",
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_err(|error| DbErr::Custom(error.to_string()))?
+                .as_nanos(),
+            std::process::id()
+        );
+        set_setting(&self.db, SESSION_SYNC_SOURCE_KEY, &source).await?;
+        Ok(source)
     }
 
     pub async fn get_sessions(
@@ -182,6 +209,23 @@ impl SessionsRepository {
         start: Option<i64>,
         end: Option<i64>,
     ) -> Result<Vec<SessionPayload>, DbErr> {
+        self.get_sessions_page(start, end, None, u64::MAX)
+            .await
+            .map(|(sessions, _)| sessions)
+    }
+
+    pub async fn get_sessions_page(
+        &self,
+        start: Option<i64>,
+        end: Option<i64>,
+        cursor: Option<(i64, i32)>,
+        limit: u64,
+    ) -> Result<(Vec<SessionPayload>, Option<(i64, i32)>), DbErr> {
+        if limit == 0 {
+            return Err(DbErr::Custom(
+                "Session page limit must be positive".to_string(),
+            ));
+        }
         let requested_start = start.unwrap_or(i64::MIN);
         let requested_end = end.unwrap_or(i64::MAX);
         if requested_start > requested_end {
@@ -190,7 +234,7 @@ impl SessionsRepository {
             ));
         }
 
-        let sessions = instance_sessions::Entity::find()
+        let mut query = instance_sessions::Entity::find()
             .filter(instance_sessions::Column::StartTime.lte(requested_end))
             .filter(
                 Condition::any()
@@ -202,11 +246,32 @@ impl SessionsRepository {
                     ),
             )
             .order_by_asc(instance_sessions::Column::StartTime)
-            .order_by_asc(instance_sessions::Column::Id)
-            .all(&self.db)
-            .await?;
+            .order_by_asc(instance_sessions::Column::Id);
+        if let Some((timestamp, id)) = cursor {
+            query = query.filter(
+                Condition::any()
+                    .add(instance_sessions::Column::StartTime.gt(timestamp))
+                    .add(
+                        Condition::all()
+                            .add(instance_sessions::Column::StartTime.eq(timestamp))
+                            .add(instance_sessions::Column::Id.gt(id)),
+                    ),
+            );
+        }
+        if limit != u64::MAX {
+            query = query.limit(limit.saturating_add(1));
+        }
+        let mut sessions = query.all(&self.db).await?;
+        let next_cursor = if limit != u64::MAX && sessions.len() > limit as usize {
+            let next = &sessions[limit as usize - 1];
+            let cursor = Some((next.start_time, next.id));
+            sessions.truncate(limit as usize);
+            cursor
+        } else {
+            None
+        };
         if sessions.is_empty() {
-            return Ok(Vec::new());
+            return Ok((Vec::new(), None));
         }
 
         let app_ids = sessions
@@ -280,16 +345,28 @@ impl SessionsRepository {
 
             let mut player_payloads = players
                 .into_values()
-                .map(|player| PlayerInterval {
-                    total_duration_ms: player.intervals.iter().map(|i| i.end - i.start).sum(),
-                    name: player.name,
-                    intervals: player.intervals,
+                .filter_map(|player| {
+                    let intervals = player
+                        .intervals
+                        .into_iter()
+                        .map(|interval| Interval {
+                            start: interval.start.max(start_time),
+                            end: interval.end.min(end_time),
+                        })
+                        .filter(|interval| interval.end > interval.start)
+                        .collect::<Vec<_>>();
+                    (!intervals.is_empty()).then(|| PlayerInterval {
+                        total_duration_ms: intervals.iter().map(|i| i.end - i.start).sum(),
+                        name: player.name,
+                        intervals,
+                    })
                 })
                 .collect::<Vec<_>>();
             player_payloads
                 .sort_by(|left, right| right.total_duration_ms.cmp(&left.total_duration_ms));
 
             payloads.push(SessionPayload {
+                source_id: session.id,
                 world_name: session.world_name,
                 instance_id: session.instance_id,
                 start_time,
@@ -299,7 +376,7 @@ impl SessionsRepository {
                 players: player_payloads,
             });
         }
-        Ok(payloads)
+        Ok((payloads, next_cursor))
     }
 }
 
@@ -614,6 +691,15 @@ async fn set_setting<C: ConnectionTrait>(db: &C, key: &str, value: &str) -> Resu
     .exec_without_returning(db)
     .await?;
     Ok(())
+}
+
+async fn increment_sync_generation<C: ConnectionTrait>(db: &C) -> Result<(), DbErr> {
+    let generation = get_setting(db, SESSION_SYNC_GENERATION_KEY)
+        .await?
+        .and_then(|value| value.parse::<i64>().ok())
+        .unwrap_or(0)
+        .saturating_add(1);
+    set_setting(db, SESSION_SYNC_GENERATION_KEY, &generation.to_string()).await
 }
 
 #[cfg(test)]
