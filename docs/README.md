@@ -9,7 +9,11 @@ vrcp/
 ├── desktop/  # VRChat ログの記録・閲覧と API クライアント機能を持つ Tauri アプリ
 ├── mobile/   # VRChat API とデスクトップ連携を提供する Expo モバイルアプリ
 ├── pages/    # プロジェクトサイトおよび公開ドキュメント
-├── docs/     # このリポジトリの開発者向け概要ドキュメント
+├── docs/     # このリポジトリの開発者向けドキュメント
+│   ├── desktop/    # Desktop の概要と設計資料
+│   ├── mobile/     # Mobile の概要と継続的に参照する手順
+│   ├── pages/      # Pages の概要
+│   └── migrations/ # 完了済みの移行設計・記録
 └── .github/  # 各サブプロジェクトのビルド・リリース用ワークフロー
 ```
 
@@ -17,9 +21,9 @@ vrcp/
 
 | 対象    | 役割                                                       | 主な技術                                     | 詳細                       |
 | ------- | ---------------------------------------------------------- | -------------------------------------------- | -------------------------- |
-| Desktop | PC 向けクライアント、VRChat ログ監視・分析、モバイル連携   | Tauri 2, Rust, React, Vite, SQLite           | [desktop.md](./desktop.md) |
-| Mobile  | モバイル向け VRChat API クライアント、デスクトップとの連携 | Expo, React Native, Expo Router, Drizzle ORM | [mobile.md](./mobile.md)   |
-| Pages   | 紹介ページ、利用規約、プライバシーポリシーなどの公開サイト | Astro, Starlight                             | [pages.md](./pages.md)     |
+| Desktop | PC 向けクライアント、VRChat ログ監視・分析、モバイル連携   | Tauri 2, Rust, React, Vite, SQLite           | [概要](./desktop/README.md) |
+| Mobile  | モバイル向け VRChat API クライアント、デスクトップとの連携 | Expo, React Native, Expo Router, Drizzle ORM | [概要](./mobile/README.md)  |
+| Pages   | 紹介ページ、利用規約、プライバシーポリシーなどの公開サイト | Astro, Starlight                             | [概要](./pages/README.md)   |
 
 ## サブプロジェクト間の関係
 
@@ -44,8 +48,11 @@ Pages: アプリ群の紹介・公開ドキュメントを静的配信
 
 AI エージェントによる作業では、[`.agent/README.md`](../.agent/README.md) にある共通の作業規約とルーティングを参照してください。
 
-## 関連設計
+## 関連ドキュメント
 
-- [Mobile vrcapi 1.21.0 移行設計](./mobile-vrcapi-1.21-migration.md)
-- [Mobile VRChat API / Pipeline 型生成の互換調整](./mobile-vrchat-api-generation.md)
-- [Desktop Session DB Migration 設計](./desktop-session-db-migration.md)
+- [Mobile VRChat API / Pipeline 型生成の互換調整](./mobile/vrchat-api-generation.md)
+
+完了済みの移行設計は [migrations/](./migrations/) に保存します。
+
+- [Mobile vrcapi 1.21.0 移行設計](./migrations/mobile-vrcapi-1.21-migration.md)
+- [Desktop Session DB Migration 設計](./migrations/desktop-session-db-migration.md)

@@ -60,4 +60,4 @@ Watcher ──> SQLite (SeaORM) ──> Tauri コマンド / イベント ──
 
 ## 関連設計
 
-- [Session DB Migration 設計](./desktop-session-db-migration.md)
+- [Session DB Migration 設計](../migrations/desktop-session-db-migration.md)

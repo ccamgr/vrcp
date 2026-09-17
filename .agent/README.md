@@ -14,9 +14,9 @@
 | 作業対象 | 必須ルール | 概要ドキュメント |
 | --- | --- | --- |
 | リポジトリ全体 | [`AGENTS.md`](../AGENTS.md) | [`docs/README.md`](../docs/README.md) |
-| Desktop | [`desktop/AGENTS.md`](../desktop/AGENTS.md) | [`docs/desktop.md`](../docs/desktop.md) |
-| Mobile | [`mobile/AGENTS.md`](../mobile/AGENTS.md) | [`docs/mobile.md`](../docs/mobile.md) |
-| Pages | [`pages/AGENTS.md`](../pages/AGENTS.md) | [`docs/pages.md`](../docs/pages.md) |
+| Desktop | [`desktop/AGENTS.md`](../desktop/AGENTS.md) | [`docs/desktop/README.md`](../docs/desktop/README.md) |
+| Mobile | [`mobile/AGENTS.md`](../mobile/AGENTS.md) | [`docs/mobile/README.md`](../docs/mobile/README.md) |
+| Pages | [`pages/AGENTS.md`](../pages/AGENTS.md) | [`docs/pages/README.md`](../docs/pages/README.md) |
 
 ## エージェント別の入口
 
