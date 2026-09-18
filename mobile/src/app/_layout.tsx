@@ -6,7 +6,13 @@ import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider } from "@react-navigation/native";
 import { router, Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Platform, useColorScheme, View } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useMemo, useState } from "react";
@@ -37,13 +43,28 @@ function RootLayout() {
   const pathname = usePathname();
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
-  const isReady = (!auth.isLoading && success) || error;
+  const isReady = !auth.isLoading && success;
 
   useEffect(() => {
-    if (isReady) {
-      SplashScreen.hideAsync();
+    SplashScreen.hideAsync();
+  }, []);
+
+  useEffect(() => {
+    if (success) {
+      console.log("Local database migrations completed.");
     }
-  }, [isReady]);
+  }, [success]);
+
+  useEffect(() => {
+    if (error) {
+      console.error("Failed to initialize the local database", error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!success) return;
+    registerBackgroundTaskAsync();
+  }, [success]);
 
   useEffect(() => {
     // Wait until initialization is complete
@@ -60,6 +81,24 @@ function RootLayout() {
       routeToIndex();
     }
   }, [auth.user, isReady, pathname]);
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Unable to initialize the local database.</Text>
+        <Text selectable>{error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator />
+        <Text>Initializing local database...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -81,11 +120,6 @@ function RootLayout() {
 export default function Root() {
   const cs = useColorScheme();
   const theme = useMemo(() => (cs !== "dark" ? lightTheme : darkTheme), [cs]);
-
-  useEffect(() => {
-    // init tasks
-    registerBackgroundTaskAsync();
-  }, []);
 
   return (
     <SettingProvider>

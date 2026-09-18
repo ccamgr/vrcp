@@ -1,4 +1,4 @@
-CREATE TABLE `session_sync_state` (
+CREATE TABLE IF NOT EXISTS `session_sync_state` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`revision` integer NOT NULL,
 	`source` text,
@@ -7,4 +7,4 @@ CREATE TABLE `session_sync_state` (
 	`last_sync_time` integer
 );
 --> statement-breakpoint
-DROP TABLE `logs`;
+DROP TABLE IF EXISTS `logs`;

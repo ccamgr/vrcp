@@ -98,7 +98,7 @@ The local Desktop-log clear action deletes `sessions` and resets `session_sync_s
 
 The first synchronization from an upgraded Mobile to an upgraded Desktop therefore replaces all cached sessions with version-2 data. This is required because the normal seven-day lookback would leave older cached sessions without IDs. A failed full sync must leave the existing cache and its metadata intact because the replacement and state update share one SQLite transaction.
 
-The migration drops the obsolete Mobile `logs` table without converting it. This is intentional while the app is pre-release: users who need history select **Full Sync** in Mobile Desktop settings, which replaces the local `sessions` cache with all data returned by Desktop.
+The migration drops the obsolete Mobile `logs` table without converting it. The removal is idempotent because earlier pre-release builds may already have removed the table. This is intentional while the app is pre-release: users who need history select **Full Sync** in Mobile Desktop settings, which replaces the local `sessions` cache with all data returned by Desktop.
 
 For a newly installed Mobile, a full sync already follows the existing flow. For an updated Mobile connected to an older Desktop, the app continues to show history normally; the later ranking feature can show that stable participant data is unavailable until the Desktop is updated and synchronized.
 
