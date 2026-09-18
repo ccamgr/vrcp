@@ -30,7 +30,7 @@ Mobile stores the `/sessions` response in the `sessions.players` JSON column. It
 - Ranking calculation, ranking screens, date-range UI, or friend-list matching.
 - A new column on `sessions`. `players` is already a JSON column; adding an optional JSON member does not require a table migration. A separate `session_sync_state` table and Drizzle migration are required for synchronization atomicity.
 - Rewriting Desktop `user_sessions` records or raw logs. They already retain the required ID.
-- Changing the legacy log-to-session helpers that are not used by the Desktop-to-Mobile `/sessions` synchronization path.
+- Preserving or converting pre-release Mobile raw-log data. The migration drops the obsolete `logs` table; users can choose **Full Sync** in Mobile settings to replace all Mobile sessions from Desktop.
 - LAN API authentication policy changes. See the security consideration below.
 
 ## API and Data Contract
@@ -98,7 +98,7 @@ The local Desktop-log clear action deletes `sessions` and resets `session_sync_s
 
 The first synchronization from an upgraded Mobile to an upgraded Desktop therefore replaces all cached sessions with version-2 data. This is required because the normal seven-day lookback would leave older cached sessions without IDs. A failed full sync must leave the existing cache and its metadata intact because the replacement and state update share one SQLite transaction.
 
-The legacy `logs` table remains declared in the Drizzle schema only to represent the historical migration chain. It is still converted into approximate `sessions` and dropped by `migrateLegacyLogs()` after application startup; keeping the declaration prevents future schema generation from emitting an unsafe early `DROP TABLE logs` migration.
+The migration drops the obsolete Mobile `logs` table without converting it. This is intentional while the app is pre-release: users who need history select **Full Sync** in Mobile Desktop settings, which replaces the local `sessions` cache with all data returned by Desktop.
 
 For a newly installed Mobile, a full sync already follows the existing flow. For an updated Mobile connected to an older Desktop, the app continues to show history normally; the later ranking feature can show that stable participant data is unavailable until the Desktop is updated and synchronized.
 

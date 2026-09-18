@@ -18,7 +18,6 @@ import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { registerBackgroundTaskAsync } from "@/tasks";
 
 import { db } from "@/db";
-import { migrateLegacyLogs } from "@/db/migrateLegacyLogs";
 import migrations from "@/db/migration/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
@@ -38,17 +37,7 @@ function RootLayout() {
   const pathname = usePathname();
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
-  const [legacyMigrationComplete, setLegacyMigrationComplete] = useState(false);
-  const isReady = (!auth.isLoading && success && legacyMigrationComplete) || error;
-
-  useEffect(() => {
-    if (!success) return;
-    migrateLegacyLogs()
-      .catch((migrationError) => {
-        console.error("Failed to migrate legacy desktop logs", migrationError);
-      })
-      .then(() => setLegacyMigrationComplete(true));
-  }, [success]);
+  const isReady = (!auth.isLoading && success) || error;
 
   useEffect(() => {
     if (isReady) {

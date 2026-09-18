@@ -6,3 +6,5 @@ CREATE TABLE `session_sync_state` (
 	`schema_version` integer,
 	`last_sync_time` integer
 );
+--> statement-breakpoint
+DROP TABLE `logs`;
