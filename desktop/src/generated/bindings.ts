@@ -108,7 +108,7 @@ vrcLogEvent: "vrc-log-event"
 export type Interval = { start: number; end: number }
 export type LogPayload = { event: VrcLogEvent; timestamp: number; hash: number }
 export type LoginResponse = { user: string | null; requires2fa: boolean; type2fa: string[] }
-export type PlayerInterval = { name: string; intervals: Interval[]; totalDurationMs: number }
+export type PlayerInterval = { userId: string; name: string; intervals: Interval[]; totalDurationMs: number }
 export type SessionPayload = { sourceId: number; worldName: string; instanceId: string; startTime: number; endTime: number; durationMs: number; username: string | null; players: PlayerInterval[] }
 export type VrcLogEvent = { type: "AppStart" } | { type: "AppStop" } | { type: "InvalidAppStop" } | { type: "Login"; data: { username: string; user_id: string } } | { type: "WorldEnter"; data: { world_name: string } } | { type: "InstanceJoin"; data: { world_id: string; instance_id: string } } | { type: "PlayerJoin"; data: { player_name: string; user_id: string } } | { type: "PlayerLeft"; data: { player_name: string; user_id: string } } | { type: "SelfLeft" }
 

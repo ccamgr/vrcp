@@ -18,6 +18,7 @@ use super::watcher::LogPayload;
 pub const SERVER_PORT: u16 = 8727;
 const DEFAULT_LOG_PAGE_SIZE: u64 = 1_000;
 const MAX_LOG_PAGE_SIZE: u64 = 1_000;
+const SESSION_SCHEMA_VERSION: u32 = 2;
 
 pub struct HttpSrv {
     pub handle: Mutex<Option<JoinHandle<()>>>,
@@ -89,6 +90,8 @@ struct SessionParams {
 
 #[derive(Serialize)]
 struct SessionPage {
+    #[serde(rename = "schemaVersion")]
+    schema_version: u32,
     sessions: Vec<SessionPayload>,
     #[serde(rename = "nextCursor")]
     next_cursor: Option<String>,
@@ -156,6 +159,7 @@ async fn handle_get_sessions(
             StatusCode::INTERNAL_SERVER_ERROR
         })?;
     Ok(Json(SessionPage {
+        schema_version: SESSION_SCHEMA_VERSION,
         sessions,
         next_cursor: next_cursor.map(|(timestamp, id)| format!("{timestamp}:{id}")),
         generation,

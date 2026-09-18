@@ -59,3 +59,7 @@ Desktop HTTP (/logs) ──> Background Task ──> SQLite
 - DB スキーマの変更時は `make migrate/generate` でマイグレーションを生成します。
 - `src/generated/` は OpenAPI または WebSocket 仕様から生成されます。変更が必要な場合は `make gen-vrcapi` または `make gen-vrcpipe` を実行します。
 - 開発サーバーは `make run`、ネイティブディレクトリの再生成は `make prebuild`、静的解析・整形は `make lint` を使用します。
+
+## 関連設計
+
+- [Session Participant User ID 移行設計](../migrations/session-player-user-id-migration.md)

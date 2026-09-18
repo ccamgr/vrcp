@@ -10,6 +10,8 @@ pub struct Interval {
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
 pub struct PlayerInterval {
+    #[serde(rename = "userId")]
+    pub user_id: String,
     pub name: String,
     pub intervals: Vec<Interval>,
     #[serde(rename = "totalDurationMs")]

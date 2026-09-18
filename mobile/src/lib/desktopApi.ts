@@ -9,6 +9,7 @@ export interface DesktopSession {
   durationMs: number;
   username: string | null;
   players: {
+    userId?: string;
     name: string;
     intervals: { start: number; end: number }[];
     totalDurationMs: number;
@@ -16,6 +17,7 @@ export interface DesktopSession {
 }
 
 export interface DesktopSessionPage {
+  schemaVersion?: number;
   sessions: DesktopSession[];
   nextCursor: string | null;
   generation: number;

@@ -344,8 +344,8 @@ impl SessionsRepository {
             }
 
             let mut player_payloads = players
-                .into_values()
-                .filter_map(|player| {
+                .into_iter()
+                .filter_map(|(user_id, player)| {
                     let intervals = player
                         .intervals
                         .into_iter()
@@ -356,6 +356,7 @@ impl SessionsRepository {
                         .filter(|interval| interval.end > interval.start)
                         .collect::<Vec<_>>();
                     (!intervals.is_empty()).then(|| PlayerInterval {
+                        user_id,
                         total_duration_ms: intervals.iter().map(|i| i.end - i.start).sum(),
                         name: player.name,
                         intervals,
@@ -799,6 +800,7 @@ mod tests {
         assert_eq!(sessions[0].end_time, 160);
         assert_eq!(sessions[0].username.as_deref(), Some("Me"));
         assert_eq!(sessions[0].players.len(), 1);
+        assert_eq!(sessions[0].players[0].user_id, "usr_friend");
         assert_eq!(sessions[0].players[0].name, "Friend");
         assert_eq!(sessions[0].players[0].total_duration_ms, 10);
 

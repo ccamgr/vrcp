@@ -1,13 +1,13 @@
 import { useState, useCallback, useRef } from "react";
 import { useSetting } from "@/contexts/SettingContext";
 import {
-  clearLastSyncTime,
+  clearDesktopSessionData,
   getLastSyncTime,
   syncDesktopLogs,
 } from "@/lib/funcs/syncDesktopLogs";
 import { sessionsRepo } from "@/db/repogitories";
 import { StoredSession } from "@/db/schema/sessions";
-import * as Network from 'expo-network';
+import * as Network from "expo-network";
 
 export const useLogManager = () => {
   const { settings } = useSetting();
@@ -33,8 +33,7 @@ export const useLogManager = () => {
   // Clear all logs
   const clearLogs = useCallback(async () => {
     try {
-      await clearLastSyncTime();
-      await sessionsRepo.deleteAll();
+      await clearDesktopSessionData();
       await measureLogs(); // Refresh count after deletion
     } catch (error) {
       console.error("Failed to clear desktop logs", error);
@@ -43,45 +42,53 @@ export const useLogManager = () => {
   }, [measureLogs]);
 
   // Sync logs
-  const syncLogs = useCallback(async (isFullSync: boolean = false) => {
-    if (syncInFlightRef.current) return;
+  const syncLogs = useCallback(
+    async (isFullSync: boolean = false) => {
+      if (syncInFlightRef.current) return;
 
-    syncInFlightRef.current = true;
-    setIsSyncing(true);
-    setSyncProgress("Starting sync...");
-    console.log("Initiating log sync with desktop app...");
+      syncInFlightRef.current = true;
+      setIsSyncing(true);
+      setSyncProgress("Starting sync...");
+      console.log("Initiating log sync with desktop app...");
 
-    try {
-      const networkState = await Network.getNetworkStateAsync();
-      if (!networkState.isConnected) {
-        setSyncProgress("No network connection. Please connect to the internet and try again.");
-        return;
+      try {
+        const networkState = await Network.getNetworkStateAsync();
+        if (!networkState.isConnected) {
+          setSyncProgress(
+            "No network connection. Please connect to the internet and try again.",
+          );
+          return;
+        }
+
+        await syncDesktopLogs(
+          settings.otherOptions_desktopAppURL || "",
+          isFullSync,
+          setSyncProgress,
+        );
+
+        // Auto-refresh count after successful sync
+        await measureLogs();
+      } catch (error) {
+        throw error;
+      } finally {
+        syncInFlightRef.current = false;
+        setIsSyncing(false);
       }
+    },
+    [settings.otherOptions_desktopAppURL, measureLogs],
+  );
 
-      await syncDesktopLogs(
-        settings.otherOptions_desktopAppURL || "",
-        isFullSync,
-        setSyncProgress
-      );
-
-      // Auto-refresh count after successful sync
-      await measureLogs();
-    } catch (error) {
-      throw error;
-    } finally {
-      syncInFlightRef.current = false;
-      setIsSyncing(false);
-    }
-  }, [settings.otherOptions_desktopAppURL, measureLogs]);
-
-  const getLocalSessions = useCallback(async (startMs: number, endMs: number): Promise<StoredSession[]> => {
-    try {
-      return await sessionsRepo.getByRange(startMs, endMs);
-    } catch (error) {
-      console.error("Failed to fetch local sessions by range", error);
-      return [];
-    }
-  }, []);
+  const getLocalSessions = useCallback(
+    async (startMs: number, endMs: number): Promise<StoredSession[]> => {
+      try {
+        return await sessionsRepo.getByRange(startMs, endMs);
+      } catch (error) {
+        console.error("Failed to fetch local sessions by range", error);
+        return [];
+      }
+    },
+    [],
+  );
 
   const getLastSync = useCallback(async (): Promise<number | null> => {
     try {
@@ -100,6 +107,6 @@ export const useLogManager = () => {
     logStats,
     measureLogs,
     clearLogs,
-    getLastSync
+    getLastSync,
   };
 };

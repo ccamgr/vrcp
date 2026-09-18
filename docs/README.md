@@ -54,5 +54,6 @@ AI エージェントによる作業では、[`.agent/README.md`](../.agent/READ
 
 完了済みの移行設計は [migrations/](./migrations/) に保存します。
 
+- [Session Participant User ID 移行設計](./migrations/session-player-user-id-migration.md)
 - [Mobile vrcapi 1.21.0 移行設計](./migrations/mobile-vrcapi-1.21-migration.md)
 - [Desktop Session DB Migration 設計](./migrations/desktop-session-db-migration.md)

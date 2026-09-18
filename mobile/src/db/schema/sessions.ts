@@ -6,6 +6,7 @@ export interface SessionInterval {
 }
 
 export interface SessionPlayer {
+  userId?: string;
   name: string;
   intervals: SessionInterval[];
   totalDurationMs: number;

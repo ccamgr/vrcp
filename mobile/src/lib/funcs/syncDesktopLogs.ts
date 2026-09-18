@@ -1,22 +1,27 @@
-// src/services/logSyncService.ts
-import StorageWrapper from "@/lib/wrappers/storageWrapper";
-import { extractErrMsg } from "@/lib/utils";
 import { sessionsRepo } from "@/db/repogitories/sessions";
 import { StoredSession } from "@/db/schema/sessions";
-import { getDesktopSessions } from "@/lib/desktopApi";
+import { DesktopSession, getDesktopSessions } from "@/lib/desktopApi";
+import { extractErrMsg } from "@/lib/utils";
+import StorageWrapper from "@/lib/wrappers/storageWrapper";
 
-const LAST_SYNC_KEY = "DESKTOP_LOG_LAST_SYNC_TIME";
-const SESSION_GENERATION_KEY = "DESKTOP_SESSION_GENERATION";
-const SESSION_SOURCE_KEY = "DESKTOP_SESSION_SOURCE";
+const LEGACY_SYNC_METADATA_KEYS = [
+  "DESKTOP_LOG_LAST_SYNC_TIME",
+  "DESKTOP_SESSION_GENERATION",
+  "DESKTOP_SESSION_SOURCE",
+  "DESKTOP_SESSION_SCHEMA_VERSION",
+];
+const LEGACY_SESSION_SCHEMA_VERSION = 1;
+const CURRENT_SESSION_SCHEMA_VERSION = 2;
 const SYNC_LOOKBACK_MS = 7 * 24 * 60 * 60 * 1000;
 const SESSION_PAGE_SIZE = 200;
+const MAX_SYNC_RETRIES = 2;
 
 export async function syncDesktopLogs(
   desktopUrl: string,
   isFullSync: boolean = false,
   onProgress?: (msg: string) => void,
   retryCount: number = 0,
-) {
+): Promise<number> {
   if (!desktopUrl) {
     throw new Error("Desktop App URL is not configured.");
   }
@@ -24,17 +29,17 @@ export async function syncDesktopLogs(
   onProgress?.("Calculating sync period...");
 
   try {
-    const startTimestamp = isFullSync ? undefined : Date.now() - SYNC_LOOKBACK_MS;
-    const [savedGeneration, savedSource] = await StorageWrapper.multiGet([
-      SESSION_GENERATION_KEY,
-      SESSION_SOURCE_KEY,
-    ]);
+    const snapshot = await sessionsRepo.getSyncSnapshot();
+    const startTimestamp = isFullSync
+      ? undefined
+      : Date.now() - SYNC_LOOKBACK_MS;
 
     onProgress?.("Fetching data from desktop...");
 
     let cursor: string | undefined;
     let generation: number | undefined;
     let source: string | undefined;
+    let schemaVersion: number | undefined;
     const items: StoredSession[] = [];
     const cursors = new Set<string>();
     do {
@@ -44,67 +49,152 @@ export async function syncDesktopLogs(
         limit: SESSION_PAGE_SIZE,
       });
       if (generation !== undefined && generation !== response.data.generation) {
-        if (retryCount >= 2) throw new Error("Desktop session data changed during synchronization.");
-        return syncDesktopLogs(desktopUrl, true, onProgress, retryCount + 1);
+        return retrySync(
+          desktopUrl,
+          true,
+          onProgress,
+          retryCount,
+          "Desktop session data changed during synchronization.",
+        );
       }
       const pageSource = response.data.source;
       if (source !== undefined && source !== pageSource) {
-        if (retryCount >= 2) throw new Error("Desktop source changed during synchronization.");
-        return syncDesktopLogs(desktopUrl, true, onProgress, retryCount + 1);
+        return retrySync(
+          desktopUrl,
+          true,
+          onProgress,
+          retryCount,
+          "Desktop source changed during synchronization.",
+        );
       }
+      const pageSchemaVersion = getSessionSchemaVersion(
+        response.data.schemaVersion,
+      );
+      if (schemaVersion !== undefined && schemaVersion !== pageSchemaVersion) {
+        throw new Error(
+          "Desktop session schema changed during synchronization.",
+        );
+      }
+      validateSessionParticipants(response.data.sessions, pageSchemaVersion);
       generation = response.data.generation;
       source = pageSource;
-      items.push(...response.data.sessions.map((session) => ({
-        sourceId: `${pageSource}:${generation}:${session.sourceId}`,
-        worldName: session.worldName,
-        location: session.instanceId,
-        startTime: session.startTime,
-        endTime: session.endTime,
-        durationMs: session.durationMs,
-        username: session.username,
-        players: session.players,
-      })));
+      schemaVersion = pageSchemaVersion;
+      items.push(
+        ...response.data.sessions.map((session) => ({
+          sourceId: `${pageSource}:${generation}:${session.sourceId}`,
+          worldName: session.worldName,
+          location: session.instanceId,
+          startTime: session.startTime,
+          endTime: session.endTime,
+          durationMs: session.durationMs,
+          username: session.username,
+          players: session.players,
+        })),
+      );
       cursor = response.data.nextCursor ?? undefined;
       if (cursor && (cursors.has(cursor) || cursors.size >= 10_000)) {
         throw new Error("Desktop returned an invalid session page cursor.");
       }
       if (cursor) cursors.add(cursor);
     } while (cursor);
-    const mustReplaceAll = isFullSync
-      || savedSource[1] !== source
-      || (savedGeneration[1] !== null && savedGeneration[1] !== String(generation));
-    if (mustReplaceAll && !isFullSync) {
-      return syncDesktopLogs(desktopUrl, true, onProgress);
+
+    if (
+      generation === undefined ||
+      source === undefined ||
+      schemaVersion === undefined
+    ) {
+      throw new Error("Desktop returned incomplete session metadata.");
     }
-    onProgress?.(`Saving ${items.length} sessions to local database...`);
-    if (mustReplaceAll) {
-      await sessionsRepo.replaceAll(items);
-    } else {
-      await sessionsRepo.replaceRange(items, startTimestamp!, Date.now());
+
+    const writeResult = await sessionsRepo.applySync({
+      expectedRevision: snapshot.revision,
+      source,
+      generation,
+      schemaVersion,
+      lastSyncTime: Date.now(),
+      items,
+      range: isFullSync ? null : { start: startTimestamp!, end: Date.now() },
+    });
+    if (writeResult === "stale") {
+      return retrySync(
+        desktopUrl,
+        isFullSync,
+        onProgress,
+        retryCount,
+        "Desktop session cache changed during synchronization.",
+      );
     }
-    await StorageWrapper.multiSet([
-      [LAST_SYNC_KEY, Date.now().toString()],
-      [SESSION_GENERATION_KEY, String(generation)],
-      [SESSION_SOURCE_KEY, source],
-    ]);
+    if (writeResult === "requires-full") {
+      return retrySync(
+        desktopUrl,
+        true,
+        onProgress,
+        retryCount,
+        "Desktop session metadata changed; performing a full synchronization.",
+      );
+    }
+
+    await clearLegacySyncMetadata();
     onProgress?.(`Success! ${items.length} sessions synced.`);
     return items.length;
-
   } catch (error) {
     console.error("Log sync error:", error);
     throw new Error(extractErrMsg(error) || "Failed to sync logs");
   }
 }
 
-export async function getLastSyncTime(): Promise<number | null> {
-  const value = await StorageWrapper.getItemAsync(LAST_SYNC_KEY);
-  if (value) {
-    const timestamp = parseInt(value, 10);
-    return isNaN(timestamp) ? null : timestamp;
-  }
-  return null;
+function retrySync(
+  desktopUrl: string,
+  isFullSync: boolean,
+  onProgress: ((msg: string) => void) | undefined,
+  retryCount: number,
+  message: string,
+): Promise<number> {
+  if (retryCount >= MAX_SYNC_RETRIES) throw new Error(message);
+  return syncDesktopLogs(desktopUrl, isFullSync, onProgress, retryCount + 1);
 }
 
-export async function clearLastSyncTime(): Promise<void> {
-  await StorageWrapper.removeItemAsync(LAST_SYNC_KEY);
+function getSessionSchemaVersion(value: unknown): number {
+  if (value === undefined) return LEGACY_SESSION_SCHEMA_VERSION;
+  if (
+    !Number.isSafeInteger(value) ||
+    (value !== LEGACY_SESSION_SCHEMA_VERSION &&
+      value !== CURRENT_SESSION_SCHEMA_VERSION)
+  ) {
+    throw new Error("Desktop returned an unsupported session schema version.");
+  }
+  return value;
+}
+
+function validateSessionParticipants(
+  sessions: DesktopSession[],
+  schemaVersion: number,
+): void {
+  if (schemaVersion !== CURRENT_SESSION_SCHEMA_VERSION) return;
+  for (const session of sessions) {
+    for (const player of session.players) {
+      if (typeof player.userId !== "string" || player.userId.length === 0) {
+        throw new Error(
+          "Desktop returned a version-2 session participant without a user ID.",
+        );
+      }
+    }
+  }
+}
+
+async function clearLegacySyncMetadata(): Promise<void> {
+  try {
+    await StorageWrapper.multiRemove(LEGACY_SYNC_METADATA_KEYS);
+  } catch (error) {
+    console.warn("Failed to clear legacy Desktop session sync metadata", error);
+  }
+}
+
+export async function getLastSyncTime(): Promise<number | null> {
+  return (await sessionsRepo.getSyncSnapshot()).lastSyncTime;
+}
+
+export async function clearDesktopSessionData(): Promise<void> {
+  await sessionsRepo.clearAllAndResetSyncState();
+  await clearLegacySyncMetadata();
 }

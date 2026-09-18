@@ -61,3 +61,4 @@ Watcher ──> SQLite (SeaORM) ──> Tauri コマンド / イベント ──
 ## 関連設計
 
 - [Session DB Migration 設計](../migrations/desktop-session-db-migration.md)
+- [Session Participant User ID 移行設計](../migrations/session-player-user-id-migration.md)
