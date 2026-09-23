@@ -2,6 +2,7 @@ use crate::utils::constants;
 use keyring::Entry;
 use reqwest::Client;
 use reqwest_cookie_store::CookieStoreMutex;
+use reqwest_middleware::ClientBuilder;
 use std::path::PathBuf;
 use std::sync::Arc;
 use vrchatapi::apis::configuration::Configuration;
@@ -46,7 +47,7 @@ impl VrcApiService {
 
         // 4. Set up VRChat API configuration
         let mut config = Configuration::new();
-        config.client = client;
+        config.client = ClientBuilder::new(client).build();
         config.user_agent = Some(constants::get_user_agent());
 
         Ok(Self {

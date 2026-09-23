@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
-import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
-import { save, ask, message } from "@tauri-apps/plugin-dialog";
+import {
+  confirmDeleteAllLogs,
+  getAutostartEnabled,
+  selectJsonExportPath,
+  setAutostartEnabled,
+  showNativeMessage,
+} from "../lib/native";
 import {
   Smartphone,
   Power,
@@ -23,7 +28,7 @@ export default function Settings() {
 
   useEffect(() => {
     // 自動起動設定の確認
-    isEnabled().then(setAutoStart).catch(console.error);
+    getAutostartEnabled().then(setAutoStart).catch(console.error);
   }, []);
 
   // serverUrl (例: http://192.168.1.5:8727) がロードされたら、そこからポート番号を抽出して入力欄に反映
@@ -38,15 +43,11 @@ export default function Settings() {
 
   const toggleAutoStart = async () => {
     try {
-      if (autoStart) {
-        await disable();
-        setAutoStart(false);
-      } else {
-        await enable();
-        setAutoStart(true);
-      }
-    } catch (e) {
-      await message("Failed to update settings");
+      const enabled = !autoStart;
+      await setAutostartEnabled(enabled);
+      setAutoStart(enabled);
+    } catch {
+      await showNativeMessage("Failed to update settings");
     }
   };
 
@@ -54,30 +55,27 @@ export default function Settings() {
     const portNum = parseInt(portInput ?? "", 10);
 
     if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
-      await message("Please enter a valid port number (1-65535)");
+      await showNativeMessage("Please enter a valid port number (1-65535)");
       return;
     }
 
     try {
       const result = await commands.setServerPort(portNum);
       if (result.status === "error") {
-        await message(`Failed to save: ${result.error}`);
+        await showNativeMessage(`Failed to save: ${result.error}`);
         return;
       }
-      await message("Port settings saved.");
+      await showNativeMessage("Port settings saved.");
     } catch (e) {
       console.error(e);
-      await message(`Failed to save: ${e}`);
+      await showNativeMessage(`Failed to save: ${e}`);
     }
   };
 
   const handleExport = async () => {
     try {
       // 1. 保存先ダイアログを表示
-      const filePath = await save({
-        filters: [{ name: "JSON", extensions: ["json"] }],
-        defaultPath: "vrcp_logs_backup.json",
-      });
+      const filePath = await selectJsonExportPath();
 
       if (!filePath) return; // キャンセルされた場合
 
@@ -87,13 +85,13 @@ export default function Settings() {
       const result = await commands.exportLogs(filePath);
 
       if (result.status === "error") {
-        await message(`Export failed: ${result.error}`);
+        await showNativeMessage(`Export failed: ${result.error}`);
         return;
       }
-      await message(`Export successful!\nSaved ${result.data} records.`);
+      await showNativeMessage(`Export successful!\nSaved ${result.data} records.`);
     } catch (e) {
       console.error(e);
-      await message(`Export failed: ${e}`);
+      await showNativeMessage(`Export failed: ${e}`);
     } finally {
       setIsProcessing(false);
     }
@@ -101,13 +99,7 @@ export default function Settings() {
 
   const handleClear = async () => {
     // 1. 確認ダイアログ (Tauriのネイティブダイアログ推奨)
-    const confirmed = await ask(
-      "Are you sure you want to delete ALL logs?\nThis action cannot be undone.",
-      {
-        title: "Danger: Clear Database",
-        kind: "warning",
-      },
-    );
+    const confirmed = await confirmDeleteAllLogs();
 
     if (!confirmed) return;
 
@@ -115,13 +107,13 @@ export default function Settings() {
     try {
       const result = await commands.deleteAllLogs();
       if (result.status === "error") {
-        await message(`Failed to clear database: ${result.error}`);
+        await showNativeMessage(`Failed to clear database: ${result.error}`);
         return;
       }
-      await message("Database cleared successfully.");
+      await showNativeMessage("Database cleared successfully.");
     } catch (e) {
       console.error(e);
-      await message(`Failed to clear database: ${e}`);
+      await showNativeMessage(`Failed to clear database: ${e}`);
     } finally {
       setIsProcessing(false);
     }

@@ -1,40 +1,5 @@
+use crate::contracts::sessions::SessionPayload;
 use crate::Ctx;
-use serde::{Deserialize, Serialize};
-use specta::Type;
-
-#[derive(Clone, Serialize, Deserialize, Debug, Type)]
-pub struct Interval {
-    pub start: i64,
-    pub end: i64,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, Type)]
-pub struct PlayerInterval {
-    #[serde(rename = "userId")]
-    pub user_id: String,
-    pub name: String,
-    pub intervals: Vec<Interval>,
-    #[serde(rename = "totalDurationMs")]
-    pub total_duration_ms: i64,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, Type)]
-pub struct SessionPayload {
-    #[serde(rename = "sourceId")]
-    pub source_id: i32,
-    #[serde(rename = "worldName")]
-    pub world_name: String,
-    #[serde(rename = "instanceId")]
-    pub instance_id: String,
-    #[serde(rename = "startTime")]
-    pub start_time: i64,
-    #[serde(rename = "endTime")]
-    pub end_time: i64,
-    #[serde(rename = "durationMs")]
-    pub duration_ms: i64,
-    pub username: Option<String>,
-    pub players: Vec<PlayerInterval>,
-}
 
 #[tauri::command]
 #[specta::specta]

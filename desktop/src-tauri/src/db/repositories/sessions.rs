@@ -1,4 +1,4 @@
-use crate::cmds::vrclog::sessions::{Interval, PlayerInterval, SessionPayload};
+use crate::contracts::sessions::{Interval, PlayerInterval, SessionPayload};
 use crate::db::schema::{app_sessions, instance_sessions, logs, settings, user_sessions};
 use crate::modules::watcher::{LogPayload, VrcLogEvent};
 use sea_orm::{

@@ -1,4 +1,5 @@
 pub mod cmds;
+pub mod contracts;
 pub mod db;
 pub mod modules;
 pub mod utils;

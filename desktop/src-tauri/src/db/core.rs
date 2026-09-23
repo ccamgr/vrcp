@@ -1,6 +1,7 @@
 use super::repositories::{
     logs::LogsRepository, sessions::SessionsRepository, settings::SettingsRepository,
 };
+use crate::contracts::sessions::SessionPayload;
 use crate::db::migrator::Migrator;
 use sea_orm::{ConnectionTrait, Database, DatabaseBackend, DatabaseConnection, DbErr, Statement};
 use sea_orm_migration::MigratorTrait;
@@ -90,7 +91,7 @@ impl DB {
         &self,
         start: Option<i64>,
         end: Option<i64>,
-    ) -> Result<Vec<crate::cmds::vrclog::sessions::SessionPayload>, DbErr> {
+    ) -> Result<Vec<SessionPayload>, DbErr> {
         self.backfill_sessions().await?;
         let _guard = self.projection_lock.lock().await;
         self.sessions().get_sessions(start, end).await
@@ -102,15 +103,7 @@ impl DB {
         end: Option<i64>,
         cursor: Option<(i64, i32)>,
         limit: u64,
-    ) -> Result<
-        (
-            Vec<crate::cmds::vrclog::sessions::SessionPayload>,
-            Option<(i64, i32)>,
-            i64,
-            String,
-        ),
-        DbErr,
-    > {
+    ) -> Result<(Vec<SessionPayload>, Option<(i64, i32)>, i64, String), DbErr> {
         self.backfill_sessions().await?;
         let _guard = self.projection_lock.lock().await;
         let sessions = self.sessions();

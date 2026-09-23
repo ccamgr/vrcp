@@ -10,7 +10,7 @@ use std::sync::Mutex;
 use tauri::async_runtime::JoinHandle;
 use tower_http::cors::CorsLayer;
 
-use crate::cmds::vrclog::sessions::SessionPayload;
+use crate::contracts::sessions::SessionPayload;
 use crate::db::DB;
 
 use super::watcher::LogPayload;
