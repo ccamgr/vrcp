@@ -322,6 +322,16 @@
       "label": "使用者的群組",
       "no_groups_found": "找不到該使用者的群組．"
     },
+    "detail_user_mutual_friends": {
+      "label": "共同好友",
+      "no_friends_found": "沒有共同好友。",
+      "unavailable": "無法載入共同好友。點選以重試。"
+    },
+    "detail_user_mutual_groups": {
+      "label": "共同群組",
+      "no_groups_found": "沒有共同群組。",
+      "unavailable": "無法載入共同群組。點選以重試。"
+    },
     "detail_user_worlds": {
       "label": "使用者的世界",
       "no_worlds_found": "找不到該使用者的世界．"

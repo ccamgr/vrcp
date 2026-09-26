@@ -48,6 +48,14 @@ export default function ModalLayout() {
         name="user/[id]/groups"
         options={{ title: t("pages.detail_user_groups.label") }}
       />
+      <Stack.Screen
+        name="user/[id]/mutual-friends"
+        options={{ title: t("pages.detail_user_mutual_friends.label") }}
+      />
+      <Stack.Screen
+        name="user/[id]/mutual-groups"
+        options={{ title: t("pages.detail_user_mutual_groups.label") }}
+      />
     </Stack>
   );
 }

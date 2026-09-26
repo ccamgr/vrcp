@@ -322,6 +322,16 @@
       "label": "用户的群组",
       "no_groups_found": "未找到该用户的群组．"
     },
+    "detail_user_mutual_friends": {
+      "label": "共同好友",
+      "no_friends_found": "没有共同好友。",
+      "unavailable": "无法加载共同好友。点击重试。"
+    },
+    "detail_user_mutual_groups": {
+      "label": "共同群组",
+      "no_groups_found": "没有共同群组。",
+      "unavailable": "无法加载共同群组。点击重试。"
+    },
     "detail_user_worlds": {
       "label": "用户的世界",
       "no_worlds_found": "未找到该用户的世界．"

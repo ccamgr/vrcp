@@ -18,6 +18,10 @@ interface UseInfiniteListOptions<T extends { id?: string }> {
   pageSize: number;
   fetchPage: (request: InfiniteListPageRequest) => Promise<T[]>;
   onError?: (error: unknown) => void;
+  staleTime?: number;
+  gcTime?: number;
+  refetchOnMount?: boolean | "always";
+  persist?: boolean;
 }
 
 export function useInfiniteList<T extends { id?: string }>({
@@ -26,6 +30,10 @@ export function useInfiniteList<T extends { id?: string }>({
   pageSize,
   fetchPage,
   onError,
+  staleTime = 0,
+  gcTime = 0,
+  refetchOnMount = "always",
+  persist,
 }: UseInfiniteListOptions<T>) {
   const queryClient = useQueryClient();
   const reportedError = useRef<unknown>(undefined);
@@ -37,9 +45,10 @@ export function useInfiniteList<T extends { id?: string }>({
     getNextPageParam: (lastPage, _pages, lastPageParam) =>
       lastPage.length < pageSize ? undefined : lastPageParam + pageSize,
     enabled,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: "always",
+    staleTime,
+    gcTime,
+    refetchOnMount,
+    meta: { persist },
   });
 
   useEffect(() => {

@@ -257,6 +257,16 @@
       "label": "Gruppen des Benutzers",
       "no_groups_found": "Es wurden keine Gruppen für diesen Benutzer gefunden."
     },
+    "detail_user_mutual_friends": {
+      "label": "Gemeinsame Freunde",
+      "no_friends_found": "Keine gemeinsamen Freunde gefunden.",
+      "unavailable": "Gemeinsame Freunde konnten nicht geladen werden. Zum Wiederholen tippen."
+    },
+    "detail_user_mutual_groups": {
+      "label": "Gemeinsame Gruppen",
+      "no_groups_found": "Keine gemeinsamen Gruppen gefunden.",
+      "unavailable": "Gemeinsame Gruppen konnten nicht geladen werden. Zum Wiederholen tippen."
+    },
     "search": {
       "label": "Suchergebnisse",
       "searchbox_placeholder": "Nach Welten, Gruppen oder Benutzern suchen",

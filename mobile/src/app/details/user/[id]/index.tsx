@@ -18,13 +18,14 @@ import {
   getUserProfilePicUrl,
   parseLocationString,
 } from "@/lib/vrchat";
-import { User } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   routeToInstance,
+  routeToMutualFriends,
+  routeToMutualGroups,
   routeToUserGroups,
   routeToUserWorlds,
 } from "@/lib/route";
@@ -46,9 +47,11 @@ import { useUser } from "@/hooks/vrc/useUser";
 import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
 import CachedImage from "@/components/CachedImage";
 import { toUserPresentation } from "@/lib/vrcapiModels";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const auth = useAuth();
   const enableJsonViewer = useSetting().settings.otherOptions_enableJsonViewer;
   const vrc = useVRChat();
   const { t } = useTranslation();
@@ -86,6 +89,7 @@ export default function UserDetail() {
   const isFavorite = favorites?.some(
     (fav) => fav.favoriteId === id && fav.type === "friend",
   );
+  const canShowMutuals = !!auth.user?.id && auth.user.id !== id;
 
   const fetchLocationInfo = async () => {
     if (!user?.location) return;
@@ -207,6 +211,18 @@ export default function UserDetail() {
         onPress: () => user && routeToUserGroups(user.id),
       },
       {
+        icon: "account-multiple",
+        title: t("pages.detail_user_mutual_friends.label"),
+        onPress: () => routeToMutualFriends(id),
+        hidden: !canShowMutuals,
+      },
+      {
+        icon: "account-group",
+        title: t("pages.detail_user_mutual_groups.label"),
+        onPress: () => routeToMutualGroups(id),
+        hidden: !canShowMutuals,
+      },
+      {
         type: "divider",
         hidden: !enableJsonViewer,
       },
@@ -217,7 +233,16 @@ export default function UserDetail() {
         hidden: !enableJsonViewer,
       },
     ],
-    [freReqStatus, isFavorite, locationInfo, enableJsonViewer, t],
+    [
+      canShowMutuals,
+      enableJsonViewer,
+      freReqStatus,
+      id,
+      isFavorite,
+      locationInfo,
+      t,
+      user,
+    ],
   );
 
   useSideMenu(menuItems);

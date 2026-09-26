@@ -322,6 +322,16 @@
       "label": "ユーザーのグループ",
       "no_groups_found": "このユーザーのグループは見つかりませんでした。"
     },
+    "detail_user_mutual_friends": {
+      "label": "共通のフレンド",
+      "no_friends_found": "共通のフレンドはいません。",
+      "unavailable": "共通のフレンドを読み込めません。タップして再試行します。"
+    },
+    "detail_user_mutual_groups": {
+      "label": "共通のグループ",
+      "no_groups_found": "共通のグループはありません。",
+      "unavailable": "共通のグループを読み込めません。タップして再試行します。"
+    },
     "detail_user_worlds": {
       "label": "ユーザーのワールド",
       "no_worlds_found": "このユーザーのワールドは見つかりませんでした。"

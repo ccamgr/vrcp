@@ -257,6 +257,16 @@
       "label": "User's Groups",
       "no_groups_found": "No groups found for this user."
     },
+    "detail_user_mutual_friends": {
+      "label": "Mutual Friends",
+      "no_friends_found": "No mutual friends found.",
+      "unavailable": "Unable to load mutual friends. Tap to retry."
+    },
+    "detail_user_mutual_groups": {
+      "label": "Mutual Groups",
+      "no_groups_found": "No mutual groups found.",
+      "unavailable": "Unable to load mutual groups. Tap to retry."
+    },
     "search": {
       "label": "Search Results",
       "searchbox_placeholder": "Search for worlds, groups, or users",
