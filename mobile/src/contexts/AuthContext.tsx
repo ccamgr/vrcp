@@ -6,6 +6,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useVRChat } from "./VRChatContext";
@@ -26,6 +27,7 @@ interface LoginParam {
   username: string; // email or username
   password: string; // password
   saveSecret?: boolean; // save secret for 2FA
+  skipLogout?: boolean;
 }
 interface VerifyParam {
   code: string;
@@ -60,6 +62,10 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pendingTFA, setPendingTFA] = useState<TfaMode | undefined>(undefined);
+  const pendingAuthenticationApiRef = useRef<AuthenticationApi | undefined>(
+    undefined,
+  );
+  const pendingAuthCookieRef = useRef<string | undefined>(undefined);
 
   const clearAccountCache = async () => {
     await clearAccountQueries();
@@ -83,24 +89,35 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   };
 
   const cancelPendingTFA = () => {
+    pendingAuthenticationApiRef.current = undefined;
+    pendingAuthCookieRef.current = undefined;
     setPendingTFA(undefined);
   };
 
   const login = async (param: LoginParam): Promise<LoginRes> => {
     setIsLoading(true);
+    if (!param.skipLogout) {
+      pendingAuthCookieRef.current = undefined;
+    }
     const conf = vrc.configureAPI({
       username: param.username,
       password: param.password,
     });
     const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
-    try {
-      await api.logout(); // 前のセッションがライブラリに残ってる場合があるので、ログアウトしてからログインする
-    } catch (e) {
-      console.log("already logged out");
+    pendingAuthenticationApiRef.current = api;
+    if (!param.skipLogout) {
+      try {
+        await api.logout(); // 前のセッションがライブラリに残ってる場合があるので、ログアウトしてからログインする
+      } catch (e) {
+        console.log("already logged out");
+      }
     }
     try {
       const res = await api.getCurrentUser();
       if (isRequiresTwoFactorAuth(res.data)) {
+        pendingAuthCookieRef.current = extractAuthCookie(
+          res.headers?.["set-cookie"]?.[0],
+        );
         const allowedTFA = res.data.requiresTwoFactorAuth;
         if (allowedTFA.includes("totp") || allowedTFA.includes("otp")) {
           setPendingTFA("totp");
@@ -119,7 +136,9 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
       if (isCurrentAccount(res.data)) {
         const currentAccount = res.data;
         console.log("Login successful");
-        const authCookie = extractAuthCookie(res.headers?.["set-cookie"]?.[0]);
+        const authCookie =
+          extractAuthCookie(res.headers?.["set-cookie"]?.[0]) ??
+          pendingAuthCookieRef.current;
         const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
 
         try {
@@ -171,6 +190,8 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
           icon: currentAccount.iconUrl ?? "",
         });
         setPendingTFA(undefined);
+        pendingAuthenticationApiRef.current = undefined;
+        pendingAuthCookieRef.current = undefined;
         console.log(
           `login as ${currentAccount.displayName}: ${currentAccount.id}`,
         );
@@ -189,12 +210,17 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   };
 
   const verify = async ({ code, mode }: VerifyParam): Promise<VerifyRes> => {
-    const api = new AuthenticationApi(vrc.config);
+    const api =
+      pendingAuthenticationApiRef.current ?? new AuthenticationApi(vrc.config);
     setIsLoading(true);
     try {
       if (mode == "totp") {
         const res = await api.verify2FA({ twoFactorAuthCode: { code } });
         if (res.data.verified) {
+          const tfaCookie = extract2faCookie(res.headers?.["set-cookie"]?.[0]);
+          if (tfaCookie) {
+            await SecureStore.setItemAsync("auth_2faCookie", tfaCookie);
+          }
           setIsLoading(false);
           return "success";
         } else if (!res.data.enabled) {

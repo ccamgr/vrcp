@@ -106,6 +106,7 @@ export default function Login() {
         username: username,
         password: password,
         saveSecret,
+        skipLogout: true,
       });
       if (loginRes === "success") {
         setOpenTFA(false);

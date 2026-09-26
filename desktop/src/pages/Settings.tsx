@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { commands } from "../generated/bindings";
 import { useLogContext } from "../context/LogContext";
+import { useAuth } from "../context/AuthContext";
 import {
   confirmDeleteAllLogs,
   getAutostartEnabled,
@@ -17,14 +18,17 @@ import {
   Download,
   Trash2,
   AlertTriangle,
+  LogOut,
 } from "lucide-react";
 
 export default function Settings() {
   const { serverUrl } = useLogContext();
+  const { user, logout } = useAuth();
   const [autoStart, setAutoStart] = useState(false);
   const [portInput, setPortInput] = useState<string | null>(null);
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     getAutostartEnabled().then(setAutoStart).catch(console.error);
@@ -111,6 +115,19 @@ export default function Settings() {
       await showNativeMessage(`Failed to clear database: ${e}`);
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      await showNativeMessage("Logged out successfully.");
+    } catch (error) {
+      console.error(error);
+      await showNativeMessage(`Logout failed: ${error}`);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -251,6 +268,31 @@ export default function Settings() {
             </div>
           </div>
         </section>
+
+        {user && (
+          <section className="bg-slate-800/40 p-6 rounded-xl border border-slate-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <LogOut className="text-red-400" /> Account
+            </h3>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">{user.displayName}</p>
+                <p className="text-sm text-slate-400">
+                  Remove the saved VRChat session from this device.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="border border-red-500/30 text-red-400 hover:bg-red-500/10 px-4 py-2 rounded-lg transition disabled:opacity-50 flex items-center gap-2"
+              >
+                <LogOut size={16} />
+                {isLoggingOut ? "Logging out..." : "Log out"}
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

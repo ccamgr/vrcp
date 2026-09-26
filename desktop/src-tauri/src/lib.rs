@@ -65,6 +65,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             cmds::vrcapi::auth::login,
             cmds::vrcapi::auth::logout,
             cmds::vrcapi::auth::verify_2fa,
+            cmds::vrcapi::auth::check_auth,
+            cmds::vrcapi::friends::get_friend_instances,
             cmds::vrcapi::invite::invite_myself
         ])
         .events(collect_events![

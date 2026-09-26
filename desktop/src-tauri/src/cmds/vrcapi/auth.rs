@@ -12,12 +12,31 @@ use vrchatapi::models::{
 use crate::Ctx;
 
 #[derive(Clone, Serialize, Deserialize, Debug, Type)]
+pub struct AuthUser {
+    #[serde(rename = "displayName")]
+    display_name: String,
+    #[serde(rename = "iconUrl")]
+    icon_url: Option<String>,
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug, Type)]
 pub struct LoginResponse {
-    user: Option<String>, // ログイン成功してユーザー情報が取れた場合はユーザー名を入れる
+    user: Option<AuthUser>,
     #[serde(rename = "requires2fa")]
     requires_2fa: bool, // 2FAが必要な場合はtrue
     #[serde(rename = "type2fa")]
     type_2fa: Vec<String>, // 2FAの種類（例: "emailOtp", "otp", "totp"）を入れる
+}
+
+fn authenticated_response(user: vrchatapi::models::CurrentUser) -> LoginResponse {
+    LoginResponse {
+        user: Some(AuthUser {
+            display_name: user.display_name,
+            icon_url: user.icon_url,
+        }),
+        requires_2fa: false,
+        type_2fa: Vec::new(),
+    }
 }
 
 // Check current login status using saved cookies
@@ -30,14 +49,7 @@ pub async fn check_auth(state: State<'_, Ctx>) -> Result<LoginResponse, String> 
     match get_current_user(&config).await {
         Ok(response) => {
             match response {
-                CurrentUser(user) => {
-                    // Valid session exists
-                    Ok(LoginResponse {
-                        user: Some(user.display_name.clone()),
-                        requires_2fa: false,
-                        type_2fa: Vec::new(),
-                    })
-                }
+                CurrentUser(user) => Ok(authenticated_response(user)),
                 RequiresTwoFactorAuth(_) => {
                     // Session requires 2FA to proceed
                     Err(
@@ -77,11 +89,7 @@ pub async fn login(
             }
 
             match response {
-                CurrentUser(user) => Ok(LoginResponse {
-                    user: Some(user.display_name.clone()),
-                    requires_2fa: false,
-                    type_2fa: Vec::new(),
-                }),
+                CurrentUser(user) => Ok(authenticated_response(user)),
                 RequiresTwoFactorAuth(req2fa) => Ok(LoginResponse {
                     user: None,
                     requires_2fa: true,
@@ -134,11 +142,7 @@ pub async fn verify_2fa(
     match get_current_user(&config).await {
         Ok(user_resp) => {
             if let CurrentUser(user) = user_resp {
-                Ok(LoginResponse {
-                    user: Some(user.display_name.clone()),
-                    requires_2fa: false,
-                    type_2fa: Vec::new(),
-                })
+                Ok(authenticated_response(user))
             } else {
                 Err("Verification succeeded, but failed to retrieve user data.".to_string())
             }

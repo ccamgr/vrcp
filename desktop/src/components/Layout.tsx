@@ -1,8 +1,13 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Activity, Settings, BarChart3, Home } from "lucide-react"; // アイコン
+import { Activity, Settings, BarChart3, Home, LogIn, UserCircle } from "lucide-react"; // アイコン
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import LoginDialog from "./LoginDialog";
 
 export default function Layout() {
   const location = useLocation();
+  const { user, isLoading } = useAuth();
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
   const navItems = [
     { path: "/", label: "Top", icon: Home },
@@ -15,9 +20,37 @@ export default function Layout() {
     <div className="flex h-screen w-screen bg-slate-900 text-white font-sans overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col p-4">
-        <h1 className="text-xl font-bold mb-8 px-2 tracking-tight text-blue-400">
-          VRCP Desktop
-        </h1>
+        <div className="mb-8 flex items-center justify-between gap-2 px-2">
+          <h1 className="text-xl font-bold tracking-tight text-blue-400">
+            VRCP Desktop
+          </h1>
+          {!isLoading &&
+            (user ? (
+              user.iconUrl ? (
+                <img
+                  src={user.iconUrl}
+                  alt={user.displayName}
+                  title={user.displayName}
+                  className="h-7 w-7 rounded-full object-cover"
+                />
+              ) : (
+                <UserCircle
+                  size={28}
+                  className="text-slate-300"
+                  aria-label={user.displayName}
+                />
+              )
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsLoginDialogOpen(true)}
+                className="flex items-center gap-1 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-500"
+              >
+                <LogIn size={14} />
+                Login
+              </button>
+            ))}
+        </div>
 
         <nav className="flex flex-col gap-2">
           {navItems.map((item) => {
@@ -49,6 +82,10 @@ export default function Layout() {
       <div className="flex-1 flex flex-col overflow-hidden relative">
         <Outlet />
       </div>
+      <LoginDialog
+        open={isLoginDialogOpen}
+        onClose={() => setIsLoginDialogOpen(false)}
+      />
     </div>
   );
 }
