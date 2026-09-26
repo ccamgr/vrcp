@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useCallback } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
-import { TouchableEx, ButtonEx } from "@/components/CustomElements";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -25,7 +18,12 @@ import { routeToAvatar } from "@/lib/route";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import { useLocalSearchParams } from "expo-router";
+import {
+  type InfiniteListPageRequest,
+  useInfiniteList,
+} from "@/hooks/useInfiniteList";
+
+const PAGE_SIZE = 50;
 
 export default function MyAvatars() {
   const vrc = useVRChat();
@@ -34,46 +32,36 @@ export default function MyAvatars() {
   const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions_cardViewColumns;
-  const NumPerReq = 50;
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
-  const offset = useRef(0);
-
-  const fetchAvatars = async () => {
-    if (fetchingRef.current || offset.current < 0) return;
-    fetchingRef.current = true;
-    try {
+  const queryKey = ["vrc", "api", "avatars", "me"];
+  const fetchAvatars = useCallback(
+    async ({ offset, pageSize }: InfiniteListPageRequest) => {
       const res = await vrc.avatarsApi.searchAvatars({
-        offset: offset.current,
-        n: NumPerReq,
+        offset,
+        n: pageSize,
         user: "me",
         releaseStatus: ReleaseStatus.All,
         sort: SortOption.Updated,
         order: OrderOption.Descending,
       });
-      if (res.data.length === 0) {
-        offset.current = -1; // reset offset if no more data
-      } else {
-        setAvatars((prev) => [...prev, ...res.data]);
-        offset.current += NumPerReq;
-      }
-    } catch (e) {
-      showToast("error", "Error fetching own avatars", extractErrMsg(e));
-    } finally {
-      fetchingRef.current = false;
-    }
-  };
-
-  useEffect(() => {
-    fetchAvatars();
-  }, []);
-
-  const reload = () => {
-    offset.current = 0;
-    setAvatars([]);
-    fetchAvatars();
-  };
+      return res.data;
+    },
+    [vrc.avatarsApi],
+  );
+  const {
+    items: avatars,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isRefreshing,
+    refresh,
+  } = useInfiniteList<Avatar>({
+    queryKey,
+    enabled: !!vrc.avatarsApi,
+    pageSize: PAGE_SIZE,
+    fetchPage: fetchAvatars,
+    onError: (error) =>
+      showToast("error", "Error fetching own avatars", extractErrMsg(error)),
+  });
 
   const renderItem = useCallback(
     ({ item }: { item: Avatar }) => (
@@ -83,7 +71,7 @@ export default function MyAvatars() {
         onPress={() => routeToAvatar(item.id)}
       />
     ),
-    [],
+    [cardViewColumns],
   );
   const emptyComponent = useCallback(
     () => (
@@ -93,7 +81,7 @@ export default function MyAvatars() {
         </Text>
       </View>
     ),
-    [],
+    [t, theme.colors.text],
   );
 
   return (
@@ -106,10 +94,11 @@ export default function MyAvatars() {
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={cardViewColumns}
-        onEndReached={fetchAvatars}
+        onEndReached={fetchNextPage}
         onEndReachedThreshold={0.5}
-        onRefresh={reload}
-        refreshing={isLoading}
+        onRefresh={refresh}
+        refreshing={isRefreshing}
+        ListFooterComponent={isFetchingNextPage ? <LoadingIndicator /> : null}
         contentContainerStyle={styles.scrollContentContainer}
       />
     </GenericScreen>

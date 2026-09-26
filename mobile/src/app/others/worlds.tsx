@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useCallback } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import GenericScreen from "@/components/layout/GenericScreen";
-import { TouchableEx, ButtonEx } from "@/components/CustomElements";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -25,6 +18,12 @@ import {
   SortOption,
 } from "@/generated/vrcapi";
 import { extractErrMsg } from "@/lib/utils";
+import {
+  type InfiniteListPageRequest,
+  useInfiniteList,
+} from "@/hooks/useInfiniteList";
+
+const PAGE_SIZE = 50;
 
 export default function MyWorlds() {
   const vrc = useVRChat();
@@ -33,47 +32,36 @@ export default function MyWorlds() {
   const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions_cardViewColumns;
-  const NumPerReq = 50;
-
-  const [worlds, setWorlds] = useState<LimitedWorld[]>([]);
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
-  const offset = useRef(0);
-
-  const fetchWorlds = async () => {
-    if (fetchingRef.current || offset.current < 0) return;
-    fetchingRef.current = true;
-    try {
+  const queryKey = ["vrc", "api", "worlds", "me"];
+  const fetchWorlds = useCallback(
+    async ({ offset, pageSize }: InfiniteListPageRequest) => {
       const res = await vrc.worldsApi.searchWorlds({
-        offset: offset.current,
-        n: NumPerReq,
+        offset,
+        n: pageSize,
         user: "me",
         releaseStatus: ReleaseStatus.All,
         sort: SortOption.Updated,
         order: OrderOption.Descending,
       });
-      if (res.data.length === 0) {
-        offset.current = -1; // reset offset if no more data
-      } else {
-        setWorlds((prev) => [...prev, ...res.data]);
-        offset.current += NumPerReq;
-      }
-    } catch (e) {
-      showToast("error", "Error fetching own worlds", extractErrMsg(e));
-    } finally {
-      fetchingRef.current = false;
-    }
-  };
-
-  useEffect(() => {
-    fetchWorlds();
-  }, []);
-
-  const reload = () => {
-    offset.current = 0;
-    setWorlds([]);
-    fetchWorlds();
-  };
+      return res.data;
+    },
+    [vrc.worldsApi],
+  );
+  const {
+    items: worlds,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isRefreshing,
+    refresh,
+  } = useInfiniteList<LimitedWorld>({
+    queryKey,
+    enabled: !!vrc.worldsApi,
+    pageSize: PAGE_SIZE,
+    fetchPage: fetchWorlds,
+    onError: (error) =>
+      showToast("error", "Error fetching own worlds", extractErrMsg(error)),
+  });
 
   const renderItem = useCallback(
     ({ item, index }: { item: LimitedWorld; index: number }) => (
@@ -83,7 +71,7 @@ export default function MyWorlds() {
         onPress={() => routeToWorld(item.id)}
       />
     ),
-    [],
+    [cardViewColumns],
   );
   const emptyComponent = useCallback(
     () => (
@@ -93,7 +81,7 @@ export default function MyWorlds() {
         </Text>
       </View>
     ),
-    [],
+    [t, theme.colors.text],
   );
 
   return (
@@ -105,10 +93,11 @@ export default function MyWorlds() {
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={cardViewColumns}
-        onEndReached={fetchWorlds}
+        onEndReached={fetchNextPage}
         onEndReachedThreshold={0.5}
-        onRefresh={reload}
-        refreshing={isLoading}
+        onRefresh={refresh}
+        refreshing={isRefreshing}
+        ListFooterComponent={isFetchingNextPage ? <LoadingIndicator /> : null}
         contentContainerStyle={styles.scrollContentContainer}
       />
     </GenericScreen>

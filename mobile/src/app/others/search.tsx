@@ -6,31 +6,27 @@ import SearchBox from "@/components/view/SearchBox";
 import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
+import { routeToGroup, routeToUser, routeToWorld } from "@/lib/route";
 import {
-  routeToAvatar,
-  routeToGroup,
-  routeToUser,
-  routeToWorld,
-} from "@/lib/route";
-import {
-  Avatar,
-  AvatarsApi,
-  GroupsApi,
   LimitedGroup,
   LimitedUserSearch,
   LimitedWorld,
   SortOption,
-  UsersApi,
-  WorldsApi,
 } from "@/generated/vrcapi";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
+import {
+  type InfiniteListPageRequest,
+  useInfiniteList,
+} from "@/hooks/useInfiniteList";
+import { useToast } from "@/contexts/ToastContext";
+
+const PAGE_SIZE = 50;
 
 export default function Search() {
   const vrc = useVRChat();
@@ -39,7 +35,6 @@ export default function Search() {
   const { showToast } = useToast();
   const initialParams = useLocalSearchParams<{ search?: string }>();
   const [search, setSearch] = useState(initialParams.search || "");
-  const limit = 50; // Number of items to fetch per request
 
   const MaterialTab = createMaterialTopTabNavigator();
 
@@ -49,44 +44,39 @@ export default function Search() {
 
   // Worlds Tab (search)
   const ResultWorldsTab = () => {
-    const [worlds, setWorlds] = useState<LimitedWorld[]>([]);
-    const offset = useRef(0);
-    const fetchingRef = useRef(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const fetchWorlds = async () => {
-      try {
-        if (fetchingRef.current) return; // Prevent multiple simultaneous fetches
-        fetchingRef.current = true;
-        setIsLoading(true);
-        const res = await new WorldsApi(vrc.config).searchWorlds({
-          sort: SortOption.Magic,
-          n: limit,
-          offset: offset.current,
-          search: search,
-        });
-        setWorlds((prev) => [...prev, ...res.data]);
-        offset.current += limit;
-      } catch (error) {
-        showToast("error", "Error searching worlds", extractErrMsg(error));
-      } finally {
-        fetchingRef.current = false;
-        setIsLoading(false);
-      }
+    const queryKey = ["vrc", "api", "search", "worlds", search];
+    const fetchWorlds = async ({
+      offset,
+      pageSize,
+    }: InfiniteListPageRequest) => {
+      const res = await vrc.worldsApi.searchWorlds({
+        sort: SortOption.Magic,
+        n: pageSize,
+        offset,
+        search,
+      });
+      return res.data;
     };
-    useEffect(() => {
-      offset.current = 0;
-      fetchWorlds();
-    }, [search]);
+    const {
+      items: worlds,
+      fetchNextPage,
+      isFetchingNextPage,
+      isLoading,
+    } = useInfiniteList<LimitedWorld>({
+      queryKey,
+      enabled: !!vrc.worldsApi,
+      pageSize: PAGE_SIZE,
+      fetchPage: fetchWorlds,
+      onError: (error) =>
+        showToast("error", "Error searching worlds", extractErrMsg(error)),
+    });
 
-    const emptyComponent = useCallback(
-      () => (
-        <View style={{ alignItems: "center", marginTop: spacing.large }}>
-          <Text style={{ color: theme.colors.text }}>
-            {t("pages.search.no_worlds_found", { search: search })}
-          </Text>
-        </View>
-      ),
-      [search, t, theme.colors.text],
+    const emptyComponent = () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.search.no_worlds_found", { search })}
+        </Text>
+      </View>
     );
 
     return (
@@ -104,9 +94,10 @@ export default function Search() {
           )}
           ListEmptyComponent={emptyComponent}
           numColumns={2}
-          onEndReached={fetchWorlds}
+          onEndReached={fetchNextPage}
           onEndReachedThreshold={0.3}
           contentContainerStyle={styles.listInner}
+          ListFooterComponent={isFetchingNextPage ? <LoadingIndicator /> : null}
         />
       </>
     );
@@ -114,43 +105,38 @@ export default function Search() {
 
   // User Tab (search only)
   const ResultUsersTab = () => {
-    const [users, setUsers] = useState<LimitedUserSearch[]>([]);
-    const offset = useRef(0);
-    const fetchingRef = useRef(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const fetchUsers = async () => {
-      try {
-        if (fetchingRef.current) return;
-        fetchingRef.current = true;
-        setIsLoading(true);
-        const res = await new UsersApi(vrc.config).searchUsers({
-          n: limit,
-          offset: offset.current,
-          search: search,
-        });
-        setUsers((prev) => [...prev, ...res.data]);
-        offset.current += limit;
-      } catch (error) {
-        showToast("error", "Error searching users", extractErrMsg(error));
-      } finally {
-        fetchingRef.current = false;
-        setIsLoading(false);
-      }
+    const queryKey = ["vrc", "api", "search", "users", search];
+    const fetchUsers = async ({
+      offset,
+      pageSize,
+    }: InfiniteListPageRequest) => {
+      const res = await vrc.usersApi.searchUsers({
+        n: pageSize,
+        offset,
+        search,
+      });
+      return res.data;
     };
-    useEffect(() => {
-      offset.current = 0;
-      fetchUsers();
-    }, [search]);
+    const {
+      items: users,
+      fetchNextPage,
+      isFetchingNextPage,
+      isLoading,
+    } = useInfiniteList<LimitedUserSearch>({
+      queryKey,
+      enabled: !!vrc.usersApi,
+      pageSize: PAGE_SIZE,
+      fetchPage: fetchUsers,
+      onError: (error) =>
+        showToast("error", "Error searching users", extractErrMsg(error)),
+    });
 
-    const emptyComponent = useCallback(
-      () => (
-        <View style={{ alignItems: "center", marginTop: spacing.large }}>
-          <Text style={{ color: theme.colors.text }}>
-            {t("pages.search.no_users_found", { search: search })}
-          </Text>
-        </View>
-      ),
-      [search, t, theme.colors.text],
+    const emptyComponent = () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.search.no_users_found", { search })}
+        </Text>
+      </View>
     );
     return (
       <>
@@ -167,9 +153,10 @@ export default function Search() {
           )}
           ListEmptyComponent={emptyComponent}
           numColumns={2}
-          onEndReached={fetchUsers}
+          onEndReached={fetchNextPage}
           onEndReachedThreshold={0.3}
           contentContainerStyle={styles.listInner}
+          ListFooterComponent={isFetchingNextPage ? <LoadingIndicator /> : null}
         />
       </>
     );
@@ -177,44 +164,38 @@ export default function Search() {
 
   // Groups Tab (search only)
   const ResultGroupsTab = () => {
-    const [groups, setGroups] = useState<LimitedGroup[]>([]);
-    const offset = useRef(0);
-    const fetchingRef = useRef(false);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const fetchGroups = async () => {
-      try {
-        if (fetchingRef.current) return;
-        fetchingRef.current = true;
-        setIsLoading(true);
-        const res = await new GroupsApi(vrc.config).searchGroups({
-          n: limit,
-          offset: offset.current,
-          query: search,
-        });
-        setGroups((prev) => [...prev, ...res.data]);
-        offset.current += limit;
-      } catch (error) {
-        showToast("error", "Error searching groups", extractErrMsg(error));
-      } finally {
-        fetchingRef.current = false;
-        setIsLoading(false);
-      }
+    const queryKey = ["vrc", "api", "search", "groups", search];
+    const fetchGroups = async ({
+      offset,
+      pageSize,
+    }: InfiniteListPageRequest) => {
+      const res = await vrc.groupsApi.searchGroups({
+        n: pageSize,
+        offset,
+        query: search,
+      });
+      return res.data;
     };
-    useEffect(() => {
-      offset.current = 0;
-      fetchGroups();
-    }, [search]);
+    const {
+      items: groups,
+      fetchNextPage,
+      isFetchingNextPage,
+      isLoading,
+    } = useInfiniteList<LimitedGroup>({
+      queryKey,
+      enabled: !!vrc.groupsApi,
+      pageSize: PAGE_SIZE,
+      fetchPage: fetchGroups,
+      onError: (error) =>
+        showToast("error", "Error searching groups", extractErrMsg(error)),
+    });
 
-    const emptyComponent = useCallback(
-      () => (
-        <View style={{ alignItems: "center", marginTop: spacing.large }}>
-          <Text style={{ color: theme.colors.text }}>
-            {t("pages.search.no_groups_found", { search: search })}
-          </Text>
-        </View>
-      ),
-      [search, t, theme.colors.text],
+    const emptyComponent = () => (
+      <View style={{ alignItems: "center", marginTop: spacing.large }}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("pages.search.no_groups_found", { search })}
+        </Text>
+      </View>
     );
 
     return (
@@ -232,9 +213,10 @@ export default function Search() {
           )}
           ListEmptyComponent={emptyComponent}
           numColumns={2}
-          onEndReached={fetchGroups}
+          onEndReached={fetchNextPage}
           onEndReachedThreshold={0.3}
           contentContainerStyle={styles.listInner}
+          ListFooterComponent={isFetchingNextPage ? <LoadingIndicator /> : null}
         />
       </>
     );
@@ -259,17 +241,35 @@ export default function Search() {
           <MaterialTab.Screen
             name="worlds"
             options={{ tabBarLabel: "Worlds" }}
-            component={useCallback(ResultWorldsTab, [search])}
+            component={useCallback(ResultWorldsTab, [
+              search,
+              showToast,
+              t,
+              theme.colors.text,
+              vrc.worldsApi,
+            ])}
           />
           <MaterialTab.Screen
             name="users"
             options={{ tabBarLabel: "Users" }}
-            component={useCallback(ResultUsersTab, [search])}
+            component={useCallback(ResultUsersTab, [
+              search,
+              showToast,
+              t,
+              theme.colors.text,
+              vrc.usersApi,
+            ])}
           />
           <MaterialTab.Screen
             name="groups"
             options={{ tabBarLabel: "Groups" }}
-            component={useCallback(ResultGroupsTab, [search])}
+            component={useCallback(ResultGroupsTab, [
+              search,
+              showToast,
+              t,
+              theme.colors.text,
+              vrc.groupsApi,
+            ])}
           />
         </MaterialTab.Navigator>
       </View>
