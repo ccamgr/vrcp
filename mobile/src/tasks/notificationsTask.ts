@@ -6,6 +6,7 @@ import * as SecureStore from "expo-secure-store";
 import { Configuration, Notification, NotificationsApi, UsersApi, OrderOption, SortOption } from '@/generated/vrcapi';
 import { getUserAgent } from '@/lib/utils';
 import { extractNotificationContent } from '@/lib/funcs/extractNotificationContent';
+import { hasVrcIdPrefix } from '@/lib/vrcapiModels';
 
 export const VRCHAT_NOTIFICATION_TASK_NAME = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK';
 const LAST_CHECKED_KEY = 'BACKGROUND_VRCHAT_NOTIFICATION_TASK_LAST_CHECKED';
@@ -69,7 +70,7 @@ TaskManager.defineTask(VRCHAT_NOTIFICATION_TASK_NAME, async () => {
         let senderNameStr = "";
 
         // Fetch displayName using senderUserId
-        if (notif.senderUserId) {
+        if (hasVrcIdPrefix(notif.senderUserId, "usr_")) {
           try {
             if (fetchedUsers[notif.senderUserId]) {
               senderNameStr = `${fetchedUsers[notif.senderUserId]}: `;

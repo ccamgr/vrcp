@@ -6,6 +6,8 @@ import {
   useInfiniteList,
 } from "@/hooks/useInfiniteList";
 import { LimitedUserGroups } from "@/generated/vrcapi";
+import { vrcQueryKeys } from "@/lib/queryClient";
+import { hasVrcIdPrefix } from "@/lib/vrcapiModels";
 
 const PAGE_SIZE = 100;
 const STALE_TIME = 5 * 60 * 1000;
@@ -17,16 +19,11 @@ export const useMutualGroups = (
 ) => {
   const auth = useAuth();
   const vrc = useVRChat();
-  const canFetch = !!userId && !!auth.user?.id && userId !== auth.user.id;
-  const queryKey = [
-    "vrc",
-    "api",
-    "account",
-    auth.user?.id,
-    "user",
-    userId,
-    "mutual-groups",
-  ];
+  const canFetch =
+    hasVrcIdPrefix(userId, "usr_") &&
+    !!auth.user?.id &&
+    userId !== auth.user.id;
+  const queryKey = vrcQueryKeys.mutualGroups(auth.user?.id ?? "", userId ?? "");
   const fetchPage = useCallback(
     async ({ offset, pageSize }: InfiniteListPageRequest) => {
       if (!userId) throw new Error("User ID is required");

@@ -54,7 +54,9 @@ const ChangeStatusModal = ({ open, setOpen }: Props) => {
           statusDescription: statusDescription,
         },
       });
-      await queryClient.invalidateQueries({ queryKey: ["vrc", "account"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["vrc", currentUser.data.id],
+      });
       setOpen(false);
     } catch (error) {
       showToast("error", "Failed to update status.");

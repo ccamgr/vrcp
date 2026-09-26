@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { FavoriteGroup } from "@/generated/vrcapi";
+import { vrcQueryKeys } from "@/lib/queryClient";
 
 /**
  * On-memory
@@ -11,7 +12,7 @@ export const useFavoriteGroups = () => {
   const vrc = useVRChat();
   const auth = useAuth();
   const queryClient = useQueryClient();
-  const QUERY_KEY = ["vrc", "state", "favoriteGroups"];
+  const QUERY_KEY = vrcQueryKeys.favoriteGroups(auth.user?.id ?? "");
 
   const query = useQuery({
     queryKey: QUERY_KEY,
@@ -21,10 +22,14 @@ export const useFavoriteGroups = () => {
     },
     enabled: !!auth.user,
     staleTime: 60 * 60 * 1000,
+    gcTime: 7 * 24 * 60 * 60 * 1000,
+    meta: { persist: true },
   });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-  const setFavoriteGroups = (updater: (prev: FavoriteGroup[] | undefined) => FavoriteGroup[]) => {
+  const setFavoriteGroups = (
+    updater: (prev: FavoriteGroup[] | undefined) => FavoriteGroup[],
+  ) => {
     queryClient.setQueryData<FavoriteGroup[]>(QUERY_KEY, updater);
   };
 

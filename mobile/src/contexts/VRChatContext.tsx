@@ -116,6 +116,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const configurePipeline = (authToken: string) => {
     authTokenRef.current = authToken;
     shouldReconnectRef.current = true;
+    setLastJsonMessage(null);
     createSocket();
     console.log("Configure VRChatContext pipeline");
   };
@@ -195,6 +196,7 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const unConfigure = () => {
     console.log("Unconfigure VRChatContext");
     setConfig(undefined);
+    setLastJsonMessage(null);
     authTokenRef.current = null;
     shouldReconnectRef.current = false;
     socketGenerationRef.current += 1;

@@ -99,18 +99,18 @@ mobile/src/
 両 hook は `useInfiniteQuery` を使い、画面コンポーネントに API 呼び出しや offset 管理を置かない。
 
 ```ts
-['vrc', 'api', 'user', userId, 'mutual-friends']
-['vrc', 'api', 'user', userId, 'mutual-groups']
+['vrc', accountId, 'mutual-friends', userId]
+['vrc', accountId, 'mutual-groups', userId]
 ```
 
-- `enabled` は `userId` が存在し、`usersApi` が初期化済みで、対象が自分自身ではないときだけ `true` とする。
+- `enabled` はログイン中の `accountId` と `userId` が存在し、`usersApi` が初期化済みで、対象が自分自身ではないときだけ `true` とする。
 - `initialPageParam` は `0`、`getNextPageParam` は最後の応答が 100 件未満なら `undefined`、それ以外は取得済み件数とする。
 - flatten 時に `id` 単位で重複排除する。ネットワーク再試行やページ境界の重複で同じカードを表示しない。
 - `staleTime` は 5 分、`gcTime` は 30 分とする。
-- `meta: { persist: false }` を設定する。現行 persister は `['vrc', 'state', ...]` だけを永続化するが、共通フレンド・グループはプライバシー上の変動が大きいため、明示的に永続化対象外とする。
+- `meta: { persist: false }` を設定する。現行 persister は `meta.persist === true` の Query だけを永続化する。共通フレンド・グループはプライバシー上の変動が大きいため、明示的に永続化対象外とする。
 - `refetch` は対象 query key だけを invalidate する。friends / groups / user detail のキャッシュ全体を消さない。
 
-Query が dispose された後も、30 分以内に同じ対象を再度開く場合はメモリ内の表示を先に使い、バックグラウンドで新しい内容を確認する。
+Query が dispose された後も、30 分以内に同じ対象を再度開く場合はメモリ内の表示を先に使い、バックグラウンドで新しい内容を確認する。ログアウトまたは別アカウントへのログイン時には、`['vrc']` 配下の Query をすべて破棄する。
 
 ## 責務分離
 

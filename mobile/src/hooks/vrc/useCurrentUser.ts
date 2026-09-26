@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { isCurrentAccount } from "@/lib/vrcapiModels";
+import { vrcQueryKeys } from "@/lib/queryClient";
 
 /**
  * On-memory
@@ -12,7 +13,7 @@ export const useCurrentUser = () => {
   const auth = useAuth();
 
   return useQuery({
-    queryKey: ["vrc", "account", auth.user?.id, "current"],
+    queryKey: vrcQueryKeys.currentUser(auth.user?.id ?? ""),
     queryFn: async () => {
       const res = await vrc.authenticationApi.getCurrentUser();
       if (!isCurrentAccount(res.data)) {
@@ -25,6 +26,7 @@ export const useCurrentUser = () => {
     enabled: !!auth.user?.id,
     // Short staleTime for real-time data
     staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
     meta: { persist: false },
   });
 };

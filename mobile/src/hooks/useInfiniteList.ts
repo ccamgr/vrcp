@@ -33,7 +33,7 @@ export function useInfiniteList<T extends { id?: string }>({
   staleTime = 0,
   gcTime = 0,
   refetchOnMount = "always",
-  persist,
+  persist = false,
 }: UseInfiniteListOptions<T>) {
   const queryClient = useQueryClient();
   const reportedError = useRef<unknown>(undefined);

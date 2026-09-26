@@ -6,6 +6,9 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/contexts/ToastContext";
 import { useSetting } from "@/contexts/SettingContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { vrcQueryKeys } from "@/lib/queryClient";
+import { hasVrcIdPrefix } from "@/lib/vrcapiModels";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { FlatList } from "react-native-gesture-handler";
 import { navigationBarHeight, spacing } from "@/configs/styles";
@@ -29,12 +32,14 @@ const PAGE_SIZE = 50;
 export default function UserWorlds() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const vrc = useVRChat();
+  const auth = useAuth();
   const theme = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions_cardViewColumns;
-  const queryKey = ["vrc", "api", "worlds", "user", id];
+  const hasValidUserId = hasVrcIdPrefix(id, "usr_");
+  const queryKey = vrcQueryKeys.list(auth.user?.id ?? "", "worlds", id);
   const fetchWorlds = useCallback(
     async ({ offset, pageSize }: InfiniteListPageRequest) => {
       const res = await vrc.worldsApi.searchWorlds({
@@ -58,7 +63,7 @@ export default function UserWorlds() {
     refresh,
   } = useInfiniteList<LimitedWorld>({
     queryKey,
-    enabled: !!id && !!vrc.worldsApi,
+    enabled: !!auth.user?.id && hasValidUserId && !!vrc.worldsApi,
     pageSize: PAGE_SIZE,
     fetchPage: fetchWorlds,
     onError: (error) =>

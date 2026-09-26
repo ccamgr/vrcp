@@ -12,7 +12,7 @@ import { useCacheManager } from "@/hooks/useCacheManager";
 import { useLogManager } from "@/hooks/useLogManager";
 import { formatBytes } from "@/lib/utils";
 import { TouchableEx } from "@/components/CustomElements";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, StyleSheet, ActivityIndicator } from "react-native";
 
 export default function DatabaseSettings() {
   const theme = useTheme();
@@ -24,10 +24,6 @@ export default function DatabaseSettings() {
     stateStats,
     measureStateCache,
     clearStateCache,
-    dbStats,
-    measureDbCache,
-    clearDbCache,
-    imageStats,
     measureImageCache,
     clearImageCache,
   } = useCacheManager();
@@ -36,7 +32,6 @@ export default function DatabaseSettings() {
   const { logStats, measureLogs, clearLogs } = useLogManager();
 
   const [isClearingState, setIsClearingState] = useState(false);
-  const [isClearingDb, setIsClearingDb] = useState(false);
   const [isClearingImage, setIsClearingImage] = useState(false);
   const [isClearingLogs, setIsClearingLogs] = useState(false);
 
@@ -66,10 +61,9 @@ export default function DatabaseSettings() {
 
   useEffect(() => {
     measureStateCache();
-    measureDbCache();
     measureImageCache();
     measureLogs();
-  }, [measureStateCache, measureDbCache, measureImageCache, measureLogs]);
+  }, [measureStateCache, measureImageCache, measureLogs]);
 
   // Handler for Desktop Logs (Two-step)
   const openActionMenu = (
@@ -174,30 +168,6 @@ export default function DatabaseSettings() {
                 false,
               ),
             isClearingState,
-          ),
-        },
-        {
-          icon: "database",
-          title: t("pages.setting_database.itemLabel_dbCache"),
-          description: isClearingDb
-            ? t("common.loading", "Clearing...")
-            : t("pages.setting_database.itemDescription_dbCache") +
-              "\n" +
-              (dbStats
-                ? t("pages.setting_database.cache_size_and_count", {
-                    size: formatBytes(dbStats.size),
-                    count: dbStats.count,
-                  })
-                : ""),
-          leading: renderClearButton(
-            () =>
-              confirmClear(
-                t("pages.setting_database.itemLabel_dbCache"),
-                clearDbCache,
-                setIsClearingDb,
-                false,
-              ),
-            isClearingDb,
           ),
         },
         {

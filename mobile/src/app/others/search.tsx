@@ -25,11 +25,14 @@ import {
   useInfiniteList,
 } from "@/hooks/useInfiniteList";
 import { useToast } from "@/contexts/ToastContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { vrcQueryKeys } from "@/lib/queryClient";
 
 const PAGE_SIZE = 50;
 
 export default function Search() {
   const vrc = useVRChat();
+  const auth = useAuth();
   const { t } = useTranslation();
   const theme = useTheme();
   const { showToast } = useToast();
@@ -44,7 +47,11 @@ export default function Search() {
 
   // Worlds Tab (search)
   const ResultWorldsTab = () => {
-    const queryKey = ["vrc", "api", "search", "worlds", search];
+    const queryKey = vrcQueryKeys.list(
+      auth.user?.id ?? "",
+      "search-worlds",
+      search,
+    );
     const fetchWorlds = async ({
       offset,
       pageSize,
@@ -64,7 +71,7 @@ export default function Search() {
       isLoading,
     } = useInfiniteList<LimitedWorld>({
       queryKey,
-      enabled: !!vrc.worldsApi,
+      enabled: !!auth.user?.id && !!vrc.worldsApi,
       pageSize: PAGE_SIZE,
       fetchPage: fetchWorlds,
       onError: (error) =>
@@ -105,7 +112,11 @@ export default function Search() {
 
   // User Tab (search only)
   const ResultUsersTab = () => {
-    const queryKey = ["vrc", "api", "search", "users", search];
+    const queryKey = vrcQueryKeys.list(
+      auth.user?.id ?? "",
+      "search-users",
+      search,
+    );
     const fetchUsers = async ({
       offset,
       pageSize,
@@ -124,7 +135,7 @@ export default function Search() {
       isLoading,
     } = useInfiniteList<LimitedUserSearch>({
       queryKey,
-      enabled: !!vrc.usersApi,
+      enabled: !!auth.user?.id && !!vrc.usersApi,
       pageSize: PAGE_SIZE,
       fetchPage: fetchUsers,
       onError: (error) =>
@@ -164,7 +175,11 @@ export default function Search() {
 
   // Groups Tab (search only)
   const ResultGroupsTab = () => {
-    const queryKey = ["vrc", "api", "search", "groups", search];
+    const queryKey = vrcQueryKeys.list(
+      auth.user?.id ?? "",
+      "search-groups",
+      search,
+    );
     const fetchGroups = async ({
       offset,
       pageSize,
@@ -183,7 +198,7 @@ export default function Search() {
       isLoading,
     } = useInfiniteList<LimitedGroup>({
       queryKey,
-      enabled: !!vrc.groupsApi,
+      enabled: !!auth.user?.id && !!vrc.groupsApi,
       pageSize: PAGE_SIZE,
       fetchPage: fetchGroups,
       onError: (error) =>
@@ -242,6 +257,7 @@ export default function Search() {
             name="worlds"
             options={{ tabBarLabel: "Worlds" }}
             component={useCallback(ResultWorldsTab, [
+              auth.user?.id,
               search,
               showToast,
               t,
@@ -253,6 +269,7 @@ export default function Search() {
             name="users"
             options={{ tabBarLabel: "Users" }}
             component={useCallback(ResultUsersTab, [
+              auth.user?.id,
               search,
               showToast,
               t,
@@ -264,6 +281,7 @@ export default function Search() {
             name="groups"
             options={{ tabBarLabel: "Groups" }}
             component={useCallback(ResultGroupsTab, [
+              auth.user?.id,
               search,
               showToast,
               t,

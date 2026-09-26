@@ -6,6 +6,8 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/contexts/ToastContext";
 import { useSetting } from "@/contexts/SettingContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { vrcQueryKeys } from "@/lib/queryClient";
 import {
   Avatar,
   OrderOption,
@@ -27,12 +29,13 @@ const PAGE_SIZE = 50;
 
 export default function MyAvatars() {
   const vrc = useVRChat();
+  const auth = useAuth();
   const theme = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
   const cardViewColumns = settings.uiOptions_cardViewColumns;
-  const queryKey = ["vrc", "api", "avatars", "me"];
+  const queryKey = vrcQueryKeys.list(auth.user?.id ?? "", "avatars", "me");
   const fetchAvatars = useCallback(
     async ({ offset, pageSize }: InfiniteListPageRequest) => {
       const res = await vrc.avatarsApi.searchAvatars({
@@ -56,7 +59,7 @@ export default function MyAvatars() {
     refresh,
   } = useInfiniteList<Avatar>({
     queryKey,
-    enabled: !!vrc.avatarsApi,
+    enabled: !!auth.user?.id && !!vrc.avatarsApi,
     pageSize: PAGE_SIZE,
     fetchPage: fetchAvatars,
     onError: (error) =>

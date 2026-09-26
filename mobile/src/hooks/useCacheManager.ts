@@ -2,13 +2,11 @@
 import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { dbManager } from "@/db";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import { TANSTACK_STORAGE_KEY } from "@/lib/queryClient";
-import { avatarsRepo, groupsRepo, usersRepo, worldsRepo } from "@/db/repogitories";
 
 export interface CacheStats {
-  size: number;  // bytes
+  size: number; // bytes
   count: number; // items/rows
 }
 
@@ -16,14 +14,13 @@ export const useCacheManager = () => {
   const queryClient = useQueryClient();
 
   const [stateStats, setStateStats] = useState<CacheStats>();
-  const [dbStats, setDbStats] = useState<CacheStats>();
   const [imageStats, setImageStats] = useState<CacheStats>();
 
   // ==========================================
   // 1. State Cache (TanStack Memory + KV-Store)
   // ==========================================
   const measureStateCache = useCallback(async () => {
-    const queries = queryClient.getQueryCache().findAll({ queryKey: ["vrc", "state"] });
+    const queries = queryClient.getQueryCache().findAll({ queryKey: ["vrc"] });
     const stored = await StorageWrapper.getItemAsync(TANSTACK_STORAGE_KEY);
     const sizeBytes = stored ? new Blob([stored]).size : -1;
 
@@ -31,40 +28,10 @@ export const useCacheManager = () => {
   }, [queryClient]);
 
   const clearStateCache = useCallback(async () => {
-    queryClient.removeQueries({ queryKey: ["vrc", "state"] });
+    queryClient.removeQueries({ queryKey: ["vrc"] });
     await StorageWrapper.removeItemAsync(TANSTACK_STORAGE_KEY);
     await measureStateCache();
   }, [measureStateCache, queryClient]);
-
-  // ==========================================
-  // 2. DB Cache (TanStack Memory + SQLite)
-  // ==========================================
-  const measureDbCache = useCallback(async () => {
-    // db/index.ts の cacheManager を使って行数を取得
-    const [u, a, w, g] = await Promise.all([
-      usersRepo.count(),
-      avatarsRepo.count(),
-      worldsRepo.count(),
-      groupsRepo.count()
-    ]);
-    const rows = u + a + w + g;
-    const size = await dbManager.getDBFileSize();
-    setDbStats({ size, count: rows });
-  }, []);
-
-  const clearDbCache = useCallback(async () => {
-    // メモリ上の クエリキャッシュをクリア
-    queryClient.removeQueries({ queryKey: ["vrc", "db"] });
-
-    await Promise.all([
-      usersRepo.clearAll(),
-      avatarsRepo.clearAll(),
-      worldsRepo.clearAll(),
-      groupsRepo.clearAll()
-    ]);
-
-    await measureDbCache();
-  }, [measureDbCache, queryClient]);
 
   // ==========================================
   // 3. Image Cache (expo-image)
@@ -80,16 +47,18 @@ export const useCacheManager = () => {
     await measureImageCache();
   }, [measureImageCache]);
 
-  const clearAllCaches = useCallback(async () => Promise.all([
-    clearStateCache(),
-    clearDbCache(),
-    clearImageCache()
-  ]), [clearStateCache, clearDbCache, clearImageCache]);
+  const clearAllCaches = useCallback(
+    async () => Promise.all([clearStateCache(), clearImageCache()]),
+    [clearStateCache, clearImageCache],
+  );
 
   return {
-    stateStats, measureStateCache, clearStateCache,
-    dbStats, measureDbCache, clearDbCache,
-    imageStats, measureImageCache, clearImageCache,
-    clearAllCaches
+    stateStats,
+    measureStateCache,
+    clearStateCache,
+    imageStats,
+    measureImageCache,
+    clearImageCache,
+    clearAllCaches,
   };
 };

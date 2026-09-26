@@ -13,11 +13,8 @@ import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import axios from "axios";
 import {
   clearAccountQueries,
-  queryClient,
-  TANSTACK_STORAGE_KEY,
 } from "@/lib/queryClient";
 import { isCurrentAccount, isRequiresTwoFactorAuth } from "@/lib/vrcapiModels";
-import { usersRepo } from "@/db/repogitories";
 
 type AuthUser = {
   id?: string;
@@ -65,17 +62,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const [pendingTFA, setPendingTFA] = useState<TfaMode | undefined>(undefined);
 
   const clearAccountCache = async () => {
-    await Promise.all([
-      clearAccountQueries(),
-      queryClient.cancelQueries({ queryKey: ["vrc", "state"] }),
-      queryClient.cancelQueries({ queryKey: ["vrc", "db", "user"] }),
-    ]);
-    queryClient.removeQueries({ queryKey: ["vrc", "state"] });
-    queryClient.removeQueries({ queryKey: ["vrc", "db", "user"] });
-    await Promise.all([
-      StorageWrapper.removeItemAsync(TANSTACK_STORAGE_KEY),
-      usersRepo.clearAll(),
-    ]);
+    await clearAccountQueries();
   };
 
   const clearStoredAuthentication = async () => {

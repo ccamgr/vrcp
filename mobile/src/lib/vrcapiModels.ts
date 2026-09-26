@@ -43,6 +43,11 @@ export type UserPresentation = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
+export const hasVrcIdPrefix = (
+  value: string | undefined,
+  prefix: string,
+): value is string => typeof value === "string" && value.startsWith(prefix);
+
 export const isRequiresTwoFactorAuth = (
   value: InlineObject,
 ): value is RequiresTwoFactorAuth =>

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { FavoriteLimits } from "@/generated/vrcapi";
+import { vrcQueryKeys } from "@/lib/queryClient";
 
 /**
  * On-memory
@@ -11,7 +12,7 @@ export const useFavoriteLimits = () => {
   const vrc = useVRChat();
   const auth = useAuth();
   const queryClient = useQueryClient();
-  const QUERY_KEY = ["vrc", "state", "favoriteLimits"];
+  const QUERY_KEY = vrcQueryKeys.favoriteLimits(auth.user?.id ?? "");
 
   const query = useQuery({
     queryKey: QUERY_KEY,
@@ -21,10 +22,14 @@ export const useFavoriteLimits = () => {
     },
     enabled: !!auth.user,
     staleTime: 60 * 60 * 1000,
+    gcTime: 7 * 24 * 60 * 60 * 1000,
+    meta: { persist: true },
   });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-  const setFavoriteLimits = (updater: (prev: FavoriteLimits | undefined) => FavoriteLimits) => {
+  const setFavoriteLimits = (
+    updater: (prev: FavoriteLimits | undefined) => FavoriteLimits,
+  ) => {
     queryClient.setQueryData<FavoriteLimits>(QUERY_KEY, updater);
   };
 
