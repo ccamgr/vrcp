@@ -26,7 +26,7 @@ export const usePublicProfile = (userId?: string, asSelf = false) => {
     },
     enabled:
       !!auth.user?.id && hasValidUserId && (!asSelf || isSelfProfile),
-    staleTime: asSelf ? 5 * 60 * 1000 : 30 * 60 * 1000,
+    staleTime: asSelf ? 10 * 60 * 1000 : 30 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     meta: { persist: false },
   });

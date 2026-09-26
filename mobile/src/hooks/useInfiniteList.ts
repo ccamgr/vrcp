@@ -30,9 +30,9 @@ export function useInfiniteList<T extends { id?: string }>({
   pageSize,
   fetchPage,
   onError,
-  staleTime = 0,
-  gcTime = 0,
-  refetchOnMount = "always",
+  staleTime = 5 * 60 * 1000,
+  gcTime = 30 * 60 * 1000,
+  refetchOnMount = true,
   persist = false,
 }: UseInfiniteListOptions<T>) {
   const queryClient = useQueryClient();

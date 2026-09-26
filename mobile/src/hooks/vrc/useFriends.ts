@@ -46,7 +46,7 @@ export const useFriends = () => {
       return res.flatMap((r) => r.data);
     },
     enabled: !!auth.user && !!currentUser,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 15 * 60 * 1000,
     gcTime: 7 * 24 * 60 * 60 * 1000,
     meta: { persist: true },
   });

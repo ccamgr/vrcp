@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFriends } from "./useFriends";
 import { useFavorites } from "./useFavorites";
@@ -10,7 +10,10 @@ import { vrcQueryKeys } from "@/lib/queryClient";
 export const useFavFriends = () => {
   const queryClient = useQueryClient();
   const auth = useAuth();
-  const QUERY_KEY = vrcQueryKeys.favFriends(auth.user?.id ?? "");
+  const queryKey = useMemo(
+    () => vrcQueryKeys.favFriends(auth.user?.id ?? ""),
+    [auth.user?.id],
+  );
 
   // 1. ソースとなるデータを取得
   const friendsReq = useFriends();
@@ -30,10 +33,10 @@ export const useFavFriends = () => {
 
   // 3. このフック自身のクエリ定義
   const query = useQuery({
-    queryKey: QUERY_KEY,
+    queryKey,
     // queryFn は「現在のキャッシュを返すだけ」にする（受動的）
     queryFn: () =>
-      queryClient.getQueryData<LimitedUserFriend[]>(QUERY_KEY) ?? [],
+      queryClient.getQueryData<LimitedUserFriend[]>(queryKey) ?? [],
     staleTime: Infinity,
     gcTime: 1000 * 60 * 60 * 24 * 7, // 7日間
     meta: { persist: false },
@@ -43,9 +46,9 @@ export const useFavFriends = () => {
   useEffect(() => {
     if (friendsReq.data && favsReq.data) {
       const result = deriveFavFriends(friendsReq.data, favsReq.data);
-      queryClient.setQueryData(QUERY_KEY, result);
+      queryClient.setQueryData(queryKey, result);
     }
-  }, [QUERY_KEY, favsReq.data, friendsReq.data, queryClient]);
+  }, [favsReq.data, friendsReq.data, queryClient, queryKey]);
 
   /** * 💡 ここがポイント：useQuery の各関数をオーバーライドして「ソース」と同期させる
    */
@@ -67,7 +70,7 @@ export const useFavFriends = () => {
     // 両方の取得が成功していれば、再計算してキャッシュを更新
     if (fResult.data && favResult.data) {
       const result = deriveFavFriends(fResult.data, favResult.data);
-      queryClient.setQueryData(QUERY_KEY, result);
+      queryClient.setQueryData(queryKey, result);
       return { data: result, error: null };
     }
     return { data: query.data, error: fResult.error || favResult.error };
@@ -77,7 +80,7 @@ export const useFavFriends = () => {
   const refresh = () => {
     friendsReq.refresh();
     favsReq.refresh();
-    queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return {

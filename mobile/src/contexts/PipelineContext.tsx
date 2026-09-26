@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -44,7 +45,10 @@ export const PipelineProvider: React.FC<{ children: React.ReactNode }> = ({
     ? `vrc_pipeline_history_${accountId}`
     : undefined;
 
-  const friendsKey = vrcQueryKeys.friends(accountId ?? "");
+  const friendsKey = useMemo(
+    () => vrcQueryKeys.friends(accountId ?? ""),
+    [accountId],
+  );
 
   useEffect(() => {
     let cancelled = false;

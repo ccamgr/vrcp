@@ -25,7 +25,7 @@ export const useCurrentUser = () => {
     },
     enabled: !!auth.user?.id,
     // Short staleTime for real-time data
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
     meta: { persist: false },
   });

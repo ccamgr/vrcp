@@ -33,7 +33,7 @@ export const useFavWorlds = () => {
       return res.flatMap((r) => r.data);
     },
     enabled: !!auth.user && !!limits,
-    staleTime: 10 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
     gcTime: 7 * 24 * 60 * 60 * 1000,
     meta: { persist: true },
   });
