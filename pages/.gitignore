@@ -2,6 +2,7 @@
 dist/
 # generated types
 .astro/
+src/generated/feedback-webhook-config.ts
 
 # dependencies
 node_modules/

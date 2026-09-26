@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { commands, SessionPayload } from "../generated/bindings";
 import { ChevronLeft, ChevronRight, LayoutList, BarChart3 } from "lucide-react";
 import HistoryListView from "../components/analytics/HistoryListView";
@@ -8,14 +8,12 @@ import { formatDate } from "../lib/date";
 export default function Analytics() {
   const [targetDate, setTargetDate] = useState<string>(
     formatDate(new Date().getTime()),
-  ); // YYYY-MM-DD形式
+  );
   const [sessions, setSessions] = useState<SessionPayload[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // 表示モードの状態管理 (list | timeline)
   const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
-  // 日付変更時にデータ取得
   useEffect(() => {
     let cancelled = false;
     fetchLogsByDate(targetDate, () => cancelled);
@@ -27,9 +25,8 @@ export default function Analytics() {
   const fetchLogsByDate = async (dateStr: string, isCancelled: () => boolean) => {
     setLoading(true);
     try {
-      // 注意: new Date("2026-04-20") とするとUTC基準になってズレるため、ハイフンで割って手動生成します
+      // Parse date-only values in the local time zone.
       const [year, month, day] = dateStr.split("-").map(Number);
-      // 指定日の 00:00:00 から 23:59:59 までを取得
       const startOfDay = new Date(year, month - 1, day, 0, 0, 0).getTime();
       const endOfDay = new Date(
         year,
@@ -42,7 +39,6 @@ export default function Analytics() {
       ).getTime();
 
       const result = await commands.getSessions(startOfDay, endOfDay);
-      // const result = await commands.getLogs(start, end);
 
       if (result.status === "ok") {
         if (!isCancelled()) setSessions(result.data);
@@ -117,7 +113,6 @@ export default function Analytics() {
         </div>
       </header>
 
-      {/* --- メインコンテンツ --- */}
       <div className="flex-1 overflow-hidden relative">
         {loading ? (
           <div className="flex items-center justify-center h-full text-slate-500">
@@ -131,7 +126,6 @@ export default function Analytics() {
             </p>
           </div>
         ) : (
-          // モードによって表示を切り替え
           <div className="h-full overflow-y-auto">
             {viewMode === "list" ? (
               <HistoryListView sessions={sessions} targetDate={targetDate} />

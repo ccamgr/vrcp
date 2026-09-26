@@ -18,19 +18,43 @@ import { useToast } from "@/contexts/ToastContext";
 
 const DEFAULT_PORT = 8727;
 
+function normalizeDesktopAppURL(value: string): string {
+  const candidate = value.trim();
+  if (!candidate) throw new Error("Desktop App URL is required.");
+
+  const url = new URL(
+    /^[a-z][a-z\d+.-]*:\/\//i.test(candidate)
+      ? candidate
+      : `http://${candidate}`,
+  );
+  if (url.protocol !== "http:") {
+    throw new Error("Desktop App URL must use http.");
+  }
+  if (
+    !url.hostname ||
+    url.username ||
+    url.password ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
+  ) {
+    throw new Error("Desktop App URL must contain only a host and port.");
+  }
+  if (!url.port) url.port = String(DEFAULT_PORT);
+
+  return url.origin;
+}
+
 export default function DesktopAppSettings() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings, saveSettings } = useSetting();
 
-  // ログ管理フックを呼び出し
   const { isSyncing, syncProgress, syncLogs } = useLogManager();
 
-  // 設定から読み込んだ値を管理
   const desktopAppURL = settings.otherOptions_desktopAppURL;
 
-  // テキスト入力用のローカルステート
   const [inputValue, setInputValue] = useState(desktopAppURL || "");
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
@@ -39,24 +63,23 @@ export default function DesktopAppSettings() {
   }, [desktopAppURL]);
 
   const setDesktopAppURL = (url: string) => {
-    if (!url) return;
-    let formattedUrl = url;
-    if (!formattedUrl.match(/^https?:\/\//)) {
-      formattedUrl = "http://" + formattedUrl;
+    try {
+      const normalizedUrl = normalizeDesktopAppURL(url);
+      saveSettings({ otherOptions_desktopAppURL: normalizedUrl });
+      setInputValue(normalizedUrl);
+    } catch (error) {
+      showToast(
+        "error",
+        t("common.error", "Error"),
+        error instanceof Error ? error.message : "Invalid Desktop App URL.",
+      );
     }
-    if (!formattedUrl.match(/:\d+$/)) {
-      formattedUrl = formattedUrl.replace(/\/?$/, `:${DEFAULT_PORT}`);
-    }
-
-    saveSettings({ otherOptions_desktopAppURL: formattedUrl });
-    setInputValue(formattedUrl);
   };
 
   const handleManualSubmit = () => {
     setDesktopAppURL(inputValue);
   };
 
-  // 同期実行ハンドラー
   const handleSync = async (isFull: boolean) => {
     try {
       await syncLogs(isFull);
@@ -73,14 +96,12 @@ export default function DesktopAppSettings() {
   return (
     <GenericScreen>
       <View style={styles.container}>
-        {/* 説明テキスト */}
         <View style={styles.headerContainer}>
           <Text style={[styles.description, { color: colors.text }]}>
             {t("pages.setting_desktopapp.description")}
           </Text>
         </View>
 
-        {/* 1. QRコードで読み込むボタン */}
         <TouchableEx
           style={[styles.scanButton, { backgroundColor: colors.primary }]}
           onPress={() => setIsScannerOpen(true)}
@@ -98,7 +119,6 @@ export default function DesktopAppSettings() {
           </Text>
         </View>
 
-        {/* 2. テキストで直打ちするエリア */}
         <View style={styles.inputContainer}>
           <Text style={[styles.label, { color: colors.text }]}>
             <IconSymbol
@@ -140,7 +160,6 @@ export default function DesktopAppSettings() {
           </Text>
         </View>
 
-        {/* 3. 手動同期エリア */}
         <View style={styles.divider}>
           <Text style={[styles.dividerText, { color: colors.border }]}>
             - SYNC -
@@ -192,7 +211,6 @@ export default function DesktopAppSettings() {
             </TouchableEx>
           </View>
 
-          {/* プログレス表示 */}
           {(isSyncing || syncProgress !== "") && (
             <View style={styles.progressContainer}>
               {isSyncing && (
@@ -211,7 +229,6 @@ export default function DesktopAppSettings() {
           )}
         </View>
 
-        {/* QRスキャンモーダル */}
         <QRScanner
           open={isScannerOpen}
           setOpen={setIsScannerOpen}

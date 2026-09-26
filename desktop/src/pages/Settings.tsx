@@ -27,11 +27,9 @@ export default function Settings() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    // 自動起動設定の確認
     getAutostartEnabled().then(setAutoStart).catch(console.error);
   }, []);
 
-  // serverUrl (例: http://192.168.1.5:8727) がロードされたら、そこからポート番号を抽出して入力欄に反映
   useEffect(() => {
     if (serverUrl) {
       const match = serverUrl.match(/:(\d+)$/);
@@ -74,14 +72,12 @@ export default function Settings() {
 
   const handleExport = async () => {
     try {
-      // 1. 保存先ダイアログを表示
       const filePath = await selectJsonExportPath();
 
-      if (!filePath) return; // キャンセルされた場合
+      if (!filePath) return;
 
       setIsProcessing(true);
 
-      // 2. Rustへパスを渡して書き出し実行
       const result = await commands.exportLogs(filePath);
 
       if (result.status === "error") {
@@ -98,7 +94,6 @@ export default function Settings() {
   };
 
   const handleClear = async () => {
-    // 1. 確認ダイアログ (Tauriのネイティブダイアログ推奨)
     const confirmed = await confirmDeleteAllLogs();
 
     if (!confirmed) return;

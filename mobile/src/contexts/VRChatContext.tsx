@@ -1,4 +1,3 @@
-// VRCのAPIを使うためのContext
 import {
   AuthenticationApi,
   AvatarsApi,
@@ -36,7 +35,7 @@ const BASE_API_URL = "https://api.vrchat.cloud/api/1";
 interface Pipeline {
   client: WebSocket | null;
   lastMessage: PipelineMessage | null;
-  sendMessage?: (msg: object) => void; // not implemented for vrcapi
+  sendMessage?: (msg: object) => void;
 }
 
 export interface VRChatContextType {
@@ -81,11 +80,10 @@ const useVRChat = () => {
 };
 
 const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
-  // setting up VRChat client with application details
   const [config, setConfig] = useState<Configuration>();
 
   const pipelineRef = useRef<WebSocket | null>(null);
-  const authTokenRef = useRef<string | null>(null); // authToken for pipeline
+  const authTokenRef = useRef<string | null>(null);
   const [lastJsonMessage, setLastJsonMessage] =
     useState<PipelineMessage<any> | null>(null);
   const MAX_RECONNECT_ATTEMPTS = 10;

@@ -1,6 +1,6 @@
 use crate::db::repositories::settings::WatcherState;
 use crate::db::DB;
-use crate::utils::date::{i64_to_str, str_to_i64}; // 💡 日付ユーティリティを追加
+use crate::utils::date::{i64_to_str, str_to_i64};
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -19,7 +19,7 @@ use tauri_specta::Event;
 #[derive(Clone, Debug)]
 pub struct WatcherStatus {
     pub is_app_running: bool,
-    pub last_seen_timestamp: i64, // 💡 String -> i64
+    pub last_seen_timestamp: i64,
 }
 
 pub struct WatcherService {
@@ -35,7 +35,6 @@ impl WatcherService {
     }
 
     pub fn last_seen_timestamp(&self) -> i64 {
-        // 💡 String -> i64
         self.status
             .read()
             .map(|s| s.last_seen_timestamp)
@@ -78,7 +77,7 @@ pub enum VrcLogEvent {
 #[derive(Clone, Serialize, Deserialize, Type, Event)]
 pub struct LogPayload {
     pub event: VrcLogEvent,
-    pub timestamp: i64, // 💡 String -> i64
+    pub timestamp: i64,
     pub hash: i64,
 }
 
@@ -158,7 +157,6 @@ fn get_compiled_matchers() -> &'static Vec<CompiledMatcher> {
     })
 }
 
-// 💡 引数を i64 に変更
 fn gen_hash(timestamp: i64, event: &VrcLogEvent) -> i64 {
     let mut hasher = DefaultHasher::new();
     timestamp.hash(&mut hasher);
@@ -166,18 +164,17 @@ fn gen_hash(timestamp: i64, event: &VrcLogEvent) -> i64 {
     hasher.finish() as i64
 }
 
-// 💡 戻り値を Option<i64> に変更
 pub fn extract_timestamp(line: &str) -> Option<i64> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| Regex::new(r"^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2})").unwrap());
 
     if let Some(caps) = re.captures(line) {
-        return Some(str_to_i64(&caps[1])); // 💡 即時 i64 化
+        return Some(str_to_i64(&caps[1]));
     }
     None
 }
 
-/// 1行を解析してPayloadを返す
+/// Parses one VRChat log line into a payload.
 pub fn parse_log_line(line: &str) -> Option<LogPayload> {
     let line = line.trim();
     if line.is_empty() {
@@ -188,14 +185,13 @@ pub fn parse_log_line(line: &str) -> Option<LogPayload> {
         if let Some(caps) = matcher.regex.captures(line) {
             let event = (matcher.factory)(&caps);
 
-            // 💡 文字列として抽出してから即座に i64 に変換
             let ts_str = caps.get(1).map_or("unknown", |m| m.as_str());
             let timestamp = str_to_i64(ts_str);
             if timestamp == 0 {
                 return None;
             }
 
-            let hash = gen_hash(timestamp, &event); // 💡 参照渡し(&)を解除
+            let hash = gen_hash(timestamp, &event);
 
             return Some(LogPayload {
                 event,
@@ -249,7 +245,6 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
         .map(|p| p.to_string_lossy().to_string())
         .unwrap_or_default();
 
-    // 💡 i64 で初期化
     let mut last_seen_timestamp: i64 = 0;
     let mut is_app_running = false;
     let mut current_position: u64 = 0;
@@ -262,7 +257,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
             );
             current_position = saved_state.last_position;
             is_app_running = saved_state.is_running;
-            last_seen_timestamp = str_to_i64(&saved_state.last_timestamp); // 💡 DBのStringをi64に戻す
+            last_seen_timestamp = str_to_i64(&saved_state.last_timestamp);
         } else if !saved_state.log_path.is_empty() {
             println!(
                 "Rotation detected. Re-scanning old log fully: {}",
@@ -289,7 +284,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
             println!("Switching to new log file: {:?}", current_log_path);
             current_position = 0;
             is_app_running = false;
-            last_seen_timestamp = 0; // 💡 0にリセット
+            last_seen_timestamp = 0;
         }
     }
 
@@ -381,7 +376,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
                     if let Ok(mut status) = shared_status.write() {
                         status.is_app_running = is_app_running;
-                        status.last_seen_timestamp = last_seen_timestamp; // 💡 clone不要
+                        status.last_seen_timestamp = last_seen_timestamp;
                     }
                     line.clear();
                     read_success = true;
@@ -395,7 +390,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                 let state = WatcherState {
                     log_path: path.to_string_lossy().to_string(),
                     is_running: is_app_running,
-                    last_timestamp: i64_to_str(last_seen_timestamp), // 💡 DB保存用に文字列化
+                    last_timestamp: i64_to_str(last_seen_timestamp),
                     last_position: current_position,
                 };
                 if let Err(error) = db.settings().save_watcher_state(&state).await {
@@ -423,7 +418,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
                     if let Ok(mut status) = shared_status.write() {
                         status.is_app_running = is_app_running;
-                        status.last_seen_timestamp = last_seen_timestamp; // 💡 clone不要
+                        status.last_seen_timestamp = last_seen_timestamp;
                     }
 
                     if let Some(path) = &current_log_path {
@@ -458,7 +453,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 pub fn spawn_log_watcher(app: AppHandle, db: DB) -> WatcherService {
     let shared_status = Arc::new(RwLock::new(WatcherStatus {
         is_app_running: false,
-        last_seen_timestamp: 0, // 💡 0で初期化
+        last_seen_timestamp: 0,
     }));
 
     WatcherService {

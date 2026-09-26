@@ -3,22 +3,16 @@
 @tailwind utilities;
 
 :root {
-  /* アプリの背景色 (slate-900) */
   background-color: #0f172a;
 }
 
 html {
-  /* バウンド（オーバースクロール）を無効化 */
   overscroll-behavior: none;
-  /* 念のためスクロールバーの挙動も滑らかに */
   scroll-behavior: smooth;
 }
 
 body {
-  /* デフォルトのマージンを削除 */
   margin: 0;
-  /* 背景色を統一 */
   background-color: #0f172a;
-  /* 文字色もデフォルトで白っぽくしておく */
   color: #f1f5f9;
 }

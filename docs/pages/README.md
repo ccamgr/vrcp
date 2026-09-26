@@ -2,6 +2,8 @@
 
 `pages/` は、VRCP の紹介ページと公開ドキュメントを配信する静的サイトです。Astro と Starlight を使用しており、現在は日本語を既定ロケールとして設定しています。
 
+GitHub Pages 上のフィードバックフォームの設計は、[GitHub Pages フィードバックフォーム設計](./github-pages-feedback-design.md) を参照してください。
+
 ## 技術スタック
 
 | 領域 | 技術 | 用途 |

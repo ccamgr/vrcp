@@ -51,6 +51,7 @@ AI エージェントによる作業では、[`.agent/README.md`](../.agent/READ
 ## 関連ドキュメント
 
 - [Mobile VRChat API / Pipeline 型生成の互換調整](./mobile/vrchat-api-generation.md)
+- [GitHub Pages フィードバックフォーム設計](./pages/github-pages-feedback-design.md)
 
 完了済みの移行設計は [migrations/](./migrations/) に保存します。
 

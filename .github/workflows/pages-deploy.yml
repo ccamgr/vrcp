@@ -39,6 +39,8 @@ jobs:
 
       - name: Build
         working-directory: ./pages
+        env:
+          FEEDBACK_DISCORD_WEBHOOK_URL: ${{ secrets.FEEDBACK_DISCORD_WEBHOOK_URL }}
         run: npm run build
 
       - name: Upload artifact

@@ -3,8 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "generate-feedback-config": "node scripts/generate-feedback-webhook-config.mjs",
+    "predev": "npm run generate-feedback-config",
     "dev": "astro dev",
     "start": "astro dev",
+    "prebuild": "npm run generate-feedback-config",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

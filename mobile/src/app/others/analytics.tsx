@@ -19,18 +19,15 @@ export default function Analytics() {
   const { t } = useTranslation();
   const { settings } = useSetting();
 
-  // 状態管理
   const [targetDate, setTargetDate] = useState<string>(
     formatDate(new Date().getTime()),
-  ); // YYYY-MM-DD形式
+  );
   const [sessions, setSessions] = useState<WorldSession[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
-  // hookから isSyncing も取り出します
   const { getLocalSessions, getLastSync, syncLogs, isSyncing } = useLogManager();
 
-  // データ取得 (UIブロックを避けるため loading は初回のみ)
   const fetchLogs = useCallback(
     async (silent: boolean = false) => {
       if (!silent) setLoading(true);
@@ -58,19 +55,16 @@ export default function Analytics() {
     [targetDate, getLocalSessions],
   );
 
-  // 日付が変更された時、または初回マウント時にローカルDBから読み込む
   useEffect(() => {
     fetchLogs(false);
   }, [fetchLogs]);
 
-  // 画面が表示されている間だけ有効になる同期ロジック
   useFocusEffect(
     useCallback(() => {
       let isMounted = true;
       let intervalId: number;
 
       const checkAndSync = async () => {
-        // 表示対象が「今日」かどうか判定
         const todayStr = formatDate(new Date().getTime());
         if (targetDate === todayStr) {
           const lastSyncTime = await getLastSync();
@@ -86,15 +80,12 @@ export default function Analytics() {
         }
       };
 
-      // 1. 画面にフォーカスが当たった瞬間にチェック
       checkAndSync();
 
-      // 2. 画面を開いている間、5分ごとに定期チェック
       intervalId = setInterval(() => {
         checkAndSync();
       }, SYNC_INTERVAL);
 
-      // クリーンアップ (画面から離れたらタイマーを解除)
       return () => {
         isMounted = false;
         clearInterval(intervalId);
@@ -102,7 +93,6 @@ export default function Analytics() {
     }, [targetDate, fetchLogs, getLastSync, syncLogs]),
   );
 
-  // 日付操作ハンドラ
   const handleDateChange = (offset: number) => {
     const [year, month, day] = targetDate.split("-").map(Number);
     const d = new Date(year, month - 1, day);

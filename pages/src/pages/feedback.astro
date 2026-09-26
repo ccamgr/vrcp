@@ -1,0 +1,102 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage frontmatter={{ title: 'フィードバック', description: 'VRCP へのフィードバックを送信します。' }}>
+  <p>VRCP へのご意見、機能要望、不具合報告を送信できます。</p>
+  <p>送信ボタンを押した場合に限り、任意のメールアドレスと下記の診断情報が運営者へ送信されます。</p>
+
+  <dl class="feedback-context" data-feedback-context hidden></dl>
+
+  <form class="feedback-form" data-feedback-form>
+    <label for="feedback-email">メールアドレス <span>（任意）</span></label>
+    <input id="feedback-email" name="email" type="email" autocomplete="email" maxlength="254" />
+
+    <label for="feedback-message">内容</label>
+    <textarea id="feedback-message" name="message" required maxlength="2000" rows="8"></textarea>
+
+    <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
+    <button id="feedback-submit" type="submit">送信</button>
+  </form>
+
+  <style>
+    .feedback-form {
+      display: grid;
+      gap: 0.75rem;
+      max-width: 42rem;
+      margin-top: 1.5rem;
+    }
+
+    .feedback-form label {
+      font-weight: 600;
+    }
+
+    .feedback-form label span {
+      font-weight: 400;
+    }
+
+    .feedback-form input,
+    .feedback-form textarea {
+      width: 100%;
+      padding: 0.7rem;
+      color: inherit;
+      background: var(--sl-color-bg-nav);
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.35rem;
+      font: inherit;
+    }
+
+    .feedback-form textarea {
+      resize: vertical;
+    }
+
+    .feedback-form button {
+      width: fit-content;
+      padding: 0.7rem 1rem;
+      color: white;
+      background: var(--sl-color-accent);
+      border: 0;
+      border-radius: 0.35rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback-form button:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    .feedback-context {
+      display: grid;
+      grid-template-columns: minmax(9rem, max-content) 1fr;
+      gap: 0.4rem 1rem;
+      max-width: 42rem;
+      padding: 1rem;
+      background: var(--sl-color-bg-nav);
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.35rem;
+    }
+
+    .feedback-context dt {
+      font-weight: 600;
+    }
+
+    .feedback-context dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .feedback-status[data-kind='error'] {
+      color: var(--sl-color-orange-high);
+    }
+
+    .feedback-status[data-kind='success'] {
+      color: var(--sl-color-green-high);
+    }
+  </style>
+
+  <script>
+    import '../scripts/feedback-form';
+  </script>
+</StarlightPage>
