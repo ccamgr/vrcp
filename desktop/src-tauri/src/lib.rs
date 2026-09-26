@@ -64,7 +64,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             cmds::vrclog::sessions::get_sessions,
             cmds::vrcapi::auth::login,
             cmds::vrcapi::auth::logout,
-            cmds::vrcapi::auth::verify_2fa
+            cmds::vrcapi::auth::verify_2fa,
+            cmds::vrcapi::invite::invite_myself
         ])
         .events(collect_events![
             modules::watcher::LogPayload,

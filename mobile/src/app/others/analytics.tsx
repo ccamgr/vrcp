@@ -8,7 +8,7 @@ import { useLogManager } from "@/hooks/useLogManager";
 import { formatDate } from "@/lib/date";
 import { WorldSession } from "@/lib/funcs/analizeSessions";
 import { useFocusEffect, useTheme } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -25,6 +25,17 @@ export default function Analytics() {
   const [sessions, setSessions] = useState<WorldSession[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
+  const [listOrder, setListOrder] = useState<"asc" | "desc">("desc");
+
+  const listSessions = useMemo(
+    () =>
+      [...sessions].sort((left, right) =>
+        listOrder === "desc"
+          ? right.startTime - left.startTime
+          : left.startTime - right.startTime,
+      ),
+    [listOrder, sessions],
+  );
 
   const { getLocalSessions, getLastSync, syncLogs, isSyncing } = useLogManager();
 
@@ -111,6 +122,20 @@ export default function Analytics() {
             <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
               History
             </Text>
+            {viewMode === "list" && (
+              <TouchableEx
+                style={styles.orderButton}
+                onPress={() =>
+                  setListOrder((current) =>
+                    current === "desc" ? "asc" : "desc",
+                  )
+                }
+              >
+                <Text style={styles.orderButtonText}>
+                  {listOrder === "desc" ? "↓ Newest" : "↑ Oldest"}
+                </Text>
+              </TouchableEx>
+            )}
           </View>
 
           <View style={styles.controlsRow}>
@@ -184,7 +209,10 @@ export default function Analytics() {
               </Text>
             </View>
           ) : viewMode === "list" ? (
-            <HistoryListView sessions={sessions} targetDate={targetDate} />
+            <HistoryListView
+              sessions={listSessions}
+              targetDate={targetDate}
+            />
           ) : (
             // タイムラインモード
             <HistoryTimeline sessions={sessions} targetDate={targetDate} />
@@ -213,6 +241,18 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  orderButton: {
+    marginLeft: "auto",
+    borderRadius: 6,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  orderButtonText: {
+    color: "#cbd5e1",
+    fontSize: 12,
+    fontWeight: "600",
   },
   controlsRow: {
     flexDirection: "row",

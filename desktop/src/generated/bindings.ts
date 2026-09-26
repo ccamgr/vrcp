@@ -85,6 +85,14 @@ async verify2fa(code: string, isEmailotp: boolean) : Promise<Result<LoginRespons
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async inviteMyself(worldId: string, instanceId: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("invite_myself", { worldId, instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 

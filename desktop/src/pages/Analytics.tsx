@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { commands, SessionPayload } from "../generated/bindings";
-import { ChevronLeft, ChevronRight, LayoutList, BarChart3 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  LayoutList,
+} from "lucide-react";
 import HistoryListView from "../components/analytics/HistoryListView";
 import HistoryTimeline from "../components/analytics/HistoryTimeline";
 import { formatDate } from "../lib/date";
@@ -13,6 +20,17 @@ export default function Analytics() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
+  const [listOrder, setListOrder] = useState<"asc" | "desc">("desc");
+
+  const listSessions = useMemo(
+    () =>
+      [...sessions].sort((left, right) =>
+        listOrder === "desc"
+          ? right.startTime - left.startTime
+          : left.startTime - right.startTime,
+      ),
+    [listOrder, sessions],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -89,6 +107,26 @@ export default function Analytics() {
             </button>
           </div>
 
+          {viewMode === "list" && (
+            <button
+              type="button"
+              onClick={() =>
+                setListOrder((current) =>
+                  current === "desc" ? "asc" : "desc",
+                )
+              }
+              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm text-slate-300 transition hover:text-white"
+              title="Sort sessions by start time"
+            >
+              {listOrder === "desc" ? (
+                <ArrowDown size={16} />
+              ) : (
+                <ArrowUp size={16} />
+              )}
+              {listOrder === "desc" ? "Newest" : "Oldest"}
+            </button>
+          )}
+
           {/* 日付操作 */}
           <div className="flex gap-2 bg-slate-900 rounded-lg p-1 border border-slate-700">
             <button
@@ -128,7 +166,10 @@ export default function Analytics() {
         ) : (
           <div className="h-full overflow-y-auto">
             {viewMode === "list" ? (
-              <HistoryListView sessions={sessions} targetDate={targetDate} />
+              <HistoryListView
+                sessions={listSessions}
+                targetDate={targetDate}
+              />
             ) : (
               <HistoryTimeline sessions={sessions} targetDate={targetDate} />
             )}

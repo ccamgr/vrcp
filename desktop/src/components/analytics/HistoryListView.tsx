@@ -1,8 +1,10 @@
 // ============================================================================
 //  List View Components (Existing)
 
-import { Clock, MapPin, User } from "lucide-react";
+import { Check, Clock, MapPin, Send, User } from "lucide-react";
+import { useState } from "react";
 import { PlayerInterval, SessionPayload } from "../../generated/bindings";
+import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
 
 // ============================================================================
@@ -13,17 +15,73 @@ export default function HistoryListView({
   sessions: SessionPayload[];
   targetDate: string;
 }) {
+  const [invitingSessionId, setInvitingSessionId] = useState<number | null>(
+    null,
+  );
+  const [invitedSessionId, setInvitedSessionId] = useState<number | null>(null);
+  const [failedSessionId, setFailedSessionId] = useState<number | null>(null);
+
+  const handleInvite = async (session: SessionPayload) => {
+    const separatorIndex = session.instanceId.indexOf(":");
+    if (separatorIndex <= 0 || separatorIndex === session.instanceId.length - 1) {
+      setFailedSessionId(session.sourceId);
+      return;
+    }
+
+    const worldId = session.instanceId.slice(0, separatorIndex);
+    const instanceId = session.instanceId.slice(separatorIndex + 1);
+    if (!worldId.startsWith("wrld_")) {
+      setFailedSessionId(session.sourceId);
+      return;
+    }
+
+    setInvitingSessionId(session.sourceId);
+    setFailedSessionId(null);
+    try {
+      const result = await commands.inviteMyself(worldId, instanceId);
+      if (result.status === "error") {
+        throw new Error(result.error);
+      }
+      setInvitedSessionId(session.sourceId);
+    } catch (error) {
+      console.error("Failed to send self-invite", error);
+      setFailedSessionId(session.sourceId);
+    } finally {
+      setInvitingSessionId(null);
+    }
+  };
+
   return (
     <div className="space-y-6 p-6">
       {sessions.map((session, idx) => (
-        <SessionCard key={`${session.startTime}-${idx}`} session={session} />
+        <SessionCard
+          key={`${session.startTime}-${idx}`}
+          session={session}
+          onInvite={handleInvite}
+          isInviting={invitingSessionId === session.sourceId}
+          isInvited={invitedSessionId === session.sourceId}
+          inviteFailed={failedSessionId === session.sourceId}
+        />
       ))}
     </div>
   );
 }
 // --- 個別のワールド滞在カードコンポーネント ---
-function SessionCard({ session }: { session: SessionPayload }) {
+function SessionCard({
+  session,
+  onInvite,
+  isInviting,
+  isInvited,
+  inviteFailed,
+}: {
+  session: SessionPayload;
+  onInvite: (session: SessionPayload) => void;
+  isInviting: boolean;
+  isInvited: boolean;
+  inviteFailed: boolean;
+}) {
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
+  const canInvite = session.instanceId.startsWith("wrld_") && session.instanceId.includes(":");
 
   return (
     <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-sm">
@@ -43,10 +101,40 @@ function SessionCard({ session }: { session: SessionPayload }) {
             </span>
           </div>
         </div>
-        <div className="text-right text-xs text-slate-500 hidden sm:block">
-          {session.players.length} people met
+        <div className="flex items-center gap-3">
+          <div className="text-right text-xs text-slate-500 hidden sm:block">
+            {session.players.length} people met
+          </div>
+          <button
+            type="button"
+            onClick={() => onInvite(session)}
+            disabled={!canInvite || isInviting || isInvited}
+            title={
+              canInvite
+                ? "Send an invite to this instance"
+                : "This session has no joinable instance ID"
+            }
+            className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/50 bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+          >
+            {isInviting ? (
+              "Sending..."
+            ) : isInvited ? (
+              <>
+                <Check size={14} /> Invite sent
+              </>
+            ) : (
+              <>
+                <Send size={14} /> Invite Myself
+              </>
+            )}
+          </button>
         </div>
       </div>
+      {inviteFailed && (
+        <p className="border-b border-slate-700 bg-red-950/40 px-4 py-2 text-xs text-red-300">
+          Failed to send the invite. Confirm that you are logged in and the instance is still available.
+        </p>
+      )}
 
       {/* タイムラインエリア */}
       <div className="p-4 relative">
