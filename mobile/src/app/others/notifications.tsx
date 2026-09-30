@@ -15,6 +15,7 @@ import { routeToGroup, routeToInstance, routeToUser } from "@/lib/route";
 import { useUser } from "@/hooks/vrc/useUser";
 import { useGroup } from "@/hooks/vrc/useGroup";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 // --- NotificationItem Sub-component ---
 const NotificationItem = ({ item }: { item: Notification }) => {
@@ -110,6 +111,7 @@ export default function Notifications() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { data: notifications, isFetching, refetch } = useNotifications();
+  const { isRefreshing, onRefresh } = usePullToRefresh(refetch);
 
   const renderItem = useCallback(({ item }: { item: Notification }) => {
     return <NotificationItem item={item} />;
@@ -131,6 +133,7 @@ export default function Notifications() {
   return (
     <GenericScreen>
       <View style={styles.container}>
+        {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <FlatList
           data={notifications}
           keyExtractor={(item) => item.id}
@@ -139,8 +142,8 @@ export default function Notifications() {
           contentContainerStyle={styles.flatlistInner}
           refreshControl={
             <RefreshControl
-              refreshing={isFetching && !!notifications}
-              onRefresh={refetch}
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
               tintColor={theme.colors.primary}
             />
           }

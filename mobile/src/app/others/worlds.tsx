@@ -90,6 +90,7 @@ export default function MyWorlds() {
   return (
     <GenericScreen>
       {isLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={worlds}
         keyExtractor={(item) => item.id}

@@ -1,19 +1,13 @@
 import GenericScreen from "@/components/layout/GenericScreen";
 import DetailItemContainer from "@/components/features/DetailItemContainer";
-import CardViewGroupDetail from "@/components/view/item-CardView/detail/CardViewGroupDetail";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
-import {
-  fontSize,
-  navigationBarHeight,
-  radius,
-  spacing,
-} from "@/configs/styles";
+import { navigationBarHeight, spacing } from "@/configs/styles";
 import { useVRChat } from "@/contexts/VRChatContext";
 import { extractErrMsg } from "@/lib/utils";
 import { CalendarEvent } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
@@ -21,10 +15,8 @@ import JsonDataModal from "@/components/modals/JsonDataModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "react-i18next";
 import CardViewEventDetail from "@/components/view/item-CardView/detail/CardViewEventDetail";
-import { GroupLike } from "@/lib/vrchat";
 import { TouchableEx } from "@/components/CustomElements";
 import { routeToGroup } from "@/lib/route";
-import IconSymbol from "@/components/view/icon-components/IconView";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
@@ -40,36 +32,81 @@ export default function EventDetail() {
   const { showToast } = useToast();
   const [event, setEvent] = useState<CalendarEvent>();
   const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isUpdatingFollow, setIsUpdatingFollow] = useState(false);
 
   const [openJson, setOpenJson] = useState(false);
 
   const { data: ownerGroup } = useGroup(groupId ?? "");
 
-  const fetchEvent = () => {
+  const fetchEvent = useCallback(async () => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
-    vrc.calendarApi
-      .getGroupCalendarEvent({
+    try {
+      const response = await vrc.calendarApi.getGroupCalendarEvent({
         groupId: groupId ?? "",
         calendarId: calendarId ?? "",
-      })
-      .then((res) => setEvent(res.data))
-      .catch((e) =>
-        showToast("error", "Error fetching event data", extractErrMsg(e)),
-      )
-      .finally(() => (fetchingRef.current = false));
-  };
+      });
+      setEvent(response.data);
+    } catch (error) {
+      showToast(
+        "error",
+        t("features.event.load_failed"),
+        extractErrMsg(error),
+      );
+    } finally {
+      fetchingRef.current = false;
+    }
+  }, [calendarId, groupId, showToast, t, vrc.calendarApi]);
   useEffect(() => {
-    fetchEvent();
-  }, []);
+    void fetchEvent();
+  }, [fetchEvent]);
+
+  const refreshEvent = async () => {
+    if (isRefreshing || fetchingRef.current) return;
+
+    setIsRefreshing(true);
+    try {
+      await fetchEvent();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const toggleFollow = useCallback(async () => {
+    if (!event || !groupId || isUpdatingFollow) return;
+
+    setIsUpdatingFollow(true);
+    try {
+      const response = await vrc.calendarApi.followGroupCalendarEvent({
+        groupId,
+        calendarId: event.id,
+        followCalendarEventRequest: {
+          isFollowing: !event.userInterest?.isFollowing,
+        },
+      });
+      setEvent(response.data);
+    } catch (error) {
+      showToast(
+        "error",
+        t("features.event.follow_update_failed"),
+        extractErrMsg(error),
+      );
+    } finally {
+      setIsUpdatingFollow(false);
+    }
+  }, [event, groupId, isUpdatingFollow, showToast, t, vrc.calendarApi]);
 
   const menuItems: MenuItem[] = useMemo(
     () => [
       {
         icon: "circle-medium",
-        title: "SUBSCRIBE or UNSUBSCRIBE THIS EVENT", // notify me
-        // onPress: () => {},
+        title: isUpdatingFollow
+          ? t("features.event.follow_updating")
+          : event?.userInterest?.isFollowing
+            ? t("features.event.unfollow")
+            : t("features.event.follow"),
+        onPress: () => void toggleFollow(),
       },
       {
         type: "divider",
@@ -82,7 +119,7 @@ export default function EventDetail() {
         hidden: !enableJsonViewer,
       },
     ],
-    [enableJsonViewer, t],
+    [enableJsonViewer, event?.userInterest?.isFollowing, isUpdatingFollow, t, toggleFollow],
   );
   useSideMenu(menuItems);
 
@@ -90,11 +127,15 @@ export default function EventDetail() {
     <GenericScreen>
       {event ? (
         <View style={{ flex: 1 }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewEventDetail event={event} style={[styles.cardView]} />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl refreshing={isLoading} onRefresh={fetchEvent} />
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={refreshEvent}
+              />
             }
           >
             {ownerGroup && ownerGroup.id && (

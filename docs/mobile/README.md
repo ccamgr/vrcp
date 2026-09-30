@@ -64,3 +64,4 @@ Desktop HTTP (/logs) ──> Background Task ──> SQLite
 
 - [Session Participant User ID 移行設計](../migrations/session-player-user-id-migration.md)
 - [User Mutual Friends / Groups 設計](./user-mutuals-design.md)
+- [ローディングと更新 UI 方針](./loading-and-refresh-policy.md)

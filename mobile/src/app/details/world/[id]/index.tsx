@@ -24,7 +24,7 @@ import {
 import { InstanceRegion, InstanceType, User, World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { routeToInstance, routeToSearch, routeToUser } from "@/lib/route";
@@ -41,6 +41,7 @@ import { useWorld } from "@/hooks/vrc/useWorld";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
 import { useUser } from "@/hooks/vrc/useUser";
 import { useSelfInvite } from "@/hooks/useSelfInvite";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -49,11 +50,10 @@ export default function WorldDetail() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const theme = useTheme();
-  const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
   const [mode, setMode] = useState<"info" | "instance">("info");
 
   const { data: world, refetch } = useWorld(id);
+  const { isRefreshing, onRefresh } = usePullToRefresh(refetch);
   const { data: author } = useUser(world?.id ? world.authorId : undefined);
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { createAndInviteMyself, isInviting } = useSelfInvite();
@@ -152,6 +152,7 @@ export default function WorldDetail() {
     <GenericScreen>
       {world ? (
         <View style={{ flex: 1 }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewWorldDetail world={world} style={[styles.cardView]} />
 
           <SelectGroupButton
@@ -166,7 +167,7 @@ export default function WorldDetail() {
             <ScrollView
               contentContainerStyle={styles.scrollContent}
               refreshControl={
-                <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+                <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
               }
             >
               <DetailItemContainer
@@ -267,7 +268,7 @@ export default function WorldDetail() {
               )}
               contentContainerStyle={styles.listInner}
               refreshControl={
-                <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+                <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
               }
             />
           )}

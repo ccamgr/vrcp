@@ -20,7 +20,7 @@ import {
 } from "@/lib/vrchat";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   routeToInstance,
@@ -48,6 +48,10 @@ import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
 import CachedImage from "@/components/CachedImage";
 import { toUserPresentation } from "@/lib/vrcapiModels";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { useUserInvite } from "@/hooks/useUserInvite";
+import { useSelfInvite } from "@/hooks/useSelfInvite";
+import GenericDialog from "@/components/layout/GenericDialog";
 
 export default function UserDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -72,12 +76,14 @@ export default function UserDetail() {
   const [openChangeNote, setOpenChangeNote] = useState(false);
   const [openChangeFriend, setOpenChangeFriend] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
+  const [pendingInviteAction, setPendingInviteAction] = useState<
+    "request-or-invite" | "send" | null
+  >(null);
 
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
-  const { data: user, refetch, isFetching } = useUser(id);
+  const { data: user, refetch } = useUser(id);
   const {
     data: publicProfile,
-    isFetching: isFetchingPublicProfile,
     isError: isPublicProfileError,
     refetch: refetchPublicProfile,
   } = usePublicProfile(id);
@@ -85,13 +91,47 @@ export default function UserDetail() {
     () => (user ? toUserPresentation(user, publicProfile) : undefined),
     [user, publicProfile],
   );
+  const refreshUser = useCallback(
+    () => Promise.all([refetch(), refetchPublicProfile()]),
+    [refetch, refetchPublicProfile],
+  );
+  const { isRefreshing, onRefresh } = usePullToRefresh(refreshUser);
+  const { isSending, requestInvite, sendInvite } = useUserInvite(id);
+  const { inviteMyself } = useSelfInvite();
+  const requestOrInvite = useCallback(() => {
+    if (locationInfo?.wId && locationInfo.iId) {
+      void inviteMyself(locationInfo.wId, locationInfo.iId);
+      return;
+    }
+    void requestInvite();
+  }, [inviteMyself, locationInfo?.iId, locationInfo?.wId, requestInvite]);
+  const confirmRequestOrInvite = useCallback(
+    () => setPendingInviteAction("request-or-invite"),
+    [],
+  );
+  const confirmSendInvite = useCallback(() => setPendingInviteAction("send"), []);
+  const submitInviteAction = useCallback(() => {
+    const action = pendingInviteAction;
+    setPendingInviteAction(null);
+    if (action === "request-or-invite") {
+      requestOrInvite();
+    } else if (action === "send") {
+      sendInvite();
+    }
+  }, [pendingInviteAction, requestOrInvite, sendInvite]);
+  const inviteDialogMessage =
+    pendingInviteAction === "send"
+      ? t("components.confirmDialog.invite_send_message")
+      : locationInfo?.iId
+        ? t("components.confirmDialog.invite_myself_message")
+        : t("components.confirmDialog.invite_request_message");
 
   const isFavorite = favorites?.some(
     (fav) => fav.favoriteId === id && fav.type === "friend",
   );
   const canShowMutuals = !!auth.user?.id && auth.user.id !== id;
 
-  const fetchLocationInfo = async () => {
+  const fetchLocationInfo = useCallback(async () => {
     if (!user?.location) return;
     const { isOffline, isPrivate, isTraveling, parsedLocation } =
       parseLocationString(user?.location);
@@ -126,7 +166,7 @@ export default function UserDetail() {
       } catch (error) {
         showToast(
           "error",
-          "Error fetching current location",
+          t("features.user.location_load_failed"),
           extractErrMsg(error),
         );
       }
@@ -135,17 +175,21 @@ export default function UserDetail() {
         baseInfo: t("pages.detail_user.userLocation_unknown"),
       });
     }
-  };
+  }, [showToast, t, user?.location, vrc.instancesApi]);
 
   useEffect(() => {
     refetch().catch((e) =>
-      showToast("error", "Error fetching user data", extractErrMsg(e)),
+      showToast(
+        "error",
+        t("features.user.load_failed"),
+        extractErrMsg(e),
+      ),
     );
-  }, []);
+  }, [refetch, showToast, t]);
 
   useEffect(() => {
-    fetchLocationInfo();
-  }, [user?.location]);
+    void fetchLocationInfo();
+  }, [fetchLocationInfo]);
 
   const freReqStatus = user ? getFriendRequestStatus(user) : "null";
 
@@ -184,17 +228,21 @@ export default function UserDetail() {
         hidden: freReqStatus !== "completed",
       },
       {
-        icon: "circle-medium",
+        icon: locationInfo?.iId
+          ? "location-enter"
+          : "email-receive-outline",
         title: locationInfo?.iId
           ? t("pages.detail_user.menuLabel_invite_me")
           : t("pages.detail_user.menuLabel_invite_request"),
-        // onPress: () => {},
+        onPress: confirmRequestOrInvite,
         hidden: freReqStatus !== "completed",
       },
       {
-        icon: "circle-medium",
-        title: t("pages.detail_user.menuLabel_invite_send"),
-        // onPress: () => {},
+        icon: "email-send-outline",
+        title: isSending
+          ? t("features.user.invite_sending")
+          : t("pages.detail_user.menuLabel_invite_send"),
+        onPress: confirmSendInvite,
         hidden: freReqStatus !== "completed",
       },
       {
@@ -240,6 +288,9 @@ export default function UserDetail() {
       id,
       isFavorite,
       locationInfo,
+      isSending,
+      confirmRequestOrInvite,
+      confirmSendInvite,
       t,
       user,
     ],
@@ -251,6 +302,7 @@ export default function UserDetail() {
     <GenericScreen>
       {user && displayUser ? (
         <View style={{ flex: 1 }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewUserDetail
             user={displayUser}
             onPress={() =>
@@ -273,10 +325,8 @@ export default function UserDetail() {
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
-                refreshing={isFetching || isFetchingPublicProfile}
-                onRefresh={() => {
-                  void Promise.all([refetch(), refetchPublicProfile()]);
-                }}
+                refreshing={isRefreshing}
+                onRefresh={onRefresh}
               />
             }
           >
@@ -426,6 +476,14 @@ export default function UserDetail() {
         setOpen={setOpenChangeFriend}
         user={user}
         onSuccess={refetch}
+      />
+      <GenericDialog
+        open={pendingInviteAction !== null}
+        message={inviteDialogMessage}
+        onConfirm={submitInviteAction}
+        onCancel={() => setPendingInviteAction(null)}
+        confirmTitle={t("components.confirmDialog.send")}
+        cancelTitle={t("components.confirmDialog.cancel")}
       />
     </GenericScreen>
   );

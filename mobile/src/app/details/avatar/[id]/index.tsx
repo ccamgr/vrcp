@@ -37,6 +37,7 @@ import { useFavorites } from "@/hooks/vrc/useFavorites";
 import { useAvatar } from "@/hooks/vrc/useAvatar";
 import { useUser } from "@/hooks/vrc/useUser";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 export default function AvatarDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -51,7 +52,8 @@ export default function AvatarDetail() {
 
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
-  const { data: avatar, refetch, isFetching } = useAvatar(id);
+  const { data: avatar, refetch } = useAvatar(id);
+  const { isRefreshing, onRefresh } = usePullToRefresh(refetch);
   const { data: author } = useUser(avatar?.authorId);
 
   const isFavorite = favorites?.some(
@@ -107,11 +109,12 @@ export default function AvatarDetail() {
     <GenericScreen>
       {avatar ? (
         <View style={{ flex: 1 }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewAvatarDetail avatar={avatar} style={[styles.cardView]} />
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             refreshControl={
-              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
             }
           >
             <DetailItemContainer

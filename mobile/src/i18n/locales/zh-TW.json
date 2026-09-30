@@ -37,7 +37,12 @@
       "tabLabel_favorites": "最愛",
       "tabLabel_online": "線上",
       "tabLabel_active": "活躍",
-      "tabLabel_offline": "離線"
+      "tabLabel_offline": "離線",
+      "menuLabel_search": "搜尋好友",
+      "searchModal_title": "搜尋好友",
+      "searchModal_placeholder": "顯示名稱或使用者 ID",
+      "searchModal_empty": "請輸入好友名稱或使用者 ID。",
+      "searchModal_noResults": "找不到相符的好友。"
     },
     "profile": {
       "label": "個人檔案",
@@ -356,7 +361,27 @@
       "label": "桌面應用程式"
     }
   },
+  "features": {
+    "calendar": { "show_followed": "僅顯示已追蹤的活動", "load_failed": "無法載入行事曆活動" },
+    "group": {
+      "toast_update_failed": "群組更新失敗", "membership_updating": "正在更新群組...", "membership_leave": "離開群組", "membership_join": "加入群組", "membership_requested": "加入申請處理中", "membership_unavailable": "群組無法使用", "instances": "群組實例", "info_tab": "資訊", "instances_tab": "實例", "load_instances_failed": "無法載入群組實例。", "no_active_instances": "沒有作用中的群組實例。", "description": "說明", "no_description": "沒有說明。", "information": "資訊", "members": "成員: {{count}}", "status": "狀態: {{status}}", "languages": "語言: {{languages}}", "status_none": "無", "status_inactive": "未啟用", "status_invited": "已邀請", "status_member": "成員", "status_requested": "加入申請處理中", "status_banned": "已封鎖", "status_userblocked": "無法使用"
+    },
+    "user": { "location_load_failed": "無法載入目前位置", "load_failed": "無法載入使用者資料", "invite_sending": "正在傳送邀請..." },
+    "instance": { "inviting": "正在邀請自己...", "load_failed": "無法載入實例資料" },
+    "event": { "load_failed": "無法載入活動資料", "follow_update_failed": "無法更新活動訂閱", "follow_updating": "正在更新訂閱...", "follow": "追蹤活動", "unfollow": "取消追蹤活動" },
+    "userInvite": { "request_success_title": "已請求邀請", "request_success_message": "已傳送你的請求。", "request_failed_title": "請求邀請失敗", "send_failed_title": "傳送邀請失敗", "not_in_inviteable_instance": "你不在可邀請的實例中。", "send_success_title": "已傳送邀請", "send_success_message": "已傳送你的邀請。" },
+    "selfInvite": { "error_title": "錯誤", "user_not_found": "找不到使用者。", "success_title": "已傳送邀請", "invite_success_message": "已向你的 VRChat 用戶端傳送邀請！", "create_success_message": "已建立新實例並向你的 VRChat 用戶端傳送邀請！", "failed_title": "傳送邀請失敗" }
+  },
   "components": {
+    "confirmDialog": {
+      "cancel": "取消",
+      "send": "傳送",
+      "leave": "離開",
+      "invite_myself_message": "要邀請自己加入此實例嗎？",
+      "invite_request_message": "要請求邀請嗎？",
+      "invite_send_message": "要傳送此邀請嗎？",
+      "leave_group_message": "要離開 {{groupName}} 嗎？"
+    },
     "releaseNote": {
       "label": "發行說明",
       "button_close": "關閉"

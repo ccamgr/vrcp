@@ -38,6 +38,7 @@ import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
 import { usePipeline } from "@/contexts/PipelineContext";
 import { useFavFriends } from "@/hooks/vrc/useFavFriends";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 export default function Home() {
   const theme = useTheme();
@@ -91,7 +92,7 @@ export default function Home() {
   );
 }
 
-const FeedArea = memo(({ style }: { style?: any }) => {
+const FeedArea = memo(function FeedArea({ style }: { style?: any }) {
   const theme = useTheme();
   const { t } = useTranslation();
   const { messages } = usePipeline();
@@ -129,10 +130,15 @@ const FeedArea = memo(({ style }: { style?: any }) => {
   );
 });
 
-const FriendLocationArea = memo(({ style }: { style?: any }) => {
+const FriendLocationArea = memo(function FriendLocationArea({
+  style,
+}: {
+  style?: any;
+}) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { data: favFriends, refetch, isFetching } = useFavFriends();
+  const { data: favFriends, refetch } = useFavFriends();
+  const { isRefreshing, onRefresh } = usePullToRefresh(refetch);
 
   const instances = useMemo<InstanceLike[]>(() => {
     return calcFriendsLocations(favFriends, false);
@@ -164,20 +170,21 @@ const FriendLocationArea = memo(({ style }: { style?: any }) => {
       onPress={() => routeToFriendLocations()}
       style={style}
     >
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={instances}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={2}
-        onRefresh={refetch}
-        refreshing={isFetching}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
       />
     </SeeMoreContainer>
   );
 });
 
-const EventsArea = memo(({ style }: { style?: any }) => {
+const EventsArea = memo(function EventsArea({ style }: { style?: any }) {
   const auth = useAuth();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -187,7 +194,7 @@ const EventsArea = memo(({ style }: { style?: any }) => {
   const [todayEvents, setTodayEvents] = useState<CalendarEvent[]>([]);
   const offset = useRef(0);
   const fetchingRef = useRef(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const npr = 60;
 
   const [eventDetailModal, setEventDetailModal] = useState<{
@@ -196,8 +203,9 @@ const EventsArea = memo(({ style }: { style?: any }) => {
   }>({ open: false, event: null });
 
   const fetchEvents = async () => {
+    if (fetchingRef.current) return;
+
     fetchingRef.current = true;
-    setIsLoading(true);
     try {
       // adjust to UTC to avoid timezone issues
       const targetMonth = new Date();
@@ -230,25 +238,32 @@ const EventsArea = memo(({ style }: { style?: any }) => {
             ),
           ); // update grouped events
           fetchingRef.current = false;
-          setIsLoading(false);
         }
       }
     } catch (e) {
       fetchingRef.current = false;
-      setIsLoading(false);
       showToast("error", "Error fetching calendar events", extractErrMsg(e));
     }
   };
 
-  const reload = () => {
+  const reload = async () => {
+    if (isRefreshing || fetchingRef.current) return;
+
     eventsRef.current = [];
     offset.current = 0;
-    void fetchEvents();
+    setIsRefreshing(true);
+    try {
+      await fetchEvents();
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   useEffect(() => {
     if (!auth.user) return;
-    reload();
+    eventsRef.current = [];
+    offset.current = 0;
+    void fetchEvents();
   }, [auth.user]);
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
@@ -278,6 +293,7 @@ const EventsArea = memo(({ style }: { style?: any }) => {
       onPress={() => routeToCalendar()}
       style={style}
     >
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={todayEvents}
         keyExtractor={(item) => item.id}
@@ -285,7 +301,7 @@ const EventsArea = memo(({ style }: { style?: any }) => {
         ListEmptyComponent={emptyComponent}
         numColumns={1}
         onRefresh={reload}
-        refreshing={isLoading}
+        refreshing={isRefreshing}
       />
     </SeeMoreContainer>
   );

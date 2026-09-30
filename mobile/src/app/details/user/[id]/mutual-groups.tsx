@@ -65,6 +65,7 @@ export default function MutualGroups() {
   return (
     <GenericScreen>
       {isLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={groups}
         keyExtractor={(item, index) => item.id ?? `group-${index}`}

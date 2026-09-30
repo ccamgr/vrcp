@@ -37,7 +37,12 @@
       "tabLabel_favorites": "Избранное",
       "tabLabel_online": "В сети",
       "tabLabel_active": "Активен",
-      "tabLabel_offline": "Не в сети"
+      "tabLabel_offline": "Не в сети",
+      "menuLabel_search": "Поиск друзей",
+      "searchModal_title": "Поиск друзей",
+      "searchModal_placeholder": "Отображаемое имя или ID пользователя",
+      "searchModal_empty": "Введите имя друга или ID пользователя.",
+      "searchModal_noResults": "Подходящие друзья не найдены."
     },
     "profile": {
       "label": "Профиль",
@@ -356,7 +361,27 @@
       "disclaimer": "VRCP — это неофициальное приложение для VRChat. Данное приложение не связано, не одобрено, не спонсируется и не утверждено VRChat Inc. или ее дочерними компаниями."
     }
   },
+  "features": {
+    "calendar": { "show_followed": "Только отслеживаемые события", "load_failed": "Не удалось загрузить события календаря" },
+    "group": {
+      "toast_update_failed": "Не удалось обновить группу", "membership_updating": "ОБНОВЛЕНИЕ ГРУППЫ...", "membership_leave": "ПОКИНУТЬ ГРУППУ", "membership_join": "ВСТУПИТЬ В ГРУППУ", "membership_requested": "ЗАЯВКА НА ВСТУПЛЕНИЕ ОЖИДАЕТСЯ", "membership_unavailable": "ГРУППА НЕДОСТУПНА", "instances": "ИНСТАНСЫ ГРУППЫ", "info_tab": "ИНФО", "instances_tab": "ИНСТАНСЫ", "load_instances_failed": "Не удалось загрузить инстансы группы.", "no_active_instances": "Нет активных инстансов группы.", "description": "Описание", "no_description": "Нет описания.", "information": "Информация", "members": "Участники: {{count}}", "status": "Статус: {{status}}", "languages": "Языки: {{languages}}", "status_none": "Нет", "status_inactive": "Неактивно", "status_invited": "Приглашён", "status_member": "Участник", "status_requested": "Заявка на вступление ожидается", "status_banned": "Заблокирован", "status_userblocked": "Недоступно"
+    },
+    "user": { "location_load_failed": "Не удалось загрузить текущее местоположение", "load_failed": "Не удалось загрузить данные пользователя", "invite_sending": "ОТПРАВКА ПРИГЛАШЕНИЯ..." },
+    "instance": { "inviting": "ОТПРАВКА ПРИГЛАШЕНИЯ СЕБЕ...", "load_failed": "Не удалось загрузить данные инстанса" },
+    "event": { "load_failed": "Не удалось загрузить данные события", "follow_update_failed": "Не удалось обновить подписку на событие", "follow_updating": "ОБНОВЛЕНИЕ ПОДПИСКИ...", "follow": "ОТСЛЕЖИВАТЬ СОБЫТИЕ", "unfollow": "НЕ ОТСЛЕЖИВАТЬ СОБЫТИЕ" },
+    "userInvite": { "request_success_title": "Приглашение запрошено", "request_success_message": "Ваш запрос отправлен.", "request_failed_title": "Не удалось запросить приглашение", "send_failed_title": "Не удалось отправить приглашение", "not_in_inviteable_instance": "Вы не в инстансе, куда можно пригласить.", "send_success_title": "Приглашение отправлено", "send_success_message": "Ваше приглашение отправлено." },
+    "selfInvite": { "error_title": "Ошибка", "user_not_found": "Пользователь не найден.", "success_title": "Приглашение отправлено", "invite_success_message": "Приглашение отправлено в ваш клиент VRChat!", "create_success_message": "Создан новый инстанс и приглашение отправлено в ваш клиент VRChat!", "failed_title": "Не удалось отправить приглашение" }
+  },
   "components": {
+    "confirmDialog": {
+      "cancel": "Отмена",
+      "send": "Отправить",
+      "leave": "Покинуть",
+      "invite_myself_message": "Отправить себе приглашение в этот инстанс?",
+      "invite_request_message": "Запросить приглашение?",
+      "invite_send_message": "Отправить это приглашение?",
+      "leave_group_message": "Покинуть группу {{groupName}}?"
+    },
     "exitDialog": {
       "message": "Вы уверены, что хотите выйти из приложения?",
       "button_yes": "Да",

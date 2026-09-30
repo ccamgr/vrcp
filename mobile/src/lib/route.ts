@@ -47,6 +47,7 @@ export const routeToPrints = () => router.push(`/others/prints`); // owned print
 export const routeToFavorites = () => router.push(`/others/favorites`); // favorites
 export const routeToFriendLocations = () =>
   router.push(`/others/friendlocations`); // my friend's locations
+export const routeToFriendSearch = () => router.push(`/others/friendsearch`);
 export const routeToCalendar = () => router.push(`/others/calendar`); // event calendar of joined groups
 export const routeToFeeds = () => router.push(`/others/feeds`); // feeds
 export const routeToNotifications = () => router.push(`/others/notifications`); // notifications

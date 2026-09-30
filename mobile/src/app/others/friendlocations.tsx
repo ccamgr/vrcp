@@ -23,14 +23,14 @@ export default function FriendLocations() {
   const { showToast } = useToast();
   const { data: friends, refetch } = useFriends();
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const refresh = () => {
-    setIsLoading(true);
+    setIsRefreshing(true);
     refetch()
       .catch((e) =>
         showToast("error", "Error refreshing friends", extractErrMsg(e)),
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsRefreshing(false));
   };
 
   const { instances, unlocatableFriends } = useMemo(() => {
@@ -127,12 +127,12 @@ export default function FriendLocations() {
   return (
     <GenericScreen>
       <View style={styles.container}>
-        {isLoading && <LoadingIndicator absolute />}
+        {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SectionList
           sections={sections}
           renderSectionHeader={renderSecHeader}
           contentContainerStyle={styles.listInner}
-          refreshing={isLoading}
+          refreshing={isRefreshing}
           onRefresh={refresh}
         />
       </View>

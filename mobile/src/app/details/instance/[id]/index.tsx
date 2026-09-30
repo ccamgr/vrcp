@@ -48,6 +48,8 @@ import {
 } from "@/lib/route";
 import { MenuItem } from "@/components/layout/type";
 import { Instance } from "@/generated/vrcapi";
+import { useSelfInvite } from "@/hooks/useSelfInvite";
+import GenericDialog from "@/components/layout/GenericDialog";
 
 export default function InstanceDetail() {
   const { id } = useLocalSearchParams<{ id: string }>(); // locationStr
@@ -62,25 +64,38 @@ export default function InstanceDetail() {
 
   // 1. Manual State Management for Instance
   const [instance, setInstance] = useState<Instance | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchInstance = useCallback(async () => {
     if (!worldId || !instanceId || !vrc.instancesApi) return;
 
-    setIsLoading(true);
     try {
       const res = await vrc.instancesApi.getInstance({ worldId, instanceId });
       setInstance(res.data);
     } catch (e) {
-      showToast("error", "Error fetching instance data", extractErrMsg(e));
-    } finally {
-      setIsLoading(false);
+      showToast(
+        "error",
+        t("features.instance.load_failed"),
+        extractErrMsg(e),
+      );
     }
-  }, [worldId, instanceId, vrc.instancesApi]);
+  }, [instanceId, showToast, t, vrc.instancesApi, worldId]);
 
   useEffect(() => {
-    fetchInstance();
+    void fetchInstance().finally(() => setIsInitialLoading(false));
   }, [fetchInstance]);
+
+  const refreshInstance = useCallback(async () => {
+    if (isRefreshing) return;
+
+    setIsRefreshing(true);
+    try {
+      await fetchInstance();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [fetchInstance, isRefreshing]);
 
   // 2. Owner Information (Keep Hooks at top level)
   const ownerId = instance?.ownerId ?? "";
@@ -108,16 +123,26 @@ export default function InstanceDetail() {
   }, [instance, allFriends]);
 
   const [openJson, setOpenJson] = useState(false);
+  const [openInviteConfirmation, setOpenInviteConfirmation] = useState(false);
+  const { inviteMyself, isInviting } = useSelfInvite();
+  const confirmInviteMyself = useCallback(
+    () => setOpenInviteConfirmation(true),
+    [],
+  );
+  const sendInviteMyself = useCallback(() => {
+    setOpenInviteConfirmation(false);
+    if (worldId && instanceId) void inviteMyself(worldId, instanceId);
+  }, [instanceId, inviteMyself, worldId]);
 
   // 4. Side Menu
   const menuItems: MenuItem[] = useMemo(
     () => [
       {
-        icon: "circle-medium",
-        title: "INVITE ME or REQUEST INVITE",
-        onPress: () => {
-          /* TODO: Implement Invite */
-        },
+        icon: "location-enter",
+        title: isInviting
+          ? t("features.instance.inviting")
+          : t("pages.detail_instance.menuLabel_invite_me"),
+        onPress: confirmInviteMyself,
       },
       { type: "divider", hidden: !enableJsonViewer },
       {
@@ -127,17 +152,18 @@ export default function InstanceDetail() {
         hidden: !enableJsonViewer,
       },
     ],
-    [enableJsonViewer, t],
+    [confirmInviteMyself, enableJsonViewer, isInviting, t],
   );
 
   useSideMenu(menuItems);
 
-  if (!instance && isLoading) return <LoadingIndicator absolute />;
+  if (!instance && isInitialLoading) return <LoadingIndicator absolute />;
 
   return (
     <GenericScreen>
       {instance ? (
         <View style={{ flex: 1 }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewInstanceDetail
             instance={instance}
             style={[styles.cardView]}
@@ -146,8 +172,8 @@ export default function InstanceDetail() {
             contentContainerStyle={styles.scrollContent}
             refreshControl={
               <RefreshControl
-                refreshing={isLoading}
-                onRefresh={fetchInstance}
+                refreshing={isRefreshing}
+                onRefresh={refreshInstance}
               />
             }
           >
@@ -278,6 +304,14 @@ export default function InstanceDetail() {
       )}
 
       <JsonDataModal open={openJson} setOpen={setOpenJson} data={instance} />
+      <GenericDialog
+        open={openInviteConfirmation}
+        message={t("components.confirmDialog.invite_myself_message")}
+        onConfirm={sendInviteMyself}
+        onCancel={() => setOpenInviteConfirmation(false)}
+        confirmTitle={t("components.confirmDialog.send")}
+        cancelTitle={t("components.confirmDialog.cancel")}
+      />
     </GenericScreen>
   );
 }

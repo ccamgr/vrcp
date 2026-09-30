@@ -7,18 +7,25 @@ interface Props {
   size?: number;
   notext?: boolean;
   absolute?: boolean;
+  overlayOnly?: boolean;
 }
 
 const LoadingIndicator = ({
   size,
   notext = false,
   absolute = false,
+  overlayOnly = false,
 }: Props) => {
   const theme = useTheme();
   return (
-    <View style={[styles.container, absolute ? styles.absolute : {}]}>
-      <ActivityIndicator size={size || 90} color={theme.colors.border} />
-      {!notext && (
+    <View
+      pointerEvents={overlayOnly ? "none" : "auto"}
+      style={[styles.container, absolute ? styles.absolute : {}]}
+    >
+      {!overlayOnly && (
+        <ActivityIndicator size={size || 90} color={theme.colors.border} />
+      )}
+      {!overlayOnly && !notext && (
         <Text style={[styles.text, { color: theme.colors.subText }]}>
           Loading...
         </Text>

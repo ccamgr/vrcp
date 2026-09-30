@@ -37,7 +37,12 @@
       "tabLabel_favorites": "즐겨찾기",
       "tabLabel_online": "온라인",
       "tabLabel_active": "액티브",
-      "tabLabel_offline": "오프라인"
+      "tabLabel_offline": "오프라인",
+      "menuLabel_search": "친구 검색",
+      "searchModal_title": "친구 검색",
+      "searchModal_placeholder": "표시 이름 또는 사용자 ID",
+      "searchModal_empty": "친구 이름 또는 사용자 ID를 입력하세요.",
+      "searchModal_noResults": "일치하는 친구를 찾을 수 없습니다."
     },
     "profile": {
       "label": "프로필",
@@ -356,7 +361,27 @@
       "disclaimer": "VRCP는 VRChat을 위한 비공식 애플리케이션입니다. 이 애플리케이션은 VRChat Inc. 또는 그 계열사와 제휴, 승인, 후원 또는 승인되지 않았습니다．"
     }
   },
+  "features": {
+    "calendar": { "show_followed": "팔로우한 이벤트만", "load_failed": "캘린더 이벤트를 불러오지 못했습니다" },
+    "group": {
+      "toast_update_failed": "그룹 업데이트에 실패했습니다", "membership_updating": "그룹 업데이트 중...", "membership_leave": "그룹 나가기", "membership_join": "그룹 참가", "membership_requested": "참가 요청 대기 중", "membership_unavailable": "그룹을 이용할 수 없습니다", "instances": "그룹 인스턴스", "info_tab": "정보", "instances_tab": "인스턴스", "load_instances_failed": "그룹 인스턴스를 불러오지 못했습니다.", "no_active_instances": "활성 그룹 인스턴스가 없습니다.", "description": "설명", "no_description": "설명이 없습니다.", "information": "정보", "members": "멤버: {{count}}", "status": "상태: {{status}}", "languages": "언어: {{languages}}", "status_none": "없음", "status_inactive": "비활성", "status_invited": "초대됨", "status_member": "멤버", "status_requested": "참가 요청 대기 중", "status_banned": "차단됨", "status_userblocked": "사용할 수 없음"
+    },
+    "user": { "location_load_failed": "현재 위치를 불러오지 못했습니다", "load_failed": "사용자 데이터를 불러오지 못했습니다", "invite_sending": "초대 보내는 중..." },
+    "instance": { "inviting": "자신을 초대하는 중...", "load_failed": "인스턴스 데이터를 불러오지 못했습니다" },
+    "event": { "load_failed": "이벤트 데이터를 불러오지 못했습니다", "follow_update_failed": "이벤트 구독 업데이트에 실패했습니다", "follow_updating": "구독 업데이트 중...", "follow": "이벤트 팔로우", "unfollow": "이벤트 팔로우 해제" },
+    "userInvite": { "request_success_title": "초대를 요청했습니다", "request_success_message": "초대 요청을 보냈습니다.", "request_failed_title": "초대 요청에 실패했습니다", "send_failed_title": "초대 전송에 실패했습니다", "not_in_inviteable_instance": "초대 가능한 인스턴스에 있지 않습니다.", "send_success_title": "초대를 보냈습니다", "send_success_message": "초대를 보냈습니다." },
+    "selfInvite": { "error_title": "오류", "user_not_found": "사용자를 찾을 수 없습니다.", "success_title": "초대를 보냈습니다", "invite_success_message": "VRChat 클라이언트에 초대를 보냈습니다!", "create_success_message": "새 인스턴스를 만들고 VRChat 클라이언트에 초대를 보냈습니다!", "failed_title": "초대 전송에 실패했습니다" }
+  },
   "components": {
+    "confirmDialog": {
+      "cancel": "취소",
+      "send": "보내기",
+      "leave": "나가기",
+      "invite_myself_message": "이 인스턴스에 자신을 초대할까요?",
+      "invite_request_message": "초대를 요청할까요?",
+      "invite_send_message": "이 초대를 보낼까요?",
+      "leave_group_message": "{{groupName}} 그룹에서 나갈까요?"
+    },
     "exitDialog": {
       "message": "앱을 종료하시겠습니까?",
       "button_yes": "예",

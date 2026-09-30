@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -42,7 +41,8 @@ export default function UserGroups() {
 
   const [groups, setGroups] = useState<LimitedUserGroups[]>([]);
   const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const offset = useRef(0);
 
   const fetchGroups = async () => {
@@ -66,13 +66,20 @@ export default function UserGroups() {
   };
 
   useEffect(() => {
-    fetchGroups();
+    void fetchGroups().finally(() => setIsInitialLoading(false));
   }, []);
 
-  const reload = () => {
+  const reload = async () => {
+    if (isRefreshing) return;
+
     offset.current = 0;
     setGroups([]);
-    fetchGroups();
+    setIsRefreshing(true);
+    try {
+      await fetchGroups();
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const renderItem = useCallback(
@@ -98,7 +105,8 @@ export default function UserGroups() {
 
   return (
     <GenericScreen>
-      {isLoading && <LoadingIndicator absolute />}
+      {isInitialLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={groups}
         keyExtractor={(item, index) => item.id ?? `group-${index}`}
@@ -106,7 +114,7 @@ export default function UserGroups() {
         ListEmptyComponent={emptyComponent}
         numColumns={cardViewColumns}
         onRefresh={reload}
-        refreshing={isLoading}
+        refreshing={isRefreshing}
         contentContainerStyle={styles.scrollContentContainer}
       />
     </GenericScreen>

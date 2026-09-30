@@ -37,7 +37,12 @@
       "tabLabel_favorites": "Favoriten",
       "tabLabel_online": "Online",
       "tabLabel_active": "Aktiv",
-      "tabLabel_offline": "Offline"
+      "tabLabel_offline": "Offline",
+      "menuLabel_search": "Freunde suchen",
+      "searchModal_title": "Freunde suchen",
+      "searchModal_placeholder": "Anzeigename oder Benutzer-ID",
+      "searchModal_empty": "Gib einen Freundesnamen oder eine Benutzer-ID ein.",
+      "searchModal_noResults": "Keine passenden Freunde gefunden."
     },
     "profile": {
       "label": "Profil",
@@ -356,7 +361,27 @@
       "disclaimer": "VRCP ist eine inoffizielle Anwendung für VRChat. Diese Anwendung ist nicht mit VRChat Inc. oder seinen verbundenen Unternehmen verbunden, wird nicht von diesen unterstützt, gesponsert oder genehmigt."
     }
   },
+  "features": {
+    "calendar": { "show_followed": "Nur gefolgte Events", "load_failed": "Kalender-Events konnten nicht geladen werden" },
+    "group": {
+      "toast_update_failed": "Gruppenaktualisierung fehlgeschlagen", "membership_updating": "GRUPPE WIRD AKTUALISIERT...", "membership_leave": "GRUPPE VERLASSEN", "membership_join": "GRUPPE BEITRETEN", "membership_requested": "BEITRITTSANFRAGE AUSSTEHEND", "membership_unavailable": "GRUPPE NICHT VERFÜGBAR", "instances": "GRUPPENINSTANZEN", "info_tab": "INFO", "instances_tab": "INSTANZEN", "load_instances_failed": "Gruppeninstanzen konnten nicht geladen werden.", "no_active_instances": "Keine aktiven Gruppeninstanzen.", "description": "Beschreibung", "no_description": "Keine Beschreibung.", "information": "Informationen", "members": "Mitglieder: {{count}}", "status": "Status: {{status}}", "languages": "Sprachen: {{languages}}", "status_none": "Keine", "status_inactive": "Inaktiv", "status_invited": "Eingeladen", "status_member": "Mitglied", "status_requested": "Beitrittsanfrage ausstehend", "status_banned": "Gesperrt", "status_userblocked": "Nicht verfügbar"
+    },
+    "user": { "location_load_failed": "Aktueller Standort konnte nicht geladen werden", "load_failed": "Benutzerdaten konnten nicht geladen werden", "invite_sending": "EINLADUNG WIRD GESENDET..." },
+    "instance": { "inviting": "ICH WERDE EINGELADEN...", "load_failed": "Instanzdaten konnten nicht geladen werden" },
+    "event": { "load_failed": "Eventdaten konnten nicht geladen werden", "follow_update_failed": "Event-Abonnement konnte nicht aktualisiert werden", "follow_updating": "ABONNEMENT WIRD AKTUALISIERT...", "follow": "EVENT FOLGEN", "unfollow": "EVENT NICHT MEHR FOLGEN" },
+    "userInvite": { "request_success_title": "Einladung angefordert", "request_success_message": "Deine Anfrage wurde gesendet.", "request_failed_title": "Einladungsanfrage fehlgeschlagen", "send_failed_title": "Einladung fehlgeschlagen", "not_in_inviteable_instance": "Du bist nicht in einer einladbaren Instanz.", "send_success_title": "Einladung gesendet", "send_success_message": "Deine Einladung wurde gesendet." },
+    "selfInvite": { "error_title": "Fehler", "user_not_found": "Benutzer nicht gefunden.", "success_title": "Eingeladen", "invite_success_message": "Eine Einladung wurde an deinen VRChat-Client gesendet!", "create_success_message": "Eine neue Instanz wurde erstellt und eine Einladung an deinen VRChat-Client gesendet!", "failed_title": "Einladung fehlgeschlagen" }
+  },
   "components": {
+    "confirmDialog": {
+      "cancel": "Abbrechen",
+      "send": "Senden",
+      "leave": "Verlassen",
+      "invite_myself_message": "Möchtest du dir selbst eine Einladung zu dieser Instanz senden?",
+      "invite_request_message": "Möchtest du eine Einladung anfordern?",
+      "invite_send_message": "Möchtest du diese Einladung senden?",
+      "leave_group_message": "Möchtest du {{groupName}} verlassen?"
+    },
     "exitDialog": {
       "message": "Sind Sie sicher, dass Sie die App beenden möchten?",
       "button_yes": "Ja",

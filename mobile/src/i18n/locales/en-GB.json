@@ -37,7 +37,12 @@
       "tabLabel_favorites": "Favourites",
       "tabLabel_online": "Online",
       "tabLabel_active": "Active",
-      "tabLabel_offline": "Offline"
+      "tabLabel_offline": "Offline",
+      "menuLabel_search": "Search Friends",
+      "searchModal_title": "Search Friends",
+      "searchModal_placeholder": "Display name or user ID",
+      "searchModal_empty": "Enter a friend's name or user ID.",
+      "searchModal_noResults": "No matching friends found."
     },
     "profile": {
       "label": "Profile",
@@ -356,7 +361,27 @@
       "disclaimer": "VRCP is an unofficial application for VRChat. This application is not affiliated with, endorsed, sponsored, or approved by VRChat Inc. or its affiliates."
     }
   },
+  "features": {
+    "calendar": { "show_followed": "Followed events only", "load_failed": "Failed to load calendar events" },
+    "group": {
+      "toast_update_failed": "Group update failed", "membership_updating": "UPDATING GROUP...", "membership_leave": "LEAVE GROUP", "membership_join": "JOIN GROUP", "membership_requested": "JOIN REQUEST PENDING", "membership_unavailable": "GROUP UNAVAILABLE", "instances": "GROUP INSTANCES", "info_tab": "INFO", "instances_tab": "INSTANCES", "load_instances_failed": "Failed to load group instances.", "no_active_instances": "No active group instances.", "description": "Description", "no_description": "No description.", "information": "Information", "members": "Members: {{count}}", "status": "Status: {{status}}", "languages": "Languages: {{languages}}", "status_none": "None", "status_inactive": "Inactive", "status_invited": "Invited", "status_member": "Member", "status_requested": "Join request pending", "status_banned": "Banned", "status_userblocked": "Unavailable"
+    },
+    "user": { "location_load_failed": "Failed to load current location", "load_failed": "Failed to load user data", "invite_sending": "SENDING INVITE..." },
+    "instance": { "inviting": "INVITING ME...", "load_failed": "Failed to load instance data" },
+    "event": { "load_failed": "Failed to load event data", "follow_update_failed": "Failed to update event subscription", "follow_updating": "UPDATING SUBSCRIPTION...", "follow": "FOLLOW EVENT", "unfollow": "UNFOLLOW EVENT" },
+    "userInvite": { "request_success_title": "Invite requested", "request_success_message": "Your request was sent.", "request_failed_title": "Invite request failed", "send_failed_title": "Invite failed", "not_in_inviteable_instance": "You are not in an inviteable instance.", "send_success_title": "Invite sent", "send_success_message": "Your invite was sent." },
+    "selfInvite": { "error_title": "Error", "user_not_found": "User not found.", "success_title": "Invited", "invite_success_message": "Sent an invite to your VRChat client!", "create_success_message": "Created a new instance and sent an invite to your VRChat client!", "failed_title": "Invite failed" }
+  },
   "components": {
+    "confirmDialog": {
+      "cancel": "Cancel",
+      "send": "Send",
+      "leave": "Leave",
+      "invite_myself_message": "Send yourself an invite to this instance?",
+      "invite_request_message": "Send an invite request?",
+      "invite_send_message": "Send this invite?",
+      "leave_group_message": "Leave {{groupName}}?"
+    },
     "exitDialog": {
       "message": "Are you sure you want to exit the app?",
       "button_yes": "Yes",

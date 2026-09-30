@@ -90,6 +90,7 @@ export default function MyAvatars() {
   return (
     <GenericScreen>
       {isLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         // key={`avatar-list-col-${cardViewColumns}`} // to re-render on column change
         data={avatars}

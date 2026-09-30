@@ -1,10 +1,8 @@
 import GenericScreen from "@/components/layout/GenericScreen";
-import { MenuItem } from "@/components/layout/type";
 import MonthlyCalendarView from "@/components/view/calendarView/MonthlyColendarView";
 import ListViewEvent from "@/components/view/item-ListView/ListViewEvent";
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, spacing } from "@/configs/styles";
-import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useVRChat } from "@/contexts/VRChatContext";
@@ -14,19 +12,10 @@ import { extractErrMsg } from "@/lib/utils";
 import { CalendarEvent, PaginatedCalendarEventList } from "@/generated/vrcapi";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { isSameMonth, set } from "date-fns";
-import { se } from "date-fns/locale";
+import { isSameMonth } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  SectionList,
-  StyleSheet,
-  View,
-  ViewToken,
-} from "react-native";
+import { SectionList, StyleSheet, Switch, View } from "react-native";
 
 export default function EventCalendar() {
   const auth = useAuth();
@@ -44,6 +33,7 @@ export default function EventCalendar() {
   const [eventsByDate, setEventsByDate] = useState<
     Record<string, CalendarEvent[]>
   >({});
+  const [showFollowed, setShowFollowed] = useState(false);
   const offset = useRef(0);
   const eventsRef = useRef<CalendarEvent[]>([]); // all fetched events
   const fetchingRef = useRef(false); // to all fetch
@@ -74,7 +64,7 @@ export default function EventCalendar() {
 
       while (fetchingRef.current) {
         const res = await vrc.calendarApi.getCalendarEvents({
-          date: targetMonth.toISOString(), // month only affects the returned events
+          date: targetMonth.toISOString(),
           n: npr,
           offset: offset.current,
         });
@@ -99,7 +89,11 @@ export default function EventCalendar() {
     } catch (e) {
       fetchingRef.current = false;
       setIsLoading(false);
-      showToast("error", "Error fetching calendar events", extractErrMsg(e));
+      showToast(
+        "error",
+        t("features.calendar.load_failed"),
+        extractErrMsg(e),
+      );
     }
   };
 
@@ -114,15 +108,32 @@ export default function EventCalendar() {
     reload();
   }, [auth.user, selectedMonth]);
 
+  const visibleEventsByDate = useMemo<Record<string, CalendarEvent[]>>(() => {
+    if (!showFollowed) return eventsByDate;
+
+    return Object.entries(eventsByDate).reduce<Record<string, CalendarEvent[]>>(
+      (filteredEvents, [date, events]) => {
+        const followedEvents = events.filter(
+          (event) => event.userInterest?.isFollowing,
+        );
+        if (followedEvents.length > 0) {
+          filteredEvents[date] = followedEvents;
+        }
+        return filteredEvents;
+      },
+      {},
+    );
+  }, [eventsByDate, showFollowed]);
+
   const sections = useMemo(() => {
-    const res = Object.entries(eventsByDate)
+    const res = Object.entries(visibleEventsByDate)
       .filter(([key, _]) => isSameMonth(restoreDateKey(key), selectedMonth))
       .map(([key, events]) => ({
         data: events,
         key: key,
       }));
     return res;
-  }, [eventsByDate]);
+  }, [selectedMonth, visibleEventsByDate]);
 
   const onSelectDate = (date: Date) => {
     setSelectedDate(date);
@@ -146,7 +157,7 @@ export default function EventCalendar() {
     (date: Date) => {
       if (isSameMonth(date, selectedMonth)) {
         const dateKey = getDateKey(date);
-        const events = eventsByDate[dateKey] || [];
+        const events = visibleEventsByDate[dateKey] || [];
         if (events.length > 0) {
           return (
             <Text
@@ -165,7 +176,7 @@ export default function EventCalendar() {
       }
       return null;
     },
-    [eventsByDate],
+    [selectedMonth, t, theme.colors.warning, visibleEventsByDate],
   );
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
@@ -213,18 +224,6 @@ export default function EventCalendar() {
     [theme.colors.text, t],
   );
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
-      {
-        icon: "circle-medium",
-        title: "SUBSCRIBING EVENTS",
-        // onPress: () => {},
-      },
-    ],
-    [],
-  );
-  useSideMenu(menuItems);
-
   return (
     <GenericScreen>
       <View style={styles.calendarContainer}>
@@ -234,6 +233,16 @@ export default function EventCalendar() {
           onSelectDate={onSelectDate}
           onChangeMonth={setSelectedMonth}
           renderDateContent={renderDateContent}
+        />
+      </View>
+      <View style={styles.followedToggle}>
+        <Text style={{ color: theme.colors.text }}>
+          {t("features.calendar.show_followed")}
+        </Text>
+        <Switch
+          value={showFollowed}
+          onValueChange={setShowFollowed}
+          trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
         />
       </View>
       <Text
@@ -271,6 +280,13 @@ const styles = StyleSheet.create({
     minHeight: 250,
     height: "40%",
     maxHeight: 350,
+  },
+  followedToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: spacing.small,
+    marginHorizontal: spacing.small,
   },
   sectionHeader: {
     paddingTop: spacing.medium,

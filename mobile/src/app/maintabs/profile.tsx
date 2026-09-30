@@ -7,7 +7,7 @@ import CardViewUserDetail from "@/components/view/item-CardView/detail/CardViewU
 import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { navigationBarHeight, radius, spacing } from "@/configs/styles";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -36,15 +36,15 @@ import { useTranslation } from "react-i18next";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 import { usePublicProfile } from "@/hooks/vrc/usePublicProfile";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { TouchableEx } from "@/components/CustomElements";
 
 export default function Profile() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { data: currentUser, isFetching, refetch } = useCurrentUser();
+  const { data: currentUser, refetch } = useCurrentUser();
   const {
     data: publicProfile,
-    isFetching: isFetchingPublicProfile,
     isError: isPublicProfileError,
     refetch: refetchPublicProfile,
   } = usePublicProfile(currentUser?.id, true);
@@ -58,6 +58,11 @@ export default function Profile() {
       currentUser ? toUserPresentation(currentUser, publicProfile) : undefined,
     [currentUser, publicProfile],
   );
+  const refreshProfile = useCallback(
+    () => Promise.all([refetch(), refetchPublicProfile()]),
+    [refetch, refetchPublicProfile],
+  );
+  const { isRefreshing, onRefresh } = usePullToRefresh(refreshProfile);
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -133,6 +138,7 @@ export default function Profile() {
     <GenericScreen>
       {currentUser && profileUser ? (
         <View style={{ height: "100%" }}>
+          {isRefreshing && <LoadingIndicator absolute overlayOnly />}
           <CardViewUserDetail
             user={profileUser}
             style={[styles.cardView]}
@@ -155,10 +161,8 @@ export default function Profile() {
           <ScrollView
             refreshControl={
               <RefreshControl
-                refreshing={isFetching || isFetchingPublicProfile}
-                onRefresh={() => {
-                  void Promise.all([refetch(), refetchPublicProfile()]);
-                }}
+                refreshing={isRefreshing}
+                onRefresh={onRefresh}
               />
             }
           >

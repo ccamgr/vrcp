@@ -1,16 +1,14 @@
 import { HapticTab } from "@/components/layout/HapticTab";
 import MenuButtonForHeader from "@/components/layout/MenuButtonForHeader";
-import IconButton from "@/components/view/icon-components/IconButton";
 import SearchBox from "@/components/view/SearchBox";
 import { spacing } from "@/configs/styles";
 import { routeToSearch } from "@/lib/route";
-import { getTintedColor } from "@/lib/utils";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Image, Platform, useColorScheme, View } from "react-native";
+import { Image, Platform, View } from "react-native";
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -69,6 +67,7 @@ export default function TabLayout() {
         name="friends"
         options={{
           title: t("pages.friends.label"),
+          headerRight: MenuButtonForHeader,
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="people" color={color} />
           ),
@@ -91,7 +90,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="menu" color={color} />
           ),
-          headerRight: MenuButtonForHeader,
+          headerRight: undefined,
         }}
       />
       <Tabs.Screen

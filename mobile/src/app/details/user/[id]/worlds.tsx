@@ -94,6 +94,7 @@ export default function UserWorlds() {
   return (
     <GenericScreen>
       {isLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         // key={`world-list-col-${cardViewColumns}`} // to re-render on column change
         data={worlds}

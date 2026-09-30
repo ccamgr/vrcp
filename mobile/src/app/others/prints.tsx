@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -35,8 +34,11 @@ export default function Prints() {
 
   const [prints, setPrints] = useState<Print[]>([]);
   const fetchingRef = useRef(false);
+  const inFlightRef = useRef<Promise<void> | null>(null);
+  const requestGenerationRef = useRef(0);
   const offset = useRef(0);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [preview, setPreview] = useState<{ idx: number; open: boolean }>({
     idx: 0,
@@ -44,50 +46,82 @@ export default function Prints() {
   });
   const [previewImageUrls, setPreviewImageUrls] = useState<string[]>([]);
   // prints, ...etc
-  const fetchPrints = async () => {
-    try {
-      if (fetchingRef.current || offset.current < 0) return;
+  const fetchPrints = useCallback(async (generation = requestGenerationRef.current) => {
+    const userId = currentUser?.id;
+    if (!userId || fetchingRef.current || offset.current < 0) return;
+
+    const request = (async () => {
       fetchingRef.current = true;
-      const res = await vrc.printsApi.getUserPrints(
-        {
-          userId: currentUser?.id || "",
-        },
-        {
-          // API仕様にはないがoffsetとnを指定できるっぽい
-          params: {
-            offset: offset.current,
-            n: NumPerReq,
-            sort: SortOption.Updated,
-            order: OrderOption.Descending,
+      try {
+        const requestOffset = offset.current;
+        const res = await vrc.printsApi.getUserPrints(
+          {
+            userId,
           },
-        },
-      );
-      if (res.data.length === 0) {
-        offset.current = -1; // reset offset if no more data
-      } else {
-        setPrints((prev) => [...prev, ...res.data]);
-        setPreviewImageUrls((prev) => [
-          ...prev,
-          ...res.data
-            .map((print) => print.files.image || "")
-            .filter((url) => url.length > 0),
-        ]);
-        offset.current += NumPerReq;
+          {
+            params: {
+              offset: requestOffset,
+              n: NumPerReq,
+              sort: SortOption.Updated,
+              order: OrderOption.Descending,
+            },
+          },
+        );
+        if (generation !== requestGenerationRef.current) return;
+
+        if (res.data.length === 0) {
+          offset.current = -1;
+        } else {
+          setPrints((prev) => [...prev, ...res.data]);
+          setPreviewImageUrls((prev) => [
+            ...prev,
+            ...res.data
+              .map((print) => print.files.image || "")
+              .filter((url) => url.length > 0),
+          ]);
+          offset.current = requestOffset + NumPerReq;
+        }
+      } catch (error) {
+        if (generation === requestGenerationRef.current) {
+          showToast("error", "Error fetching own prints", extractErrMsg(error));
+        }
+      } finally {
+        fetchingRef.current = false;
       }
-    } catch (e) {
-      showToast("error", "Error fetching own prints", extractErrMsg(e));
+    })();
+
+    inFlightRef.current = request;
+    try {
+      await request;
     } finally {
-      fetchingRef.current = false;
+      if (inFlightRef.current === request) inFlightRef.current = null;
     }
-  };
+  }, [currentUser?.id, showToast, vrc.printsApi]);
+
   useEffect(() => {
-    fetchPrints();
-  }, []);
-  const reload = () => {
+    if (!currentUser?.id) return;
+
+    const generation = ++requestGenerationRef.current;
     offset.current = 0;
     setPrints([]);
     setPreviewImageUrls([]);
-    fetchPrints();
+    void fetchPrints(generation).finally(() => setIsInitialLoading(false));
+  }, [currentUser?.id, fetchPrints]);
+
+  const reload = async () => {
+    if (isRefreshing) return;
+
+    const generation = ++requestGenerationRef.current;
+    offset.current = 0;
+    setPrints([]);
+    setPreviewImageUrls([]);
+    setIsRefreshing(true);
+    try {
+      await inFlightRef.current;
+      await fetchPrints(generation);
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const renderItem = useCallback(
@@ -113,7 +147,8 @@ export default function Prints() {
 
   return (
     <GenericScreen>
-      {isLoading && <LoadingIndicator absolute />}
+      {isInitialLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         // key={`print-list-col-${cardViewColumns}`} // to re-render on column change
         data={prints}
@@ -121,10 +156,10 @@ export default function Prints() {
         renderItem={renderItem}
         ListEmptyComponent={emptyComponent}
         numColumns={cardViewColumns}
-        onEndReached={fetchPrints}
+        onEndReached={() => void fetchPrints()}
         onEndReachedThreshold={0.5}
         onRefresh={reload}
-        refreshing={isLoading}
+        refreshing={isRefreshing}
         contentContainerStyle={styles.scrollContentContainer}
       />
 

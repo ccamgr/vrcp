@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -34,7 +33,7 @@ import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 export default function MyGroups() {
   const vrc = useVRChat();
   const theme = useTheme();
-  const { data: currentUser, refetch } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
@@ -43,18 +42,18 @@ export default function MyGroups() {
 
   const [groups, setGroups] = useState<LimitedUserGroups[]>([]);
   const fetchingRef = useRef(false);
-  const isLoading = useMemo(() => fetchingRef.current, [fetchingRef.current]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const offset = useRef(0);
 
-  const fetchGroups = async () => {
+  const fetchGroups = useCallback(async () => {
+    const userId = currentUser?.id;
+    if (!userId) return;
     if (fetchingRef.current || offset.current < 0) return;
     fetchingRef.current = true;
     try {
-      const r = await vrc.usersApi.getUserRepresentedGroup({
-        userId: currentUser?.id || "",
-      });
       const res = await vrc.usersApi.getUserGroups({
-        userId: currentUser?.id || "",
+        userId,
       });
       if (res.data.length === 0) {
         offset.current = -1; // reset offset if no more data
@@ -67,16 +66,24 @@ export default function MyGroups() {
     } finally {
       fetchingRef.current = false;
     }
-  };
+  }, [currentUser?.id, showToast, vrc.usersApi]);
 
   useEffect(() => {
-    fetchGroups();
-  }, []);
+    if (!currentUser?.id) return;
+    void fetchGroups().finally(() => setIsInitialLoading(false));
+  }, [currentUser?.id, fetchGroups]);
 
-  const reload = () => {
+  const reload = async () => {
+    if (isRefreshing) return;
+
     offset.current = 0;
     setGroups([]);
-    fetchGroups();
+    setIsRefreshing(true);
+    try {
+      await fetchGroups();
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const renderItem = useCallback(
@@ -102,7 +109,8 @@ export default function MyGroups() {
 
   return (
     <GenericScreen>
-      {isLoading && <LoadingIndicator absolute />}
+      {isInitialLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={groups}
         keyExtractor={(item, index) => item.id ?? `group-${index}`}
@@ -110,7 +118,7 @@ export default function MyGroups() {
         ListEmptyComponent={emptyComponent}
         numColumns={cardViewColumns}
         onRefresh={reload}
-        refreshing={isLoading}
+        refreshing={isRefreshing}
         contentContainerStyle={styles.scrollContentContainer}
       />
     </GenericScreen>

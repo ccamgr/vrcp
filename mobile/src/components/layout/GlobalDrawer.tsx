@@ -16,6 +16,7 @@ const GlobalDrawer = ({ children }: { children: React.ReactNode }) => {
       direction="rtl"
       drawerStyle={[styles.drawer, { backgroundColor: theme.colors.card }]}
       open={openMenu}
+      swipeEnabled={!!menuItems?.some((item) => !item.hidden)}
       onOpen={() => setOpenMenu(true)}
       onClose={() => setOpenMenu(false)}
       renderDrawerContent={() => (

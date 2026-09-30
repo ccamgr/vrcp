@@ -66,6 +66,13 @@ export default function ModalLayout() {
         }} // no menu button
       />
       <Stack.Screen
+        name="friendsearch"
+        options={{
+          title: t("pages.friends.searchModal_title"),
+          headerRight: undefined,
+        }}
+      />
+      <Stack.Screen
         name="search"
         options={{ title: t("pages.search.label"), headerRight: undefined }} // no menu button
       />

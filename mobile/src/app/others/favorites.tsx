@@ -62,7 +62,7 @@ export default function Favorites() {
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     const favWorldMap = useMemo(
       () =>
@@ -89,7 +89,7 @@ export default function Favorites() {
     }, [favoriteGroupsMap.worlds]);
 
     const refresh = () => {
-      setIsLoading(true);
+      setIsRefreshing(true);
       refetch()
         .catch((e) =>
           showToast(
@@ -98,11 +98,12 @@ export default function Favorites() {
             extractErrMsg(e),
           ),
         )
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsRefreshing(false));
     };
 
     return (
       <GenericScreen>
+        {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
           data={favoriteGroupsMap.worlds}
@@ -112,7 +113,6 @@ export default function Favorites() {
             item.displayName.length > 0 ? item.displayName : undefined
           }
         />
-        {isLoading && <LoadingIndicator absolute />}
         {selectedGroup ? (
           <FlatList
             data={worlds}
@@ -125,7 +125,7 @@ export default function Favorites() {
               />
             )}
             numColumns={2}
-            refreshing={isLoading}
+            refreshing={isRefreshing}
             onRefresh={refresh}
             contentContainerStyle={styles.scrollContentContainer}
           />
@@ -141,7 +141,7 @@ export default function Favorites() {
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     const favFriendMap = useMemo(
       () =>
@@ -168,7 +168,7 @@ export default function Favorites() {
     }, [favoriteGroupsMap.friends]);
 
     const refresh = () => {
-      setIsLoading(true);
+      setIsRefreshing(true);
       refetch()
         .catch((e) =>
           showToast(
@@ -177,11 +177,12 @@ export default function Favorites() {
             extractErrMsg(e),
           ),
         )
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsRefreshing(false));
     };
 
     return (
       <View style={{ flex: 1 }}>
+        {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
           data={favoriteGroupsMap.friends}
@@ -191,7 +192,6 @@ export default function Favorites() {
             item.displayName.length > 0 ? item.displayName : undefined
           }
         />
-        {isLoading && <LoadingIndicator absolute />}
         {selectedGroup ? (
           <FlatList
             data={friends}
@@ -205,7 +205,7 @@ export default function Favorites() {
             )}
             numColumns={2}
             onRefresh={refresh}
-            refreshing={isLoading}
+            refreshing={isRefreshing}
             contentContainerStyle={styles.scrollContentContainer}
           />
         ) : (
@@ -220,7 +220,7 @@ export default function Favorites() {
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     const favAvatarMap = useMemo(
       () =>
@@ -247,7 +247,7 @@ export default function Favorites() {
     }, [favoriteGroupsMap.avatars]);
 
     const refresh = () => {
-      setIsLoading(true);
+      setIsRefreshing(true);
       refetch()
         .catch((e) =>
           showToast(
@@ -256,11 +256,12 @@ export default function Favorites() {
             extractErrMsg(e),
           ),
         )
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsRefreshing(false));
     };
 
     return (
       <View style={{ flex: 1 }}>
+        {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
           data={favoriteGroupsMap.avatars}
@@ -270,7 +271,6 @@ export default function Favorites() {
             item.displayName.length > 0 ? item.displayName : undefined
           }
         />
-        {isLoading && <LoadingIndicator absolute />}
         {selectedGroup ? (
           <FlatList
             data={avatars}
@@ -283,7 +283,7 @@ export default function Favorites() {
               />
             )}
             numColumns={2}
-            refreshing={isLoading}
+            refreshing={isRefreshing}
             onRefresh={refresh}
             contentContainerStyle={styles.scrollContentContainer}
           />

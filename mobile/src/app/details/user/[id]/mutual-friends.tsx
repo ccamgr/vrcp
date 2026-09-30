@@ -62,6 +62,7 @@ export default function MutualFriends() {
   return (
     <GenericScreen>
       {isLoading && <LoadingIndicator absolute />}
+      {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={friends}
         keyExtractor={(item) => item.id}
