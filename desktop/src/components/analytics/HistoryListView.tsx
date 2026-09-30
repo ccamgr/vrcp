@@ -1,8 +1,9 @@
 // ============================================================================
 //  List View Components (Existing)
 
-import { Check, Clock, MapPin, Send, User } from "lucide-react";
+import { Check, Clock, ExternalLink, MapPin, Send, User } from "lucide-react";
 import { useState } from "react";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { PlayerInterval, SessionPayload } from "../../generated/bindings";
 import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
@@ -18,7 +19,11 @@ export default function HistoryListView({
   const [invitingSessionId, setInvitingSessionId] = useState<number | null>(
     null,
   );
+  const [launchingSessionId, setLaunchingSessionId] = useState<number | null>(
+    null,
+  );
   const [invitedSessionId, setInvitedSessionId] = useState<number | null>(null);
+  const [launchedSessionId, setLaunchedSessionId] = useState<number | null>(null);
   const [failedSessionId, setFailedSessionId] = useState<number | null>(null);
 
   const handleInvite = async (session: SessionPayload) => {
@@ -51,6 +56,36 @@ export default function HistoryListView({
     }
   };
 
+  const handleDirectLaunch = async (session: SessionPayload) => {
+    const separatorIndex = session.instanceId.indexOf(":");
+    if (separatorIndex <= 0 || separatorIndex === session.instanceId.length - 1) {
+      setFailedSessionId(session.sourceId);
+      return;
+    }
+
+    const worldId = session.instanceId.slice(0, separatorIndex);
+    const instanceId = session.instanceId.slice(separatorIndex + 1);
+    if (!worldId.startsWith("wrld_")) {
+      setFailedSessionId(session.sourceId);
+      return;
+    }
+
+    setLaunchingSessionId(session.sourceId);
+    setFailedSessionId(null);
+    try {
+      const launchUrl = new URL("vrchat://launch");
+      launchUrl.searchParams.set("ref", "vrchat.com");
+      launchUrl.searchParams.set("id", `${worldId}:${instanceId}`);
+      await openUrl(launchUrl);
+      setLaunchedSessionId(session.sourceId);
+    } catch (error) {
+      console.error("Failed to launch VRChat", error);
+      setFailedSessionId(session.sourceId);
+    } finally {
+      setLaunchingSessionId(null);
+    }
+  };
+
   return (
     <div className="space-y-6 p-6">
       {sessions.map((session, idx) => (
@@ -58,8 +93,11 @@ export default function HistoryListView({
           key={`${session.startTime}-${idx}`}
           session={session}
           onInvite={handleInvite}
+          onDirectLaunch={handleDirectLaunch}
           isInviting={invitingSessionId === session.sourceId}
+          isLaunching={launchingSessionId === session.sourceId}
           isInvited={invitedSessionId === session.sourceId}
+          isLaunched={launchedSessionId === session.sourceId}
           inviteFailed={failedSessionId === session.sourceId}
         />
       ))}
@@ -70,14 +108,20 @@ export default function HistoryListView({
 function SessionCard({
   session,
   onInvite,
+  onDirectLaunch,
   isInviting,
+  isLaunching,
   isInvited,
+  isLaunched,
   inviteFailed,
 }: {
   session: SessionPayload;
   onInvite: (session: SessionPayload) => void;
+  onDirectLaunch: (session: SessionPayload) => void;
   isInviting: boolean;
+  isLaunching: boolean;
   isInvited: boolean;
+  isLaunched: boolean;
   inviteFailed: boolean;
 }) {
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
@@ -105,29 +149,54 @@ function SessionCard({
           <div className="text-right text-xs text-slate-500 hidden sm:block">
             {session.players.length} people met
           </div>
-          <button
-            type="button"
-            onClick={() => onInvite(session)}
-            disabled={!canInvite || isInviting || isInvited}
-            title={
-              canInvite
-                ? "Send an invite to this instance"
-                : "This session has no joinable instance ID"
-            }
-            className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/50 bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
-          >
-            {isInviting ? (
-              "Sending..."
-            ) : isInvited ? (
-              <>
-                <Check size={14} /> Invite sent
-              </>
-            ) : (
-              <>
-                <Send size={14} /> Invite Myself
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onInvite(session)}
+              disabled={!canInvite || isInviting || isLaunching || isInvited}
+              title={
+                canInvite
+                  ? "Send an invite to this instance"
+                  : "This session has no joinable instance ID"
+              }
+              className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/50 bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+            >
+              {isInviting ? (
+                "Sending..."
+              ) : isInvited ? (
+                <>
+                  <Check size={14} /> Invite sent
+                </>
+              ) : (
+                <>
+                  <Send size={14} /> Invite Myself
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => onDirectLaunch(session)}
+              disabled={!canInvite || isInviting || isLaunching || isLaunched}
+              title={
+                canInvite
+                  ? "Launch VRChat and join this instance directly"
+                  : "This session has no joinable instance ID"
+              }
+              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/50 bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+            >
+              {isLaunching ? (
+                "Launching..."
+              ) : isLaunched ? (
+                <>
+                  <Check size={14} /> Launch requested
+                </>
+              ) : (
+                <>
+                  <ExternalLink size={14} /> Join Directly
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
       {inviteFailed && (
