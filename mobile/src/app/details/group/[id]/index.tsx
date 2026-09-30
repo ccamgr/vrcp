@@ -14,7 +14,7 @@ import { Group } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { MenuItem } from "@/components/layout/type";
 import JsonDataModal from "@/components/modals/JsonDataModal";
@@ -23,6 +23,10 @@ import { useTranslation } from "react-i18next";
 import { useSetting } from "@/contexts/SettingContext";
 import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useGroup } from "@/hooks/vrc/useGroup";
+import { useGroupInstances } from "@/hooks/vrc/useGroupInstances";
+import SelectGroupButton from "@/components/view/SelectGroupButton";
+import ListViewGroupInstance from "@/components/view/item-ListView/ListViewGroupInstance";
+import { routeToInstance } from "@/lib/route";
 
 export default function GroupDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -35,6 +39,12 @@ export default function GroupDetail() {
   const [openJson, setOpenJson] = useState(false);
 
   const { data: group, refetch, isFetching } = useGroup(id);
+  const {
+    data: instances,
+    refetch: refetchInstances,
+    isFetching: isFetchingInstances,
+    error: instancesError,
+  } = useGroupInstances(id, mode === "instances");
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -45,6 +55,7 @@ export default function GroupDetail() {
       {
         icon: "circle-medium",
         title: "GROUP INSTANCES",
+        onPress: () => setMode("instances"),
       },
       {
         type: "divider",
@@ -71,7 +82,7 @@ export default function GroupDetail() {
       value: "info",
     },
     {
-      label: "ACTIVITY",
+      label: "INSTANCES",
       value: "instances",
     },
   ];
@@ -81,28 +92,70 @@ export default function GroupDetail() {
       {group ? (
         <View style={{ flex: 1 }}>
           <CardViewGroupDetail group={group} style={[styles.cardView]} />
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            refreshControl={
-              <RefreshControl refreshing={isFetching} onRefresh={refetch} />
-            }
-          >
-            <DetailItemContainer title="Title1">
-              <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>text1-1</Text>
-                <Text style={{ color: theme.colors.text }}>text1-2</Text>
-              </View>
-            </DetailItemContainer>
-
-            <DetailItemContainer
-              title="Title2"
-              iconButtonConfig={[{ name: "edit", onPress: () => {} }]}
+          <SelectGroupButton
+            data={tabItems}
+            nameExtractor={(item) => item.label}
+            keyExtractor={(item) => item.value}
+            value={tabItems.find((item) => item.value === mode) ?? null}
+            onChange={(item) => setMode(item.value)}
+          />
+          {mode === "instances" ? (
+            <FlatList
+              data={instances ?? []}
+              renderItem={({ item }) => (
+                <ListViewGroupInstance
+                  instance={item}
+                  onPress={() =>
+                    routeToInstance(item.world.id, item.instanceId)
+                  }
+                />
+              )}
+              keyExtractor={(item) => item.location}
+              ListEmptyComponent={() =>
+                isFetchingInstances ? (
+                  <LoadingIndicator absolute />
+                ) : (
+                  <View style={styles.emptyContainer}>
+                    <Text style={{ color: theme.colors.subText }}>
+                      {instancesError
+                        ? "Failed to load group instances."
+                        : "No active group instances."}
+                    </Text>
+                  </View>
+                )
+              }
+              refreshControl={
+                <RefreshControl
+                  refreshing={isFetchingInstances}
+                  onRefresh={refetchInstances}
+                />
+              }
+              contentContainerStyle={styles.listContent}
+            />
+          ) : (
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              refreshControl={
+                <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+              }
             >
-              <View style={styles.detailItemContent}>
-                <Text style={{ color: theme.colors.text }}>text2-1</Text>
-              </View>
-            </DetailItemContainer>
-          </ScrollView>
+              <DetailItemContainer title="Title1">
+                <View style={styles.detailItemContent}>
+                  <Text style={{ color: theme.colors.text }}>text1-1</Text>
+                  <Text style={{ color: theme.colors.text }}>text1-2</Text>
+                </View>
+              </DetailItemContainer>
+
+              <DetailItemContainer
+                title="Title2"
+                iconButtonConfig={[{ name: "edit", onPress: () => {} }]}
+              >
+                <View style={styles.detailItemContent}>
+                  <Text style={{ color: theme.colors.text }}>text2-1</Text>
+                </View>
+              </DetailItemContainer>
+            </ScrollView>
+          )}
         </View>
       ) : (
         <LoadingIndicator absolute />
@@ -139,5 +192,13 @@ const styles = StyleSheet.create({
   detailItemContent: {
     flex: 1,
     // borderStyle:"dotted", borderColor:"red",borderWidth:1
+  },
+  listContent: {
+    paddingTop: spacing.small,
+    paddingBottom: navigationBarHeight + spacing.medium,
+  },
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: spacing.large,
   },
 });

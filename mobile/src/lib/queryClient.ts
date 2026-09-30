@@ -22,6 +22,8 @@ export const vrcQueryKeys = {
     ["vrc", accountId, "avatar", avatarId] as const,
   group: (accountId: string, groupId: string) =>
     ["vrc", accountId, "group", groupId] as const,
+  groupInstances: (accountId: string, groupId: string) =>
+    ["vrc", accountId, "group-instances", groupId] as const,
   friends: (accountId: string) => ["vrc", accountId, "friends"] as const,
   favorites: (accountId: string) => ["vrc", accountId, "favorites"] as const,
   favoriteGroups: (accountId: string) =>

@@ -21,10 +21,10 @@ import {
   InstanceLike,
   parseInstanceId,
 } from "@/lib/vrchat";
-import { User, World } from "@/generated/vrcapi";
+import { InstanceRegion, InstanceType, User, World } from "@/generated/vrcapi";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import UserOrGroupChip from "@/components/view/chip-badge/UserOrGroupChip";
 import { routeToInstance, routeToSearch, routeToUser } from "@/lib/route";
@@ -40,6 +40,7 @@ import { useSideMenu } from "@/contexts/AppMenuContext";
 import { useWorld } from "@/hooks/vrc/useWorld";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
 import { useUser } from "@/hooks/vrc/useUser";
+import { useSelfInvite } from "@/hooks/useSelfInvite";
 
 export default function WorldDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -55,6 +56,7 @@ export default function WorldDetail() {
   const { data: world, refetch } = useWorld(id);
   const { data: author } = useUser(world?.id ? world.authorId : undefined);
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
+  const { createAndInviteMyself, isInviting } = useSelfInvite();
 
   const [openJson, setOpenJson] = useState(false);
   const [openChangeFavorite, setOpenChangeFavorite] = useState(false);
@@ -62,6 +64,11 @@ export default function WorldDetail() {
   const isFavorite = favorites?.some(
     (fav) => fav.favoriteId === id && fav.type === "world",
   );
+
+  const handleCreateAndInvite = useCallback(() => {
+    if (!world) return;
+    void createAndInviteMyself(world.id, InstanceType.Public, InstanceRegion.Us);
+  }, [createAndInviteMyself, world]);
 
   useEffect(() => {
     refetch().catch((e) =>
@@ -108,8 +115,8 @@ export default function WorldDetail() {
       },
       {
         icon: "circle-medium",
-        title: "CREATE INSTANCE", // => Invite myself
-        // onPress: () => {},
+        title: isInviting ? "CREATING INSTANCE..." : "CREATE INSTANCE",
+        onPress: handleCreateAndInvite,
       },
       {
         type: "divider",
@@ -122,7 +129,7 @@ export default function WorldDetail() {
         hidden: !enableJsonViewer,
       },
     ],
-    [isFavorite, enableJsonViewer, t],
+    [isFavorite, enableJsonViewer, handleCreateAndInvite, isInviting, t],
   );
 
   useSideMenu(menuItems);

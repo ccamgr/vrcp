@@ -12,6 +12,7 @@ export const useSelfInvite = () => {
   const [isInviting, setIsInviting] = useState(false);
 
   const inviteMyself = useCallback(async (worldId: string, instanceId: string) => {
+    if (isInviting) return;
     if (!user?.id) {
       showToast("error", "Error", "User not found.");
       return;
@@ -28,9 +29,10 @@ export const useSelfInvite = () => {
     } finally {
       setIsInviting(false);
     }
-  }, [user?.id, showToast, inviteApi]);
+  }, [user?.id, showToast, inviteApi, isInviting]);
 
   const createAndInviteMyself = useCallback(async (worldId: string, type: InstanceType, region: InstanceRegion) => {
+    if (isInviting) return;
     if (!user?.id) {
       showToast("error", "Error", "User not found.");
       return;
@@ -56,7 +58,7 @@ export const useSelfInvite = () => {
     } finally {
       setIsInviting(false);
     }
-  }, [user?.id, showToast, instancesApi, inviteApi]);
+  }, [user?.id, showToast, instancesApi, inviteApi, isInviting]);
 
   // Export isInviting to use it for loading states in UI
   return { inviteMyself, createAndInviteMyself, isInviting };
