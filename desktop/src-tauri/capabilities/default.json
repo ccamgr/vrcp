@@ -8,6 +8,14 @@
   "permissions": [
     "core:default",
     "dialog:default",
-    "opener:default"
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "vrchat://launch*"
+        }
+      ]
+    }
   ]
 }
