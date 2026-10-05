@@ -109,6 +109,14 @@ async inviteMyself(worldId: string, instanceId: string) : Promise<Result<null, s
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async logDirectLaunchFailure(worldId: string, instanceId: string, launchUrl: string, errorName: string, errorMessage: string, errorStack: string | null) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_failure", { worldId, instanceId, launchUrl, errorName, errorMessage, errorStack }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 

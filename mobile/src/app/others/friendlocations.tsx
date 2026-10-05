@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { TouchableEx } from "@/components/CustomElements";
 import { useFriends } from "@/hooks/vrc/useFriends";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 
 export default function FriendLocations() {
   const theme = useTheme();
@@ -23,10 +24,11 @@ export default function FriendLocations() {
   const { showToast } = useToast();
   const { data: friends, refetch } = useFriends();
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
+  const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refresh = () => {
     setIsRefreshing(true);
-    refetch()
+    Promise.all([refetch(), refetchCurrentUser()])
       .catch((e) =>
         showToast("error", "Error refreshing friends", extractErrMsg(e)),
       )
@@ -34,8 +36,8 @@ export default function FriendLocations() {
   };
 
   const { instances, unlocatableFriends } = useMemo(() => {
-    return calcFriendsLocations(friends ?? [], true);
-  }, [friends, favorites]);
+    return calcFriendsLocations(friends ?? [], true, currentUser?.location);
+  }, [currentUser?.location, friends, favorites]);
 
   const renderInstItem = useCallback(
     ({ item, index }: { item: InstanceLike[]; index: number }) => (
@@ -86,7 +88,10 @@ export default function FriendLocations() {
     [theme.colors.border, theme.colors.text],
   );
 
-  const chunkInstances = useMemo(() => chunkArray(instances, 2), [instances]);
+  const chunkInstances = useMemo(
+    () => chunkArray(instances, 2),
+    [instances],
+  );
   const chunkUnlocatableFriends = useMemo(
     () => chunkArray(unlocatableFriends, 3),
     [unlocatableFriends],

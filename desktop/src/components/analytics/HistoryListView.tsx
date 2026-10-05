@@ -9,6 +9,22 @@ import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
 
 // ============================================================================
+const getErrorDetails = (error: unknown) => {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    name: typeof error,
+    message: String(error),
+    stack: undefined,
+  };
+};
+
 export default function HistoryListView({
   sessions,
   targetDate,
@@ -24,24 +40,29 @@ export default function HistoryListView({
   );
   const [invitedSessionId, setInvitedSessionId] = useState<number | null>(null);
   const [launchedSessionId, setLaunchedSessionId] = useState<number | null>(null);
-  const [failedSessionId, setFailedSessionId] = useState<number | null>(null);
+  const [inviteFailedSessionId, setInviteFailedSessionId] = useState<
+    number | null
+  >(null);
+  const [launchFailedSessionId, setLaunchFailedSessionId] = useState<
+    number | null
+  >(null);
 
   const handleInvite = async (session: SessionPayload) => {
     const separatorIndex = session.instanceId.indexOf(":");
     if (separatorIndex <= 0 || separatorIndex === session.instanceId.length - 1) {
-      setFailedSessionId(session.sourceId);
+      setInviteFailedSessionId(session.sourceId);
       return;
     }
 
     const worldId = session.instanceId.slice(0, separatorIndex);
     const instanceId = session.instanceId.slice(separatorIndex + 1);
     if (!worldId.startsWith("wrld_")) {
-      setFailedSessionId(session.sourceId);
+      setInviteFailedSessionId(session.sourceId);
       return;
     }
 
     setInvitingSessionId(session.sourceId);
-    setFailedSessionId(null);
+    setInviteFailedSessionId(null);
     try {
       const result = await commands.inviteMyself(worldId, instanceId);
       if (result.status === "error") {
@@ -50,7 +71,7 @@ export default function HistoryListView({
       setInvitedSessionId(session.sourceId);
     } catch (error) {
       console.error("Failed to send self-invite", error);
-      setFailedSessionId(session.sourceId);
+      setInviteFailedSessionId(session.sourceId);
     } finally {
       setInvitingSessionId(null);
     }
@@ -59,28 +80,42 @@ export default function HistoryListView({
   const handleDirectLaunch = async (session: SessionPayload) => {
     const separatorIndex = session.instanceId.indexOf(":");
     if (separatorIndex <= 0 || separatorIndex === session.instanceId.length - 1) {
-      setFailedSessionId(session.sourceId);
+      setLaunchFailedSessionId(session.sourceId);
       return;
     }
 
     const worldId = session.instanceId.slice(0, separatorIndex);
     const instanceId = session.instanceId.slice(separatorIndex + 1);
     if (!worldId.startsWith("wrld_")) {
-      setFailedSessionId(session.sourceId);
+      setLaunchFailedSessionId(session.sourceId);
       return;
     }
 
+    const launchUrl = new URL("vrchat://launch");
+    launchUrl.searchParams.set("ref", "vrchat.com");
+    launchUrl.searchParams.set("id", `${worldId}:${instanceId}`);
+    launchUrl.searchParams.set("launch", "1");
     setLaunchingSessionId(session.sourceId);
-    setFailedSessionId(null);
+    setLaunchFailedSessionId(null);
     try {
-      const launchUrl = new URL("vrchat://launch");
-      launchUrl.searchParams.set("ref", "vrchat.com");
-      launchUrl.searchParams.set("id", `${worldId}:${instanceId}`);
       await openUrl(launchUrl);
       setLaunchedSessionId(session.sourceId);
     } catch (error) {
       console.error("Failed to launch VRChat", error);
-      setFailedSessionId(session.sourceId);
+      const errorDetails = getErrorDetails(error);
+      void commands
+        .logDirectLaunchFailure(
+          worldId,
+          instanceId,
+          launchUrl.toString(),
+          errorDetails.name,
+          errorDetails.message,
+          errorDetails.stack ?? null,
+        )
+        .catch((loggingError) =>
+          console.error("Failed to write direct launch error log", loggingError),
+        );
+      setLaunchFailedSessionId(session.sourceId);
     } finally {
       setLaunchingSessionId(null);
     }
@@ -98,7 +133,8 @@ export default function HistoryListView({
           isLaunching={launchingSessionId === session.sourceId}
           isInvited={invitedSessionId === session.sourceId}
           isLaunched={launchedSessionId === session.sourceId}
-          inviteFailed={failedSessionId === session.sourceId}
+          inviteFailed={inviteFailedSessionId === session.sourceId}
+          launchFailed={launchFailedSessionId === session.sourceId}
         />
       ))}
     </div>
@@ -114,6 +150,7 @@ function SessionCard({
   isInvited,
   isLaunched,
   inviteFailed,
+  launchFailed,
 }: {
   session: SessionPayload;
   onInvite: (session: SessionPayload) => void;
@@ -123,6 +160,7 @@ function SessionCard({
   isInvited: boolean;
   isLaunched: boolean;
   inviteFailed: boolean;
+  launchFailed: boolean;
 }) {
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
   const canInvite = session.instanceId.startsWith("wrld_") && session.instanceId.includes(":");
@@ -202,6 +240,11 @@ function SessionCard({
       {inviteFailed && (
         <p className="border-b border-slate-700 bg-red-950/40 px-4 py-2 text-xs text-red-300">
           Failed to send the invite. Confirm that you are logged in and the instance is still available.
+        </p>
+      )}
+      {launchFailed && (
+        <p className="border-b border-slate-700 bg-red-950/40 px-4 py-2 text-xs text-red-300">
+          Failed to launch VRChat. Confirm that VRChat is installed and the instance is still available.
         </p>
       )}
 

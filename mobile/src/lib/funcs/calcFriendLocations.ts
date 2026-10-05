@@ -11,14 +11,17 @@ type LocationData = {
 function calcFriendsLocations(
   friends: LimitedUserFriend[],
   withUnlocatable: false,
+  currentLocation?: string,
 ): InstanceLike[];
 function calcFriendsLocations(
   friends: LimitedUserFriend[],
   withUnlocatable: true,
+  currentLocation?: string,
 ): { instances: InstanceLike[], unlocatableFriends: LimitedUserFriend[] };
 function calcFriendsLocations(
   friends: LimitedUserFriend[],
   withUnlocatable: boolean = false,
+  currentLocation?: string,
 ): InstanceLike[] | { instances: InstanceLike[], unlocatableFriends: LimitedUserFriend[] } {
   if (!friends) return withUnlocatable ? { instances: [], unlocatableFriends: [] } : [];
 
@@ -73,6 +76,35 @@ function calcFriendsLocations(
     if (aCount !== bCount) return bCount - aCount;
     return a.type.localeCompare(b.type);
   });
+  const { parsedLocation } = parseLocationString(currentLocation);
+  const currentWorldId = parsedLocation?.worldId;
+  const currentInstanceId = parsedLocation?.instanceId;
+  if (currentWorldId?.startsWith("wrld_") && currentInstanceId) {
+    const currentIndex = sorted.findIndex(
+      (instance) =>
+        instance.worldId === currentWorldId &&
+        instance.instanceId === currentInstanceId,
+    );
+    if (currentIndex >= 0) {
+      sorted.unshift(...sorted.splice(currentIndex, 1));
+    } else {
+      const parsedInstance = parseInstanceId(currentInstanceId);
+      sorted.unshift({
+        id: currentInstanceId,
+        instanceId: currentInstanceId,
+        worldId: currentWorldId,
+        location: currentLocation,
+        users: [],
+        n_users: -1,
+        capacity: -1,
+        type: parsedInstance?.type ?? "hidden",
+        region: parsedInstance?.region ?? "unknown",
+        name: parsedInstance?.name ?? "",
+        hasFavoriteFriends: false,
+        friendsCount: 0,
+      });
+    }
+  }
   if (withUnlocatable) {
     return { instances: sorted, unlocatableFriends: sortFriendWithStatus(unlocatableFriends) };
   }

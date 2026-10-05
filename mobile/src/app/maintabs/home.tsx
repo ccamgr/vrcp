@@ -38,6 +38,7 @@ import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
 import { usePipeline } from "@/contexts/PipelineContext";
 import { useFavFriends } from "@/hooks/vrc/useFavFriends";
+import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 export default function Home() {
@@ -138,11 +139,16 @@ const FriendLocationArea = memo(function FriendLocationArea({
   const theme = useTheme();
   const { t } = useTranslation();
   const { data: favFriends, refetch } = useFavFriends();
-  const { isRefreshing, onRefresh } = usePullToRefresh(refetch);
+  const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
+  const refresh = useCallback(
+    () => Promise.all([refetch(), refetchCurrentUser()]),
+    [refetch, refetchCurrentUser],
+  );
+  const { isRefreshing, onRefresh } = usePullToRefresh(refresh);
 
   const instances = useMemo<InstanceLike[]>(() => {
-    return calcFriendsLocations(favFriends, false);
-  }, [favFriends]);
+    return calcFriendsLocations(favFriends, false, currentUser?.location);
+  }, [currentUser?.location, favFriends]);
 
   const renderItem = useCallback(
     ({ item }: { item: InstanceLike }) => (

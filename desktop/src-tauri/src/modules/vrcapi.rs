@@ -32,7 +32,7 @@ impl VrcApiService {
                 let message =
                     format!("Failed to load cookies from the OS credential store: {error}");
                 eprintln!("{message}");
-                crate::append_startup_error(&message);
+                crate::append_error_log(&message);
                 reqwest_cookie_store::CookieStore::default()
             }
         };
