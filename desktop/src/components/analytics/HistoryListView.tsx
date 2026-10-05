@@ -92,9 +92,9 @@ export default function HistoryListView({
     }
 
     const launchUrl = new URL("vrchat://launch");
-    launchUrl.searchParams.set("ref", "vrchat.com");
+    launchUrl.searchParams.set("ref", "vrcp");
     launchUrl.searchParams.set("id", `${worldId}:${instanceId}`);
-    launchUrl.searchParams.set("launch", "1");
+    launchUrl.searchParams.set("attach", "1");
     setLaunchingSessionId(session.sourceId);
     setLaunchFailedSessionId(null);
     try {
