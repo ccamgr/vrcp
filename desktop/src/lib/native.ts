@@ -27,6 +27,13 @@ export function confirmDeleteAllLogs(): Promise<boolean> {
   });
 }
 
+export function confirmDirectLaunch(worldName: string): Promise<boolean> {
+  return ask(`Launch VRChat and join ${worldName}?`, {
+    title: "Join Instance",
+    kind: "info",
+  });
+}
+
 export async function showNativeMessage(content: string): Promise<void> {
   await message(content);
 }

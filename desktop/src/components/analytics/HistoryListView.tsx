@@ -7,6 +7,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { PlayerInterval, SessionPayload } from "../../generated/bindings";
 import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
+import { confirmDirectLaunch } from "../../lib/native";
 
 // ============================================================================
 const getErrorDetails = (error: unknown) => {
@@ -38,6 +39,9 @@ export default function HistoryListView({
   const [launchingSessionId, setLaunchingSessionId] = useState<number | null>(
     null,
   );
+  const [confirmingLaunchSessionId, setConfirmingLaunchSessionId] = useState<
+    number | null
+  >(null);
   const [invitedSessionId, setInvitedSessionId] = useState<number | null>(null);
   const [launchedSessionId, setLaunchedSessionId] = useState<number | null>(null);
   const [inviteFailedSessionId, setInviteFailedSessionId] = useState<
@@ -91,10 +95,21 @@ export default function HistoryListView({
       return;
     }
 
-    const launchUrl = new URL("vrchat://launch");
-    launchUrl.searchParams.set("ref", "vrcp");
-    launchUrl.searchParams.set("id", `${worldId}:${instanceId}`);
-    launchUrl.searchParams.set("attach", "1");
+    setConfirmingLaunchSessionId(session.sourceId);
+    let confirmed = false;
+    try {
+      confirmed = await confirmDirectLaunch(session.worldName);
+    } catch (error) {
+      console.error("Failed to show direct launch confirmation", error);
+      setLaunchFailedSessionId(session.sourceId);
+      return;
+    } finally {
+      setConfirmingLaunchSessionId(null);
+    }
+    if (!confirmed) return;
+
+    // Do not use URL here: VRChat does not decode encoded instance separators.
+    const launchUrl = `vrchat://launch/?ref=vrcp&id=${worldId}:${instanceId}&attach=1`;
     setLaunchingSessionId(session.sourceId);
     setLaunchFailedSessionId(null);
     try {
@@ -107,7 +122,7 @@ export default function HistoryListView({
         .logDirectLaunchFailure(
           worldId,
           instanceId,
-          launchUrl.toString(),
+          launchUrl,
           errorDetails.name,
           errorDetails.message,
           errorDetails.stack ?? null,
@@ -131,6 +146,7 @@ export default function HistoryListView({
           onDirectLaunch={handleDirectLaunch}
           isInviting={invitingSessionId === session.sourceId}
           isLaunching={launchingSessionId === session.sourceId}
+          isConfirmingLaunch={confirmingLaunchSessionId === session.sourceId}
           isInvited={invitedSessionId === session.sourceId}
           isLaunched={launchedSessionId === session.sourceId}
           inviteFailed={inviteFailedSessionId === session.sourceId}
@@ -147,6 +163,7 @@ function SessionCard({
   onDirectLaunch,
   isInviting,
   isLaunching,
+  isConfirmingLaunch,
   isInvited,
   isLaunched,
   inviteFailed,
@@ -157,6 +174,7 @@ function SessionCard({
   onDirectLaunch: (session: SessionPayload) => void;
   isInviting: boolean;
   isLaunching: boolean;
+  isConfirmingLaunch: boolean;
   isInvited: boolean;
   isLaunched: boolean;
   inviteFailed: boolean;
@@ -214,7 +232,13 @@ function SessionCard({
             <button
               type="button"
               onClick={() => onDirectLaunch(session)}
-              disabled={!canInvite || isInviting || isLaunching || isLaunched}
+              disabled={
+                !canInvite ||
+                isInviting ||
+                isLaunching ||
+                isConfirmingLaunch ||
+                isLaunched
+              }
               title={
                 canInvite
                   ? "Launch VRChat and join this instance directly"
@@ -222,8 +246,8 @@ function SessionCard({
               }
               className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/50 bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
             >
-              {isLaunching ? (
-                "Launching..."
+              {isConfirmingLaunch || isLaunching ? (
+                isConfirmingLaunch ? "Confirming..." : "Launching..."
               ) : isLaunched ? (
                 <>
                   <Check size={14} /> Launch requested
