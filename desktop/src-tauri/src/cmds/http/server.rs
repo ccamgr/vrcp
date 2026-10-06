@@ -20,18 +20,44 @@ pub async fn get_server_url(state: tauri::State<'_, Ctx>) -> Result<String, Stri
 pub async fn set_server_port(state: tauri::State<'_, Ctx>, port: u16) -> Result<(), String> {
     // 1. バリデーション (u16なので 0~65535 は保証されるが、0番ポートなどを弾くならここに書く)
     if port == 0 {
+        crate::logging::warn(
+            "setting.change",
+            &[("key", "http_port"), ("status", "invalid")],
+        );
         return Err("Port 0 is not allowed".to_string());
     }
     let current_port = *state.srv.port.lock().unwrap();
     if current_port == Some(port) {
+        crate::logging::info(
+            "setting.change",
+            &[
+                ("key", "http_port"),
+                ("value", &port.to_string()),
+                ("status", "unchanged"),
+            ],
+        );
         return Ok(()); // 変更なし
     }
-    state
-        .srv
-        .restart(state.db.clone(), port)
-        .await
-        .map_err(|e| format!("Failed to restart server: {}", e))?;
-    println!("HTTP server restarted on port {}", port);
+    if let Err(error) = state.srv.restart(state.db.clone(), port).await {
+        crate::logging::error(
+            "setting.change",
+            &[
+                ("key", "http_port"),
+                ("value", &port.to_string()),
+                ("status", "failed"),
+                ("error", &error),
+            ],
+        );
+        return Err(format!("Failed to restart server: {error}"));
+    }
+    crate::logging::info(
+        "setting.change",
+        &[
+            ("key", "http_port"),
+            ("value", &port.to_string()),
+            ("status", "success"),
+        ],
+    );
     Ok(())
 }
 

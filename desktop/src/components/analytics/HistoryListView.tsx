@@ -9,23 +9,6 @@ import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
 import { confirmDirectLaunch } from "../../lib/native";
 
-// ============================================================================
-const getErrorDetails = (error: unknown) => {
-  if (error instanceof Error) {
-    return {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-  }
-
-  return {
-    name: typeof error,
-    message: String(error),
-    stack: undefined,
-  };
-};
-
 export default function HistoryListView({
   sessions,
   targetDate,
@@ -114,19 +97,16 @@ export default function HistoryListView({
     setLaunchFailedSessionId(null);
     try {
       await openUrl(launchUrl);
+      void commands
+        .logDirectLaunchResult(worldId, instanceId, "dispatched", null)
+        .catch((loggingError) =>
+          console.error("Failed to write direct launch log", loggingError),
+        );
       setLaunchedSessionId(session.sourceId);
     } catch (error) {
       console.error("Failed to launch VRChat", error);
-      const errorDetails = getErrorDetails(error);
       void commands
-        .logDirectLaunchFailure(
-          worldId,
-          instanceId,
-          launchUrl,
-          errorDetails.name,
-          errorDetails.message,
-          errorDetails.stack ?? null,
-        )
+        .logDirectLaunchResult(worldId, instanceId, "failed", String(error))
         .catch((loggingError) =>
           console.error("Failed to write direct launch error log", loggingError),
         );

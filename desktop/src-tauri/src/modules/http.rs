@@ -34,7 +34,7 @@ impl HttpSrv {
                 port: Mutex::new(Some(configured_port)),
             },
             Err(error) => {
-                eprintln!("Failed to start HTTP server: {error}");
+                crate::logging::error("http_server.start", &[("error", &error)]);
                 Self {
                     handle: Mutex::new(None),
                     port: Mutex::new(None),
@@ -107,7 +107,7 @@ async fn handle_get_logs(
     let cursor = match params.cursor.as_deref().map(parse_cursor).transpose() {
         Ok(cursor) => cursor,
         Err(error) => {
-            eprintln!("Invalid log page cursor: {error}");
+            crate::logging::warn("http.request", &[("endpoint", "logs"), ("error", &error)]);
             return Err(StatusCode::BAD_REQUEST);
         }
     };
@@ -125,7 +125,10 @@ async fn handle_get_logs(
             next_cursor: next_cursor.map(|(timestamp, id)| format!("{timestamp}:{id}")),
         })),
         Err(e) => {
-            eprintln!("Failed to fetch logs from DB: {}", e);
+            crate::logging::error(
+                "http.request",
+                &[("endpoint", "logs"), ("error", &e.to_string())],
+            );
             Err(StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
@@ -144,7 +147,10 @@ async fn handle_get_sessions(
         .map(parse_cursor)
         .transpose()
         .map_err(|error| {
-            eprintln!("Invalid session page cursor: {error}");
+            crate::logging::warn(
+                "http.request",
+                &[("endpoint", "sessions"), ("error", &error)],
+            );
             StatusCode::BAD_REQUEST
         })?;
     let limit = params
@@ -155,7 +161,10 @@ async fn handle_get_sessions(
         .get_sessions_page(params.start, params.end, cursor, limit)
         .await
         .map_err(|error| {
-            eprintln!("Failed to fetch sessions: {error}");
+            crate::logging::error(
+                "http.request",
+                &[("endpoint", "sessions"), ("error", &error.to_string())],
+            );
             StatusCode::INTERNAL_SERVER_ERROR
         })?;
     Ok(Json(SessionPage {
@@ -212,10 +221,10 @@ async fn spawn_server(db: DB, port: u16) -> Result<JoinHandle<()>, String> {
         .with_state(db)
         .layer(cors);
 
-    println!("HTTP Server listening on http://{addr}");
+    crate::logging::info("http_server.start", &[("port", &port.to_string())]);
     Ok(tauri::async_runtime::spawn(async move {
         if let Err(error) = axum::serve(listener, app).await {
-            eprintln!("HTTP server stopped unexpectedly: {error}");
+            crate::logging::error("http_server.stop", &[("error", &error.to_string())]);
         }
     }))
 }

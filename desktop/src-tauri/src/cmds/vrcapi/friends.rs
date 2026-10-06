@@ -40,7 +40,14 @@ pub async fn get_friend_instances(state: State<'_, Ctx>) -> Result<Vec<FriendIns
     loop {
         let friends = get_friends(&config, Some(offset), Some(100), Some(false))
             .await
-            .map_err(|error| format!("Failed to load friends: {error}"))?;
+            .map_err(|error| {
+                let message = error.to_string();
+                crate::logging::error(
+                    "api.friend_instances",
+                    &[("status", "failed"), ("error", &message)],
+                );
+                format!("Failed to load friends: {error}")
+            })?;
         let count = i32::try_from(friends.len())
             .map_err(|_| "Friend list is too large to paginate".to_string())?;
 
@@ -97,5 +104,12 @@ pub async fn get_friend_instances(state: State<'_, Ctx>) -> Result<Vec<FriendIns
         .collect::<Vec<_>>();
     instances.sort_by(|left, right| right.friends.len().cmp(&left.friends.len()));
 
+    crate::logging::info(
+        "api.friend_instances",
+        &[
+            ("status", "success"),
+            ("count", &instances.len().to_string()),
+        ],
+    );
     Ok(instances)
 }

@@ -1,5 +1,6 @@
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { ask, message, save } from "@tauri-apps/plugin-dialog";
+import { commands } from "../generated/bindings";
 
 export function getAutostartEnabled(): Promise<boolean> {
   return isEnabled();
@@ -10,6 +11,10 @@ export async function setAutostartEnabled(enabled: boolean): Promise<void> {
     await enable();
   } else {
     await disable();
+  }
+  const result = await commands.logAutostartChange(enabled);
+  if (result.status === "error") {
+    console.error("Failed to write autostart setting log", result.error);
   }
 }
 

@@ -23,12 +23,20 @@ pub async fn get_logs(
 #[tauri::command]
 #[specta::specta]
 pub async fn delete_all_logs(state: tauri::State<'_, Ctx>) -> Result<(), String> {
-    state
-        .db
-        .delete_all_log_data()
-        .await
-        .map_err(|e| e.to_string())?;
-    Ok(())
+    match state.db.delete_all_log_data().await {
+        Ok(()) => {
+            crate::logging::info("logs.delete_all", &[("status", "success")]);
+            Ok(())
+        }
+        Err(error) => {
+            let message = error.to_string();
+            crate::logging::error(
+                "logs.delete_all",
+                &[("status", "failed"), ("error", &message)],
+            );
+            Err(message)
+        }
+    }
 }
 
 #[tauri::command]
@@ -40,15 +48,31 @@ pub async fn export_logs(state: tauri::State<'_, Ctx>, file_path: String) -> Res
         .logs()
         .get_session_expanded_logs(None, None)
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|error| {
+            let message = error.to_string();
+            crate::logging::error("logs.export", &[("status", "failed"), ("error", &message)]);
+            message
+        })?;
     let count = logs.len();
 
     // 2. ファイルを作成
-    let file = File::create(file_path).map_err(|e| e.to_string())?;
+    let file = File::create(&file_path).map_err(|error| {
+        let message = error.to_string();
+        crate::logging::error("logs.export", &[("status", "failed"), ("error", &message)]);
+        message
+    })?;
     let writer = BufWriter::new(file);
 
     // 3. JSONとして書き出し (Pretty Printで見やすく)
-    serde_json::to_writer_pretty(writer, &logs).map_err(|e| e.to_string())?;
+    serde_json::to_writer_pretty(writer, &logs).map_err(|error| {
+        let message = error.to_string();
+        crate::logging::error("logs.export", &[("status", "failed"), ("error", &message)]);
+        message
+    })?;
 
+    crate::logging::info(
+        "logs.export",
+        &[("status", "success"), ("count", &count.to_string())],
+    );
     Ok(count)
 }

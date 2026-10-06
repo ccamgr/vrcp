@@ -110,9 +110,17 @@ async inviteMyself(worldId: string, instanceId: string) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async logDirectLaunchFailure(worldId: string, instanceId: string, launchUrl: string, errorName: string, errorMessage: string, errorStack: string | null) : Promise<Result<null, string>> {
+async logDirectLaunchResult(worldId: string, instanceId: string, status: string, error: string | null) : Promise<Result<null, string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_failure", { worldId, instanceId, launchUrl, errorName, errorMessage, errorStack }) };
+    return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_result", { worldId, instanceId, status, error }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async logAutostartChange(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("log_autostart_change", { enabled }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };

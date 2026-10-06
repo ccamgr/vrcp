@@ -1,19 +1,11 @@
 pub mod cmds;
 pub mod contracts;
 pub mod db;
+pub mod logging;
 pub mod modules;
 pub mod utils;
-use std::{
-    fs::{self, OpenOptions},
-    io::Write,
-    path::{Path, PathBuf},
-};
 use tauri::Manager;
 use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
-
-const ERROR_LOG_FILE_NAME: &str = "error.log";
-const LEGACY_STARTUP_ERROR_LOG_FILE_NAME: &str = "startup-error.log";
-const MAX_ERROR_LOG_ARCHIVES: usize = 5;
 
 pub struct Ctx {
     db: db::DB,
@@ -22,109 +14,10 @@ pub struct Ctx {
     vrcapi: modules::VrcApiService,
 }
 
-fn error_log_dir() -> Option<PathBuf> {
-    dirs::data_local_dir().map(|data_dir| data_dir.join("VRCP"))
-}
-
-fn error_log_path(log_dir: &Path) -> PathBuf {
-    log_dir.join(ERROR_LOG_FILE_NAME)
-}
-
-fn archive_error_log_path(log_dir: &Path) -> PathBuf {
-    let timestamp = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S");
-    let mut path = log_dir.join(format!("{timestamp}.log"));
-    let mut suffix = 1;
-    while path.exists() {
-        path = log_dir.join(format!("{timestamp}-{suffix}.log"));
-        suffix += 1;
-    }
-    path
-}
-
-fn is_error_log_archive(path: &Path) -> bool {
-    let Some(name) = path.file_name().and_then(|name| name.to_str()) else {
-        return false;
-    };
-    if name.len() < 23 || !name.ends_with(".log") {
-        return false;
-    }
-
-    chrono::NaiveDateTime::parse_from_str(&name[..19], "%Y-%m-%d_%H-%M-%S").is_ok()
-}
-
-fn prune_error_log_archives(log_dir: &Path) {
-    let Ok(entries) = fs::read_dir(log_dir) else {
-        return;
-    };
-    let mut archives: Vec<PathBuf> = entries
-        .flatten()
-        .map(|entry| entry.path())
-        .filter(|path| is_error_log_archive(path))
-        .collect();
-    archives.sort();
-
-    for archive in archives.into_iter().rev().skip(MAX_ERROR_LOG_ARCHIVES) {
-        let _ = fs::remove_file(archive);
-    }
-}
-
-fn migrate_legacy_startup_error_log(log_dir: &Path) {
-    let legacy_path = log_dir.join(LEGACY_STARTUP_ERROR_LOG_FILE_NAME);
-    let Ok(legacy_contents) = fs::read_to_string(&legacy_path) else {
-        return;
-    };
-    if legacy_contents.is_empty() {
-        let _ = fs::remove_file(legacy_path);
-        return;
-    }
-
-    let log_path = error_log_path(log_dir);
-    if let Ok(mut file) = OpenOptions::new().create(true).append(true).open(log_path) {
-        let _ = writeln!(file, "[legacy startup-error.log]");
-        let _ = write!(file, "{legacy_contents}");
-        let _ = fs::remove_file(legacy_path);
-    }
-}
-
-pub(crate) fn initialize_error_log() {
-    let Some(log_dir) = error_log_dir() else {
-        return;
-    };
-    if fs::create_dir_all(&log_dir).is_err() {
-        return;
-    }
-
-    let log_path = error_log_path(&log_dir);
-    if log_path.exists() {
-        let _ = fs::rename(&log_path, archive_error_log_path(&log_dir));
-    }
-    prune_error_log_archives(&log_dir);
-    migrate_legacy_startup_error_log(&log_dir);
-    append_error_log("VRCP Desktop started");
-}
-
-pub(crate) fn append_error_log(message: &str) {
-    let Some(log_dir) = error_log_dir() else {
-        return;
-    };
-    if fs::create_dir_all(&log_dir).is_err() {
-        return;
-    }
-
-    let timestamp = chrono::Local::now().to_rfc3339();
-    if let Ok(mut file) = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(error_log_path(&log_dir))
-    {
-        let _ = writeln!(file, "[{timestamp}] {message}");
-    }
-}
-
 fn install_startup_panic_hook() {
     let default_hook = std::panic::take_hook();
     std::panic::set_hook(Box::new(move |panic_info| {
-        append_error_log(&format!("panic: {panic_info}"));
+        logging::error("app.panic", &[("message", &panic_info.to_string())]);
         default_hook(panic_info);
     }));
 }
@@ -149,7 +42,8 @@ pub fn create_specta_builder() -> SpectaBuilder {
             cmds::vrcapi::auth::check_auth,
             cmds::vrcapi::friends::get_friend_instances,
             cmds::vrcapi::invite::invite_myself,
-            cmds::app::log_direct_launch_failure
+            cmds::app::log_direct_launch_result,
+            cmds::app::log_autostart_change
         ])
         .events(collect_events![
             modules::watcher::LogPayload,
@@ -163,7 +57,7 @@ pub fn create_specta_builder() -> SpectaBuilder {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    initialize_error_log();
+    logging::initialize();
     install_startup_panic_hook();
     let builder = create_specta_builder();
 
@@ -200,7 +94,7 @@ pub fn run() {
             let backfill_db = db.clone();
             tauri::async_runtime::spawn(async move {
                 if let Err(error) = backfill_db.backfill_sessions().await {
-                    eprintln!("Session backfill failed: {error}");
+                    logging::error("session.backfill", &[("error", &error.to_string())]);
                 }
             });
 
@@ -222,7 +116,7 @@ pub fn run() {
             let args: Vec<String> = std::env::args().collect();
             let minimized = args.contains(&"--minimized".to_string());
             if minimized {
-                println!("Auto-started in background. Window remains hidden.");
+                logging::info("app.start", &[("mode", "minimized")]);
             } else {
                 // 自動起動じゃない（手動起動）なら、ウィンドウを表示する
                 if let Some(window) = app.get_webview_window("main") {
@@ -244,6 +138,6 @@ pub fn run() {
         .run(tauri::generate_context!());
 
     if let Err(error) = result {
-        append_error_log(&format!("Tauri runtime error: {error}"));
+        logging::error("app.runtime", &[("error", &error.to_string())]);
     }
 }

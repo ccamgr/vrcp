@@ -251,18 +251,12 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
     if let Ok(Some(saved_state)) = db.settings().get_watcher_state().await {
         if saved_state.log_path == current_path_str && !current_path_str.is_empty() {
-            println!(
-                "Resuming watcher from position: {}",
-                saved_state.last_position
-            );
+            crate::logging::info("watcher.resume", &[("status", "success")]);
             current_position = saved_state.last_position;
             is_app_running = saved_state.is_running;
             last_seen_timestamp = str_to_i64(&saved_state.last_timestamp);
         } else if !saved_state.log_path.is_empty() {
-            println!(
-                "Rotation detected. Re-scanning old log fully: {}",
-                saved_state.log_path
-            );
+            crate::logging::info("watcher.rescan", &[("status", "started")]);
 
             let old_path = PathBuf::from(&saved_state.log_path);
             if old_path.exists() {
@@ -272,16 +266,19 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     for l in reader.lines().map_while(Result::ok) {
                         if let Some(payload) = parse_log_line(&l) {
                             if let Err(error) = db.record_log(&payload).await {
-                                eprintln!("Failed to record rescanned log: {error}");
+                                crate::logging::error(
+                                    "watcher.record_rescan",
+                                    &[("error", &error.to_string())],
+                                );
                             }
                         }
                     }
                 }
             } else {
-                println!("Old log file not found. Skipping.");
+                crate::logging::warn("watcher.rescan", &[("status", "source_missing")]);
             }
 
-            println!("Switching to new log file: {:?}", current_log_path);
+            crate::logging::info("watcher.rotate", &[("status", "switched")]);
             current_position = 0;
             is_app_running = false;
             last_seen_timestamp = 0;
@@ -290,18 +287,15 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
 
     let mut reader = match &current_log_path {
         Some(path) => {
-            println!("Start watching log file: {:?}", path);
+            crate::logging::info("watcher.start", &[("status", "watching")]);
             File::open(path).ok().map(|mut f| {
                 let file_len = f.metadata().map(|m| m.len()).unwrap_or(0);
                 if current_position > file_len {
-                    println!(
-                        "Saved position {} > File length {}. Resetting to 0.",
-                        current_position, file_len
-                    );
+                    crate::logging::warn("watcher.seek", &[("status", "reset")]);
                     current_position = 0;
                 }
                 if let Err(e) = f.seek(SeekFrom::Start(current_position)) {
-                    eprintln!("Seek failed: {}, resetting to 0", e);
+                    crate::logging::warn("watcher.seek", &[("error", &e.to_string())]);
                     let _ = f.seek(SeekFrom::Start(0));
                     current_position = 0;
                 }
@@ -309,7 +303,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
             })
         }
         None => {
-            println!("No VRChat log file found yet.");
+            crate::logging::info("watcher.start", &[("status", "waiting_for_log")]);
             None
         }
     };
@@ -345,11 +339,19 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                         match db.record_log(&payload).await {
                             Ok(true) => {
                                 if let Err(error) = LogPayload::emit(&payload, &app) {
-                                    eprintln!("Failed to emit watched log: {error}");
+                                    crate::logging::error(
+                                        "watcher.emit",
+                                        &[("error", &error.to_string())],
+                                    );
                                 }
                             }
                             Ok(false) => {}
-                            Err(error) => eprintln!("Failed to record watched log: {error}"),
+                            Err(error) => {
+                                crate::logging::error(
+                                    "watcher.record",
+                                    &[("error", &error.to_string())],
+                                );
+                            }
                         }
                         records_activity
                     } else {
@@ -361,7 +363,10 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             .filter(|timestamp| *timestamp > last_session_activity_timestamp)
                         {
                             if let Err(error) = db.touch_active_session(timestamp).await {
-                                eprintln!("Failed to record session activity: {error}");
+                                crate::logging::error(
+                                    "watcher.session_activity",
+                                    &[("error", &error.to_string())],
+                                );
                             } else {
                                 last_session_activity_timestamp = timestamp;
                             }
@@ -381,7 +386,9 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     line.clear();
                     read_success = true;
                 }
-                Err(e) => eprintln!("Error reading log: {}", e),
+                Err(e) => {
+                    crate::logging::error("watcher.read", &[("error", &e.to_string())]);
+                }
             }
         }
 
@@ -394,7 +401,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                     last_position: current_position,
                 };
                 if let Err(error) = db.settings().save_watcher_state(&state).await {
-                    eprintln!("Failed to save watcher state: {error}");
+                    crate::logging::error("watcher.save_state", &[("error", &error.to_string())]);
                 }
                 last_db_sync = Instant::now();
             }
@@ -410,7 +417,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                 let latest = get_latest_log_path();
 
                 if latest != current_log_path {
-                    println!("Log rotation detected!");
+                    crate::logging::info("watcher.rotate", &[("status", "detected")]);
 
                     current_log_path = latest.clone();
                     is_app_running = false;
@@ -428,7 +435,7 @@ async fn watch_loop(app: AppHandle, db: DB, shared_status: Arc<RwLock<WatcherSta
                             last_timestamp: i64_to_str(last_seen_timestamp),
                             last_position: 0,
                         }).await {
-                            eprintln!("Failed to save watcher state after log rotation: {error}");
+                            crate::logging::error("watcher.save_state", &[("error", &error.to_string())]);
                         }
                     }
 
