@@ -1,26 +1,12 @@
-# Project Description
-本プロジェクトは VRCP というVRChatAPIの非公式クライアントアプリと、その関連物のためのプロジェクトです．
-本プロジェクトは，`desktop` (Tauri), `mobile` (Expo), `pages` (Astro) の3つのサブプロジェクトで構成されています．変更を加える際は，現在どのサブプロジェクトの文脈であるかを常に意識し，他のディレクトリの環境を破壊しないように注意してください．
+# Codex Instructions for VRCP
 
-各サブプロジェクトの役割は以下の通りです：
-- `desktop`プロジェクト: VRChatAPIのクライアント機能+VRChatのログ記録機能 を提供する，Tauriベースのデスクトップアプリケーション（Rust + React/TypeScript）．
-- `mobile`プロジェクト: VRChatAPIのクライアント機能+デスクトップアプリとの連携機能 を提供する，Expoベースのモバイルアプリケーション（React Native）．
-- `pages`プロジェクト: プロジェクトのドキュメントや紹介Webサイトを提供する，Astroベースの静的サイト．
+このファイルは Codex の入口です。プロジェクト規約の正本は [`.agents/`](.agents/) にあります。作業前に必ず [`.agents/common.md`](.agents/common.md) を読み、対象に応じて次の規約と `AGENTS.md` を読みます。
 
-# Output Rules
-- ソースコード内のコメントは絵文字を使わず，すべて英語 (English) で簡潔に記述すること．
-- 複雑なロジックや用途がわかりづらいなど，特に説明が必要な部分のみソースコード内にコメントを記述してよい．
-- 変更のログ，覚え書きなどはソースコード内に記載しないこと．
-- 修正，実装に直接関係のない機能のソースコードは同意なく書き換えないこと．
+| 対象 | 追加で読む規約 |
+| --- | --- |
+| `desktop/` | [`.agents/desktop/instructions.md`](.agents/desktop/instructions.md) と [`desktop/AGENTS.md`](desktop/AGENTS.md) |
+| `mobile/` | [`.agents/mobile/instructions.md`](.agents/mobile/instructions.md) と [`mobile/AGENTS.md`](mobile/AGENTS.md) |
+| `pages/` | [`.agents/pages/instructions.md`](.agents/pages/instructions.md) と [`pages/AGENTS.md`](pages/AGENTS.md) |
+| `docs/`、`.agents/`、デプロイ・リリース | [`.agents/documentation.md`](.agents/documentation.md) |
 
-# Monorepo Rules
-各ディレクトリで作業を行う際は，作業前に**必ず**以下の専用ルールファイルを読み込み，その内容を最優先で遵守してください．
-ただし，各ファイル内での`ルートディレクトリ`という文言はそれぞれのディレクトリに読み替えること．
-- `desktop/` の作業時: `desktop/AGENTS.md` を読み込むこと．
-- `mobile/` の作業時: `mobile/AGENTS.md` を読み込むこと．
-- `pages/` の作業時: `pages/AGENTS.md` を読み込むこと．
-
-# AI Agent Guide
-作業開始時に [`.agent/README.md`](.agent/README.md) を読み、対象に応じて `.agent/` 配下の共通規約と `docs/` 配下のプロジェクト概要を参照してください。
-
-このファイルと各サブプロジェクトの `AGENTS.md` は実装時の必須ルールです。内容に相違がある場合は、より対象ディレクトリに近い `AGENTS.md` を優先します。
+規約本文をこのファイルへ複製しません。対象別規約と共通規約が矛盾するときは、対象別規約を優先します。

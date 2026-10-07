@@ -1,5 +1,5 @@
-# Claude Code entry point
+# Claude Code Entrypoint
 
-このリポジトリで作業を始める前に、[`.agent/README.md`](.agent/README.md) を読み、対象ディレクトリに対応する `AGENTS.md` のルールを確認してください。
+@AGENTS.md
 
-実装時は [ルートの AGENTS.md](AGENTS.md) と、対象サブプロジェクトの `AGENTS.md` を必須ルールとして扱います。
+対象パス別の追加規約は `.claude/rules/` にあります。共通規約と対象別規約の正本は `.agents/` です。
