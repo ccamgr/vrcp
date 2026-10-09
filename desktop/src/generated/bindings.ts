@@ -110,9 +110,9 @@ async inviteMyself(worldId: string, instanceId: string) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async logDirectLaunchResult(worldId: string, instanceId: string, status: string, error: string | null) : Promise<Result<null, string>> {
+async logDirectLaunchResult(worldId: string, instanceId: string, launchUrl: string, status: string, error: string | null) : Promise<Result<null, string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_result", { worldId, instanceId, status, error }) };
+    return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_result", { worldId, instanceId, launchUrl, status, error }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };

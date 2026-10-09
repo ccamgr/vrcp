@@ -98,7 +98,7 @@ export default function HistoryListView({
     try {
       await openUrl(launchUrl);
       void commands
-        .logDirectLaunchResult(worldId, instanceId, "dispatched", null)
+        .logDirectLaunchResult(worldId, instanceId, launchUrl, "dispatched", null)
         .catch((loggingError) =>
           console.error("Failed to write direct launch log", loggingError),
         );
@@ -106,7 +106,7 @@ export default function HistoryListView({
     } catch (error) {
       console.error("Failed to launch VRChat", error);
       void commands
-        .logDirectLaunchResult(worldId, instanceId, "failed", String(error))
+        .logDirectLaunchResult(worldId, instanceId, launchUrl, "failed", String(error))
         .catch((loggingError) =>
           console.error("Failed to write direct launch error log", loggingError),
         );
