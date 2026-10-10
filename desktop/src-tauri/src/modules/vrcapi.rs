@@ -1,14 +1,45 @@
 use crate::utils::constants;
 use keyring::Entry;
-use reqwest::Client;
+use reqwest::{Client, Request, Response};
 use reqwest_cookie_store::CookieStoreMutex;
-use reqwest_middleware::ClientBuilder;
+use reqwest_middleware::{ClientBuilder, Middleware, Next, Result as MiddlewareResult};
 use std::path::PathBuf;
 use std::sync::Arc;
 use vrchatapi::apis::configuration::Configuration;
 
 const KEYRING_SERVICE: &str = "cc.amgr.vrcp.desktop";
 const KEYRING_ACCOUNT: &str = "vrchat-cookie-store";
+
+struct ApiResponseLogger;
+
+#[async_trait::async_trait]
+impl Middleware for ApiResponseLogger {
+    async fn handle(
+        &self,
+        request: Request,
+        extensions: &mut http::Extensions,
+        next: Next<'_>,
+    ) -> MiddlewareResult<Response> {
+        let method = request.method().to_string();
+        let url = request.url().to_string();
+        let response = next.run(request, extensions).await?;
+        let status = response.status();
+        let raw_response: http::Response<reqwest::Body> = response.into();
+        let (parts, body) = raw_response.into_parts();
+        let headers = parts.headers.clone();
+        let version = parts.version;
+        let body = Response::from(http::Response::from_parts(parts, body));
+        let bytes = body.bytes().await?;
+        let content = String::from_utf8_lossy(&bytes);
+        crate::logging::api_response(&method, &url, status.as_u16(), &content);
+
+        let mut rebuilt = http::Response::new(bytes);
+        *rebuilt.status_mut() = status;
+        *rebuilt.version_mut() = version;
+        *rebuilt.headers_mut() = headers;
+        Ok(Response::from(rebuilt))
+    }
+}
 
 // Service struct to manage VRChat API state
 #[derive(Clone)]
@@ -46,7 +77,7 @@ impl VrcApiService {
 
         // 4. Set up VRChat API configuration
         let mut config = Configuration::new();
-        config.client = ClientBuilder::new(client).build();
+        config.client = ClientBuilder::new(client).with(ApiResponseLogger).build();
         config.user_agent = Some(constants::get_user_agent());
 
         Ok(Self {
@@ -70,9 +101,18 @@ impl VrcApiService {
             let mut store = self.cookie_store.lock().unwrap();
             store.clear(); // reqwest_cookie_store の中身を空にする
         }
-        cookie_entry()?
-            .delete_credential()
-            .map_err(|e| format!("Failed to remove cookies from the OS credential store: {e}"))
+        match cookie_entry()?.delete_credential() {
+            Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
+            Err(error) => Err(format!(
+                "Failed to remove cookies from the OS credential store: {error}"
+            )),
+        }
+    }
+
+    pub fn discard_cookies(&self) {
+        if let Err(error) = self.clear_cookies() {
+            crate::logging::warn("credential_store.clear", &[("error", &error)]);
+        }
     }
 }
 

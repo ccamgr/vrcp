@@ -44,6 +44,8 @@ anyhow = "1.0.100"
 reqwest = { version = "0.13", features = ["json", "cookies"] }
 reqwest_cookie_store = "0.10"
 reqwest-middleware = "0.5"
+async-trait = "0.1"
+http = "1"
 vrchatapi = "1.21.0"
 keyring = "4.2"
 

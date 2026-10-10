@@ -7050,11 +7050,13 @@ name = "vrcp"
 version = "0.0.2"
 dependencies = [
  "anyhow",
+ "async-trait",
  "axum",
  "chrono",
  "clap",
  "dirs 6.0.0",
  "encoding_rs",
+ "http",
  "keyring",
  "libsqlite3-sys",
  "local-ip-address",

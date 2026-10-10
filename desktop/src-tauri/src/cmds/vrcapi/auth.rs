@@ -94,6 +94,9 @@ pub async fn login(
     password: String,
     state: State<'_, Ctx>,
 ) -> Result<LoginResponse, String> {
+    // A pending 2FA cookie is scoped to the previous login attempt and prevents
+    // VRChat from issuing a fresh email OTP for a new attempt.
+    state.vrcapi.discard_cookies();
     let mut config = state.vrcapi.config.lock().await;
 
     // Set Basic Auth credentials

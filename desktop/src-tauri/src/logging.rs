@@ -80,6 +80,39 @@ pub fn error(action: &str, fields: &[(&str, &str)]) {
     write(Level::Error, action, fields);
 }
 
+pub fn api_response(method: &str, url: &str, status: u16, body: &str) {
+    let Some(log_dir) = log_dir() else {
+        return;
+    };
+    if fs::create_dir_all(&log_dir).is_err() {
+        return;
+    }
+
+    let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f %:z");
+    let body = serde_json::from_str::<serde_json::Value>(body)
+        .map(|value| value.to_string())
+        .unwrap_or_else(|_| serde_json::to_string(body).unwrap_or_else(|_| "null".to_string()));
+    let line = format!(
+        "{timestamp} [{:<5}] action=api.response method={} url={} status={} response={body}",
+        Level::Info.label(),
+        format_value("method", method),
+        format_value("url", url),
+        status,
+    );
+
+    let _state = LOGGER_STATE
+        .lock()
+        .unwrap_or_else(|error| error.into_inner());
+    rotate_if_size_limit_reached(&log_dir, line.len() as u64 + 1);
+    if let Ok(mut file) = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(current_log_path(&log_dir))
+    {
+        let _ = writeln!(file, "{line}");
+    }
+}
+
 fn write(level: Level, action: &str, fields: &[(&str, &str)]) {
     let Some(log_dir) = log_dir() else {
         return;
