@@ -94,7 +94,7 @@ async checkAuth() : Promise<Result<LoginResponse, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async getFriendInstances() : Promise<Result<FriendInstance[], string>> {
+async getFriendInstances() : Promise<Result<FriendInstancesResponse, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_friend_instances") };
 } catch (e) {
@@ -147,6 +147,7 @@ vrcLogEvent: "vrc-log-event"
 
 export type AuthUser = { displayName: string; iconUrl: string | null }
 export type FriendInstance = { worldId: string; instanceId: string; worldName: string; worldThumbnailUrl: string | null; friends: FriendPresence[] }
+export type FriendInstancesResponse = { instances: FriendInstance[]; favoriteSortAvailable: boolean }
 export type FriendPresence = { id: string; displayName: string; iconUrl: string | null; status: string }
 export type Interval = { start: number; end: number }
 export type LogPayload = { event: VrcLogEvent; timestamp: number; hash: number }

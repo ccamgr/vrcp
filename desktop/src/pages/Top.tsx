@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
-import { MapPin, RefreshCw, Users } from "lucide-react";
+import {
+  Check,
+  ExternalLink,
+  LoaderCircle,
+  MapPin,
+  RefreshCw,
+  Send,
+  Users,
+} from "lucide-react";
 import { commands, type FriendInstance } from "../generated/bindings";
 import { useAuth } from "../context/AuthContext";
+import { confirmDirectLaunch } from "../lib/native";
+import { launchDirectInstance, sendSelfInvite } from "../lib/vrchat";
 
 const unwrap = <T,>(
   result: { status: "ok"; data: T } | { status: "error"; error: string },
@@ -15,16 +25,36 @@ const unwrap = <T,>(
 export default function Top() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const [instances, setInstances] = useState<FriendInstance[]>([]);
+  const [isFavoriteSortAvailable, setIsFavoriteSortAvailable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [invitingInstanceKey, setInvitingInstanceKey] = useState<string | null>(null);
+  const [launchingInstanceKey, setLaunchingInstanceKey] = useState<string | null>(null);
+  const [confirmingLaunchInstanceKey, setConfirmingLaunchInstanceKey] = useState<string | null>(
+    null,
+  );
+  const [invitedInstanceKey, setInvitedInstanceKey] = useState<string | null>(null);
+  const [launchedInstanceKey, setLaunchedInstanceKey] = useState<string | null>(null);
+  const [inviteFailedInstanceKey, setInviteFailedInstanceKey] = useState<string | null>(null);
+  const [launchFailedInstanceKey, setLaunchFailedInstanceKey] = useState<string | null>(null);
+
+  const getInstanceKey = (instance: FriendInstance) =>
+    `${instance.worldId}:${instance.instanceId}`;
 
   const loadInstances = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
     setError(null);
+    setIsFavoriteSortAvailable(true);
+    setInvitedInstanceKey(null);
+    setLaunchedInstanceKey(null);
+    setInviteFailedInstanceKey(null);
+    setLaunchFailedInstanceKey(null);
     try {
-      setInstances(unwrap(await commands.getFriendInstances()));
+      const response = unwrap(await commands.getFriendInstances());
+      setInstances(response.instances);
+      setIsFavoriteSortAvailable(response.favoriteSortAvailable);
     } catch (loadError) {
       console.error("Failed to load friend instances", loadError);
       setError(loadError instanceof Error ? loadError.message : String(loadError));
@@ -33,10 +63,54 @@ export default function Top() {
     }
   }, [user]);
 
+  const handleInvite = async (instance: FriendInstance) => {
+    const instanceKey = getInstanceKey(instance);
+    setInvitingInstanceKey(instanceKey);
+    setInviteFailedInstanceKey(null);
+    try {
+      await sendSelfInvite(instance.worldId, instance.instanceId);
+      setInvitedInstanceKey(instanceKey);
+    } catch (inviteError) {
+      console.error("Failed to send self-invite", inviteError);
+      setInviteFailedInstanceKey(instanceKey);
+    } finally {
+      setInvitingInstanceKey(null);
+    }
+  };
+
+  const handleDirectLaunch = async (instance: FriendInstance) => {
+    const instanceKey = getInstanceKey(instance);
+    setConfirmingLaunchInstanceKey(instanceKey);
+    let confirmed = false;
+    try {
+      confirmed = await confirmDirectLaunch(instance.worldName);
+    } catch (confirmationError) {
+      console.error("Failed to show direct launch confirmation", confirmationError);
+      setLaunchFailedInstanceKey(instanceKey);
+      return;
+    } finally {
+      setConfirmingLaunchInstanceKey(null);
+    }
+    if (!confirmed) return;
+
+    setLaunchingInstanceKey(instanceKey);
+    setLaunchFailedInstanceKey(null);
+    try {
+      await launchDirectInstance(instance.worldId, instance.instanceId);
+      setLaunchedInstanceKey(instanceKey);
+    } catch (launchError) {
+      console.error("Failed to launch VRChat", launchError);
+      setLaunchFailedInstanceKey(instanceKey);
+    } finally {
+      setLaunchingInstanceKey(null);
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       setInstances([]);
       setError(null);
+      setIsFavoriteSortAvailable(true);
       return;
     }
     void loadInstances();
@@ -86,6 +160,12 @@ export default function Top() {
             Failed to load friend instances: {error}
           </div>
         )}
+        {!error && !isFavoriteSortAvailable && (
+          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
+            Favorite friend data could not be loaded. Instances are sorted by total
+            friend count.
+          </div>
+        )}
         {isLoading && instances.length === 0 ? (
           <div className="text-slate-400">Loading friend instances...</div>
         ) : instances.length === 0 ? (
@@ -94,58 +174,133 @@ export default function Top() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {instances.map((instance) => (
-              <section
-                key={`${instance.worldId}:${instance.instanceId}`}
-                className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800/40"
-              >
-                <div className="flex gap-4 p-4">
-                  {instance.worldThumbnailUrl ? (
-                    <img
-                      src={instance.worldThumbnailUrl}
-                      alt=""
-                      className="h-20 w-28 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-20 w-28 items-center justify-center rounded-lg bg-slate-700 text-slate-400">
-                      <MapPin size={24} />
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-semibold">{instance.worldName}</h3>
-                    <p className="mt-1 truncate font-mono text-xs text-slate-400">
-                      {instance.instanceId}
-                    </p>
-                    <p className="mt-3 flex items-center gap-1 text-sm text-blue-300">
-                      <Users size={15} />
-                      {instance.friends.length} friend{instance.friends.length === 1 ? "" : "s"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 border-t border-slate-700/70 p-3">
-                  {instance.friends.map((friend) => (
-                    <div
-                      key={friend.id}
-                      title={friend.status}
-                      className="flex max-w-full items-center gap-2 rounded-full bg-slate-700/70 py-1 pl-1 pr-3 text-sm"
-                    >
-                      {friend.iconUrl ? (
-                        <img
-                          src={friend.iconUrl}
-                          alt=""
-                          className="h-6 w-6 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-600 text-xs">
-                          {friend.displayName.slice(0, 1).toUpperCase()}
+            {instances.map((instance) => {
+              const instanceKey = getInstanceKey(instance);
+              const isInviting = invitingInstanceKey === instanceKey;
+              const isLaunching = launchingInstanceKey === instanceKey;
+              const isConfirmingLaunch = confirmingLaunchInstanceKey === instanceKey;
+              const isInvited = invitedInstanceKey === instanceKey;
+              const isLaunched = launchedInstanceKey === instanceKey;
+              const inviteFailed = inviteFailedInstanceKey === instanceKey;
+              const launchFailed = launchFailedInstanceKey === instanceKey;
+              const inviteLabel = isInviting
+                ? "Sending self-invite"
+                : isInvited
+                  ? "Invite sent"
+                  : "Invite myself";
+              const launchLabel = isConfirmingLaunch
+                ? "Confirming direct launch"
+                : isLaunching
+                  ? "Launching VRChat"
+                  : isLaunched
+                    ? "Launch requested"
+                    : "Launch VRChat and join this instance directly";
+
+              return (
+                <section
+                  key={instanceKey}
+                  className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800/40"
+                >
+                  <div className="flex gap-4 p-4">
+                    {instance.worldThumbnailUrl ? (
+                      <img
+                        src={instance.worldThumbnailUrl}
+                        alt=""
+                        className="h-20 w-28 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-20 w-28 items-center justify-center rounded-lg bg-slate-700 text-slate-400">
+                        <MapPin size={24} />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="truncate font-semibold">{instance.worldName}</h3>
+                        <div className="flex shrink-0 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => void handleInvite(instance)}
+                            disabled={isInviting || isLaunching || isInvited}
+                            title={inviteLabel}
+                            aria-label={inviteLabel}
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-blue-500/50 bg-blue-600 text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+                          >
+                            {isInviting ? (
+                              <LoaderCircle size={14} className="animate-spin" />
+                            ) : isInvited ? (
+                              <Check size={14} />
+                            ) : (
+                              <Send size={14} />
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void handleDirectLaunch(instance)}
+                            disabled={
+                              isInviting ||
+                              isLaunching ||
+                              isConfirmingLaunch ||
+                              isLaunched
+                            }
+                            title={launchLabel}
+                            aria-label={launchLabel}
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-emerald-500/50 bg-emerald-600 text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+                          >
+                            {isConfirmingLaunch || isLaunching ? (
+                              <LoaderCircle size={14} className="animate-spin" />
+                            ) : isLaunched ? (
+                              <Check size={14} />
+                            ) : (
+                              <ExternalLink size={14} />
+                            )}
+                          </button>
                         </div>
-                      )}
-                      <span className="truncate">{friend.displayName}</span>
+                      </div>
+                      <p className="mt-1 truncate font-mono text-xs text-slate-400">
+                        {instance.instanceId}
+                      </p>
+                      <p className="mt-3 flex items-center gap-1 text-sm text-blue-300">
+                        <Users size={15} />
+                        {instance.friends.length} friend
+                        {instance.friends.length === 1 ? "" : "s"}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </section>
-            ))}
+                  </div>
+                  {inviteFailed && (
+                    <p className="border-t border-slate-700/70 bg-red-950/40 px-3 py-2 text-xs text-red-300">
+                      Failed to send the invite. Confirm that you are logged in and the instance is still available.
+                    </p>
+                  )}
+                  {launchFailed && (
+                    <p className="border-t border-slate-700/70 bg-red-950/40 px-3 py-2 text-xs text-red-300">
+                      Failed to launch VRChat. Confirm that VRChat is installed and the instance is still available.
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2 border-t border-slate-700/70 p-3">
+                    {instance.friends.map((friend) => (
+                      <div
+                        key={friend.id}
+                        title={friend.status}
+                        className="flex max-w-full items-center gap-2 rounded-full bg-slate-700/70 py-1 pl-1 pr-3 text-sm"
+                      >
+                        {friend.iconUrl ? (
+                          <img
+                            src={friend.iconUrl}
+                            alt=""
+                            className="h-6 w-6 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-600 text-xs">
+                            {friend.displayName.slice(0, 1).toUpperCase()}
+                          </div>
+                        )}
+                        <span className="truncate">{friend.displayName}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         )}
       </div>

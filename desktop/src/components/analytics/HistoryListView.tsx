@@ -1,13 +1,12 @@
 // ============================================================================
 //  List View Components (Existing)
 
-import { Check, Clock, ExternalLink, MapPin, Send, User } from "lucide-react";
+import { Check, Clock, ExternalLink, LoaderCircle, MapPin, Send, User } from "lucide-react";
 import { useState } from "react";
-import { openUrl } from "@tauri-apps/plugin-opener";
 import { PlayerInterval, SessionPayload } from "../../generated/bindings";
-import { commands } from "../../generated/bindings";
 import { formatTime } from "../../lib/date";
 import { confirmDirectLaunch } from "../../lib/native";
+import { launchDirectInstance, sendSelfInvite } from "../../lib/vrchat";
 
 export default function HistoryListView({
   sessions,
@@ -51,10 +50,7 @@ export default function HistoryListView({
     setInvitingSessionId(session.sourceId);
     setInviteFailedSessionId(null);
     try {
-      const result = await commands.inviteMyself(worldId, instanceId);
-      if (result.status === "error") {
-        throw new Error(result.error);
-      }
+      await sendSelfInvite(worldId, instanceId);
       setInvitedSessionId(session.sourceId);
     } catch (error) {
       console.error("Failed to send self-invite", error);
@@ -91,25 +87,13 @@ export default function HistoryListView({
     }
     if (!confirmed) return;
 
-    // Do not use URL here: VRChat does not decode encoded instance separators.
-    const launchUrl = `vrchat://launch/?ref=vrcp&id=${worldId}:${instanceId}&attach=1`;
     setLaunchingSessionId(session.sourceId);
     setLaunchFailedSessionId(null);
     try {
-      await openUrl(launchUrl);
-      void commands
-        .logDirectLaunchResult(worldId, instanceId, launchUrl, "dispatched", null)
-        .catch((loggingError) =>
-          console.error("Failed to write direct launch log", loggingError),
-        );
+      await launchDirectInstance(worldId, instanceId);
       setLaunchedSessionId(session.sourceId);
     } catch (error) {
       console.error("Failed to launch VRChat", error);
-      void commands
-        .logDirectLaunchResult(worldId, instanceId, launchUrl, "failed", String(error))
-        .catch((loggingError) =>
-          console.error("Failed to write direct launch error log", loggingError),
-        );
       setLaunchFailedSessionId(session.sourceId);
     } finally {
       setLaunchingSessionId(null);
@@ -162,6 +146,22 @@ function SessionCard({
 }) {
   const durationMin = Math.floor(session.durationMs / 1000 / 60);
   const canInvite = session.instanceId.startsWith("wrld_") && session.instanceId.includes(":");
+  const inviteLabel = !canInvite
+    ? "This session has no joinable instance ID"
+    : isInviting
+      ? "Sending self-invite"
+      : isInvited
+        ? "Invite sent"
+        : "Invite myself";
+  const launchLabel = !canInvite
+    ? "This session has no joinable instance ID"
+    : isConfirmingLaunch
+      ? "Confirming direct launch"
+      : isLaunching
+        ? "Launching VRChat"
+        : isLaunched
+          ? "Launch requested"
+          : "Launch VRChat and join this instance directly";
 
   return (
     <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-sm">
@@ -190,23 +190,16 @@ function SessionCard({
               type="button"
               onClick={() => onInvite(session)}
               disabled={!canInvite || isInviting || isLaunching || isInvited}
-              title={
-                canInvite
-                  ? "Send an invite to this instance"
-                  : "This session has no joinable instance ID"
-              }
-              className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/50 bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+              title={inviteLabel}
+              aria-label={inviteLabel}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-blue-500/50 bg-blue-600 text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
             >
               {isInviting ? (
-                "Sending..."
+                <LoaderCircle size={15} className="animate-spin" />
               ) : isInvited ? (
-                <>
-                  <Check size={14} /> Invite sent
-                </>
+                <Check size={15} />
               ) : (
-                <>
-                  <Send size={14} /> Invite Myself
-                </>
+                <Send size={15} />
               )}
             </button>
             <button
@@ -219,23 +212,16 @@ function SessionCard({
                 isConfirmingLaunch ||
                 isLaunched
               }
-              title={
-                canInvite
-                  ? "Launch VRChat and join this instance directly"
-                  : "This session has no joinable instance ID"
-              }
-              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/50 bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
+              title={launchLabel}
+              aria-label={launchLabel}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-emerald-500/50 bg-emerald-600 text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700 disabled:text-slate-400"
             >
               {isConfirmingLaunch || isLaunching ? (
-                isConfirmingLaunch ? "Confirming..." : "Launching..."
+                <LoaderCircle size={15} className="animate-spin" />
               ) : isLaunched ? (
-                <>
-                  <Check size={14} /> Launch requested
-                </>
+                <Check size={15} />
               ) : (
-                <>
-                  <ExternalLink size={14} /> Join Directly
-                </>
+                <ExternalLink size={15} />
               )}
             </button>
           </div>
