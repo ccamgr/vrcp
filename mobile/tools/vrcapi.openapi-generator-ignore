@@ -1,0 +1,9 @@
+# .openapi-generator-ignore
+# not to generate these files
+
+# Documentation files
+docs/*
+docs/
+README.md
+.travis.yml
+git_push.sh

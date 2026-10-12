@@ -1,10 +1,10 @@
 import {
   CurrentUser,
-  InlineObject,
-  InlineObject4,
+  CurrentUserLoginResponse,
   PublicProfile,
   RequiresTwoFactorAuth,
   User,
+  UserResponse,
   UserStatus,
 } from "@/generated/vrcapi";
 
@@ -49,24 +49,25 @@ export const hasVrcIdPrefix = (
 ): value is string => typeof value === "string" && value.startsWith(prefix);
 
 export const isRequiresTwoFactorAuth = (
-  value: InlineObject,
-): value is RequiresTwoFactorAuth =>
+  value: CurrentUserLoginResponse,
+): value is CurrentUserLoginResponse & RequiresTwoFactorAuth =>
   isRecord(value) && Array.isArray(value.requiresTwoFactorAuth);
 
 export const isCurrentAccount = (
-  value: InlineObject,
-): value is CurrentAccount =>
+  value: CurrentUserLoginResponse,
+): value is CurrentUserLoginResponse & CurrentAccount =>
   isRecord(value) &&
   typeof value.id === "string" &&
   !isRequiresTwoFactorAuth(value);
 
 export const isCurrentUserRecord = (
-  value: InlineObject4,
-): value is CurrentUser => isRecord(value) && Array.isArray(value.friends);
+  value: UserResponse,
+): value is UserResponse & CurrentUser =>
+  isRecord(value) && Array.isArray(value.friends);
 
-export const toUserCore = (value: InlineObject4): User => {
+export const toUserCore = (value: UserResponse): User => {
   if (!isCurrentUserRecord(value)) {
-    return value;
+    return value as User;
   }
 
   return {
@@ -75,7 +76,7 @@ export const toUserCore = (value: InlineObject4): User => {
       "last_activity" in value && typeof value.last_activity === "string"
         ? value.last_activity
         : "",
-  };
+  } as User;
 };
 
 export const toUserPresentation = (

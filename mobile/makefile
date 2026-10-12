@@ -17,15 +17,22 @@ gen-oss:  # generate open source software notice
 .PHONY : gen-vrcapi gen-vrcpipe
 gen-vrcapi:  # generate the vrcapi types and clients from openapi spec
 # config on openapitools.json
-	@rm -rf ./src/generated/vrcapi/* ./src/generated/openapi.yaml
-	@curl -fsSL https://vrchat.community/openapi.yaml -o ./src/generated/openapi.yaml
-	@npx @openapitools/openapi-generator-cli generate \
+	@tmp_vrcapi_dir=./src/generated/vrcapi.tmp; \
+	rm -rf "$$tmp_vrcapi_dir" ./src/generated/openapi.yaml; \
+	mkdir -p "$$tmp_vrcapi_dir" && \
+	cp ./tools/vrcapi.openapi-generator-ignore "$$tmp_vrcapi_dir/.openapi-generator-ignore" && \
+	curl -fsSL https://github.com/vrchatapi/specification/releases/latest/download/openapi-3.0.yaml -o ./src/generated/openapi.yaml && \
+	npx @openapitools/openapi-generator-cli generate \
 		-i ./src/generated/openapi.yaml \
 		-g typescript-axios \
-		-o ./src/generated/vrcapi/ \
+		-o "$$tmp_vrcapi_dir" \
 		--additional-properties="useSingleRequestParameter=true" \
-		--inline-schema-name-mappings "Transaction_agreement=TransactionAgreementValue"
-	@rm -f ./src/generated/openapi.yaml
+		--inline-schema-name-mappings "Transaction_agreement=TransactionAgreementValue" && \
+	rm -rf ./src/generated/vrcapi && \
+	mv "$$tmp_vrcapi_dir" ./src/generated/vrcapi; \
+	status=$$?; \
+	rm -f ./src/generated/openapi.yaml; \
+	if [ $$status -ne 0 ]; then rm -rf "$$tmp_vrcapi_dir"; exit $$status; fi
 
 gen-vrcpipe: # generate the vrcpipe types from websocket spec
 	@npx tsx ./tools/gen-vrcpipe.ts
