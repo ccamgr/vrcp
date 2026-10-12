@@ -6,7 +6,7 @@ use vrchatapi::apis::authentication_api::{
 };
 use vrchatapi::apis::Error as ApiError;
 use vrchatapi::models::{
-    RegisterUserAccount200Response::{CurrentUser, RequiresTwoFactorAuth},
+    CurrentUserLoginResponse::{CurrentUser, RequiresTwoFactorAuth},
     TwoFactorAuthCode, TwoFactorEmailCode,
 };
 

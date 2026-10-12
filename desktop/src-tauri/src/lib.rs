@@ -10,7 +10,7 @@ use tauri_specta::{collect_commands, collect_events, Builder as SpectaBuilder};
 pub struct Ctx {
     db: db::DB,
     srv: modules::HttpSrv,
-    watcher: modules::WatcherService,
+    _watcher: modules::WatcherService,
     vrcapi: modules::VrcApiService,
 }
 
@@ -128,7 +128,7 @@ pub fn run() {
             let ctx = Ctx {
                 db,
                 srv,
-                watcher,
+                _watcher: watcher,
                 vrcapi,
             };
             app.manage(ctx); // グローバルステートとしてCtxを登録
