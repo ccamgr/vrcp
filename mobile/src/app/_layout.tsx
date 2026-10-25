@@ -3,12 +3,13 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppMenuProvider } from "@/contexts/AppMenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
-import { ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider, useTheme } from "@react-navigation/native";
 import { router, Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
   Platform,
+  StyleSheet,
   Text,
   useColorScheme,
   View,
@@ -40,6 +41,7 @@ SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
   const auth = useAuth();
+  const theme = useTheme();
   const pathname = usePathname();
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
@@ -91,15 +93,6 @@ function RootLayout() {
     );
   }
 
-  if (!isReady) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
-        <Text>Initializing local database...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <Stack
@@ -112,10 +105,24 @@ function RootLayout() {
         <Stack.Screen name="others" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
+      {!isReady && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size={48} color={theme.colors.primary} />
+        </View>
+      )}
       {/* <ConfirmAtFirstDialog /> */}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    justifyContent: "center",
+  },
+});
 
 export default function Root() {
   const cs = useColorScheme();

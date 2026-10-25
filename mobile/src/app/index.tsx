@@ -1,7 +1,6 @@
 import GenericModal from "@/components/layout/GenericModal";
 import GenericScreen from "@/components/layout/GenericScreen";
 import { Atag } from "@/components/view/Atag";
-import LoadingIndicator from "@/components/view/LoadingIndicator";
 import { fontSize, navigationBarHeight, spacing } from "@/configs/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Configuration, MiscellaneousApi } from "@/generated/vrcapi";
@@ -188,7 +187,6 @@ export default function Login() {
 
   return (
     <GenericScreen>
-      {auth.isLoading && <LoadingIndicator absolute />}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.containerCentered}>
           <View style={styles.logoPopup}>
