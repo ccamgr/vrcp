@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { vrcColors } from "@/configs/vrchat";
+import { FriendLocationFilter } from "@/lib/funcs/filterFriendLocations";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 
 type HomeTabVariant = "friend-locations" | "feeds" | "events";
@@ -13,6 +14,8 @@ export interface Setting {
   uiOptions_colorSchema: "light" | "dark" | "system";
   uiOptions_friendColor: string;
   uiOptions_favoriteFriendsColors: { [friendId: string]: string };
+  uiOptions_homeFriendLocationFilter: FriendLocationFilter;
+  uiOptions_friendLocationsFilter: FriendLocationFilter;
   // notifications
   notificationOptions_usePushNotification: boolean;
   notificationOptions_allowedNotificationTypes: string[];
@@ -35,6 +38,14 @@ const defaultSettings: Setting = {
   uiOptions_colorSchema: "system",
   uiOptions_friendColor: vrcColors.friend,
   uiOptions_favoriteFriendsColors: {},
+  uiOptions_homeFriendLocationFilter: {
+    enabledFavoriteGroups: {},
+    includeNonFavorite: false,
+  },
+  uiOptions_friendLocationsFilter: {
+    enabledFavoriteGroups: {},
+    includeNonFavorite: true,
+  },
   notificationOptions_usePushNotification: false,
   notificationOptions_allowedNotificationTypes: [],
   pipelineOptions_keepMsgNum: 100,

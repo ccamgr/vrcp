@@ -112,6 +112,10 @@
       "itemDescription_friendColor": "Wählen Sie das Farbschema für Ihre Freunde.",
       "itemLabel_favoriteFriendsColors": "Farbe für favorisierte Freunde",
       "itemDescription_favoriteFriendsColors": "Wählen Sie das Farbschema für Ihre favorisierten Freunde.",
+      "itemLabel_homeFriendLocationFilter": "Freundesorte auf der Startseite",
+      "itemDescription_homeFriendLocationFilter": "Wähle die Freundesgruppen aus, die auf der Startseite angezeigt werden.",
+      "itemLabel_friendLocationsFilter": "Freundesorte",
+      "itemDescription_friendLocationsFilter": "Wähle die Freundesgruppen aus, die auf der Seite Freundesorte angezeigt werden.",
       "innerModals": {
         "theme": {
           "button_apply": "Anwenden",
@@ -122,6 +126,11 @@
         },
         "friendColor": {},
         "favoriteFriendsColors": {},
+        "friendLocationFilter": {
+          "title": "Sichtbare Freunde",
+          "option_nonFavorite": "Nicht favorisierte Freunde",
+          "button_apply": "Anwenden"
+        },
         "homeTabLayout": {
           "button_apply": "Anwenden",
           "section_top": "Oberer Bereich",
@@ -362,15 +371,69 @@
     }
   },
   "features": {
-    "calendar": { "show_followed": "Nur gefolgte Events", "load_failed": "Kalender-Events konnten nicht geladen werden" },
-    "group": {
-      "toast_update_failed": "Gruppenaktualisierung fehlgeschlagen", "membership_updating": "GRUPPE WIRD AKTUALISIERT...", "membership_leave": "GRUPPE VERLASSEN", "membership_join": "GRUPPE BEITRETEN", "membership_requested": "BEITRITTSANFRAGE AUSSTEHEND", "membership_unavailable": "GRUPPE NICHT VERFÜGBAR", "instances": "GRUPPENINSTANZEN", "info_tab": "INFO", "instances_tab": "INSTANZEN", "load_instances_failed": "Gruppeninstanzen konnten nicht geladen werden.", "no_active_instances": "Keine aktiven Gruppeninstanzen.", "description": "Beschreibung", "no_description": "Keine Beschreibung.", "information": "Informationen", "members": "Mitglieder: {{count}}", "status": "Status: {{status}}", "languages": "Sprachen: {{languages}}", "status_none": "Keine", "status_inactive": "Inaktiv", "status_invited": "Eingeladen", "status_member": "Mitglied", "status_requested": "Beitrittsanfrage ausstehend", "status_banned": "Gesperrt", "status_userblocked": "Nicht verfügbar"
+    "calendar": {
+      "show_followed": "Nur gefolgte Events",
+      "load_failed": "Kalender-Events konnten nicht geladen werden"
     },
-    "user": { "location_load_failed": "Aktueller Standort konnte nicht geladen werden", "load_failed": "Benutzerdaten konnten nicht geladen werden", "invite_sending": "EINLADUNG WIRD GESENDET..." },
-    "instance": { "inviting": "ICH WERDE EINGELADEN...", "load_failed": "Instanzdaten konnten nicht geladen werden" },
-    "event": { "load_failed": "Eventdaten konnten nicht geladen werden", "follow_update_failed": "Event-Abonnement konnte nicht aktualisiert werden", "follow_updating": "ABONNEMENT WIRD AKTUALISIERT...", "follow": "EVENT FOLGEN", "unfollow": "EVENT NICHT MEHR FOLGEN" },
-    "userInvite": { "request_success_title": "Einladung angefordert", "request_success_message": "Deine Anfrage wurde gesendet.", "request_failed_title": "Einladungsanfrage fehlgeschlagen", "send_failed_title": "Einladung fehlgeschlagen", "not_in_inviteable_instance": "Du bist nicht in einer einladbaren Instanz.", "send_success_title": "Einladung gesendet", "send_success_message": "Deine Einladung wurde gesendet." },
-    "selfInvite": { "error_title": "Fehler", "user_not_found": "Benutzer nicht gefunden.", "success_title": "Eingeladen", "invite_success_message": "Eine Einladung wurde an deinen VRChat-Client gesendet!", "create_success_message": "Eine neue Instanz wurde erstellt und eine Einladung an deinen VRChat-Client gesendet!", "failed_title": "Einladung fehlgeschlagen" }
+    "group": {
+      "toast_update_failed": "Gruppenaktualisierung fehlgeschlagen",
+      "membership_updating": "GRUPPE WIRD AKTUALISIERT...",
+      "membership_leave": "GRUPPE VERLASSEN",
+      "membership_join": "GRUPPE BEITRETEN",
+      "membership_requested": "BEITRITTSANFRAGE AUSSTEHEND",
+      "membership_unavailable": "GRUPPE NICHT VERFÜGBAR",
+      "instances": "GRUPPENINSTANZEN",
+      "info_tab": "INFO",
+      "instances_tab": "INSTANZEN",
+      "load_instances_failed": "Gruppeninstanzen konnten nicht geladen werden.",
+      "no_active_instances": "Keine aktiven Gruppeninstanzen.",
+      "description": "Beschreibung",
+      "no_description": "Keine Beschreibung.",
+      "information": "Informationen",
+      "members": "Mitglieder: {{count}}",
+      "status": "Status: {{status}}",
+      "languages": "Sprachen: {{languages}}",
+      "status_none": "Keine",
+      "status_inactive": "Inaktiv",
+      "status_invited": "Eingeladen",
+      "status_member": "Mitglied",
+      "status_requested": "Beitrittsanfrage ausstehend",
+      "status_banned": "Gesperrt",
+      "status_userblocked": "Nicht verfügbar"
+    },
+    "user": {
+      "location_load_failed": "Aktueller Standort konnte nicht geladen werden",
+      "load_failed": "Benutzerdaten konnten nicht geladen werden",
+      "invite_sending": "EINLADUNG WIRD GESENDET..."
+    },
+    "instance": {
+      "inviting": "ICH WERDE EINGELADEN...",
+      "load_failed": "Instanzdaten konnten nicht geladen werden"
+    },
+    "event": {
+      "load_failed": "Eventdaten konnten nicht geladen werden",
+      "follow_update_failed": "Event-Abonnement konnte nicht aktualisiert werden",
+      "follow_updating": "ABONNEMENT WIRD AKTUALISIERT...",
+      "follow": "EVENT FOLGEN",
+      "unfollow": "EVENT NICHT MEHR FOLGEN"
+    },
+    "userInvite": {
+      "request_success_title": "Einladung angefordert",
+      "request_success_message": "Deine Anfrage wurde gesendet.",
+      "request_failed_title": "Einladungsanfrage fehlgeschlagen",
+      "send_failed_title": "Einladung fehlgeschlagen",
+      "not_in_inviteable_instance": "Du bist nicht in einer einladbaren Instanz.",
+      "send_success_title": "Einladung gesendet",
+      "send_success_message": "Deine Einladung wurde gesendet."
+    },
+    "selfInvite": {
+      "error_title": "Fehler",
+      "user_not_found": "Benutzer nicht gefunden.",
+      "success_title": "Eingeladen",
+      "invite_success_message": "Eine Einladung wurde an deinen VRChat-Client gesendet!",
+      "create_success_message": "Eine neue Instanz wurde erstellt und eine Einladung an deinen VRChat-Client gesendet!",
+      "failed_title": "Einladung fehlgeschlagen"
+    }
   },
   "components": {
     "confirmDialog": {

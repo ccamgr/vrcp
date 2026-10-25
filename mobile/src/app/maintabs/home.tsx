@@ -37,9 +37,11 @@ import ReleaseNote from "@/components/features/home/ReleaseNote";
 import { useTranslation } from "react-i18next";
 import { isSameDay } from "date-fns";
 import { usePipeline } from "@/contexts/PipelineContext";
-import { useFavFriends } from "@/hooks/vrc/useFavFriends";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { useFavorites } from "@/hooks/vrc/useFavorites";
+import { useFriends } from "@/hooks/vrc/useFriends";
+import { filterFriendLocations } from "@/lib/funcs/filterFriendLocations";
 
 export default function Home() {
   const theme = useTheme();
@@ -138,17 +140,30 @@ const FriendLocationArea = memo(function FriendLocationArea({
 }) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { data: favFriends, refetch } = useFavFriends();
+  const { settings } = useSetting();
+  const { data: friends, refetch: refetchFriends } = useFriends();
+  const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
   const refresh = useCallback(
-    () => Promise.all([refetch(), refetchCurrentUser()]),
-    [refetch, refetchCurrentUser],
+    () =>
+      Promise.all([refetchFriends(), refetchFavorites(), refetchCurrentUser()]),
+    [refetchFavorites, refetchFriends, refetchCurrentUser],
   );
   const { isRefreshing, onRefresh } = usePullToRefresh(refresh);
 
   const instances = useMemo<InstanceLike[]>(() => {
-    return calcFriendsLocations(favFriends, false, currentUser?.location);
-  }, [currentUser?.location, favFriends]);
+    const filteredFriends = filterFriendLocations(
+      friends ?? [],
+      favorites ?? [],
+      settings.uiOptions_homeFriendLocationFilter,
+    );
+    return calcFriendsLocations(filteredFriends, false, currentUser?.location);
+  }, [
+    currentUser?.location,
+    favorites,
+    friends,
+    settings.uiOptions_homeFriendLocationFilter,
+  ]);
 
   const renderItem = useCallback(
     ({ item }: { item: InstanceLike }) => (

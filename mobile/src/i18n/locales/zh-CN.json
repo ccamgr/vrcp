@@ -112,6 +112,10 @@
       "itemDescription_friendColor": "选择好友的颜色主题．",
       "itemLabel_favoriteFriendsColors": "收藏好友颜色",
       "itemDescription_favoriteFriendsColors": "选择收藏好友的颜色主题．",
+      "itemLabel_homeFriendLocationFilter": "主页好友位置",
+      "itemDescription_homeFriendLocationFilter": "选择要在主页显示的好友分组。",
+      "itemLabel_friendLocationsFilter": "好友位置",
+      "itemDescription_friendLocationsFilter": "选择要在好友位置页面显示的好友分组。",
       "innerModals": {
         "theme": {
           "button_apply": "应用",
@@ -122,6 +126,11 @@
         },
         "friendColor": {},
         "favoriteFriendsColors": {},
+        "friendLocationFilter": {
+          "title": "显示的好友",
+          "option_nonFavorite": "未收藏的好友",
+          "button_apply": "应用"
+        },
         "homeTabLayout": {
           "button_apply": "应用",
           "section_top": "顶部区域",
@@ -362,15 +371,69 @@
     }
   },
   "features": {
-    "calendar": { "show_followed": "仅显示已关注的活动", "load_failed": "无法加载日历活动" },
-    "group": {
-      "toast_update_failed": "群组更新失败", "membership_updating": "正在更新群组...", "membership_leave": "退出群组", "membership_join": "加入群组", "membership_requested": "加入请求待处理", "membership_unavailable": "群组不可用", "instances": "群组实例", "info_tab": "信息", "instances_tab": "实例", "load_instances_failed": "无法加载群组实例。", "no_active_instances": "没有活跃的群组实例。", "description": "描述", "no_description": "暂无描述。", "information": "信息", "members": "成员: {{count}}", "status": "状态: {{status}}", "languages": "语言: {{languages}}", "status_none": "无", "status_inactive": "未激活", "status_invited": "已邀请", "status_member": "成员", "status_requested": "加入请求待处理", "status_banned": "已封禁", "status_userblocked": "不可用"
+    "calendar": {
+      "show_followed": "仅显示已关注的活动",
+      "load_failed": "无法加载日历活动"
     },
-    "user": { "location_load_failed": "无法加载当前位置", "load_failed": "无法加载用户数据", "invite_sending": "正在发送邀请..." },
-    "instance": { "inviting": "正在邀请自己...", "load_failed": "无法加载实例数据" },
-    "event": { "load_failed": "无法加载活动数据", "follow_update_failed": "无法更新活动订阅", "follow_updating": "正在更新订阅...", "follow": "关注活动", "unfollow": "取消关注活动" },
-    "userInvite": { "request_success_title": "已请求邀请", "request_success_message": "已发送你的请求。", "request_failed_title": "请求邀请失败", "send_failed_title": "发送邀请失败", "not_in_inviteable_instance": "你不在可邀请的实例中。", "send_success_title": "已发送邀请", "send_success_message": "已发送你的邀请。" },
-    "selfInvite": { "error_title": "错误", "user_not_found": "未找到用户。", "success_title": "已发送邀请", "invite_success_message": "已向你的 VRChat 客户端发送邀请！", "create_success_message": "已创建新实例并向你的 VRChat 客户端发送邀请！", "failed_title": "发送邀请失败" }
+    "group": {
+      "toast_update_failed": "群组更新失败",
+      "membership_updating": "正在更新群组...",
+      "membership_leave": "退出群组",
+      "membership_join": "加入群组",
+      "membership_requested": "加入请求待处理",
+      "membership_unavailable": "群组不可用",
+      "instances": "群组实例",
+      "info_tab": "信息",
+      "instances_tab": "实例",
+      "load_instances_failed": "无法加载群组实例。",
+      "no_active_instances": "没有活跃的群组实例。",
+      "description": "描述",
+      "no_description": "暂无描述。",
+      "information": "信息",
+      "members": "成员: {{count}}",
+      "status": "状态: {{status}}",
+      "languages": "语言: {{languages}}",
+      "status_none": "无",
+      "status_inactive": "未激活",
+      "status_invited": "已邀请",
+      "status_member": "成员",
+      "status_requested": "加入请求待处理",
+      "status_banned": "已封禁",
+      "status_userblocked": "不可用"
+    },
+    "user": {
+      "location_load_failed": "无法加载当前位置",
+      "load_failed": "无法加载用户数据",
+      "invite_sending": "正在发送邀请..."
+    },
+    "instance": {
+      "inviting": "正在邀请自己...",
+      "load_failed": "无法加载实例数据"
+    },
+    "event": {
+      "load_failed": "无法加载活动数据",
+      "follow_update_failed": "无法更新活动订阅",
+      "follow_updating": "正在更新订阅...",
+      "follow": "关注活动",
+      "unfollow": "取消关注活动"
+    },
+    "userInvite": {
+      "request_success_title": "已请求邀请",
+      "request_success_message": "已发送你的请求。",
+      "request_failed_title": "请求邀请失败",
+      "send_failed_title": "发送邀请失败",
+      "not_in_inviteable_instance": "你不在可邀请的实例中。",
+      "send_success_title": "已发送邀请",
+      "send_success_message": "已发送你的邀请。"
+    },
+    "selfInvite": {
+      "error_title": "错误",
+      "user_not_found": "未找到用户。",
+      "success_title": "已发送邀请",
+      "invite_success_message": "已向你的 VRChat 客户端发送邀请！",
+      "create_success_message": "已创建新实例并向你的 VRChat 客户端发送邀请！",
+      "failed_title": "发送邀请失败"
+    }
   },
   "components": {
     "confirmDialog": {

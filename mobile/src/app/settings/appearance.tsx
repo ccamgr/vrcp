@@ -10,6 +10,7 @@ import HomeTabLayoutModal, {
 import CardViewColumnsModal, {
   getIconName as getIconNameCV,
 } from "@/components/features/settings/appearance_innermodals/CardViewColumnsModal";
+import FriendLocationFilterModal from "@/components/features/settings/appearance_innermodals/FriendLocationFilterModal";
 import GenericModal from "@/components/layout/GenericModal";
 import GenericScreen from "@/components/layout/GenericScreen";
 import IconSymbol from "@/components/view/icon-components/IconView";
@@ -53,6 +54,13 @@ export default function AppearanceSettings() {
   >({ open: false });
   const [favoriteFriendsColorsModal, setFavoriteFriendsColorsModal] = useState<
     InnerModalOption<typeof settings.uiOptions_favoriteFriendsColors>
+  >({ open: false });
+  const [homeFriendLocationFilterModal, setHomeFriendLocationFilterModal] =
+    useState<
+      InnerModalOption<typeof settings.uiOptions_homeFriendLocationFilter>
+    >({ open: false });
+  const [friendLocationsFilterModal, setFriendLocationsFilterModal] = useState<
+    InnerModalOption<typeof settings.uiOptions_friendLocationsFilter>
   >({ open: false });
 
   const _tmpState = useState(""); // for re-render
@@ -184,6 +192,38 @@ export default function AppearanceSettings() {
               },
             }),
         },
+        {
+          icon: "map-marker",
+          title: t(
+            "pages.setting_appearance.itemLabel_homeFriendLocationFilter",
+          ),
+          description: t(
+            "pages.setting_appearance.itemDescription_homeFriendLocationFilter",
+          ),
+          onPress: () =>
+            setHomeFriendLocationFilterModal({
+              open: true,
+              defaultValue: settings.uiOptions_homeFriendLocationFilter,
+              onSubmit: (value) => {
+                saveSettings({ uiOptions_homeFriendLocationFilter: value });
+              },
+            }),
+        },
+        {
+          icon: "map-search",
+          title: t("pages.setting_appearance.itemLabel_friendLocationsFilter"),
+          description: t(
+            "pages.setting_appearance.itemDescription_friendLocationsFilter",
+          ),
+          onPress: () =>
+            setFriendLocationsFilterModal({
+              open: true,
+              defaultValue: settings.uiOptions_friendLocationsFilter,
+              onSubmit: (value) => {
+                saveSettings({ uiOptions_friendLocationsFilter: value });
+              },
+            }),
+        },
       ],
     },
   ];
@@ -215,6 +255,30 @@ export default function AppearanceSettings() {
         }
         defaultValue={cardViewColumnsModal.defaultValue}
         onSubmit={cardViewColumnsModal.onSubmit}
+      />
+
+      <FriendLocationFilterModal
+        open={homeFriendLocationFilterModal.open}
+        setOpen={(value) =>
+          setHomeFriendLocationFilterModal((current) => ({
+            ...current,
+            open: value,
+          }))
+        }
+        defaultValue={homeFriendLocationFilterModal.defaultValue}
+        onSubmit={homeFriendLocationFilterModal.onSubmit}
+      />
+
+      <FriendLocationFilterModal
+        open={friendLocationsFilterModal.open}
+        setOpen={(value) =>
+          setFriendLocationsFilterModal((current) => ({
+            ...current,
+            open: value,
+          }))
+        }
+        defaultValue={friendLocationsFilterModal.defaultValue}
+        onSubmit={friendLocationsFilterModal.onSubmit}
       />
     </GenericScreen>
   );

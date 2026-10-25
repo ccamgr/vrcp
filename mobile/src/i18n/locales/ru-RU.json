@@ -112,6 +112,10 @@
       "itemDescription_friendColor": "Выберите цветовую тему для друзей.",
       "itemLabel_favoriteFriendsColors": "Цвет избранных друзей",
       "itemDescription_favoriteFriendsColors": "Выберите цветовую тему для избранных друзей.",
+      "itemLabel_homeFriendLocationFilter": "Локации друзей на главной",
+      "itemDescription_homeFriendLocationFilter": "Выберите группы друзей для показа на главном экране.",
+      "itemLabel_friendLocationsFilter": "Локации друзей",
+      "itemDescription_friendLocationsFilter": "Выберите группы друзей для показа на экране локаций друзей.",
       "innerModals": {
         "theme": {
           "button_apply": "Применить",
@@ -122,6 +126,11 @@
         },
         "friendColor": {},
         "favoriteFriendsColors": {},
+        "friendLocationFilter": {
+          "title": "Отображаемые друзья",
+          "option_nonFavorite": "Неизбранные друзья",
+          "button_apply": "Применить"
+        },
         "homeTabLayout": {
           "button_apply": "Применить",
           "section_top": "Верхняя область",
@@ -362,15 +371,69 @@
     }
   },
   "features": {
-    "calendar": { "show_followed": "Только отслеживаемые события", "load_failed": "Не удалось загрузить события календаря" },
-    "group": {
-      "toast_update_failed": "Не удалось обновить группу", "membership_updating": "ОБНОВЛЕНИЕ ГРУППЫ...", "membership_leave": "ПОКИНУТЬ ГРУППУ", "membership_join": "ВСТУПИТЬ В ГРУППУ", "membership_requested": "ЗАЯВКА НА ВСТУПЛЕНИЕ ОЖИДАЕТСЯ", "membership_unavailable": "ГРУППА НЕДОСТУПНА", "instances": "ИНСТАНСЫ ГРУППЫ", "info_tab": "ИНФО", "instances_tab": "ИНСТАНСЫ", "load_instances_failed": "Не удалось загрузить инстансы группы.", "no_active_instances": "Нет активных инстансов группы.", "description": "Описание", "no_description": "Нет описания.", "information": "Информация", "members": "Участники: {{count}}", "status": "Статус: {{status}}", "languages": "Языки: {{languages}}", "status_none": "Нет", "status_inactive": "Неактивно", "status_invited": "Приглашён", "status_member": "Участник", "status_requested": "Заявка на вступление ожидается", "status_banned": "Заблокирован", "status_userblocked": "Недоступно"
+    "calendar": {
+      "show_followed": "Только отслеживаемые события",
+      "load_failed": "Не удалось загрузить события календаря"
     },
-    "user": { "location_load_failed": "Не удалось загрузить текущее местоположение", "load_failed": "Не удалось загрузить данные пользователя", "invite_sending": "ОТПРАВКА ПРИГЛАШЕНИЯ..." },
-    "instance": { "inviting": "ОТПРАВКА ПРИГЛАШЕНИЯ СЕБЕ...", "load_failed": "Не удалось загрузить данные инстанса" },
-    "event": { "load_failed": "Не удалось загрузить данные события", "follow_update_failed": "Не удалось обновить подписку на событие", "follow_updating": "ОБНОВЛЕНИЕ ПОДПИСКИ...", "follow": "ОТСЛЕЖИВАТЬ СОБЫТИЕ", "unfollow": "НЕ ОТСЛЕЖИВАТЬ СОБЫТИЕ" },
-    "userInvite": { "request_success_title": "Приглашение запрошено", "request_success_message": "Ваш запрос отправлен.", "request_failed_title": "Не удалось запросить приглашение", "send_failed_title": "Не удалось отправить приглашение", "not_in_inviteable_instance": "Вы не в инстансе, куда можно пригласить.", "send_success_title": "Приглашение отправлено", "send_success_message": "Ваше приглашение отправлено." },
-    "selfInvite": { "error_title": "Ошибка", "user_not_found": "Пользователь не найден.", "success_title": "Приглашение отправлено", "invite_success_message": "Приглашение отправлено в ваш клиент VRChat!", "create_success_message": "Создан новый инстанс и приглашение отправлено в ваш клиент VRChat!", "failed_title": "Не удалось отправить приглашение" }
+    "group": {
+      "toast_update_failed": "Не удалось обновить группу",
+      "membership_updating": "ОБНОВЛЕНИЕ ГРУППЫ...",
+      "membership_leave": "ПОКИНУТЬ ГРУППУ",
+      "membership_join": "ВСТУПИТЬ В ГРУППУ",
+      "membership_requested": "ЗАЯВКА НА ВСТУПЛЕНИЕ ОЖИДАЕТСЯ",
+      "membership_unavailable": "ГРУППА НЕДОСТУПНА",
+      "instances": "ИНСТАНСЫ ГРУППЫ",
+      "info_tab": "ИНФО",
+      "instances_tab": "ИНСТАНСЫ",
+      "load_instances_failed": "Не удалось загрузить инстансы группы.",
+      "no_active_instances": "Нет активных инстансов группы.",
+      "description": "Описание",
+      "no_description": "Нет описания.",
+      "information": "Информация",
+      "members": "Участники: {{count}}",
+      "status": "Статус: {{status}}",
+      "languages": "Языки: {{languages}}",
+      "status_none": "Нет",
+      "status_inactive": "Неактивно",
+      "status_invited": "Приглашён",
+      "status_member": "Участник",
+      "status_requested": "Заявка на вступление ожидается",
+      "status_banned": "Заблокирован",
+      "status_userblocked": "Недоступно"
+    },
+    "user": {
+      "location_load_failed": "Не удалось загрузить текущее местоположение",
+      "load_failed": "Не удалось загрузить данные пользователя",
+      "invite_sending": "ОТПРАВКА ПРИГЛАШЕНИЯ..."
+    },
+    "instance": {
+      "inviting": "ОТПРАВКА ПРИГЛАШЕНИЯ СЕБЕ...",
+      "load_failed": "Не удалось загрузить данные инстанса"
+    },
+    "event": {
+      "load_failed": "Не удалось загрузить данные события",
+      "follow_update_failed": "Не удалось обновить подписку на событие",
+      "follow_updating": "ОБНОВЛЕНИЕ ПОДПИСКИ...",
+      "follow": "ОТСЛЕЖИВАТЬ СОБЫТИЕ",
+      "unfollow": "НЕ ОТСЛЕЖИВАТЬ СОБЫТИЕ"
+    },
+    "userInvite": {
+      "request_success_title": "Приглашение запрошено",
+      "request_success_message": "Ваш запрос отправлен.",
+      "request_failed_title": "Не удалось запросить приглашение",
+      "send_failed_title": "Не удалось отправить приглашение",
+      "not_in_inviteable_instance": "Вы не в инстансе, куда можно пригласить.",
+      "send_success_title": "Приглашение отправлено",
+      "send_success_message": "Ваше приглашение отправлено."
+    },
+    "selfInvite": {
+      "error_title": "Ошибка",
+      "user_not_found": "Пользователь не найден.",
+      "success_title": "Приглашение отправлено",
+      "invite_success_message": "Приглашение отправлено в ваш клиент VRChat!",
+      "create_success_message": "Создан новый инстанс и приглашение отправлено в ваш клиент VRChat!",
+      "failed_title": "Не удалось отправить приглашение"
+    }
   },
   "components": {
     "confirmDialog": {

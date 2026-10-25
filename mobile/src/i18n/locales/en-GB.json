@@ -112,6 +112,10 @@
       "itemDescription_friendColor": "Select your friends colour theme.",
       "itemLabel_favoriteFriendsColors": "Favourite Friend Colours",
       "itemDescription_favoriteFriendsColors": "Select your favourite-friends colour theme.",
+      "itemLabel_homeFriendLocationFilter": "Home Friend Locations",
+      "itemDescription_homeFriendLocationFilter": "Choose which friend groups appear on the Home screen.",
+      "itemLabel_friendLocationsFilter": "Friend Locations",
+      "itemDescription_friendLocationsFilter": "Choose which friend groups appear on the Friend Locations screen.",
       "innerModals": {
         "theme": {
           "button_apply": "Apply",
@@ -122,6 +126,11 @@
         },
         "friendColor": {},
         "favoriteFriendsColors": {},
+        "friendLocationFilter": {
+          "title": "Visible Friends",
+          "option_nonFavorite": "Non-favourite friends",
+          "button_apply": "Apply"
+        },
         "homeTabLayout": {
           "button_apply": "Apply",
           "section_top": "Top area",
@@ -362,15 +371,69 @@
     }
   },
   "features": {
-    "calendar": { "show_followed": "Followed events only", "load_failed": "Failed to load calendar events" },
-    "group": {
-      "toast_update_failed": "Group update failed", "membership_updating": "UPDATING GROUP...", "membership_leave": "LEAVE GROUP", "membership_join": "JOIN GROUP", "membership_requested": "JOIN REQUEST PENDING", "membership_unavailable": "GROUP UNAVAILABLE", "instances": "GROUP INSTANCES", "info_tab": "INFO", "instances_tab": "INSTANCES", "load_instances_failed": "Failed to load group instances.", "no_active_instances": "No active group instances.", "description": "Description", "no_description": "No description.", "information": "Information", "members": "Members: {{count}}", "status": "Status: {{status}}", "languages": "Languages: {{languages}}", "status_none": "None", "status_inactive": "Inactive", "status_invited": "Invited", "status_member": "Member", "status_requested": "Join request pending", "status_banned": "Banned", "status_userblocked": "Unavailable"
+    "calendar": {
+      "show_followed": "Followed events only",
+      "load_failed": "Failed to load calendar events"
     },
-    "user": { "location_load_failed": "Failed to load current location", "load_failed": "Failed to load user data", "invite_sending": "SENDING INVITE..." },
-    "instance": { "inviting": "INVITING ME...", "load_failed": "Failed to load instance data" },
-    "event": { "load_failed": "Failed to load event data", "follow_update_failed": "Failed to update event subscription", "follow_updating": "UPDATING SUBSCRIPTION...", "follow": "FOLLOW EVENT", "unfollow": "UNFOLLOW EVENT" },
-    "userInvite": { "request_success_title": "Invite requested", "request_success_message": "Your request was sent.", "request_failed_title": "Invite request failed", "send_failed_title": "Invite failed", "not_in_inviteable_instance": "You are not in an inviteable instance.", "send_success_title": "Invite sent", "send_success_message": "Your invite was sent." },
-    "selfInvite": { "error_title": "Error", "user_not_found": "User not found.", "success_title": "Invited", "invite_success_message": "Sent an invite to your VRChat client!", "create_success_message": "Created a new instance and sent an invite to your VRChat client!", "failed_title": "Invite failed" }
+    "group": {
+      "toast_update_failed": "Group update failed",
+      "membership_updating": "UPDATING GROUP...",
+      "membership_leave": "LEAVE GROUP",
+      "membership_join": "JOIN GROUP",
+      "membership_requested": "JOIN REQUEST PENDING",
+      "membership_unavailable": "GROUP UNAVAILABLE",
+      "instances": "GROUP INSTANCES",
+      "info_tab": "INFO",
+      "instances_tab": "INSTANCES",
+      "load_instances_failed": "Failed to load group instances.",
+      "no_active_instances": "No active group instances.",
+      "description": "Description",
+      "no_description": "No description.",
+      "information": "Information",
+      "members": "Members: {{count}}",
+      "status": "Status: {{status}}",
+      "languages": "Languages: {{languages}}",
+      "status_none": "None",
+      "status_inactive": "Inactive",
+      "status_invited": "Invited",
+      "status_member": "Member",
+      "status_requested": "Join request pending",
+      "status_banned": "Banned",
+      "status_userblocked": "Unavailable"
+    },
+    "user": {
+      "location_load_failed": "Failed to load current location",
+      "load_failed": "Failed to load user data",
+      "invite_sending": "SENDING INVITE..."
+    },
+    "instance": {
+      "inviting": "INVITING ME...",
+      "load_failed": "Failed to load instance data"
+    },
+    "event": {
+      "load_failed": "Failed to load event data",
+      "follow_update_failed": "Failed to update event subscription",
+      "follow_updating": "UPDATING SUBSCRIPTION...",
+      "follow": "FOLLOW EVENT",
+      "unfollow": "UNFOLLOW EVENT"
+    },
+    "userInvite": {
+      "request_success_title": "Invite requested",
+      "request_success_message": "Your request was sent.",
+      "request_failed_title": "Invite request failed",
+      "send_failed_title": "Invite failed",
+      "not_in_inviteable_instance": "You are not in an inviteable instance.",
+      "send_success_title": "Invite sent",
+      "send_success_message": "Your invite was sent."
+    },
+    "selfInvite": {
+      "error_title": "Error",
+      "user_not_found": "User not found.",
+      "success_title": "Invited",
+      "invite_success_message": "Sent an invite to your VRChat client!",
+      "create_success_message": "Created a new instance and sent an invite to your VRChat client!",
+      "failed_title": "Invite failed"
+    }
   },
   "components": {
     "confirmDialog": {

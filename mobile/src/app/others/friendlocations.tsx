@@ -17,18 +17,21 @@ import { TouchableEx } from "@/components/CustomElements";
 import { useFriends } from "@/hooks/vrc/useFriends";
 import { useFavorites } from "@/hooks/vrc/useFavorites";
 import { useCurrentUser } from "@/hooks/vrc/useCurrentUser";
+import { useSetting } from "@/contexts/SettingContext";
+import { filterFriendLocations } from "@/lib/funcs/filterFriendLocations";
 
 export default function FriendLocations() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { settings } = useSetting();
   const { data: friends, refetch } = useFriends();
   const { data: favorites, refetch: refetchFavorites } = useFavorites();
   const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refresh = () => {
     setIsRefreshing(true);
-    Promise.all([refetch(), refetchCurrentUser()])
+    Promise.all([refetch(), refetchFavorites(), refetchCurrentUser()])
       .catch((e) =>
         showToast("error", "Error refreshing friends", extractErrMsg(e)),
       )
@@ -36,8 +39,18 @@ export default function FriendLocations() {
   };
 
   const { instances, unlocatableFriends } = useMemo(() => {
-    return calcFriendsLocations(friends ?? [], true, currentUser?.location);
-  }, [currentUser?.location, friends, favorites]);
+    const filteredFriends = filterFriendLocations(
+      friends ?? [],
+      favorites ?? [],
+      settings.uiOptions_friendLocationsFilter,
+    );
+    return calcFriendsLocations(filteredFriends, true, currentUser?.location);
+  }, [
+    currentUser?.location,
+    favorites,
+    friends,
+    settings.uiOptions_friendLocationsFilter,
+  ]);
 
   const renderInstItem = useCallback(
     ({ item, index }: { item: InstanceLike[]; index: number }) => (
@@ -88,10 +101,7 @@ export default function FriendLocations() {
     [theme.colors.border, theme.colors.text],
   );
 
-  const chunkInstances = useMemo(
-    () => chunkArray(instances, 2),
-    [instances],
-  );
+  const chunkInstances = useMemo(() => chunkArray(instances, 2), [instances]);
   const chunkUnlocatableFriends = useMemo(
     () => chunkArray(unlocatableFriends, 3),
     [unlocatableFriends],

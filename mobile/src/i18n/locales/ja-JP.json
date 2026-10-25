@@ -112,6 +112,10 @@
       "itemDescription_friendColor": "フレンドのカラーテーマを選択します。",
       "itemLabel_favoriteFriendsColors": "お気に入りフレンドの色",
       "itemDescription_favoriteFriendsColors": "お気に入りフレンドのカラーテーマを選択します。",
+      "itemLabel_homeFriendLocationFilter": "ホームのフレンドロケーション",
+      "itemDescription_homeFriendLocationFilter": "ホームに表示するフレンドグループを選択します。",
+      "itemLabel_friendLocationsFilter": "フレンドロケーション",
+      "itemDescription_friendLocationsFilter": "フレンドロケーション画面に表示するフレンドグループを選択します。",
       "innerModals": {
         "theme": {
           "button_apply": "適用",
@@ -122,6 +126,11 @@
         },
         "friendColor": {},
         "favoriteFriendsColors": {},
+        "friendLocationFilter": {
+          "title": "フレンドの表示対象",
+          "option_nonFavorite": "お気に入り外のフレンド",
+          "button_apply": "適用"
+        },
         "homeTabLayout": {
           "button_apply": "適用",
           "section_top": "上部エリア",
@@ -373,15 +382,69 @@
     }
   },
   "features": {
-    "calendar": { "show_followed": "フォロー中のイベントのみ", "load_failed": "カレンダーイベントの読み込みに失敗しました" },
-    "group": {
-      "toast_update_failed": "グループの更新に失敗しました", "membership_updating": "グループを更新中...", "membership_leave": "グループから脱退", "membership_join": "グループに参加", "membership_requested": "参加リクエスト送信済み", "membership_unavailable": "グループに参加できません", "instances": "グループインスタンス", "info_tab": "情報", "instances_tab": "インスタンス", "load_instances_failed": "グループインスタンスの読み込みに失敗しました。", "no_active_instances": "アクティブなグループインスタンスはありません。", "description": "説明", "no_description": "説明はありません。", "information": "情報", "members": "メンバー: {{count}}", "status": "ステータス: {{status}}", "languages": "言語: {{languages}}", "status_none": "なし", "status_inactive": "非アクティブ", "status_invited": "招待済み", "status_member": "メンバー", "status_requested": "参加リクエスト送信済み", "status_banned": "禁止", "status_userblocked": "利用できません"
+    "calendar": {
+      "show_followed": "フォロー中のイベントのみ",
+      "load_failed": "カレンダーイベントの読み込みに失敗しました"
     },
-    "user": { "location_load_failed": "現在地の読み込みに失敗しました", "load_failed": "ユーザーデータの読み込みに失敗しました", "invite_sending": "招待を送信中..." },
-    "instance": { "inviting": "自分を招待中...", "load_failed": "インスタンスデータの読み込みに失敗しました" },
-    "event": { "load_failed": "イベントデータの読み込みに失敗しました", "follow_update_failed": "イベントの購読更新に失敗しました", "follow_updating": "購読を更新中...", "follow": "イベントをフォロー", "unfollow": "イベントのフォローを解除" },
-    "userInvite": { "request_success_title": "招待をリクエストしました", "request_success_message": "招待リクエストを送信しました。", "request_failed_title": "招待のリクエストに失敗しました", "send_failed_title": "招待の送信に失敗しました", "not_in_inviteable_instance": "招待可能なインスタンスにいません。", "send_success_title": "招待を送信しました", "send_success_message": "招待を送信しました。" },
-    "selfInvite": { "error_title": "エラー", "user_not_found": "ユーザーが見つかりません。", "success_title": "招待を送信しました", "invite_success_message": "VRChat クライアントに招待を送信しました。", "create_success_message": "新しいインスタンスを作成し、VRChat クライアントに招待を送信しました。", "failed_title": "招待の送信に失敗しました" }
+    "group": {
+      "toast_update_failed": "グループの更新に失敗しました",
+      "membership_updating": "グループを更新中...",
+      "membership_leave": "グループから脱退",
+      "membership_join": "グループに参加",
+      "membership_requested": "参加リクエスト送信済み",
+      "membership_unavailable": "グループに参加できません",
+      "instances": "グループインスタンス",
+      "info_tab": "情報",
+      "instances_tab": "インスタンス",
+      "load_instances_failed": "グループインスタンスの読み込みに失敗しました。",
+      "no_active_instances": "アクティブなグループインスタンスはありません。",
+      "description": "説明",
+      "no_description": "説明はありません。",
+      "information": "情報",
+      "members": "メンバー: {{count}}",
+      "status": "ステータス: {{status}}",
+      "languages": "言語: {{languages}}",
+      "status_none": "なし",
+      "status_inactive": "非アクティブ",
+      "status_invited": "招待済み",
+      "status_member": "メンバー",
+      "status_requested": "参加リクエスト送信済み",
+      "status_banned": "禁止",
+      "status_userblocked": "利用できません"
+    },
+    "user": {
+      "location_load_failed": "現在地の読み込みに失敗しました",
+      "load_failed": "ユーザーデータの読み込みに失敗しました",
+      "invite_sending": "招待を送信中..."
+    },
+    "instance": {
+      "inviting": "自分を招待中...",
+      "load_failed": "インスタンスデータの読み込みに失敗しました"
+    },
+    "event": {
+      "load_failed": "イベントデータの読み込みに失敗しました",
+      "follow_update_failed": "イベントの購読更新に失敗しました",
+      "follow_updating": "購読を更新中...",
+      "follow": "イベントをフォロー",
+      "unfollow": "イベントのフォローを解除"
+    },
+    "userInvite": {
+      "request_success_title": "招待をリクエストしました",
+      "request_success_message": "招待リクエストを送信しました。",
+      "request_failed_title": "招待のリクエストに失敗しました",
+      "send_failed_title": "招待の送信に失敗しました",
+      "not_in_inviteable_instance": "招待可能なインスタンスにいません。",
+      "send_success_title": "招待を送信しました",
+      "send_success_message": "招待を送信しました。"
+    },
+    "selfInvite": {
+      "error_title": "エラー",
+      "user_not_found": "ユーザーが見つかりません。",
+      "success_title": "招待を送信しました",
+      "invite_success_message": "VRChat クライアントに招待を送信しました。",
+      "create_success_message": "新しいインスタンスを作成し、VRChat クライアントに招待を送信しました。",
+      "failed_title": "招待の送信に失敗しました"
+    }
   },
   "components": {
     "confirmDialog": {
