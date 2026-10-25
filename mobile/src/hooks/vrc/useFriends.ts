@@ -12,7 +12,8 @@ import { vrcQueryKeys } from "@/lib/queryClient";
 export const useFriends = () => {
   const vrc = useVRChat();
   const auth = useAuth();
-  const { data: currentUser } = useCurrentUser();
+  const currentUserReq = useCurrentUser();
+  const { data: currentUser } = currentUserReq;
   const queryClient = useQueryClient();
   const QUERY_KEY = vrcQueryKeys.friends(auth.user?.id ?? "");
 
@@ -66,6 +67,7 @@ export const useFriends = () => {
   // 4. 元の query オブジェクトに自作メソッドをマージして返す
   return {
     ...query, // data, isLoading, error などはそのまま使える
+    isLoading: query.isLoading || currentUserReq.isLoading,
     refresh,
     setFriends,
   };

@@ -12,9 +12,7 @@ import {
 import { useVRChat } from "./VRChatContext";
 import StorageWrapper from "@/lib/wrappers/storageWrapper";
 import axios from "axios";
-import {
-  clearAccountQueries,
-} from "@/lib/queryClient";
+import { clearAccountQueries } from "@/lib/queryClient";
 import { isCurrentAccount, isRequiresTwoFactorAuth } from "@/lib/vrcapiModels";
 
 type AuthUser = {
@@ -66,6 +64,7 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     undefined,
   );
   const pendingAuthCookieRef = useRef<string | undefined>(undefined);
+  const autoLoginInFlightRef = useRef<Promise<void> | null>(null);
 
   const clearAccountCache = async () => {
     await clearAccountQueries();
@@ -181,6 +180,12 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
         }
 
         if (authCookie) {
+          vrc.configureAPI({
+            username: param.username,
+            password: param.password,
+            authCookie,
+            twoFactorAuthCookie: tfaCookie,
+          });
           vrc.configurePipeline(authCookie); // set auth cookie to pipeline
         }
 
@@ -281,129 +286,182 @@ const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   };
 
   const autoLogin = async () => {
-    setIsLoading(true);
-    try {
-      const secret = await Promise.all([
-        SecureStore.getItemAsync("auth_secret_username"),
-        SecureStore.getItemAsync("auth_secret_password"),
-      ]);
-      if (!secret[0] || !secret[1]) {
-        console.log("No secret found for auto login");
-        setIsLoading(false);
-        return;
-      }
-      const conf = vrc.configureAPI({
-        username: secret[0] || undefined,
-        password: secret[1] || undefined,
-      }); // configure VRChat client with past data
-      const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
-      const storedData = await Promise.all([
-        StorageWrapper.getItemAsync("auth_user_id"),
-        StorageWrapper.getItemAsync("auth_user_displayName"),
-        StorageWrapper.getItemAsync("auth_user_icon"),
+    if (autoLoginInFlightRef.current) {
+      console.log("Automatic login is already in progress.");
+      return autoLoginInFlightRef.current;
+    }
 
-        SecureStore.getItemAsync("auth_authCookie"),
-        SecureStore.getItemAsync("auth_2faCookie"),
-      ]);
-      const storedUser = {
-        id: storedData[0] || undefined,
-        displayName: storedData[1] || undefined,
-        icon: storedData[2] || undefined,
-      };
-      if (storedUser.id) {
-        let verified = false;
-        try {
-          verified = (await api.verifyAuthToken()).data.ok;
-        } catch (e: unknown) {
-          if (axios.isAxiosError(e) && !e.response) {
-            console.log("Network error while verifying the auth token.");
-            setUser(undefined);
-            setIsLoading(false);
-            return;
-          }
-          console.log("Token verification failed, will attempt re-login...");
-        }
-
-        if (verified) {
-          const currentUserRes = await api.getCurrentUser();
-          if (isRequiresTwoFactorAuth(currentUserRes.data)) {
-            const mode = currentUserRes.data.requiresTwoFactorAuth.includes(
-              "emailOtp",
-            )
-              ? "email"
-              : "totp";
-            setPendingTFA(mode);
-            setUser(undefined);
-            setIsLoading(false);
-            return;
-          }
-          if (!isCurrentAccount(currentUserRes.data)) {
-            await clearAccountCache();
-            await clearStoredAuthentication();
-            setUser(undefined);
-            setIsLoading(false);
-            return;
-          }
-
-          const currentAccount = currentUserRes.data;
-          if (storedUser.id !== currentAccount.id) {
-            await clearAccountCache();
-          }
-          await StorageWrapper.multiSet([
-            ["auth_user_id", currentAccount.id],
-            ["auth_user_displayName", currentAccount.displayName ?? ""],
-            ["auth_user_icon", currentAccount.iconUrl ?? ""],
-          ]);
-          const authCookie = storedData[3];
-          if (authCookie) {
-            vrc.configurePipeline(authCookie); // set auth cookie to pipeline
-          }
-          setUser({
-            id: currentAccount.id,
-            displayName: currentAccount.displayName ?? "",
-            icon: currentAccount.iconUrl ?? "",
-          });
-          console.log(
-            `logged in as ${currentAccount.displayName}: ${currentAccount.id}`,
-          );
+    const attempt = (async () => {
+      setIsLoading(true);
+      try {
+        const storedData = await Promise.all([
+          SecureStore.getItemAsync("auth_secret_username"),
+          SecureStore.getItemAsync("auth_secret_password"),
+          StorageWrapper.getItemAsync("auth_user_id"),
+          StorageWrapper.getItemAsync("auth_user_displayName"),
+          StorageWrapper.getItemAsync("auth_user_icon"),
+          SecureStore.getItemAsync("auth_authCookie"),
+          SecureStore.getItemAsync("auth_2faCookie"),
+        ]);
+        const username = storedData[0] || undefined;
+        const password = storedData[1] || undefined;
+        const authCookie = storedData[5] || undefined;
+        const tfaCookie = storedData[6] || undefined;
+        if (!authCookie && (!username || !password)) {
+          console.log("No saved token or credentials found for auto login");
           setIsLoading(false);
           return;
-        } else {
-          console.log("token expired or invalid, attempting re-login.");
-          if (secret[0] && secret[1]) {
-            const loginRes = await login({
-              username: secret[0],
-              password: secret[1],
-              saveSecret: true,
-            });
-            if (loginRes === "success") {
-              console.log("Re-login successful.");
-              return; // login() handles state update
+        }
+        const conf = vrc.configureAPI({
+          username,
+          password,
+          authCookie,
+          twoFactorAuthCookie: tfaCookie,
+        });
+        const api = new AuthenticationApi(conf); // because of too slow of setState, use returned value
+        const storedUser = {
+          id: storedData[2] || undefined,
+          displayName: storedData[3] || undefined,
+          icon: storedData[4] || undefined,
+        };
+        if (storedUser.id && authCookie) {
+          let verified = false;
+          try {
+            console.log("Attempting automatic login with saved token.");
+            verified = (await api.verifyAuthToken()).data.ok;
+          } catch (e: unknown) {
+            const isRateLimited =
+              (axios.isAxiosError(e) && e.response?.status === 429) ||
+              extractErrMsg(e).includes("too many failed login attempts");
+            if (axios.isAxiosError(e) && !e.response) {
+              console.log("Network error while verifying the auth token.");
+              setUser(undefined);
+              setIsLoading(false);
+              return;
             }
-            console.log(
-              "Re-login required user interaction or failed:",
-              loginRes,
-            );
-            if (loginRes === "error") {
+            if (isRateLimited) {
+              console.log(
+                "Saved token login was rate-limited; skipping saved credential login.",
+              );
+              setUser(undefined);
+              setIsLoading(false);
+              return;
+            }
+            console.log("Token verification failed, will attempt re-login...");
+          }
+
+          if (verified) {
+            console.log("Automatic login succeeded with saved token.");
+            const currentUserRes = await api.getCurrentUser();
+            if (isRequiresTwoFactorAuth(currentUserRes.data)) {
+              const mode = currentUserRes.data.requiresTwoFactorAuth.includes(
+                "emailOtp",
+              )
+                ? "email"
+                : "totp";
+              setPendingTFA(mode);
+              setUser(undefined);
+              setIsLoading(false);
+              return;
+            }
+            if (!isCurrentAccount(currentUserRes.data)) {
               await clearAccountCache();
               await clearStoredAuthentication();
+              setUser(undefined);
+              setIsLoading(false);
+              return;
+            }
+
+            const currentAccount = currentUserRes.data;
+            if (storedUser.id !== currentAccount.id) {
+              await clearAccountCache();
+            }
+            await StorageWrapper.multiSet([
+              ["auth_user_id", currentAccount.id],
+              ["auth_user_displayName", currentAccount.displayName ?? ""],
+              ["auth_user_icon", currentAccount.iconUrl ?? ""],
+            ]);
+            vrc.configurePipeline(authCookie); // set auth cookie to pipeline
+            setUser({
+              id: currentAccount.id,
+              displayName: currentAccount.displayName ?? "",
+              icon: currentAccount.iconUrl ?? "",
+            });
+            console.log(
+              `logged in as ${currentAccount.displayName}: ${currentAccount.id}`,
+            );
+            setIsLoading(false);
+            return;
+          } else {
+            console.log("token expired or invalid, attempting re-login.");
+            if (username && password) {
+              console.log("Attempting automatic login with saved credentials.");
+              const loginRes = await login({
+                username,
+                password,
+                saveSecret: true,
+              });
+              if (loginRes === "success") {
+                console.log(
+                  "Automatic login succeeded with saved credentials.",
+                );
+                return; // login() handles state update
+              }
+              console.log(
+                "Automatic login with saved credentials failed:",
+                loginRes,
+              );
+              if (loginRes === "error") {
+                await clearAccountCache();
+                await clearStoredAuthentication();
+              }
             }
           }
+        } else if (storedUser.id && username && password) {
+          console.log(
+            "No saved token found; attempting automatic login with saved credentials.",
+          );
+          const loginRes = await login({
+            username,
+            password,
+            saveSecret: true,
+          });
+          if (loginRes === "success") {
+            console.log("Automatic login succeeded with saved credentials.");
+            return;
+          }
+          console.log(
+            "Automatic login with saved credentials failed:",
+            loginRes,
+          );
+          if (loginRes === "error") {
+            await clearAccountCache();
+            await clearStoredAuthentication();
+          }
         }
+        // api.logout(); // clear session in library just in case
+        setUser(undefined); // clear user data if not logged in
+        setIsLoading(false);
+      } catch (e) {
+        console.log("Error loading auth data:", extractErrMsg(e));
+        if (axios.isAxiosError(e) && !e.response) {
+          console.log(
+            "Network error at top level, assuming user is logged in if we have stored user.",
+          );
+        } else {
+          setUser(undefined);
+        }
+        setIsLoading(false);
       }
-      // api.logout(); // clear session in library just in case
-      setUser(undefined); // clear user data if not logged in
-      setIsLoading(false);
-    } catch (e) {
-      console.log("Error loading auth data:", extractErrMsg(e));
-      if (axios.isAxiosError(e) && !e.response) {
-        console.log(
-          "Network error at top level, assuming user is logged in if we have stored user.",
-        );
-      } else {
-        setUser(undefined);
+    })();
+
+    autoLoginInFlightRef.current = attempt;
+    try {
+      await attempt;
+    } finally {
+      if (autoLoginInFlightRef.current === attempt) {
+        autoLoginInFlightRef.current = null;
       }
-      setIsLoading(false);
     }
   };
 

@@ -12,7 +12,8 @@ import { vrcQueryKeys } from "@/lib/queryClient";
 export const useFavWorlds = () => {
   const vrc = useVRChat();
   const auth = useAuth();
-  const { data: limits } = useFavoriteLimits();
+  const limitsReq = useFavoriteLimits();
+  const { data: limits } = limitsReq;
   const queryClient = useQueryClient();
   const QUERY_KEY = vrcQueryKeys.favWorlds(auth.user?.id ?? "");
 
@@ -45,5 +46,10 @@ export const useFavWorlds = () => {
     queryClient.setQueryData<FavoritedWorld[]>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setFavWorlds };
+  return {
+    ...query,
+    isLoading: query.isLoading || limitsReq.isLoading,
+    refresh,
+    setFavWorlds,
+  };
 };

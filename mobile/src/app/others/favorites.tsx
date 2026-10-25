@@ -34,7 +34,8 @@ export default function Favorites() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { showToast } = useToast();
-  const { data: favoriteGroups } = useFavoriteGroups();
+  const { data: favoriteGroups, isLoading: isLoadingFavoriteGroups } =
+    useFavoriteGroups();
 
   const MaterialTab = createMaterialTopTabNavigator();
 
@@ -57,12 +58,17 @@ export default function Favorites() {
   );
 
   const WorldsTab = () => {
-    const { data: favorites } = useFavorites();
-    const { data: favWorlds, refetch } = useFavWorlds();
+    const { data: favorites, isLoading: isLoadingFavorites } = useFavorites();
+    const {
+      data: favWorlds,
+      refetch,
+      isLoading: isLoadingWorlds,
+    } = useFavWorlds();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+    const isLoading = isLoadingFavorites || isLoadingWorlds;
 
     const favWorldMap = useMemo(
       () =>
@@ -103,6 +109,7 @@ export default function Favorites() {
 
     return (
       <GenericScreen>
+        {isLoading && <LoadingIndicator absolute />}
         {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
@@ -136,12 +143,17 @@ export default function Favorites() {
     );
   };
   const FriendsTab = () => {
-    const { data: favorites } = useFavorites();
-    const { data: favFriends, refetch } = useFavFriends();
+    const { data: favorites, isLoading: isLoadingFavorites } = useFavorites();
+    const {
+      data: favFriends,
+      refetch,
+      isLoading: isLoadingFriends,
+    } = useFavFriends();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+    const isLoading = isLoadingFavorites || isLoadingFriends;
 
     const favFriendMap = useMemo(
       () =>
@@ -182,6 +194,7 @@ export default function Favorites() {
 
     return (
       <View style={{ flex: 1 }}>
+        {isLoading && <LoadingIndicator absolute />}
         {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
@@ -215,12 +228,17 @@ export default function Favorites() {
     );
   };
   const AvatarsTab = () => {
-    const { data: favorites } = useFavorites();
-    const { data: favAvatars, refetch } = useFavAvatars();
+    const { data: favorites, isLoading: isLoadingFavorites } = useFavorites();
+    const {
+      data: favAvatars,
+      refetch,
+      isLoading: isLoadingAvatars,
+    } = useFavAvatars();
     const [selectedGroup, setSelectedGroup] = useState<FavoriteGroup | null>(
       null,
     );
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+    const isLoading = isLoadingFavorites || isLoadingAvatars;
 
     const favAvatarMap = useMemo(
       () =>
@@ -261,6 +279,7 @@ export default function Favorites() {
 
     return (
       <View style={{ flex: 1 }}>
+        {isLoading && <LoadingIndicator absolute />}
         {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SelectGroupButton
           style={styles.selectGroupButton}
@@ -296,6 +315,7 @@ export default function Favorites() {
 
   return (
     <GenericScreen>
+      {isLoadingFavoriteGroups && <LoadingIndicator absolute />}
       <MaterialTab.Navigator
         screenOptions={{
           tabBarStyle: { backgroundColor: theme.colors.background },

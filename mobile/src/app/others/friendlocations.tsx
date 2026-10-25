@@ -25,10 +25,20 @@ export default function FriendLocations() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { settings } = useSetting();
-  const { data: friends, refetch } = useFriends();
-  const { data: favorites, refetch: refetchFavorites } = useFavorites();
-  const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
+  const { data: friends, refetch, isLoading: isLoadingFriends } = useFriends();
+  const {
+    data: favorites,
+    refetch: refetchFavorites,
+    isLoading: isLoadingFavorites,
+  } = useFavorites();
+  const {
+    data: currentUser,
+    refetch: refetchCurrentUser,
+    isLoading: isLoadingCurrentUser,
+  } = useCurrentUser();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const isLoading =
+    isLoadingFriends || isLoadingFavorites || isLoadingCurrentUser;
   const refresh = () => {
     setIsRefreshing(true);
     Promise.all([refetch(), refetchFavorites(), refetchCurrentUser()])
@@ -142,6 +152,7 @@ export default function FriendLocations() {
   return (
     <GenericScreen>
       <View style={styles.container}>
+        {isLoading && <LoadingIndicator absolute />}
         {isRefreshing && <LoadingIndicator absolute overlayOnly />}
         <SectionList
           sections={sections}

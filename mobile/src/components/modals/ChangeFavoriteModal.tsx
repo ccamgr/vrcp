@@ -121,6 +121,7 @@ const ChangeFavoriteModal = ({
       buttonItems={footerButtons}
       open={open}
       onClose={() => setOpen(false)}
+      scrollable
     >
       {isLoading && <LoadingIndicator absolute />}
       {groups.map((g) => (

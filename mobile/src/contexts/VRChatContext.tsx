@@ -43,6 +43,8 @@ export interface VRChatContextType {
   configureAPI: (user: {
     username?: string;
     password?: string;
+    authCookie?: string;
+    twoFactorAuthCookie?: string;
   }) => Configuration;
   configurePipeline: (url: string) => void;
   unConfigure: () => void;
@@ -99,13 +101,27 @@ const VRChatProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
     }
   };
 
-  const configureAPI = (user: { username?: string; password?: string }) => {
+  const configureAPI = (user: {
+    username?: string;
+    password?: string;
+    authCookie?: string;
+    twoFactorAuthCookie?: string;
+  }) => {
+    const cookies = [
+      user.authCookie ? `auth=${user.authCookie}` : undefined,
+      user.twoFactorAuthCookie
+        ? `twoFactorAuth=${user.twoFactorAuthCookie}`
+        : undefined,
+    ].filter((cookie): cookie is string => Boolean(cookie));
     const newConfig = new Configuration({
       // basePath: BASE_API_URL, // default
       username: user.username,
       password: user.password,
       baseOptions: {
-        headers: { "User-Agent": getUserAgent() },
+        headers: {
+          "User-Agent": getUserAgent(),
+          ...(cookies.length > 0 ? { Cookie: cookies.join("; ") } : {}),
+        },
       },
     });
     setConfig(newConfig); // 即時更新

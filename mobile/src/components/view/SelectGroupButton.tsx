@@ -3,7 +3,7 @@ import { omitObject } from "@/lib/utils";
 import { Text } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { TouchableEx } from "../CustomElements";
 
 interface Props<T> {
@@ -47,7 +47,13 @@ const SelectGroupButton = <T extends unknown>({
   };
 
   return (
-    <View style={[styles.container, rest.style]} {...omitObject(rest, "style")}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={[styles.scrollView, rest.style]}
+      contentContainerStyle={styles.container}
+      {...omitObject(rest, "style")}
+    >
       {data.map((item, idx) => {
         const displayname = _nameExtractor(item, idx);
         return (
@@ -57,7 +63,6 @@ const SelectGroupButton = <T extends unknown>({
             style={[
               styles.textContainer,
               {
-                width: `${95 / data.length}%`,
                 backgroundColor: theme.colors.card,
                 borderColor: _isEqual(value, item)
                   ? theme.colors.primary
@@ -81,18 +86,24 @@ const SelectGroupButton = <T extends unknown>({
           </TouchableEx>
         );
       })}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   container: {
+    alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
-    overflow: "hidden",
+    gap: spacing.small,
+    paddingRight: spacing.small,
   },
   textContainer: {
-    // margin: spacing.mini,
+    maxWidth: 200,
+    minWidth: 120,
     paddingVertical: spacing.mini,
     paddingHorizontal: spacing.small,
     borderRadius: spacing.medium,

@@ -56,8 +56,7 @@ export const useFavFriends = () => {
   // ソースのどちらかがフェッチ中なら、このフックもフェッチ中とする
   const isFetching =
     friendsReq.isFetching || favsReq.isFetching || query.isFetching;
-  const isLoading =
-    friendsReq.isLoading || favsReq.isLoading || query.isLoading;
+  const isLoading = friendsReq.isLoading || favsReq.isLoading;
 
   // refetch() が呼ばれたら、ソースの両方を叩き直す
   const refetch = async () => {

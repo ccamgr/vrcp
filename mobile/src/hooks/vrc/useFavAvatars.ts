@@ -12,7 +12,8 @@ import { vrcQueryKeys } from "@/lib/queryClient";
 export const useFavAvatars = () => {
   const vrc = useVRChat();
   const auth = useAuth();
-  const { data: limits } = useFavoriteLimits();
+  const limitsReq = useFavoriteLimits();
+  const { data: limits } = limitsReq;
   const queryClient = useQueryClient();
   const QUERY_KEY = vrcQueryKeys.favAvatars(auth.user?.id ?? "");
 
@@ -43,5 +44,10 @@ export const useFavAvatars = () => {
     queryClient.setQueryData<Avatar[]>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setFavAvatars };
+  return {
+    ...query,
+    isLoading: query.isLoading || limitsReq.isLoading,
+    refresh,
+    setFavAvatars,
+  };
 };

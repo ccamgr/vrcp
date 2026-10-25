@@ -12,7 +12,8 @@ import { vrcQueryKeys } from "@/lib/queryClient";
 export const useFavorites = () => {
   const vrc = useVRChat();
   const auth = useAuth();
-  const { data: limits } = useFavoriteLimits();
+  const limitsReq = useFavoriteLimits();
+  const { data: limits } = limitsReq;
   const queryClient = useQueryClient();
   const QUERY_KEY = vrcQueryKeys.favorites(auth.user?.id ?? "");
 
@@ -49,5 +50,10 @@ export const useFavorites = () => {
     queryClient.setQueryData<Favorite[]>(QUERY_KEY, updater);
   };
 
-  return { ...query, refresh, setFavorites };
+  return {
+    ...query,
+    isLoading: query.isLoading || limitsReq.isLoading,
+    refresh,
+    setFavorites,
+  };
 };

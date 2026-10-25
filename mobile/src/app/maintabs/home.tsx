@@ -141,15 +141,29 @@ const FriendLocationArea = memo(function FriendLocationArea({
   const theme = useTheme();
   const { t } = useTranslation();
   const { settings } = useSetting();
-  const { data: friends, refetch: refetchFriends } = useFriends();
-  const { data: favorites, refetch: refetchFavorites } = useFavorites();
-  const { data: currentUser, refetch: refetchCurrentUser } = useCurrentUser();
+  const {
+    data: friends,
+    refetch: refetchFriends,
+    isLoading: isLoadingFriends,
+  } = useFriends();
+  const {
+    data: favorites,
+    refetch: refetchFavorites,
+    isLoading: isLoadingFavorites,
+  } = useFavorites();
+  const {
+    data: currentUser,
+    refetch: refetchCurrentUser,
+    isLoading: isLoadingCurrentUser,
+  } = useCurrentUser();
   const refresh = useCallback(
     () =>
       Promise.all([refetchFriends(), refetchFavorites(), refetchCurrentUser()]),
     [refetchFavorites, refetchFriends, refetchCurrentUser],
   );
   const { isRefreshing, onRefresh } = usePullToRefresh(refresh);
+  const isLoading =
+    isLoadingFriends || isLoadingFavorites || isLoadingCurrentUser;
 
   const instances = useMemo<InstanceLike[]>(() => {
     const filteredFriends = filterFriendLocations(
@@ -191,6 +205,7 @@ const FriendLocationArea = memo(function FriendLocationArea({
       onPress={() => routeToFriendLocations()}
       style={style}
     >
+      {isLoading && <LoadingIndicator absolute />}
       {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={instances}
@@ -216,6 +231,7 @@ const EventsArea = memo(function EventsArea({ style }: { style?: any }) {
   const offset = useRef(0);
   const fetchingRef = useRef(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const npr = 60;
 
   const [eventDetailModal, setEventDetailModal] = useState<{
@@ -284,7 +300,8 @@ const EventsArea = memo(function EventsArea({ style }: { style?: any }) {
     if (!auth.user) return;
     eventsRef.current = [];
     offset.current = 0;
-    void fetchEvents();
+    setIsInitialLoading(true);
+    void fetchEvents().finally(() => setIsInitialLoading(false));
   }, [auth.user]);
 
   const renderItem = useCallback(({ item }: { item: CalendarEvent }) => {
@@ -314,6 +331,7 @@ const EventsArea = memo(function EventsArea({ style }: { style?: any }) {
       onPress={() => routeToCalendar()}
       style={style}
     >
+      {isInitialLoading && <LoadingIndicator absolute />}
       {isRefreshing && <LoadingIndicator absolute overlayOnly />}
       <FlatList
         data={todayEvents}
