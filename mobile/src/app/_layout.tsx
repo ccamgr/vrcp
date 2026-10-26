@@ -4,24 +4,22 @@ import { AppMenuProvider } from "@/contexts/AppMenuContext";
 import { SettingProvider } from "@/contexts/SettingContext";
 import { VRChatProvider } from "@/contexts/VRChatContext";
 import { ThemeProvider, useTheme } from "@react-navigation/native";
-import { router, Stack, usePathname } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
-  Platform,
   StyleSheet,
   Text,
   useColorScheme,
   View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useMemo, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useEffect, useMemo } from "react";
 import { ToastProvider } from "@/contexts/ToastContext";
 import * as SplashScreen from "expo-splash-screen";
 
 import GlobalDrawer from "@/components/layout/GlobalDrawer";
-import ConfirmAtFirstDialog from "@/components/features/ConfirmAtFirstDialog";
 import { registerBackgroundTaskAsync } from "@/tasks";
 
 import { db } from "@/db";
@@ -46,6 +44,9 @@ function RootLayout() {
   // Run migrations
   const { success, error } = useMigrations(db, migrations);
   const isReady = !auth.isLoading && success;
+  const isAuthScreen = pathname === "/";
+  const isRedirectingToHome = isReady && !!auth.user && isAuthScreen;
+  const isRedirectingToLogin = isReady && !auth.user && !isAuthScreen;
 
   useEffect(() => {
     SplashScreen.hideAsync();
@@ -73,8 +74,6 @@ function RootLayout() {
     if (!isReady) return;
 
     // Check if the user is currently on the login screen (index)
-    const isAuthScreen = pathname === "/";
-
     if (auth.user && isAuthScreen) {
       // Logged in but on the login screen -> Redirect to maintabs
       routeToHome();
@@ -82,7 +81,7 @@ function RootLayout() {
       // Not logged in but trying to access inside the app -> Redirect to login
       routeToIndex();
     }
-  }, [auth.user, isReady, pathname]);
+  }, [auth.user, isAuthScreen, isReady]);
 
   if (error) {
     return (
@@ -105,7 +104,7 @@ function RootLayout() {
         <Stack.Screen name="others" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
-      {!isReady && (
+      {(!isReady || isRedirectingToHome || isRedirectingToLogin) && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size={48} color={theme.colors.primary} />
         </View>
