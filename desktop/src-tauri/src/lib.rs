@@ -42,6 +42,7 @@ pub fn create_specta_builder() -> SpectaBuilder {
             cmds::vrcapi::auth::check_auth,
             cmds::vrcapi::friends::get_friend_instances,
             cmds::vrcapi::invite::invite_myself,
+            cmds::vrcapi::notifications::get_notifications,
             cmds::app::log_direct_launch_result,
             cmds::app::log_autostart_change
         ])

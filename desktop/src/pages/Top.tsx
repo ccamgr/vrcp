@@ -22,10 +22,43 @@ const unwrap = <T,>(
   return result.data;
 };
 
+const instanceTypeLabel = (instanceType: string) => {
+  switch (instanceType) {
+    case "public":
+      return "Public";
+    case "friends":
+      return "Friends";
+    case "hidden":
+      return "Friends+";
+    case "private":
+      return "Private";
+    case "group":
+      return "Group";
+    default:
+      return instanceType;
+  }
+};
+
+const regionLabel = (region: string) => {
+  switch (region) {
+    case "use":
+      return "US East";
+    case "us":
+      return "US West";
+    case "jp":
+      return "Japan";
+    case "eu":
+      return "Europe";
+    default:
+      return region;
+  }
+};
+
 export default function Top() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const [instances, setInstances] = useState<FriendInstance[]>([]);
   const [isFavoriteSortAvailable, setIsFavoriteSortAvailable] = useState(true);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [invitingInstanceKey, setInvitingInstanceKey] = useState<string | null>(null);
@@ -55,6 +88,9 @@ export default function Top() {
       const response = unwrap(await commands.getFriendInstances());
       setInstances(response.instances);
       setIsFavoriteSortAvailable(response.favoriteSortAvailable);
+      if (!response.favoriteSortAvailable) {
+        setShowFavoritesOnly(false);
+      }
     } catch (loadError) {
       console.error("Failed to load friend instances", loadError);
       setError(loadError instanceof Error ? loadError.message : String(loadError));
@@ -116,6 +152,10 @@ export default function Top() {
     void loadInstances();
   }, [loadInstances, user]);
 
+  const visibleInstances = showFavoritesOnly
+    ? instances.filter((instance) => instance.favoriteFriendCount > 0)
+    : instances;
+
   if (isAuthLoading) {
     return <div className="p-6 text-slate-400">Checking VRChat login...</div>;
   }
@@ -143,15 +183,29 @@ export default function Top() {
             Friends currently in joinable worlds.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void loadInstances()}
-          disabled={isLoading}
-          className="flex items-center gap-2 rounded-lg bg-slate-800 px-3 py-2 text-sm transition hover:bg-slate-700 disabled:opacity-50"
-        >
-          <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-          Refresh
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setShowFavoritesOnly((value) => !value)}
+            disabled={!isFavoriteSortAvailable}
+            className={`rounded-lg px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 ${
+              showFavoritesOnly
+                ? "bg-amber-500/20 text-amber-200"
+                : "bg-slate-800 hover:bg-slate-700"
+            }`}
+          >
+            Favorites only
+          </button>
+          <button
+            type="button"
+            onClick={() => void loadInstances()}
+            disabled={isLoading}
+            className="flex items-center gap-2 rounded-lg bg-slate-800 px-3 py-2 text-sm transition hover:bg-slate-700 disabled:opacity-50"
+          >
+            <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
+            Refresh
+          </button>
+        </div>
       </header>
 
       <div className="overflow-y-auto px-6 pb-6">
@@ -168,13 +222,15 @@ export default function Top() {
         )}
         {isLoading && instances.length === 0 ? (
           <div className="text-slate-400">Loading friend instances...</div>
-        ) : instances.length === 0 ? (
+        ) : visibleInstances.length === 0 ? (
           <div className="rounded-xl border border-dashed border-slate-700 p-8 text-center text-slate-400">
-            None of your friends are currently in a joinable world.
+            {showFavoritesOnly
+              ? "None of your favorite friends are currently in a joinable world."
+              : "None of your friends are currently in a joinable world."}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {instances.map((instance) => {
+            {visibleInstances.map((instance) => {
               const instanceKey = getInstanceKey(instance);
               const isInviting = invitingInstanceKey === instanceKey;
               const isLaunching = launchingInstanceKey === instanceKey;
@@ -256,13 +312,33 @@ export default function Top() {
                           </button>
                         </div>
                       </div>
-                      <p className="mt-1 truncate font-mono text-xs text-slate-400">
-                        {instance.instanceId}
-                      </p>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className="rounded bg-slate-700 px-1.5 py-0.5 text-xs text-slate-200">
+                          {instanceTypeLabel(instance.instanceType)}
+                        </span>
+                        <p className="truncate font-mono text-xs text-slate-400">
+                          {instance.instanceId}
+                        </p>
+                      </div>
                       <p className="mt-3 flex items-center gap-1 text-sm text-blue-300">
                         <Users size={15} />
                         {instance.friends.length} friend
                         {instance.friends.length === 1 ? "" : "s"}
+                        {instance.userCount !== null && (
+                          <>
+                            {" and "}
+                            {instance.capacity !== null
+                              ? `${instance.userCount} / ${instance.capacity} users`
+                              : `${instance.userCount} user${
+                                  instance.userCount === 1 ? "" : "s"
+                                }`}
+                          </>
+                        )}
+                        {instance.region && (
+                          <span className="ml-2 rounded bg-slate-700 px-1.5 py-0.5 text-xs text-slate-300">
+                            {regionLabel(instance.region)}
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>

@@ -1,10 +1,15 @@
-use std::collections::{BTreeMap, HashMap};
+use std::{
+    collections::{BTreeMap, HashMap},
+    sync::Arc,
+};
 
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use tauri::State;
+use tokio::{sync::Semaphore, task::JoinSet};
 use vrchatapi::apis::{
-    favorites_api::get_favorites, friends_api::get_friends, worlds_api::get_world,
+    favorites_api::get_favorites, friends_api::get_friends, instances_api::get_instance,
+    worlds_api::get_world,
 };
 
 use crate::Ctx;
@@ -29,6 +34,14 @@ pub struct FriendInstance {
     pub world_name: String,
     #[serde(rename = "worldThumbnailUrl")]
     pub world_thumbnail_url: Option<String>,
+    #[serde(rename = "userCount")]
+    pub user_count: Option<i32>,
+    #[serde(rename = "instanceType")]
+    pub instance_type: String,
+    pub capacity: Option<i32>,
+    pub region: Option<String>,
+    #[serde(rename = "favoriteFriendCount")]
+    pub favorite_friend_count: i32,
     pub friends: Vec<FriendPresence>,
 }
 
@@ -42,6 +55,32 @@ pub struct FriendInstancesResponse {
 struct LocatedFriend {
     presence: FriendPresence,
     is_favorite: bool,
+}
+
+fn instance_type_from_id(instance_id: &str) -> String {
+    let mut segments = instance_id.split('~');
+    if segments
+        .clone()
+        .any(|segment| segment.starts_with("hidden("))
+    {
+        return "hidden".to_string();
+    }
+    if segments
+        .clone()
+        .any(|segment| segment.starts_with("friends("))
+    {
+        return "friends".to_string();
+    }
+    if segments
+        .clone()
+        .any(|segment| segment.starts_with("private("))
+    {
+        return "private".to_string();
+    }
+    if segments.any(|segment| segment.starts_with("group(")) {
+        return "group".to_string();
+    }
+    "public".to_string()
 }
 
 async fn get_favorite_friend_ids(
@@ -72,7 +111,7 @@ async fn get_favorite_friend_ids(
 pub async fn get_friend_instances(
     state: State<'_, Ctx>,
 ) -> Result<FriendInstancesResponse, String> {
-    let config = state.vrcapi.config.lock().await;
+    let config = state.vrcapi.config.lock().await.clone();
     let mut offset = 0_i32;
     let (favorite_friend_ids, favorite_sort_available) =
         match get_favorite_friend_ids(&config).await {
@@ -142,10 +181,42 @@ pub async fn get_friend_instances(
         worlds.insert(world_id.clone(), world);
     }
 
+    let request_limit = Arc::new(Semaphore::new(5));
+    let mut instance_detail_tasks = JoinSet::new();
+    for (world_id, instance_id) in locations.keys() {
+        let config = config.clone();
+        let request_limit = Arc::clone(&request_limit);
+        let world_id = world_id.clone();
+        let instance_id = instance_id.clone();
+        instance_detail_tasks.spawn(async move {
+            let Ok(_permit) = request_limit.acquire_owned().await else {
+                return ((world_id, instance_id), None);
+            };
+            let instance_details = get_instance(&config, &world_id, &instance_id)
+                .await
+                .ok()
+                .map(|instance| {
+                    (
+                        instance.n_users,
+                        instance.capacity,
+                        instance.region.to_string(),
+                    )
+                });
+            ((world_id, instance_id), instance_details)
+        });
+    }
+    let mut instance_details = HashMap::new();
+    while let Some(result) = instance_detail_tasks.join_next().await {
+        if let Ok((instance_key, details)) = result {
+            instance_details.insert(instance_key, details);
+        }
+    }
+
     let mut instances = locations
         .into_iter()
         .map(|((world_id, instance_id), friends)| {
             let favorite_friend_count = friends.iter().filter(|friend| friend.is_favorite).count();
+            let instance_key = (world_id.clone(), instance_id.clone());
             let (world_name, world_thumbnail_url) = worlds
                 .get(&world_id)
                 .and_then(|world| world.clone())
@@ -153,6 +224,17 @@ pub async fn get_friend_instances(
             (
                 favorite_friend_count,
                 FriendInstance {
+                    user_count: instance_details
+                        .get(&instance_key)
+                        .and_then(|details| details.as_ref().map(|details| details.0)),
+                    instance_type: instance_type_from_id(&instance_id),
+                    capacity: instance_details
+                        .get(&instance_key)
+                        .and_then(|details| details.as_ref().and_then(|details| details.1)),
+                    region: instance_details
+                        .get(&instance_key)
+                        .and_then(|details| details.as_ref().map(|details| details.2.clone())),
+                    favorite_friend_count: i32::try_from(favorite_friend_count).unwrap_or(i32::MAX),
                     world_id,
                     instance_id,
                     world_name,

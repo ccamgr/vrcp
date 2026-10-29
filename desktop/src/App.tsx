@@ -6,6 +6,7 @@ import Monitor from "./pages/Monitor";
 import Settings from "./pages/Settings";
 import Analytics from "./pages/Analytics";
 import Top from "./pages/Top";
+import Notifications from "./pages/Notifications";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <Route path="monitor" element={<Monitor />} />
               <Route path="history" element={<Analytics />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
           </Routes>
         </HashRouter>

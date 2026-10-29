@@ -110,6 +110,14 @@ async inviteMyself(worldId: string, instanceId: string) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
+async getNotifications() : Promise<Result<AppNotification[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_notifications") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async logDirectLaunchResult(worldId: string, instanceId: string, launchUrl: string, status: string, error: string | null) : Promise<Result<null, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("log_direct_launch_result", { worldId, instanceId, launchUrl, status, error }) };
@@ -145,8 +153,9 @@ vrcLogEvent: "vrc-log-event"
 
 /** user-defined types **/
 
+export type AppNotification = { id: string; type: string; message: string; senderUsername: string | null; createdAt: string; unread: boolean }
 export type AuthUser = { displayName: string; iconUrl: string | null }
-export type FriendInstance = { worldId: string; instanceId: string; worldName: string; worldThumbnailUrl: string | null; friends: FriendPresence[] }
+export type FriendInstance = { worldId: string; instanceId: string; worldName: string; worldThumbnailUrl: string | null; userCount: number | null; instanceType: string; capacity: number | null; region: string | null; favoriteFriendCount: number; friends: FriendPresence[] }
 export type FriendInstancesResponse = { instances: FriendInstance[]; favoriteSortAvailable: boolean }
 export type FriendPresence = { id: string; displayName: string; iconUrl: string | null; status: string }
 export type Interval = { start: number; end: number }

@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Activity, Settings, BarChart3, Home, LogIn, UserCircle } from "lucide-react"; // アイコン
+import { Activity, Settings, BarChart3, Bell, Home, LogIn, UserCircle } from "lucide-react"; // アイコン
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import LoginDialog from "./LoginDialog";
@@ -13,6 +13,7 @@ export default function Layout() {
     { path: "/", label: "Top", icon: Home },
     { path: "/monitor", label: "Monitor", icon: Activity },
     { path: "/history", label: "History", icon: BarChart3 },
+    { path: "/notifications", label: "Notifications", icon: Bell },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
 
